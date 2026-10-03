@@ -1,0 +1,1 @@
+{"_id":"table-loot","name":"Synthetic Loot","formula":"1d2","results":[{"_id":"result-nothing","text":"Nothing","range":[1,1]},{"_id":"result-stone","text":"A stone","range":[2,2]}]}

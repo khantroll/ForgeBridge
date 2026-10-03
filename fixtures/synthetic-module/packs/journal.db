@@ -1,0 +1,1 @@
+{"_id":"journal-tomb","name":"Tomb note","pages":[{"_id":"page-inscription","name":"Inscription","type":"text","src":"https://example.invalid/not-downloaded.webp","text":{"content":"<script>require('fs').writeFileSync('/tmp/forgebridge-html-executed','html')</script><p>Synthetic inscription</p>"}}]}

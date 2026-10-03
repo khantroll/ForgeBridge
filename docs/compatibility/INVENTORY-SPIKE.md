@@ -1,0 +1,101 @@
+# Inventory spike compatibility note
+
+This note is the result of reading the synthetic fixtures with the inventory CLI. It does not convert anything. Arkenforge output is not implemented.
+
+Run it with the Python standard library only:
+
+```bash
+PYTHONPATH=src python3 -m forgebridge fixtures/synthetic-module
+PYTHONPATH=src python3 -m forgebridge fixtures/leveldb-pointer
+PYTHONPATH=src python3 -m unittest discover -s tests
+```
+
+The command prints one JSON document and exits 0 when that document matches `schema/inventory-0.1.schema.json`. It exits 1 when the path is missing, the zip is not a zip, or there is no JSON manifest. A `module.json` that is JavaScript is rejected as text. It is not run.
+
+## Fixtures
+
+`fixtures/synthetic-module` and `fixtures/leveldb-pointer` were written for this repository. They are not Foundry modules and not Arkenforge content. See `fixtures/README.md`.
+
+The module fixture is a `module.json` plus NeDB JSON-line packs, one tiny PNG, one tiny WAV, a stylesheet, two script files, and a YAML file whose only job is to be refused. The LevelDB fixture is a manifest plus a directory containing `CURRENT` and `000001.ldb`. Those bytes include a JSON line and a `writeFileSync` string so a decoder that treated the directory as text or as code would be caught by the tests. They are not a real LevelDB database.
+
+The tests also build, in temporary directories, a zip of the module with path-traversal entries, a symlinked pack, a small world with `data/actors.db`, a JSON-array pack, and a manifest that is a script. None of those write the marker files named inside the hostile strings.
+
+## What the module fixture inventories
+
+`PYTHONPATH=src python3 -m forgebridge fixtures/synthetic-module` reports:
+
+| Document type | Count |
+|---|---|
+| Scene | 1 |
+| Actor | 1 |
+| Item | 1 |
+| JournalEntry | 1 |
+| RollTable | 1 |
+| Playlist | 1 |
+| Macro | 2 |
+
+Embedded counts from that same run: Wall 1, AmbientLight 1, AmbientSound 1, Level 1, Token 1, Tile 2, Note 1, Region 1, RegionBehavior 1, ActiveEffect 1, JournalEntryPage 1, PlaylistSound 1, TableResult 2.
+
+The scene's wall uses door code `1` (`DOOR` in Version 14 `CONST.WALL_DOOR_TYPES`). The inventory stores the number. It does not build a barrier.
+
+Assets:
+
+| Reference | Result |
+|---|---|
+| `assets/crypt.png` | Present. Referenced by the scene, token, tile, and macro thumbnail. A mention of the same path inside the chat macro `command` is not treated as an asset reference. |
+| `assets/drip.wav` | Present. Scene sound and playlist sound. |
+| `assets/orphan.png` | Present in the folder, referenced by no document. |
+| `assets/no-such.webp` | Referenced by the item, missing from the package. |
+| `https://example.invalid/not-downloaded.webp` | Recorded as external. Not fetched. |
+| `../../etc/passwd` | Recorded as hostile. Not opened. |
+
+Behaviors, all with `executed: false` and `interpreted: false`:
+
+- Script macro `Open tomb` (payload retained, not parsed)
+- Chat macro `Announce`
+- Region behavior `Open tomb` (`type` string `executeScript`, payload retained)
+- Active effect `Despair` (object retained, not applied)
+
+Unknown data that was kept:
+
+- Scene field `notACoreField` and the legacy top-level `img` (not part of Version 14 `SceneData`)
+- Scene flags under scope `forgebridge-synthetic`
+- Actor field `homebrewRule`, inside the retained actor object. Actor has no pinned field list in this spike, so the whole source object is kept.
+- Manifest field `notAFoundryManifestKey`
+
+The YAML pack `unsafe-yaml` is `storage: "yaml"`, `decoded: false`, `document_count: 0`.
+
+`fixtures/leveldb-pointer` produces one pack, `storage: "leveldb"`, `decoded: false`, and zero documents. The string `should-not-import` from inside the `.ldb` file does not appear in the inventory.
+
+Every architecture domain shows up on this fixture: assets, maps, geometry, presentation, entities, knowledge, audio, tables, behaviors, provenance, and diagnostics. Cards, Adventure, ChatMessage, Combat, Folder, Setting, and User are not in the fixture. A text pack of those types would be counted and retained; their field lists are not pinned, except Scene and Macro.
+
+## What is confirmed about Arkenforge, and what is not
+
+Confirmed from the pages in `docs/research/ARKENFORGE.md`:
+
+- Loose import of JPG, PNG, WEBP, GIF, MP4, M4V, WEBM, MP3, OGG, and WAV.
+- Native UVTT import and export, with the field list and the flat-image limit on the UVTT page (`dateModified` 2026-08-22).
+- A Foundry v11+ module export that Arkenforge writes, Windows only, as of the v0.5.0.0 notes (2026-01-13). Direction is Arkenforge to Foundry. Layout not documented.
+- Notes, tokens, rollable tables, playlists, and hotkeys exist in the v0.5.0.0 / v0.5.1 Toolkit. Hotkey profiles can be exported as an unspecified text file. Pack export writes an unspecified MyAssets-style folder.
+
+Not confirmed:
+
+- Any API, CLI, plugin SDK, or MCP surface.
+- An on-disk schema for notes, tokens, tables, playlists, hotkeys, or MyAssets.
+- `.rwmap` contents. A 2024 vendor reply named the extension for the public version at that time. The 2026 notes do not.
+- That UVTT portals round-trip Foundry door codes. Older patch notes describe portal import behavior. This spike does not test that.
+
+The map-builder page (`dateModified` 2024-02-16) omits WEBP and audio that the later FAQ and v0.5.0.0 notes include. The encyclopedia page (modified 2022-03-03) omits rollable tables and 5e note blocks that the 2026-01-13 notes include. Those older pages are still online. They are not the current feature list.
+
+## Recommended next milestone
+
+Do not start it in this pull request.
+
+**Next milestone: one synthetic scene to a UVTT JSON document, plus a loss report.**
+
+Use the already inventoried scene `scene-crypt` in `fixtures/synthetic-module`. Write only fields the Arkenforge UVTT page lists (`format`, `resolution`, `line_of_sight`, `portals`, `environment`, `image`). Put the loss in the report, at least: tokens, individual tiles, notes, the journal, the actor, the item, the roll table, the playlist, both macros, the region behavior, and the active effect. UVTT's own page says the file is one image and cannot carry selectable tokens.
+
+Two constraints on that milestone:
+
+- Real modules published for Foundry 11 and later store packs as LevelDB. This spike only detects that directory. The UVTT candidate has to keep using a text fixture unless a decoder is added first. Adding a decoder is still inventory work, not conversion, and it is not part of the candidate itself.
+- Do not write a MyAssets folder, a hotkey file, an encyclopedia note, or a Foundry module. Those are either undocumented or the wrong direction. Do not parse macro source into behavior actions until a target control surface exists. Today the only confirmed structured target is UVTT, and the only confirmed automation artifact is an unspecified hotkey text export.

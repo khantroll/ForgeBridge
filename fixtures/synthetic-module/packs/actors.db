@@ -1,0 +1,1 @@
+{"_id":"actor-mummy","name":"Mummy","type":"npc","img":"assets/crypt.png","system":{"hp":{"value":22,"max":22}},"items":[],"effects":[{"_id":"effect-despair","name":"Despair","disabled":false,"changes":[]}],"homebrewRule":{"dc":15}}
