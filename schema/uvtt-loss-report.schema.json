@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://forgebridge.local/schema/uvtt-loss-report.schema.json",
   "title": "UVTT loss report",
-  "description": "Fields from a synthetic inventory that the UVTT core list cannot carry, plus gaps in that list.",
+  "description": "Usability grades for a synthetic inventory against the public Arkenforge UVTT page and confirmed Toolkit imports. native lines are fields in the UVTT file. approximate, manual, and unsupported lines are what that file does not fully carry.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -12,9 +12,11 @@
     "source",
     "read_on",
     "page_modified",
-    "carried",
-    "dropped",
-    "gaps"
+    "native",
+    "approximate",
+    "manual",
+    "unsupported",
+    "counts"
   ],
   "properties": {
     "headline": {"type": "string", "minLength": 1},
@@ -23,17 +25,29 @@
     "source": {"const": "https://arkenforge.com/universal-vtt-files/"},
     "read_on": {"const": "2026-10-03"},
     "page_modified": {"const": "2026-08-22"},
-    "carried": {"type": "array", "items": {"$ref": "#/$defs/line"}},
-    "dropped": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/line"}},
-    "gaps": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/line"}}
+    "native": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/line"}},
+    "approximate": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/line"}},
+    "manual": {"type": "array", "items": {"$ref": "#/$defs/line"}},
+    "unsupported": {"type": "array", "items": {"$ref": "#/$defs/line"}},
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["native", "approximate", "manual", "unsupported"],
+      "properties": {
+        "native": {"type": "integer", "minimum": 0},
+        "approximate": {"type": "integer", "minimum": 0},
+        "manual": {"type": "integer", "minimum": 0},
+        "unsupported": {"type": "integer", "minimum": 0}
+      }
+    }
   },
   "$defs": {
     "line": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["severity", "code", "summary", "document_type", "id", "name", "path"],
+      "required": ["grade", "code", "summary", "document_type", "id", "name", "path"],
       "properties": {
-        "severity": {"enum": ["carried", "dropped", "gap"]},
+        "grade": {"enum": ["native", "approximate", "manual", "unsupported"]},
         "code": {"type": "string", "minLength": 1},
         "summary": {"type": "string", "minLength": 1},
         "document_type": {"type": ["string", "null"]},
