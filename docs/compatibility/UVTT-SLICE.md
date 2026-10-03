@@ -9,7 +9,7 @@ PYTHONPATH=src python3 -m forgebridge fixtures/synthetic-leveldb-scene.zip --uvt
 PYTHONPATH=src python3 -m unittest discover -s tests
 ```
 
-Stdout is one JSON object, `{"uvtt", "loss_report"}`. `--uvtt-out` writes only the `uvtt` object. That file is the import. The envelope is not: it has `loss_report`, which is outside the UVTT core fields.
+Stdout is one JSON object, `{"uvtt", "loss_report"}`. `--uvtt-out` writes the `uvtt` object and, beside it, the scene's image and audio files whose extensions are on the documented import list. The UVTT file is the map import. The envelope is not: it has `loss_report`, which is outside the UVTT core fields.
 
 The command exits 0 when `uvtt` matches `schema/uvtt-core.schema.json` and `loss_report` matches `schema/uvtt-loss-report.schema.json`. It exits 1 when the scene is missing, the pack is not text, or the grid is not square. It exits 2 when a schema check fails, and it does not write the file in that case. No `.uvtt` file is checked in. The tests generate the object.
 
@@ -54,14 +54,16 @@ The grades use [docs/research/ARKENFORGE.md](../research/ARKENFORGE.md), retriev
 | Grade | Meaning on this slice |
 |---|---|
 | native | A documented UVTT field filled in the file: the map image, square resolution, `baked_lighting`, a portal's position and closed flag, a line-of-sight segment, and a light's position and color. |
-| approximate | Written or deliberately omitted with a documented mismatch: `format` 0.0, portal bounds, `freestanding`, omitted `software` and `creator`, door type, locked or unknown door state, light dim/bright/shadows, grid distance and units, thumbnail, and a scene image that is not the chosen background. |
-| manual | A Toolkit UI feature with no file this slice can write. Scene and level names. Tokens (UVTT cannot carry selectable tokens; tokens exist in the UI). In-package tiles. Notes. Ambient audio. Actors, journals, items (5e note fields, not a general item system), rollable tables, playlists, and macros (hotkeys; the macro is not executed). Loose image and audio files that are not the one map image. |
+| approximate | Written or deliberately omitted with a documented mismatch: `format` 0.0, portal bounds, `freestanding`, omitted `software` and `creator`, door type, locked or unknown door state, light dim/bright/shadows, grid distance and units, thumbnail, a scene image that is not the chosen background, and a scene image or audio file written beside the UVTT file because that extension is a loose import. |
+| manual | A Toolkit UI feature with no file this slice can write. Scene and level names. Tokens (UVTT cannot carry selectable tokens; tokens exist in the UI). In-package tiles. Notes. Actors, journals, items (5e note fields, not a general item system), rollable tables, playlists, and macros (hotkeys; the macro is not executed). Loose image and audio files that this scene does not reference. |
 | unsupported | No documented equivalent, or the data cannot be used. Regions and their scripts. Active effects. Flags, unknown scene fields, and other retained fields such as `homebrewRule`. Hostile, missing, and external assets. Package scripts (not executed), styles, the YAML pack, and extra manifest keys. A wall with no geometry, or a light with no position and hex color. |
 
 Script bodies are not copied into the UVTT object or the report, and they are not executed.
 
 The same writer reads `scene-vault` from `fixtures/synthetic-leveldb-scene` and from `fixtures/synthetic-leveldb-scene.zip`. That scene lives in a LevelDB pack (`packs/scenes`), with walls, lights, and the other placeables stored as separate keys and put back on the scene before the UVTT fields are filled. Zip entries whose names leave the archive are not extracted and are not executed. The text fixture `scene-crypt` still works. `fixtures/leveldb-pointer` stays an unreadable trap directory.
 
+`--uvtt-out` also writes the scene's image and audio files beside the UVTT file when the extension is on the import list in [docs/research/ARKENFORGE.md](../research/ARKENFORGE.md): JPG, PNG, WEBP, GIF, MP4, M4V, WEBM, MP3, OGG, and WAV. For `scene-vault` those files are `crypt.png` and `drip.wav`. The map image stays inside the UVTT file as well. A type that is not on that list is skipped and graded unsupported. Paths that leave the archive are not written.
+
 ## Following step
 
-Beside the UVTT file, also copy out the scene's image and audio assets that Arkenforge's documented import list can take. Not this slice. Those types are already recorded in [docs/research/ARKENFORGE.md](../research/ARKENFORGE.md): JPG, PNG, WEBP, GIF, MP4, M4V, WEBM, MP3, OGG, and WAV. This step does not invent a note file, a token file, or a campaign format.
+Write `environment.ambient_light` when a synthetic scene stores a hex ambient color. Not this slice. The UVTT page documents that field. The scenes in this repository do not have one, so the file still omits it. This step does not invent a note file, a token file, or a campaign format.
