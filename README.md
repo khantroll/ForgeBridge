@@ -1,8 +1,8 @@
 # ForgeBridge
 
-> **Status: RESEARCH SPIKE — inventory only**
+> **Status: UVTT SCENE SLICE**
 >
-> The concept below is unchanged. The current work is an inventory of Foundry packages, not a converter. See [STATUS.md](STATUS.md). Conversion has not started.
+> The concept below is unchanged. The current work writes one synthetic Foundry scene as UVTT JSON and a loss report. A general converter has not started. See [STATUS.md](STATUS.md).
 
 ForgeBridge is a proposed migration/transpilation tool for converting **Foundry Virtual Tabletop** content into the closest practical **Arkenforge** equivalent.
 
@@ -196,14 +196,14 @@ Add explicit adapters for popular Foundry systems/modules only where demand just
 7. **Use adapters instead of contaminating the core with module-specific hacks.**
 8. **Prefer reviewable generated actions over opaque automation.**
 9. **Treat commercial content licensing as a first-class constraint.**
-10. **Do not start conversion until the next milestone in STATUS.md is explicitly opened.**
+10. **Follow the current milestone in STATUS.md.** Implement only the work that page names as the current state.
 
 ## When this project is resumed
 
 The first implementation session should **not start coding the converter immediately**. First verify current Foundry and Arkenforge formats/capabilities, obtain a few representative test packages, write the initial IR schema, and build an inventory-only CLI. That gives us a measurable corpus before deciding how ambitious the first conversion milestone should be.
 
-That session is the inventory spike recorded in [STATUS.md](STATUS.md). Conversion has not started.
+That session is the inventory spike recorded in [STATUS.md](STATUS.md). The current milestone is the UVTT scene slice, also recorded there.
 
 ---
 
-This README captures the ForgeBridge concept. The inventory spike is the current work.
+This README captures the ForgeBridge concept. The UVTT scene slice is the current work.
