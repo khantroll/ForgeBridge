@@ -4,6 +4,7 @@ This slice writes one synthetic scene as a UVTT file Arkenforge can import, plus
 
 ```bash
 PYTHONPATH=src python3 -m forgebridge fixtures/synthetic-module --uvtt-scene scene-crypt --uvtt-out scene-crypt.uvtt
+PYTHONPATH=src python3 -m forgebridge fixtures/synthetic-leveldb-scene --uvtt-scene scene-vault --uvtt-out scene-vault.uvtt
 PYTHONPATH=src python3 -m unittest discover -s tests
 ```
 
@@ -58,6 +59,8 @@ The grades use [docs/research/ARKENFORGE.md](../research/ARKENFORGE.md), retriev
 
 Script bodies are not copied into the UVTT object or the report, and they are not executed.
 
+The same writer reads `scene-vault` from `fixtures/synthetic-leveldb-scene`. That scene lives in a LevelDB pack (`packs/scenes`), with walls, lights, and the other placeables stored as separate keys and put back on the scene before the UVTT fields are filled. The text fixture `scene-crypt` still works. `fixtures/leveldb-pointer` stays an unreadable trap directory.
+
 ## Following step
 
-Apply this same importable UVTT file and graded loss report to one scene stored in a synthetic LevelDB pack. Not this slice. The inventory reads `fixtures/synthetic-leveldb`. This writer still reads `scene-crypt` from the NeDB text fixture. `fixtures/leveldb-pointer` stays an unreadable trap directory.
+Write this same UVTT file from a scene inside a zipped module whose scene pack is LevelDB. Not this slice. The writer still reads a module folder and refuses a zip archive.

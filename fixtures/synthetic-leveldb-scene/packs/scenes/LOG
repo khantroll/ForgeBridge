@@ -1,0 +1,6 @@
+2026/10/03-21:19:51.798958 139871816945792 Creating DB /workspace/fixtures/synthetic-leveldb-scene/packs/scenes since it was missing.
+2026/10/03-21:19:51.803656 139871816945792 Delete type=3 #1
+2026/10/03-21:19:51.803865 139871806383808 Level-0 table #5: started
+2026/10/03-21:19:51.805615 139871806383808 Level-0 table #5: 1294 bytes OK
+2026/10/03-21:19:51.809072 139871806383808 Delete type=0 #3
+2026/10/03-21:19:51.809403 139871806383808 Manual compaction at level-0 from '' @ 72057594037927935 : 1 .. '' @ 0 : 0; will stop at (end)

@@ -99,5 +99,5 @@ Use the already inventoried scene `scene-crypt` in `fixtures/synthetic-module`. 
 
 Two constraints on that milestone:
 
-- Real modules published for Foundry 11 and later store packs as LevelDB. When this milestone was named, the inventory only detected that directory, so the UVTT slice stayed on a text fixture. `fixtures/synthetic-leveldb` is now decoded into the inventory. The UVTT command still reads the text scene.
+- Real modules published for Foundry 11 and later store packs as LevelDB. When this milestone was named, the inventory only detected that directory, so the first UVTT slice stayed on a text fixture. `fixtures/synthetic-leveldb` is decoded into the inventory. `fixtures/synthetic-leveldb-scene` is a LevelDB scene pack that the UVTT command also reads. The text fixture still works.
 - Do not write a MyAssets folder, a hotkey file, an encyclopedia note, or a Foundry module. Those are either undocumented or the wrong direction. Do not parse macro source into behavior actions until a target control surface exists. Today the only confirmed structured target is UVTT, and the only confirmed automation artifact is an unspecified hotkey text export.

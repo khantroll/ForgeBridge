@@ -1,8 +1,8 @@
 # ForgeBridge
 
-> **Status: LEVELDB INVENTORY**
+> **Status: UVTT FROM LEVELDB**
 >
-> The concept below is unchanged. This branch decodes a synthetic LevelDB compendium into the inventory and keeps the importable UVTT file from main. A general converter has not started. See [STATUS.md](STATUS.md).
+> The concept below is unchanged. The current work writes one scene stored in a synthetic LevelDB pack as a UVTT file Arkenforge can import, plus a graded loss report. The text fixture still works. A general converter has not started. See [STATUS.md](STATUS.md).
 
 ForgeBridge is a proposed migration/transpilation tool for converting **Foundry Virtual Tabletop** content into the closest practical **Arkenforge** equivalent.
 
@@ -202,8 +202,9 @@ Add explicit adapters for popular Foundry systems/modules only where demand just
 
 The first implementation session should **not start coding the converter immediately**. First verify current Foundry and Arkenforge formats/capabilities, obtain a few representative test packages, write the initial IR schema, and build an inventory-only CLI. That gives us a measurable corpus before deciding how ambitious the first conversion milestone should be.
 
-That session is the inventory spike recorded in [STATUS.md](STATUS.md). The current milestone is the LevelDB inventory decode, kept together with the importable UVTT file, also recorded there.
+That session is the inventory spike recorded in [STATUS.md](STATUS.md). The current milestone writes a LevelDB-stored scene as an importable UVTT file, also recorded there.
 
 ---
 
-This README captures the ForgeBridge concept. The LevelDB inventory decode is the current work on this branch. The importable UVTT file stays.
+This README captures the ForgeBridge concept. A LevelDB-stored scene written as an importable UVTT file is the current work.
+
