@@ -116,23 +116,50 @@ class UvttSliceTests(unittest.TestCase):
         for marker in MARKERS:
             self.assertFalse(Path(marker).exists(), marker)
 
-    def test_loss_report_leads_with_dropped_and_names_the_inventory(self) -> None:
+    def test_loss_report_leads_with_unsupported_and_names_the_inventory(self) -> None:
         document = _slice()
         report = document["loss_report"]
-        self.assertTrue(report["headline"].startswith("Dropped "))
-        self.assertGreater(len(report["dropped"]), len(report["carried"]))
+        self.assertTrue(report["headline"].startswith("Unsupported "))
+        counts = report["counts"]
+        self.assertEqual(counts["native"], len(report["native"]))
+        self.assertEqual(counts["approximate"], len(report["approximate"]))
+        self.assertEqual(counts["manual"], len(report["manual"]))
+        self.assertEqual(counts["unsupported"], len(report["unsupported"]))
+        self.assertGreater(counts["unsupported"] + counts["manual"], counts["native"])
+        self.assertGreater(counts["manual"], 0)
+        self.assertGreater(counts["unsupported"], 0)
         self.assertEqual(report["read_on"], "2026-10-03")
         self.assertEqual(report["page_modified"], "2026-08-22")
         self.assertEqual(report["source"], "https://arkenforge.com/universal-vtt-files/")
-        dropped_text = "\n".join(item["summary"] for item in report["dropped"])
+        prefixes = {
+            "native": "Native:",
+            "approximate": "Approximate:",
+            "manual": "Manual:",
+            "unsupported": "Unsupported:",
+        }
+        for grade, prefix in prefixes.items():
+            self.assertTrue(report[grade], grade)
+            self.assertTrue(all(item["grade"] == grade for item in report[grade]))
+            self.assertTrue(all(item["summary"].startswith(prefix) for item in report[grade]))
+        loss_text = "\n".join(
+            item["summary"]
+            for grade in ("approximate", "manual", "unsupported")
+            for item in report[grade]
+        )
         for phrase in PHRASES:
-            self.assertIn(phrase, dropped_text, phrase)
-        self.assertTrue(all(item["summary"].startswith("Dropped:") for item in report["dropped"]))
-        self.assertTrue(all(item["summary"].startswith("Gap:") for item in report["gaps"]))
-        gap_text = "\n".join(item["summary"] for item in report["gaps"])
-        self.assertIn("does not publish", gap_text)
-        self.assertIn("0.0", gap_text)
-        self.assertIn("bounds", gap_text)
+            self.assertIn(phrase, loss_text, phrase)
+        approximate_text = "\n".join(item["summary"] for item in report["approximate"])
+        self.assertIn("does not publish", approximate_text)
+        self.assertIn("0.0", approximate_text)
+        self.assertIn("bounds", approximate_text)
+        native_codes = {item["code"] for item in report["native"]}
+        self.assertIn("image", native_codes)
+        self.assertIn("portal", native_codes)
+        self.assertIn("light", native_codes)
+        self.assertIn("resolution", native_codes)
+        manual_types = {item["document_type"] for item in report["manual"]}
+        for dtype in ("Actor", "Item", "JournalEntry", "RollTable", "Playlist", "Macro", "Token", "Note"):
+            self.assertIn(dtype, manual_types, dtype)
         blob = json.dumps(document)
         self.assertNotIn("writeFileSync", blob)
         self.assertNotIn("/tmp/forgebridge", blob)
@@ -209,10 +236,10 @@ class UvttSliceTests(unittest.TestCase):
         document = json.loads(completed.stdout)
         self.assertEqual(validate(document["uvtt"], load_schema(repo_schema("uvtt-core.schema.json"))), [])
         self.assertEqual(validate(document["loss_report"], load_schema(repo_schema("uvtt-loss-report.schema.json"))), [])
-        self.assertTrue(document["loss_report"]["headline"].startswith("Dropped "))
+        self.assertTrue(document["loss_report"]["headline"].startswith("Unsupported "))
         self.assertGreater(
-            len(document["loss_report"]["dropped"]),
-            len(document["loss_report"]["carried"]),
+            document["loss_report"]["counts"]["unsupported"] + document["loss_report"]["counts"]["manual"],
+            document["loss_report"]["counts"]["native"],
         )
         missing = subprocess.run(
             [sys.executable, "-m", "forgebridge", str(FIXTURE), "--uvtt-scene", "missing-scene"],
@@ -223,6 +250,43 @@ class UvttSliceTests(unittest.TestCase):
         )
         self.assertEqual(missing.returncode, 1)
         self.assertEqual(missing.stdout, "")
+        for marker in MARKERS:
+            self.assertFalse(Path(marker).exists(), marker)
+
+    def test_uvtt_out_writes_only_the_importable_object(self) -> None:
+        env = os.environ.copy()
+        env["PYTHONPATH"] = str(SRC)
+        raw = (FIXTURE / "assets" / "crypt.png").read_bytes()
+        with tempfile.TemporaryDirectory() as tmp:
+            dest = Path(tmp) / "out" / "scene-crypt.uvtt"
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    "-m",
+                    "forgebridge",
+                    str(FIXTURE),
+                    "--uvtt-scene",
+                    "scene-crypt",
+                    "--uvtt-out",
+                    str(dest),
+                ],
+                check=False,
+                capture_output=True,
+                text=True,
+                env=env,
+            )
+            self.assertEqual(completed.returncode, 0, completed.stderr)
+            envelope = json.loads(completed.stdout)
+            self.assertIn("loss_report", envelope)
+            self.assertTrue(envelope["loss_report"]["headline"].startswith("Unsupported "))
+            written = json.loads(dest.read_text(encoding="utf-8"))
+            self.assertEqual(written, envelope["uvtt"])
+            self.assertEqual(validate(written, load_schema(repo_schema("uvtt-core.schema.json"))), [])
+            self.assertNotIn("loss_report", written)
+            self.assertNotIn("software", written)
+            self.assertNotIn("creator", written)
+            self.assertEqual(base64.b64decode(written["image"]), raw)
+        self.assertEqual(list(REPO.glob("**/*.uvtt")), [])
         for marker in MARKERS:
             self.assertFalse(Path(marker).exists(), marker)
 
