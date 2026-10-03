@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forgebridge.local/schema/uvtt-loss-report.schema.json",
+  "title": "UVTT loss report",
+  "description": "Fields from a synthetic inventory that the UVTT core list cannot carry, plus gaps in that list.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "headline",
+    "scene_id",
+    "scene_name",
+    "source",
+    "read_on",
+    "page_modified",
+    "carried",
+    "dropped",
+    "gaps"
+  ],
+  "properties": {
+    "headline": {"type": "string", "minLength": 1},
+    "scene_id": {"type": "string", "minLength": 1},
+    "scene_name": {"type": ["string", "null"]},
+    "source": {"const": "https://arkenforge.com/universal-vtt-files/"},
+    "read_on": {"const": "2026-10-03"},
+    "page_modified": {"const": "2026-08-22"},
+    "carried": {"type": "array", "items": {"$ref": "#/$defs/line"}},
+    "dropped": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/line"}},
+    "gaps": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/line"}}
+  },
+  "$defs": {
+    "line": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["severity", "code", "summary", "document_type", "id", "name", "path"],
+      "properties": {
+        "severity": {"enum": ["carried", "dropped", "gap"]},
+        "code": {"type": "string", "minLength": 1},
+        "summary": {"type": "string", "minLength": 1},
+        "document_type": {"type": ["string", "null"]},
+        "id": {"type": ["string", "null"]},
+        "name": {"type": ["string", "null"]},
+        "path": {"type": ["string", "null"]}
+      }
+    }
+  }
+}

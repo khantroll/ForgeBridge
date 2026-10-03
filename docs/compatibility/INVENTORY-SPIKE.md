@@ -89,7 +89,7 @@ The map-builder page (`dateModified` 2024-02-16) omits WEBP and audio that the l
 
 ## Recommended next milestone
 
-Do not start it in this pull request.
+That milestone is now the current work, recorded in [UVTT-SLICE.md](UVTT-SLICE.md) and [STATUS.md](STATUS.md). The note below is the scope that was named at the end of the inventory spike.
 
 **Next milestone: one synthetic scene to a UVTT JSON document, plus a loss report.**
 

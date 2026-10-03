@@ -15,13 +15,17 @@ class InventoryFatal(Exception):
     """The package could not be inventoried."""
 
 
-def default_schema_path() -> Path:
+def repo_schema(filename: str) -> Path:
     here = Path(__file__).resolve()
     for parent in here.parents:
-        candidate = parent / "schema" / "inventory-0.1.schema.json"
+        candidate = parent / "schema" / filename
         if candidate.is_file():
             return candidate
-    raise InventoryFatal("inventory schema not found")
+    raise InventoryFatal(f"schema not found: {filename}")
+
+
+def default_schema_path() -> Path:
+    return repo_schema("inventory-0.1.schema.json")
 
 
 def load_schema(path: Path | None = None) -> dict:
@@ -29,7 +33,7 @@ def load_schema(path: Path | None = None) -> dict:
     try:
         return json.loads(schema_path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
-        raise InventoryFatal(f"inventory schema unreadable: {exc}") from exc
+        raise InventoryFatal(f"schema unreadable: {exc}") from exc
 
 
 def validate(instance: object, schema: dict) -> list[str]:
@@ -94,6 +98,8 @@ def _check(instance: object, schema: dict, path: str, errors: list[str], defs: d
     if isinstance(instance, list):
         if "minItems" in schema and len(instance) < schema["minItems"]:
             errors.append(f"{path}: fewer than minItems")
+        if "maxItems" in schema and len(instance) > schema["maxItems"]:
+            errors.append(f"{path}: more than maxItems")
         if "items" in schema:
             for index, item in enumerate(instance):
                 _check(item, schema["items"], f"{path}/{index}", errors, defs)

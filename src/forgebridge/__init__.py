@@ -1,7 +1,8 @@
-"""ForgeBridge inventory spike.
+"""ForgeBridge inventory and one UVTT scene slice.
 
 This package reads Foundry VTT package files and reports what is in them.
-It does not convert content and it does not run imported code.
+It can also write one scene as UVTT JSON plus a loss report.
+It does not run imported code.
 """
 
 __version__ = "0.1.0"

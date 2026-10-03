@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forgebridge.local/schema/uvtt-core.schema.json",
+  "title": "UVTT core fields",
+  "description": "Core tags from Arkenforge's Universal VTT page (https://arkenforge.com/universal-vtt-files/), read 2026-10-03, page dateModified 2026-08-22. software and creator are omitted. Optional light range, intensity, and shadows are documented on that page and are not required.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "resolution",
+    "line_of_sight",
+    "objects_line_of_sight",
+    "portals",
+    "environment",
+    "image"
+  ],
+  "properties": {
+    "format": {"type": "number"},
+    "resolution": {"$ref": "#/$defs/resolution"},
+    "line_of_sight": {"$ref": "#/$defs/polylines"},
+    "objects_line_of_sight": {"$ref": "#/$defs/polylines"},
+    "portals": {"type": "array", "items": {"$ref": "#/$defs/portal"}},
+    "environment": {"$ref": "#/$defs/environment"},
+    "image": {"type": "string", "minLength": 1}
+  },
+  "$defs": {
+    "xy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["x", "y"],
+      "properties": {
+        "x": {"type": "number"},
+        "y": {"type": "number"}
+      }
+    },
+    "point": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": {"type": "number"}
+    },
+    "polylines": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "minItems": 2,
+        "items": {"$ref": "#/$defs/point"}
+      }
+    },
+    "resolution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["map_origin", "map_size", "pixels_per_grid"],
+      "properties": {
+        "map_origin": {"$ref": "#/$defs/xy"},
+        "map_size": {"$ref": "#/$defs/xy"},
+        "pixels_per_grid": {"type": "integer", "minimum": 1}
+      }
+    },
+    "portal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["position", "bounds", "rotation", "closed", "freestanding"],
+      "properties": {
+        "position": {"$ref": "#/$defs/xy"},
+        "bounds": {
+          "type": "array",
+          "minItems": 2,
+          "items": {"$ref": "#/$defs/point"}
+        },
+        "rotation": {"type": "number"},
+        "closed": {"type": "boolean"},
+        "freestanding": {"type": "boolean"}
+      }
+    },
+    "environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["baked_lighting", "lights"],
+      "properties": {
+        "baked_lighting": {"type": "boolean"},
+        "ambient_light": {"type": "string", "pattern": "^#[0-9A-Fa-f]{3}([0-9A-Fa-f]{3})?$"},
+        "lights": {"type": "array", "items": {"$ref": "#/$defs/light"}}
+      }
+    },
+    "light": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["position", "color"],
+      "properties": {
+        "position": {"$ref": "#/$defs/xy"},
+        "range": {"type": "number"},
+        "intensity": {"type": "number"},
+        "color": {"type": "string", "pattern": "^#[0-9A-Fa-f]{3}([0-9A-Fa-f]{3})?$"},
+        "shadows": {"type": "boolean"}
+      }
+    }
+  }
+}
