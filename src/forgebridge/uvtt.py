@@ -1,6 +1,8 @@
 """Write one Foundry scene as UVTT JSON, plus a graded loss report.
 
 The scene may be a NeDB or JSON text pack, or a synthetic LevelDB pack.
+The package may be a module folder or a zip of that folder. Zip entries whose
+names leave the archive are not extracted and are not executed.
 LevelDB values are parsed as JSON. They are not executed.
 
 The UVTT object uses only the core fields on
@@ -33,9 +35,19 @@ from __future__ import annotations
 import base64
 import json
 import math
+import tempfile
+import zipfile
 from pathlib import Path
 
-from forgebridge.inventory import MAX_ENTRIES, MAX_ENTRY_BYTES, _package_subdir, _safe_ref, inventory_path
+from forgebridge.inventory import (
+    MAX_ENTRIES,
+    MAX_ENTRY_BYTES,
+    MAX_TOTAL_BYTES,
+    _package_subdir,
+    _safe_ref,
+    _safe_zip_name,
+    inventory_path,
+)
 from forgebridge.leveldb import LevelDBUnavailable, read_leveldb_directory
 from forgebridge.validate import InventoryFatal
 
@@ -142,13 +154,21 @@ _MANUAL_DOCUMENT = {
 
 
 def build_uvtt_slice(package: Path, scene_id: str) -> dict:
-    """Return {"uvtt", "loss_report"} for one scene in a module folder."""
-    if not package.is_dir():
-        raise InventoryFatal(
-            "UVTT slice reads a module folder. Zip archives are not read by this slice."
-        )
+    """Return {"uvtt", "loss_report"} for one scene in a module folder or zip."""
     if package.is_symlink():
         raise InventoryFatal("UVTT slice does not follow a symlinked package root.")
+    if package.is_file():
+        if package.suffix.lower() != ".zip":
+            raise InventoryFatal("UVTT slice reads a module folder or a .zip archive.")
+        with tempfile.TemporaryDirectory() as tmp:
+            root, rejected = _safe_extract_zip(package, Path(tmp))
+            return _slice_directory(root, scene_id, rejected)
+    if not package.is_dir():
+        raise InventoryFatal("UVTT slice reads a module folder or a .zip archive.")
+    return _slice_directory(package, scene_id, [])
+
+
+def _slice_directory(package: Path, scene_id: str, rejected_zip_entries: list[str]) -> dict:
     inventory = inventory_path(package)
     scene_row = _scene_row(inventory, scene_id)
     payload = _load_scene_payload(package, scene_row, scene_id)
@@ -158,8 +178,77 @@ def build_uvtt_slice(package: Path, scene_id: str) -> dict:
     lines.extend(_asset_lines(inventory, _image_ref(lines)))
     lines.extend(_pack_lines(inventory))
     lines.extend(_package_file_lines(inventory))
+    lines.extend(_rejected_zip_lines(rejected_zip_entries))
     report = _report(scene_id, payload.get("name"), lines)
     return {"uvtt": uvtt, "loss_report": report}
+
+
+def _safe_extract_zip(archive: Path, dest: Path) -> tuple[Path, list[str]]:
+    """Write safe zip members under dest. Names that leave the archive are not written."""
+    rejected: list[str] = []
+    names: list[str] = []
+    root = dest.resolve()
+    try:
+        zf = zipfile.ZipFile(archive)
+    except zipfile.BadZipFile as exc:
+        raise InventoryFatal(f"not a zip archive: {archive}") from exc
+    total = 0
+    with zf:
+        infos = [info for info in zf.infolist() if not info.is_dir() and not info.filename.endswith("/")]
+        if len(infos) > MAX_ENTRIES:
+            raise InventoryFatal("zip archive has too many entries and was not extracted")
+        for info in infos:
+            rel, _reason = _safe_zip_name(info.filename)
+            if rel is None:
+                rejected.append(info.filename)
+                continue
+            target = root / rel
+            try:
+                target.resolve().relative_to(root)
+            except (OSError, ValueError):
+                rejected.append(info.filename)
+                continue
+            if info.file_size > MAX_ENTRY_BYTES or total >= MAX_TOTAL_BYTES:
+                raise InventoryFatal(f"zip entry exceeds the read budget: {rel}")
+            with zf.open(info, "r") as handle:
+                data = handle.read(MAX_ENTRY_BYTES + 1)
+            if len(data) > MAX_ENTRY_BYTES or total + len(data) > MAX_TOTAL_BYTES:
+                raise InventoryFatal(f"zip entry exceeds the read budget: {rel}")
+            total += len(data)
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(data)
+            names.append(rel)
+    return _zip_module_root(root, names), rejected
+
+
+def _zip_module_root(dest: Path, names: list[str]) -> Path:
+    for manifest in ("module.json", "world.json", "system.json"):
+        if (dest / manifest).is_file():
+            return dest
+    tops = {name.split("/", 1)[0] for name in names if "/" in name}
+    if len(tops) == 1:
+        only = dest / next(iter(tops))
+        for manifest in ("module.json", "world.json", "system.json"):
+            if (only / manifest).is_file():
+                return only
+    raise InventoryFatal("zip archive has no module.json, world.json, or system.json")
+
+
+def _rejected_zip_lines(names: list[str]) -> list[dict]:
+    rows = []
+    for name in names:
+        rows.append(
+            _line(
+                UNSUPPORTED,
+                "rejected-zip-entry",
+                (
+                    f'zip entry "{name}" leaves the archive or is not a safe relative path. '
+                    "It was not extracted and was not executed."
+                ),
+                path=name,
+            )
+        )
+    return rows
 
 
 def _scene_row(inventory: dict, scene_id: str) -> dict:
