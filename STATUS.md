@@ -1,7 +1,7 @@
 # Project Status
 
-**Lifecycle:** UVTT PLUS LOOSE IMAGE AND AUDIO  
-**Implementation started:** Inventory CLI, an importable UVTT file, and the scene's importable image and audio files beside it  
+**Lifecycle:** UVTT DYNAMIC LIGHTING SLICE  
+**Implementation started:** Inventory CLI, importable UVTT, loose scene assets, ambient color, and deterministic AmbientLight range conversion  
 **General converter started:** No
 
 The zipped LevelDB scene is the previous state. This slice is the current state. One command writes scene `scene-vault` from `fixtures/synthetic-leveldb-scene.zip` as a UVTT file and copies that scene's PNG and WAV beside it. The unpacked LevelDB scene and the text scene `scene-crypt` still produce the same UVTT object. It is not a general Foundry-to-Arkenforge converter.
@@ -35,12 +35,21 @@ Public docs were re-read on 2026-10-03 and written up with citations:
 
 The inventory IR is `schema/inventory-0.1.schema.json`. `fixtures/synthetic-leveldb` is still decoded into the inventory. `fixtures/leveldb-pointer` still fails closed. Unknown fields are retained. Imported JavaScript, macros, HTML, and YAML are not executed.
 
+## Dynamic lighting slice
+
+The current branch translates the deterministic UVTT lighting subset:
+
+- scene ambient hex color -> `environment.ambient_light` when the source stores a hex value directly;
+- AmbientLight x/y -> UVTT position in squares;
+- AmbientLight color -> UVTT color;
+- outer Foundry dim/bright radius -> UVTT range in squares using `grid.distance`;
+- separate Foundry bright/dim radii are explicitly graded approximate because UVTT has one range;
+- negative Foundry radii (darkness/blackness sources) are reported unsupported and do not receive a fabricated positive range;
+- Foundry animation, attenuation, coloration, contrast, luminosity, saturation, and numeric shadow controls remain in the loss report rather than being guessed into UVTT intensity/shadows.
+
+Walls and portals remain the collision/line-of-sight geometry consumed by the target lighting engine.
+
 ## Next step
 
-**Write `environment.ambient_light` when a synthetic scene stores a hex ambient color. Not started.**
+**Validate this lighting slice against a real, legally usable Foundry scene imported into Arkenforge.** Synthetic tests establish the transformation rules; the next useful evidence is whether Arkenforge renders the emitted ambient color, ranges, walls, and portals as expected. Do not add token vision until this scene-lighting validation is complete.
 
-The UVTT page documents that field. The scenes in this repository do not have one, so the file still omits it. That step stays inside the public UVTT field list. It does not invent a note file, a token file, or a campaign format.
-
-## Still out of scope
-
-No framework beyond the standard library and the pinned LevelDB binding. No CI, release workflow, UI, MCP server, LLM provider, or module/system-specific adapters. No invented Arkenforge API. No general converter.
