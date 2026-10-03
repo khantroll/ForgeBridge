@@ -11,7 +11,7 @@ read 2026-10-03. That page's dateModified is 2026-08-22.
 Core fields used: format, resolution.map_origin, resolution.map_size,
 resolution.pixels_per_grid, line_of_sight, objects_line_of_sight, portals
 (position, bounds, rotation, closed, freestanding), environment.baked_lighting,
-environment.lights (position, color), and image.
+environment.ambient_light, environment.lights (position, range, color), and image.
 software and creator are Arkenforge extras on that page, so they are omitted.
 The page does not publish the format decimal and does not show a bounds example.
 
@@ -25,9 +25,10 @@ invented.
 Foundry constants used for this slice, Version 14 API, retrieved 2026-10-03:
 GRID_TYPES.SQUARE is 1. WALL_DOOR_TYPES values that become portals are 1 and 2.
 WALL_DOOR_STATES: CLOSED 0, OPEN 1, LOCKED 2.
-LightData.bright, LightData.dim, and LightData.shadows are numbers. The light
-page does not state a unit for bright or dim. UVTT shadows is a bool, so those
-three are left out of the file.
+Foundry light radii are stored in scene distance units; grid.distance is the number of
+those units per square. UVTT range is in squares, so the outer Foundry radius is
+converted by grid.distance. Separate bright/dim radii and richer rendering properties
+are reported as approximations rather than silently flattened.
 """
 
 from __future__ import annotations
@@ -105,6 +106,9 @@ SCENE_FIELDS_EXPLAINED = {
     "notes",
     "regions",
     "flags",
+    "environment",
+    "ambient_light",
+    "ambientLight",
 }
 
 RETAINED_SKIP = {
