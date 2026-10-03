@@ -13,6 +13,7 @@ import zipfile
 from pathlib import Path
 
 from forgebridge import IR_VERSION, __version__
+from forgebridge.leveldb import LevelDBUnavailable, read_leveldb_bytes, read_leveldb_directory
 from forgebridge.validate import InventoryFatal
 
 MAX_ENTRY_BYTES = 8_000_000
@@ -192,6 +193,7 @@ def inventory_path(path: Path) -> dict:
         input_form=input_form,
         source_name=source_name,
         archive_name=archive_name,
+        package_root=path.resolve() if input_form == "directory" else None,
     )
 
 
@@ -309,10 +311,53 @@ def _read_zip(path: Path) -> tuple[Store, str]:
                     store.bytes_read += len(data)
             kept[rel] = data
             sizes[rel] = info.file_size
-        kept, sizes, source_name = _strip_single_root(kept, sizes, source_name)
+        kept, sizes, source_name, prefix = _strip_single_root(kept, sizes, source_name)
+        _fill_leveldb_bytes(zf, infos, kept, sizes, store, prefix)
         for rel, data in kept.items():
             store.add(FileRec(rel, sizes[rel], data))
     return store, source_name
+
+
+def _fill_leveldb_bytes(
+    zf: zipfile.ZipFile,
+    infos: list[zipfile.ZipInfo],
+    kept: dict[str, bytes | None],
+    sizes: dict[str, int],
+    store: Store,
+    prefix: str,
+) -> None:
+    grouped: dict[str, list[str]] = {}
+    for name in kept:
+        parent = name.rsplit("/", 1)[0] if "/" in name else ""
+        grouped.setdefault(parent, []).append(Path(name).name)
+    leveldb_parents = {parent for parent, names in grouped.items() if _leveldb_names(set(names))}
+    if not leveldb_parents:
+        return
+    for info in infos:
+        if info.is_dir() or info.filename.endswith("/"):
+            continue
+        rel, reason = _safe_zip_name(info.filename)
+        if rel is None or reason:
+            continue
+        if prefix:
+            prefix_slash = prefix + "/"
+            if not rel.startswith(prefix_slash):
+                continue
+            rel = rel[len(prefix_slash):]
+        parent = rel.rsplit("/", 1)[0] if "/" in rel else ""
+        if parent not in leveldb_parents or kept.get(rel) is not None:
+            continue
+        if info.file_size > MAX_ENTRY_BYTES or store.bytes_read >= MAX_TOTAL_BYTES:
+            store.warn("warning", "entry-too-large", "Skipped a LevelDB zip entry that exceeds the read budget.", rel)
+            continue
+        with zf.open(info, "r") as handle:
+            data = handle.read(MAX_ENTRY_BYTES + 1)
+        if len(data) > MAX_ENTRY_BYTES or store.bytes_read + len(data) > MAX_TOTAL_BYTES:
+            store.warn("warning", "entry-too-large", "Skipped a LevelDB zip entry that exceeds the read budget.", rel)
+            continue
+        store.bytes_read += len(data)
+        kept[rel] = data
+        sizes[rel] = info.file_size
 
 
 def _safe_zip_name(name: str) -> tuple[str | None, str | None]:
@@ -338,22 +383,22 @@ def _strip_single_root(
     files: dict[str, bytes | None],
     sizes: dict[str, int],
     source_name: str,
-) -> tuple[dict[str, bytes | None], dict[str, int], str]:
+) -> tuple[dict[str, bytes | None], dict[str, int], str, str]:
     if any(name in files for name in MANIFEST_NAMES):
-        return files, sizes, source_name
+        return files, sizes, source_name, ""
     manifests = [
         name for name in files
         if name.count("/") == 1 and Path(name).name in MANIFEST_NAMES
     ]
     if len(manifests) != 1:
-        return files, sizes, source_name
+        return files, sizes, source_name, ""
     prefix = manifests[0].split("/")[0]
     prefix_slash = prefix + "/"
     if not all(name.startswith(prefix_slash) for name in files):
-        return files, sizes, source_name
+        return files, sizes, source_name, ""
     stripped = {name[len(prefix_slash):]: data for name, data in files.items()}
     stripped_sizes = {name[len(prefix_slash):]: sizes[name] for name in files}
-    return stripped, stripped_sizes, prefix
+    return stripped, stripped_sizes, prefix, prefix
 
 
 def _load_manifest(store: Store) -> tuple[str, dict]:
@@ -381,6 +426,7 @@ def _build(
     input_form: str,
     source_name: str,
     archive_name: str | None,
+    package_root: Path | None,
 ) -> dict:
     file_kind = {"module.json": "module", "world.json": "world", "system.json": "system"}[manifest_rel]
     declared = manifest.get("type")
@@ -450,6 +496,7 @@ def _build(
             behaviors=behaviors,
             asset_hits=asset_hits,
             pinned_noted=pinned_noted,
+            package_root=package_root,
         )
         packs.append(record)
         documents.extend(new_docs)
@@ -466,6 +513,7 @@ def _build(
             asset_hits=asset_hits,
             pinned_noted=pinned_noted,
             seen_paths=seen_paths,
+            package_root=package_root,
         )
 
     assets = _assemble_assets(store, asset_hits)
@@ -554,6 +602,7 @@ def _read_pack(
     behaviors: list[dict],
     asset_hits: list[dict],
     pinned_noted: set[str],
+    package_root: Path | None,
     name_override: str | None = None,
     path_override: str | None = None,
     type_override: str | None = None,
@@ -571,15 +620,16 @@ def _read_pack(
         store.warn("warning", "pack-missing", "Pack has no path.", name or "")
         return _pack_record(name, label, document_type, system, None, "missing", False, 0), []
 
-    storage, decoded, payloads = _open_pack_storage(store, safe_path)
+    storage, decoded, payloads = _open_pack_storage(store, safe_path, package_root=package_root)
     documents: list[dict] = []
     if decoded:
-        for index, payload in enumerate(payloads):
+        for index, item in enumerate(payloads):
+            type_from_key, payload = item
             documents.append(
                 _document_from_payload(
                     store,
                     payload,
-                    document_type=document_type or "Unknown",
+                    document_type=type_from_key or document_type or "Unknown",
                     pack_name=name,
                     storage=storage,
                     source_path=safe_path,
@@ -608,23 +658,22 @@ def _pack_record(name, label, document_type, system, path, storage, decoded, cou
     }
 
 
-def _open_pack_storage(store: Store, path: str) -> tuple[str, bool, list[dict]]:
+def _open_pack_storage(
+    store: Store,
+    path: str,
+    *,
+    package_root: Path | None,
+) -> tuple[str, bool, list[tuple[str | None, dict]]]:
     suffix = Path(path).suffix.lower()
     rec = store.get(path)
     if _is_dir(store, path):
         if _is_leveldb(store, path):
-            store.warn(
-                "warning",
-                "leveldb-not-decoded",
-                "LevelDB pack directory was recognized and not decoded. Binary contents were not executed.",
-                path,
-            )
-            return "leveldb", False, []
+            return _open_leveldb(store, path, package_root=package_root)
         children = _child_files(store, path)
         if children and all(name.endswith(".json") for name in children):
-            payloads: list[dict] = []
+            payloads: list[tuple[str | None, dict]] = []
             for child in children:
-                payloads.extend(_payloads_from_json(store, child))
+                payloads.extend((None, item) for item in _payloads_from_json(store, child))
             return "json", True, payloads
         store.warn("warning", "pack-not-text", "Pack directory is not LevelDB and not a directory of JSON documents.", path)
         return "missing", False, []
@@ -640,11 +689,73 @@ def _open_pack_storage(store: Store, path: str) -> tuple[str, bool, list[dict]]:
         )
         return "yaml", False, []
     if suffix == ".json":
-        return "json", True, _payloads_from_json(store, path)
+        return "json", True, [(None, item) for item in _payloads_from_json(store, path)]
     if rec.data is None:
         store.warn("warning", "pack-not-text", "Pack file was not loaded as text.", path)
         return "missing", False, []
-    return "nedb", True, _payloads_from_jsonl(store, path, rec.data)
+    return "nedb", True, [(None, item) for item in _payloads_from_jsonl(store, path, rec.data)]
+
+
+def _open_leveldb(
+    store: Store,
+    path: str,
+    *,
+    package_root: Path | None,
+) -> tuple[str, bool, list[tuple[str | None, dict]]]:
+    try:
+        if package_root is not None:
+            src = _package_subdir(package_root, path)
+            if src is None:
+                store.warn(
+                    "warning",
+                    "leveldb-not-decoded",
+                    "LevelDB directory was not opened. The path leaves the package or is not a real directory.",
+                    path,
+                )
+                return "leveldb", False, []
+            result = read_leveldb_directory(src, max_entries=MAX_ENTRIES, max_value_bytes=MAX_ENTRY_BYTES)
+        else:
+            files: dict[str, bytes] = {}
+            prefix = path.rstrip("/") + "/"
+            for name, rec in store.files.items():
+                if not name.startswith(prefix):
+                    continue
+                rest = name[len(prefix):]
+                if not rest or "/" in rest or rec.data is None:
+                    continue
+                files[Path(rest).name] = rec.data
+            result = read_leveldb_bytes(files, max_entries=MAX_ENTRIES, max_value_bytes=MAX_ENTRY_BYTES)
+    except LevelDBUnavailable as exc:
+        raise InventoryFatal(str(exc)) from exc
+    for severity, code, message in result.diagnostics:
+        store.warn(severity, code, message, path)
+    if not result.opened:
+        return "leveldb", False, []
+    return "leveldb", True, result.documents
+
+
+def _package_subdir(root: Path, rel: str) -> Path | None:
+    safe, problem = _safe_ref(rel)
+    if problem or not safe:
+        return None
+    candidate = root / safe
+    current = candidate
+    while True:
+        if current.is_symlink():
+            return None
+        if current.resolve() == root.resolve() or current == root:
+            break
+        parent = current.parent
+        if parent == current:
+            return None
+        current = parent
+    try:
+        candidate.resolve().relative_to(root.resolve())
+    except (OSError, ValueError):
+        return None
+    if not candidate.is_dir():
+        return None
+    return candidate
 
 
 def _is_dir(store: Store, path: str) -> bool:
@@ -654,6 +765,10 @@ def _is_dir(store: Store, path: str) -> bool:
 
 def _is_leveldb(store: Store, path: str) -> bool:
     names = {Path(child).name for child in _child_files(store, path)}
+    return _leveldb_names(names)
+
+
+def _leveldb_names(names: set[str]) -> bool:
     if "CURRENT" in names:
         return True
     if any(name.startswith("MANIFEST") for name in names):
@@ -1116,6 +1231,7 @@ def _read_world_data(
     asset_hits: list[dict],
     pinned_noted: set[str],
     seen_paths: set[str],
+    package_root: Path | None,
 ) -> None:
     names = set()
     for name in store.files:
@@ -1141,6 +1257,7 @@ def _read_world_data(
             behaviors=behaviors,
             asset_hits=asset_hits,
             pinned_noted=pinned_noted,
+            package_root=package_root,
         )
         packs.append(record)
         documents.extend(new_docs)

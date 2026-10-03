@@ -60,4 +60,4 @@ Script bodies are not copied into the UVTT object or the report, and they are no
 
 ## Following step
 
-Apply this same importable UVTT file and graded loss report to one scene stored in a synthetic LevelDB pack. Not this slice. On this branch, LevelDB directories stay detected and undecoded. `fixtures/leveldb-pointer` stays undecoded.
+Apply this same importable UVTT file and graded loss report to one scene stored in a synthetic LevelDB pack. Not this slice. The inventory reads `fixtures/synthetic-leveldb`. This writer still reads `scene-crypt` from the NeDB text fixture. `fixtures/leveldb-pointer` stays an unreadable trap directory.

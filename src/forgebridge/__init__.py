@@ -1,4 +1,4 @@
-"""ForgeBridge inventory and one UVTT scene slice.
+"""ForgeBridge inventory, one UVTT scene slice, and LevelDB compendium reading.
 
 This package reads Foundry VTT package files and reports what is in them.
 It can also write one scene as UVTT JSON plus a loss report.

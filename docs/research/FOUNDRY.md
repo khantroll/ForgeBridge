@@ -48,17 +48,18 @@ Two storage formats are documented:
 - Through Version 10, a pack was one NeDB file, usually `packs/<name>.db`: plain text, one JSON document per line.
 - Since Version 11, a pack is a LevelDB directory. The manifest path drops the `.db` suffix (`packs/monsters` instead of `packs/monsters.db`). The directory contains binary files. Foundry migrates a leftover `.db` file into that directory on first load. The packaging guide still shows a `.db` path in its example and, later, tells V11+ authors to delete the database folder. Both statements are in the same guide.
 
-The Version 11 article also says Foundry ships a command-line tool that unpacks LevelDB to JSON or YAML and packs it back. The [foundryvtt-cli](https://github.com/foundryvtt/foundryvtt-cli) repository was opened on 2026-10-03, but the fetched page did not include the readme, so this spike does not claim that tool's exact output layout.
+The Version 11 article also says Foundry ships a command-line tool that unpacks LevelDB to JSON or YAML and packs it back. The [foundryvtt-cli](https://github.com/foundryvtt/foundryvtt-cli) README and `lib/package.mjs` were retrieved on 2026-10-03 (package version 0.0.6). The README describes `fvtt package unpack` and `fvtt package pack`. The pack source shows the classic-level options and the `!<collection>!<id>` keys quoted above. This inventory reads that LevelDB shape. It still does not load the YAML files the same tool can emit.
 
 What the inventory reads:
 
 - NeDB `.db` files as UTF-8 JSON lines.
 - A `.json` pack file that is one object or an array of objects.
 - A directory of `.json` files, one object or array per file.
+- A LevelDB directory, using the key layout in [foundryvtt-cli 0.0.6 `lib/package.mjs`](https://github.com/foundryvtt/foundryvtt-cli/blob/main/lib/package.mjs), retrieved 2026-10-03. That file opens the directory with classic-level, `keyEncoding: "utf8"` and `valueEncoding: "json"`. Primary keys are `!<collection>!<id>`. Embedded documents are separate keys, `!<collection>.<field>!<parentId>.<embeddedId>`, and the parent value stores the ids. This inventory puts those objects back on the parent. A JSON object under any other text key is still inventoried, and the key is recorded as a diagnostic. Values are parsed with the JSON decoder only.
 
 What it refuses to decode:
 
-- A directory that looks like LevelDB (`CURRENT`, `MANIFEST*`, `.ldb`, or `.sst`). The fixture `fixtures/leveldb-pointer` is only that shape. It is not a real LevelDB database.
+- `fixtures/leveldb-pointer`, which only looks like LevelDB (`CURRENT` plus a `.ldb` file that is not a database). Opening it fails. The bytes are not read as text and are not executed.
 - `.yaml` / `.yml`. The Version 11 article says the official tool can emit YAML. This spike does not load YAML, because a YAML loader can be asked to construct objects.
 
 Foundry's compendium UI can also import a JSON file into an unlocked pack ("Import Data" in the compendium article). That confirms JSON as an interchange Foundry itself accepts. It does not document the file's envelope beyond "a JSON file".
@@ -131,7 +132,6 @@ Version 14 quick start, from the adventure article, is a `quickstart` object on 
 
 ## What this spike does not know
 
-- The exact LevelDB key layout, and the exact files produced by `foundryvtt-cli`.
 - A field-level schema for `Actor`, `Item`, `JournalEntry`, `Playlist`, `RollTable`, `Adventure`, `Token`, `AmbientLight`, or `Tile`. Those documents are retained whole, or, for scenes, only unmapped top-level keys are called out. Embedded counts use the `SceneData` array names plus `effects` (documented as `actor.effects`), `items` (items are documented as embeddable in actors; the key name is the usual one and was not re-read from an `ActorData` page), `pages`, `results`, `cards`, `combatants`, and `behaviors` on a `Region`.
-- World database filenames. They are not in the user-data article. A Forge hosting staff reply on 7 September 2023 describes v11 worlds as LevelDB folders instead of `.db` files for actors ([World Size Check](https://forums.forge-vtt.com/t/world-size-check/12105?page=2)). This spike maps `data/actors` and `data/actors.db` from that description, and also maps the stems `items`, `scenes`, `journal`, `tables`, `playlists`, `macros`, `cards`, `folders`, `combats`, `messages`, `settings`, `users`, and `fog`. Those other stems are not each confirmed by an official filename table. An unrecognized `data/` entry is still read when it is text, with document type `Unknown`.
+- World database filenames. They are not in the user-data article. A Forge hosting staff reply on 7 September 2023 describes v11 worlds as LevelDB folders instead of `.db` files for actors ([World Size Check](https://forums.forge-vtt.com/t/world-size-check/12105?page=2)). This spike maps `data/actors` and `data/actors.db` from that description, and also maps the stems `items`, `scenes`, `journal`, `tables`, `playlists`, `macros`, `cards`, `folders`, `combats`, `messages`, `settings`, `users`, and `fog`. Those other stems are not each confirmed by an official filename table. An unrecognized `data/` entry is still read when it is text, with document type `Unknown`. A directory that actually opens as LevelDB is decoded with the same reader as a compendium pack.
 - System-specific `system` payloads. They are retained and not interpreted. There is no dnd5e or pf2e adapter.

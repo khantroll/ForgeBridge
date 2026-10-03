@@ -1,0 +1,6 @@
+2026/10/03-20:55:31.969459 140166950244480 Creating DB /workspace/fixtures/synthetic-leveldb/packs/actors since it was missing.
+2026/10/03-20:55:31.986191 140166950244480 Delete type=3 #1
+2026/10/03-20:55:31.986658 140166939682496 Level-0 table #5: started
+2026/10/03-20:55:31.988945 140166939682496 Level-0 table #5: 577 bytes OK
+2026/10/03-20:55:31.990194 140166939682496 Delete type=0 #3
+2026/10/03-20:55:31.990384 140166939682496 Manual compaction at level-0 from '' @ 72057594037927935 : 1 .. '' @ 0 : 0; will stop at (end)

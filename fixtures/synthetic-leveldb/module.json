@@ -1,0 +1,15 @@
+{
+  "id": "synthetic-leveldb",
+  "title": "Synthetic LevelDB",
+  "description": "Synthetic ForgeBridge fixture. A real LevelDB compendium generated in this repo. Not a Foundry product and not commercial content.",
+  "version": "0.0.1",
+  "packs": [
+    {
+      "name": "actors",
+      "label": "Actors",
+      "path": "packs/actors",
+      "type": "Actor",
+      "system": "synthetic-core"
+    }
+  ]
+}
