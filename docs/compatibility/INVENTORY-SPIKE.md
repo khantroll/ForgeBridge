@@ -1,6 +1,6 @@
 # Inventory spike compatibility note
 
-This note is the result of reading the synthetic fixtures with the inventory CLI. It does not convert anything. Arkenforge output is not implemented.
+This note is the result of reading the synthetic fixtures with the inventory CLI. The importable UVTT file is a separate command, recorded in [UVTT-SLICE.md](UVTT-SLICE.md).
 
 Run it with the Python standard library only:
 

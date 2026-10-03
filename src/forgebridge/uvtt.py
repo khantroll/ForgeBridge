@@ -1,4 +1,4 @@
-"""Write one Foundry scene as UVTT JSON, plus a loss report.
+"""Write one Foundry scene as UVTT JSON, plus a graded loss report.
 
 The UVTT object uses only the core fields on
 https://arkenforge.com/universal-vtt-files/
@@ -9,6 +9,13 @@ resolution.pixels_per_grid, line_of_sight, objects_line_of_sight, portals
 environment.lights (position, color), and image.
 software and creator are Arkenforge extras on that page, so they are omitted.
 The page does not publish the format decimal and does not show a bounds example.
+
+Grades use that page plus the public Toolkit notes recorded in
+docs/research/ARKENFORGE.md (retrieved 2026-10-03). native is a UVTT field this
+file fills. approximate is in the file, or omitted, with a documented mismatch.
+manual is a Toolkit UI feature with no file this slice can write. unsupported
+has no documented equivalent, or the data cannot be used. No Arkenforge API is
+invented.
 
 Foundry constants used for this slice, Version 14 API, retrieved 2026-10-03:
 GRID_TYPES.SQUARE is 1. WALL_DOOR_TYPES values that become portals are 1 and 2.
@@ -32,11 +39,37 @@ UVTT_SOURCE = "https://arkenforge.com/universal-vtt-files/"
 UVTT_READ_ON = "2026-10-03"
 UVTT_PAGE_MODIFIED = "2026-08-22"
 
+NATIVE = "native"
+APPROXIMATE = "approximate"
+MANUAL = "manual"
+UNSUPPORTED = "unsupported"
+
+_GRADE_PREFIX = {
+    NATIVE: "Native:",
+    APPROXIMATE: "Approximate:",
+    MANUAL: "Manual:",
+    UNSUPPORTED: "Unsupported:",
+}
+
 GRID_SQUARE = 1
 PORTAL_DOOR_CODES = {1, 2}
 DOOR_CLOSED = 0
 DOOR_OPEN = 1
 DOOR_LOCKED = 2
+
+LOOSE_IMPORT_SUFFIXES = {
+    ".png",
+    ".jpg",
+    ".jpeg",
+    ".webp",
+    ".gif",
+    ".mp4",
+    ".m4v",
+    ".webm",
+    ".mp3",
+    ".ogg",
+    ".wav",
+}
 
 SCENE_FIELDS_EXPLAINED = {
     "_id",
@@ -75,6 +108,34 @@ RETAINED_SKIP = {
     "type",
 }
 
+# Public Toolkit UI, no published file. Citations are in docs/research/ARKENFORGE.md.
+_MANUAL_DOCUMENT = {
+    "Actor": (
+        "Notes in the Toolkit can hold a 5e character stat block (v0.5.0.0, 2026-01-13). "
+        "No note file format was published, so the actor is not in the UVTT file."
+    ),
+    "Item": (
+        "Notes in the Toolkit can hold a 5e item block (v0.5.0.0, 2026-01-13). "
+        "That is not a general item system, and no item file format was published."
+    ),
+    "JournalEntry": (
+        "Notes exist in the Toolkit, including adventure templates (v0.5.0.0, 2026-01-13). "
+        "No journal file format was published, and the page text was not interpreted."
+    ),
+    "RollTable": (
+        "Rollable tables exist in the Toolkit (v0.5.0.0, 2026-01-13). "
+        "No table file format was published."
+    ),
+    "Playlist": (
+        "Playlists exist in the Toolkit (v0.5.0.0 and v0.5.1). "
+        "MP3, OGG, and WAV can be imported as loose audio. No playlist file format was published."
+    ),
+    "Macro": (
+        "Hotkeys can trigger content in the Toolkit (v0.5.0.0, 2026-01-13). "
+        "A hotkey profile export is unspecified text. The macro was not executed."
+    ),
+}
+
 
 def build_uvtt_slice(package: Path, scene_id: str) -> dict:
     """Return {"uvtt", "loss_report"} for one scene in a module folder."""
@@ -87,13 +148,13 @@ def build_uvtt_slice(package: Path, scene_id: str) -> dict:
     inventory = inventory_path(package)
     scene_row = _scene_row(inventory, scene_id)
     payload = _load_scene_payload(package, scene_row, scene_id)
-    uvtt, carried, dropped, gaps = _scene_to_uvtt(package, payload)
-    dropped.extend(_other_document_drops(inventory, scene_id))
-    dropped.extend(_behavior_drops(inventory))
-    dropped.extend(_asset_drops(inventory, _carried_image_ref(carried)))
-    dropped.extend(_pack_drops(inventory))
-    dropped.extend(_package_file_drops(inventory))
-    report = _report(scene_id, payload.get("name"), carried, dropped, gaps)
+    uvtt, lines = _scene_to_uvtt(package, payload)
+    lines.extend(_other_document_lines(inventory, scene_id))
+    lines.extend(_behavior_lines(inventory))
+    lines.extend(_asset_lines(inventory, _image_ref(lines)))
+    lines.extend(_pack_lines(inventory))
+    lines.extend(_package_file_lines(inventory))
+    report = _report(scene_id, payload.get("name"), lines)
     return {"uvtt": uvtt, "loss_report": report}
 
 
@@ -165,27 +226,25 @@ def _payloads_jsonl(text: str) -> list[dict]:
     return payloads
 
 
-def _scene_to_uvtt(package: Path, scene: dict) -> tuple[dict, list[dict], list[dict], list[dict]]:
-    carried: list[dict] = []
-    dropped: list[dict] = []
-    gaps: list[dict] = []
+def _scene_to_uvtt(package: Path, scene: dict) -> tuple[dict, list[dict]]:
+    lines: list[dict] = []
     size = _square_grid(scene)
     image_ref, image_bytes = _scene_image(package, scene)
-    _drop_scene_fields(scene, image_ref, dropped)
+    _grade_scene_fields(scene, image_ref, lines)
     walls = scene.get("walls") if isinstance(scene.get("walls"), list) else []
     lights = scene.get("lights") if isinstance(scene.get("lights"), list) else []
-    line_of_sight, portals = _walls_to_uvtt(walls, size, carried, dropped)
-    uvtt_lights = _lights_to_uvtt(lights, size, carried, dropped)
+    line_of_sight, portals = _walls_to_uvtt(walls, size, lines)
+    uvtt_lights = _lights_to_uvtt(lights, size, lines)
     width = _number(scene.get("width"))
     height = _number(scene.get("height"))
     if width is None or height is None or width <= 0 or height <= 0:
         raise InventoryFatal("scene width and height must be positive numbers")
-    carried.append(
+    lines.append(
         _line(
-            "carried",
+            NATIVE,
             "resolution",
             (
-                f"Carried: grid { _plain(width) } by { _plain(height) } pixels at "
+                f"grid { _plain(width) } by { _plain(height) } pixels at "
                 f"{ _plain(size) } pixels per square, as map_size "
                 f"{ _plain(width / size) } by { _plain(height / size) } and map_origin 0, 0."
             ),
@@ -195,12 +254,12 @@ def _scene_to_uvtt(package: Path, scene: dict) -> tuple[dict, list[dict], list[d
             path=image_ref,
         )
     )
-    carried.append(
+    lines.append(
         _line(
-            "carried",
+            NATIVE,
             "image",
             (
-                f"Carried: image {image_ref} from the level background, once, as base64. "
+                f"image {image_ref} from the level background, once, as base64. "
                 "Scene img was not written again when it pointed at the same file."
             ),
             document_type="Scene",
@@ -209,57 +268,57 @@ def _scene_to_uvtt(package: Path, scene: dict) -> tuple[dict, list[dict], list[d
             path=image_ref,
         )
     )
-    carried.append(
+    lines.append(
         _line(
-            "carried",
+            NATIVE,
             "baked-lighting",
-            "Carried: environment.baked_lighting false. The scene lights are separate data, not paint in the image.",
+            "environment.baked_lighting false. The scene lights are separate data, not paint in the image.",
             document_type="Scene",
             id=_text_id(scene),
             name=_text_name(scene),
             path=image_ref,
         )
     )
-    gaps.append(
+    lines.append(
         _line(
-            "gap",
+            APPROXIMATE,
             "format-decimal-unpublished",
             (
-                "Gap: format is documented as a decimal version. The UVTT page, read "
+                "format is documented as a decimal version. The UVTT page, read "
                 f"{UVTT_READ_ON}, does not publish that number. This slice writes 0.0 "
                 "as a placeholder and does not claim that Arkenforge expects 0.0."
             ),
             path=UVTT_SOURCE,
         )
     )
-    gaps.append(
+    lines.append(
         _line(
-            "gap",
+            APPROXIMATE,
             "portal-bounds-unspecified",
             (
-                "Gap: portal bounds are documented as an array of x,y values. The UVTT page, read "
+                "portal bounds are documented as an array of x,y values. The UVTT page, read "
                 f"{UVTT_READ_ON}, has no example. This slice writes [x, y] pairs relative to position."
             ),
             path=UVTT_SOURCE,
         )
     )
-    gaps.append(
+    lines.append(
         _line(
-            "gap",
+            APPROXIMATE,
             "freestanding-undefined",
             (
-                "Gap: freestanding is a documented bool. The UVTT page, read "
+                "freestanding is a documented bool. The UVTT page, read "
                 f"{UVTT_READ_ON}, does not define it. This slice sets it false because the portal is a wall segment."
             ),
             path=UVTT_SOURCE,
         )
     )
-    gaps.append(
+    lines.append(
         _line(
-            "gap",
+            APPROXIMATE,
             "software-creator-not-core",
             (
-                "Gap: the UVTT page says Arkenforge writes software and creator as its own extra tags. "
+                "the UVTT page says Arkenforge writes software and creator as its own extra tags. "
                 "They are outside the core list, so this slice omits both."
             ),
             path=UVTT_SOURCE,
@@ -281,7 +340,7 @@ def _scene_to_uvtt(package: Path, scene: dict) -> tuple[dict, list[dict], list[d
         },
         "image": base64.b64encode(image_bytes).decode("ascii"),
     }
-    return uvtt, carried, dropped, gaps
+    return uvtt, lines
 
 
 def _square_grid(scene: dict) -> float:
@@ -371,15 +430,18 @@ def _contained(root: Path, path: Path) -> bool:
     return True
 
 
-def _drop_scene_fields(scene: dict, image_ref: str, dropped: list[dict]) -> None:
+def _grade_scene_fields(scene: dict, image_ref: str, lines: list[dict]) -> None:
     scene_id = _text_id(scene)
     scene_name = _text_name(scene)
     if scene_name:
-        dropped.append(
+        lines.append(
             _line(
-                "dropped",
+                MANUAL,
                 "scene-name",
-                f'Dropped: scene name "{scene_name}". The UVTT core fields have no name.',
+                (
+                    f'scene name "{scene_name}". The UVTT core fields have no name. '
+                    "Renaming a map is a Toolkit UI action, and no import field for the scene name was found."
+                ),
                 document_type="Scene",
                 id=scene_id,
                 name=scene_name,
@@ -389,13 +451,14 @@ def _drop_scene_fields(scene: dict, image_ref: str, dropped: list[dict]) -> None
     if "distance" in grid or "units" in grid:
         distance = grid.get("distance")
         units = grid.get("units")
-        dropped.append(
+        lines.append(
             _line(
-                "dropped",
+                APPROXIMATE,
                 "grid-distance",
                 (
-                    f"Dropped: grid distance {distance} units {units!r}. "
-                    "UVTT resolution has map_origin, map_size, and pixels_per_grid only."
+                    f"grid distance {distance} units {units!r}. "
+                    "UVTT resolution has map_origin, map_size, and pixels_per_grid. "
+                    "Distance and units are not those fields. The square size is still written."
                 ),
                 document_type="Scene",
                 id=scene_id,
@@ -405,13 +468,13 @@ def _drop_scene_fields(scene: dict, image_ref: str, dropped: list[dict]) -> None
         )
     thumb = scene.get("thumb")
     if isinstance(thumb, str) and thumb.strip():
-        dropped.append(
+        lines.append(
             _line(
-                "dropped",
+                APPROXIMATE,
                 "scene-thumb",
                 (
-                    f'Dropped: scene thumb "{thumb}". UVTT is one image, taken from the level background, '
-                    "so the thumbnail was left out."
+                    f'scene thumb "{thumb}". UVTT is one image, taken from the level background, '
+                    "so the thumbnail was not written a second time."
                 ),
                 document_type="Scene",
                 id=scene_id,
@@ -421,11 +484,14 @@ def _drop_scene_fields(scene: dict, image_ref: str, dropped: list[dict]) -> None
         )
     img = scene.get("img")
     if isinstance(img, str) and img.strip() and img != image_ref:
-        dropped.append(
+        lines.append(
             _line(
-                "dropped",
+                APPROXIMATE,
                 "scene-img-not-chosen",
-                f'Dropped: scene img "{img}". The UVTT image is the level background "{image_ref}".',
+                (
+                    f'scene img "{img}". The UVTT image is the level background "{image_ref}". '
+                    "A second map image is not a UVTT field."
+                ),
                 document_type="Scene",
                 id=scene_id,
                 name=scene_name,
@@ -440,28 +506,28 @@ def _drop_scene_fields(scene: dict, image_ref: str, dropped: list[dict]) -> None
         level_id = level.get("_id") if isinstance(level.get("_id"), str) else None
         label = f'"{level_name}"' if level_name else "level"
         ident = f" ({level_id})" if level_id else ""
-        dropped.append(
+        lines.append(
             _line(
-                "dropped",
+                MANUAL,
                 "level-not-image",
                 (
-                    f"Dropped: level {label}{ident}. Only the background image can become the UVTT image. "
-                    "The level name and its other fields were left out."
+                    f"level {label}{ident}. Only the background image is a UVTT field. "
+                    "Level names are edited in the Toolkit UI, and no import field for the level name was found."
                 ),
                 document_type="Level",
                 id=level_id,
                 name=level_name,
             )
         )
-    _drop_placeables(scene, dropped)
+    _grade_placeables(scene, lines)
     flags = scene.get("flags")
     if isinstance(flags, dict):
         for scope in flags:
-            dropped.append(
+            lines.append(
                 _line(
-                    "dropped",
+                    UNSUPPORTED,
                     "scene-flags",
-                    f'Dropped: scene flags "{scope}". UVTT has no flags field.',
+                    f'scene flags "{scope}". No documented Arkenforge flags field was found.',
                     document_type="Scene",
                     id=scene_id,
                     name=scene_name,
@@ -471,11 +537,14 @@ def _drop_scene_fields(scene: dict, image_ref: str, dropped: list[dict]) -> None
     for key in scene:
         if key in SCENE_FIELDS_EXPLAINED:
             continue
-        dropped.append(
+        lines.append(
             _line(
-                "dropped",
+                UNSUPPORTED,
                 "scene-field",
-                f'Dropped: scene field "{key}". UVTT has no field by this name, and the value was not copied.',
+                (
+                    f'scene field "{key}". No documented Arkenforge field matches this name, '
+                    "and the value was not copied."
+                ),
                 document_type="Scene",
                 id=scene_id,
                 name=scene_name,
@@ -484,18 +553,19 @@ def _drop_scene_fields(scene: dict, image_ref: str, dropped: list[dict]) -> None
         )
 
 
-def _drop_placeables(scene: dict, dropped: list[dict]) -> None:
+def _grade_placeables(scene: dict, lines: list[dict]) -> None:
     for token in _dicts(scene.get("tokens")):
         name = _text_name(token)
         label = f'"{name}"' if name else "token"
-        dropped.append(
+        lines.append(
             _line(
-                "dropped",
+                MANUAL,
                 "token",
                 (
-                    f"Dropped: token {label} ({_text_id(token) or 'no id'}). "
+                    f"token {label} ({_text_id(token) or 'no id'}). "
                     "The UVTT page says the file cannot contain individually selectable tokens. "
-                    "It was not written to objects_line_of_sight."
+                    "Tokens exist in the Toolkit UI (v0.5.0.0, 2026-01-13). "
+                    "No token file format was published. It was not written to objects_line_of_sight."
                 ),
                 document_type="Token",
                 id=_text_id(token),
@@ -506,17 +576,28 @@ def _drop_placeables(scene: dict, dropped: list[dict]) -> None:
         src = _texture_src(tile)
         _safe, problem = _safe_ref(src)
         if problem:
-            path_note = "The path was not opened."
-        else:
-            path_note = "The file stays in the package and was not written as a second image."
-        dropped.append(
+            lines.append(
+                _line(
+                    UNSUPPORTED,
+                    "tile",
+                    (
+                        f'tile "{_text_id(tile) or "no id"}" texture "{src}". '
+                        "The path was not opened. UVTT cannot carry a separate map image."
+                    ),
+                    document_type="Tile",
+                    id=_text_id(tile),
+                    path=src,
+                )
+            )
+            continue
+        lines.append(
             _line(
-                "dropped",
+                MANUAL,
                 "tile",
                 (
-                    f'Dropped: tile "{_text_id(tile) or "no id"}" texture "{src}". '
-                    f"{path_note} "
-                    "UVTT cannot carry a separate map image, so the tile was not written to objects_line_of_sight."
+                    f'tile "{_text_id(tile) or "no id"}" texture "{src}". '
+                    "The file stays in the package. UVTT cannot carry a second selectable image. "
+                    "Loose image import exists, and no tile file format was published."
                 ),
                 document_type="Tile",
                 id=_text_id(tile),
@@ -525,13 +606,14 @@ def _drop_placeables(scene: dict, dropped: list[dict]) -> None:
         )
     for sound in _dicts(scene.get("sounds")):
         path = sound.get("path") if isinstance(sound.get("path"), str) else None
-        dropped.append(
+        lines.append(
             _line(
-                "dropped",
+                MANUAL,
                 "ambient-sound",
                 (
-                    f'Dropped: ambient sound "{_text_id(sound) or "no id"}" path "{path}". '
-                    "UVTT has no audio field."
+                    f'ambient sound "{_text_id(sound) or "no id"}" path "{path}". '
+                    "MP3, OGG, and WAV are confirmed loose imports. "
+                    "UVTT has no audio field, and no playlist file format was published."
                 ),
                 document_type="AmbientSound",
                 id=_text_id(sound),
@@ -539,11 +621,15 @@ def _drop_placeables(scene: dict, dropped: list[dict]) -> None:
             )
         )
     for note in _dicts(scene.get("notes")):
-        dropped.append(
+        lines.append(
             _line(
-                "dropped",
+                MANUAL,
                 "note",
-                f'Dropped: note "{_text_id(note) or "no id"}". UVTT has no notes field, and the note text was not copied.',
+                (
+                    f'note "{_text_id(note) or "no id"}". '
+                    "Notes exist in the Toolkit UI (v0.5.0.0, 2026-01-13). "
+                    "UVTT has no notes field, no note file format was published, and the note text was not copied."
+                ),
                 document_type="Note",
                 id=_text_id(note),
                 name=_text_name(note),
@@ -552,13 +638,13 @@ def _drop_placeables(scene: dict, dropped: list[dict]) -> None:
     for region in _dicts(scene.get("regions")):
         name = _text_name(region)
         label = f'"{name}"' if name else "region"
-        dropped.append(
+        lines.append(
             _line(
-                "dropped",
+                UNSUPPORTED,
                 "region",
                 (
-                    f"Dropped: region {label} ({_text_id(region) or 'no id'}). "
-                    "UVTT has no region field, and its behaviors were not executed."
+                    f"region {label} ({_text_id(region) or 'no id'}). "
+                    "Regions are not a documented user-scriptable system, and its behaviors were not executed."
                 ),
                 document_type="Region",
                 id=_text_id(region),
@@ -567,12 +653,7 @@ def _drop_placeables(scene: dict, dropped: list[dict]) -> None:
         )
 
 
-def _walls_to_uvtt(
-    walls: list,
-    size: float,
-    carried: list[dict],
-    dropped: list[dict],
-) -> tuple[list, list]:
+def _walls_to_uvtt(walls: list, size: float, lines: list[dict]) -> tuple[list, list]:
     line_of_sight = []
     portals = []
     for wall in walls:
@@ -581,11 +662,14 @@ def _walls_to_uvtt(
         segment = _segment(wall.get("c"), size)
         wall_id = _text_id(wall)
         if segment is None:
-            dropped.append(
+            lines.append(
                 _line(
-                    "dropped",
+                    UNSUPPORTED,
                     "wall-geometry",
-                    f'Dropped: wall "{wall_id or "no id"}" has no 4-number coordinate list, so no UVTT segment was written.',
+                    (
+                        f'wall "{wall_id or "no id"}" has no 4-number coordinate list, '
+                        "so no UVTT segment was written."
+                    ),
                     document_type="Wall",
                     id=wall_id,
                     path="c",
@@ -595,15 +679,15 @@ def _walls_to_uvtt(
         (x1, y1), (x2, y2) = segment
         door = wall.get("door")
         if isinstance(door, int) and not isinstance(door, bool) and door in PORTAL_DOOR_CODES:
-            closed, state_drop = _portal_closed(wall.get("ds"), wall_id)
-            if state_drop is not None:
-                dropped.append(state_drop)
-            dropped.append(
+            closed, state_line = _portal_closed(wall.get("ds"), wall_id)
+            if state_line is not None:
+                lines.append(state_line)
+            lines.append(
                 _line(
-                    "dropped",
+                    APPROXIMATE,
                     "door-type",
                     (
-                        f'Dropped: wall "{wall_id or "no id"}" door code {door}. '
+                        f'wall "{wall_id or "no id"}" door code {door}. '
                         "UVTT portals have no door-type field. The segment was written as a portal."
                     ),
                     document_type="Wall",
@@ -625,12 +709,12 @@ def _walls_to_uvtt(
                     "freestanding": False,
                 }
             )
-            carried.append(
+            lines.append(
                 _line(
-                    "carried",
+                    NATIVE,
                     "portal",
                     (
-                        f'Carried: wall "{wall_id or "no id"}" as a portal. '
+                        f'wall "{wall_id or "no id"}" as a portal. '
                         f"closed is {str(closed).lower()} from door state {wall.get('ds')} "
                         "(CLOSED is 0, OPEN is 1). A locked state is not a separate UVTT value."
                     ),
@@ -641,22 +725,25 @@ def _walls_to_uvtt(
             )
             continue
         line_of_sight.append([[_coord(x1), _coord(y1)], [_coord(x2), _coord(y2)]])
-        carried.append(
+        lines.append(
             _line(
-                "carried",
+                NATIVE,
                 "line-of-sight",
-                f'Carried: wall "{wall_id or "no id"}" as one line_of_sight segment. Door code {door!r} is not a portal.',
+                (
+                    f'wall "{wall_id or "no id"}" as one line_of_sight segment. '
+                    f"Door code {door!r} is not a portal."
+                ),
                 document_type="Wall",
                 id=wall_id,
                 path="c",
             )
         )
     if not line_of_sight:
-        carried.append(
+        lines.append(
             _line(
-                "carried",
+                NATIVE,
                 "line-of-sight-empty",
-                "Carried: line_of_sight is empty. Door walls were written as portals and were not also written as walls.",
+                "line_of_sight is empty. Door walls were written as portals and were not also written as walls.",
                 document_type="Wall",
             )
         )
@@ -668,10 +755,10 @@ def _portal_closed(ds: object, wall_id: str | None) -> tuple[bool, dict | None]:
         return False, None
     if ds == DOOR_LOCKED:
         return True, _line(
-            "dropped",
+            APPROXIMATE,
             "door-locked",
             (
-                f'Dropped: wall "{wall_id or "no id"}" door state LOCKED (2). '
+                f'wall "{wall_id or "no id"}" door state LOCKED (2). '
                 "UVTT closed is only a bool, so the portal is closed and the locked state was left out."
             ),
             document_type="Wall",
@@ -681,10 +768,10 @@ def _portal_closed(ds: object, wall_id: str | None) -> tuple[bool, dict | None]:
     if ds == DOOR_CLOSED:
         return True, None
     return True, _line(
-        "dropped",
+        APPROXIMATE,
         "door-state",
         (
-            f'Dropped: wall "{wall_id or "no id"}" door state {ds!r} is outside CLOSED 0, OPEN 1, and LOCKED 2. '
+            f'wall "{wall_id or "no id"}" door state {ds!r} is outside CLOSED 0, OPEN 1, and LOCKED 2. '
             "The portal was written closed."
         ),
         document_type="Wall",
@@ -693,7 +780,7 @@ def _portal_closed(ds: object, wall_id: str | None) -> tuple[bool, dict | None]:
     )
 
 
-def _lights_to_uvtt(lights: list, size: float, carried: list[dict], dropped: list[dict]) -> list[dict]:
+def _lights_to_uvtt(lights: list, size: float, lines: list[dict]) -> list[dict]:
     written = []
     for light in lights:
         if not isinstance(light, dict):
@@ -705,12 +792,12 @@ def _lights_to_uvtt(lights: list, size: float, carried: list[dict], dropped: lis
         y = _number(light.get("y"))
         dim = config.get("dim")
         bright = config.get("bright")
-        dropped.append(
+        lines.append(
             _line(
-                "dropped",
+                APPROXIMATE,
                 "light-range",
                 (
-                    f'Dropped: light "{light_id or "no id"}" dim {dim!r} and bright {bright!r} '
+                    f'light "{light_id or "no id"}" dim {dim!r} and bright {bright!r} '
                     "were not written as range or intensity. Foundry LightData records dim, bright, "
                     "and shadows as numbers and does not state the unit. UVTT shadows is a bool. "
                     "No range, intensity, or shadows value was written."
@@ -721,11 +808,14 @@ def _lights_to_uvtt(lights: list, size: float, carried: list[dict], dropped: lis
             )
         )
         if x is None or y is None or not _hex_color(color):
-            dropped.append(
+            lines.append(
                 _line(
-                    "dropped",
+                    UNSUPPORTED,
                     "light-not-written",
-                    f'Dropped: light "{light_id or "no id"}" has no square position and hex color, so no UVTT light was written.',
+                    (
+                        f'light "{light_id or "no id"}" has no square position and hex color, '
+                        "so no UVTT light was written."
+                    ),
                     document_type="AmbientLight",
                     id=light_id,
                 )
@@ -737,11 +827,11 @@ def _lights_to_uvtt(lights: list, size: float, carried: list[dict], dropped: lis
                 "color": color,
             }
         )
-        carried.append(
+        lines.append(
             _line(
-                "carried",
+                NATIVE,
                 "light",
-                f'Carried: light "{light_id or "no id"}" position and color {color} only.',
+                f'light "{light_id or "no id"}" position and color {color} only.',
                 document_type="AmbientLight",
                 id=light_id,
                 path="config.color",
@@ -750,7 +840,7 @@ def _lights_to_uvtt(lights: list, size: float, carried: list[dict], dropped: lis
     return written
 
 
-def _other_document_drops(inventory: dict, scene_id: str) -> list[dict]:
+def _other_document_lines(inventory: dict, scene_id: str) -> list[dict]:
     rows = []
     for doc in inventory["documents"]:
         if doc.get("document_type") == "Scene" and doc.get("id") == scene_id:
@@ -760,27 +850,28 @@ def _other_document_drops(inventory: dict, scene_id: str) -> list[dict]:
         doc_id = doc.get("id") if isinstance(doc.get("id"), str) else None
         label = f'"{name}"' if name else "(unnamed)"
         ident = f" ({doc_id})" if doc_id else ""
-        tail = " UVTT has no field for this document."
-        if dtype == "JournalEntry":
-            tail += " Its page text was not interpreted."
-        if dtype == "Macro":
-            tail += " It was not executed."
+        if dtype in _MANUAL_DOCUMENT:
+            grade = MANUAL
+            why = _MANUAL_DOCUMENT[dtype]
+        else:
+            grade = UNSUPPORTED
+            why = "No documented Arkenforge file or UI equivalent was found for this document type."
         rows.append(
             _line(
-                "dropped",
+                grade,
                 "document-not-in-uvtt",
-                f"Dropped: {dtype} {label}{ident}.{tail}",
+                f"{dtype} {label}{ident}. {why}",
                 document_type=dtype,
                 id=doc_id,
                 name=name,
                 path=doc.get("source_path") if isinstance(doc.get("source_path"), str) else None,
             )
         )
-        rows.extend(_retained_field_drops(doc))
+        rows.extend(_retained_field_lines(doc))
     return rows
 
 
-def _retained_field_drops(doc: dict) -> list[dict]:
+def _retained_field_lines(doc: dict) -> list[dict]:
     retained = doc.get("retained_fields")
     if not isinstance(retained, dict):
         return []
@@ -792,11 +883,12 @@ def _retained_field_drops(doc: dict) -> list[dict]:
             continue
         rows.append(
             _line(
-                "dropped",
+                UNSUPPORTED,
                 "retained-field",
                 (
-                    f'Dropped: field "{key}" on {doc.get("document_type")} '
-                    f'"{doc.get("name")}" ({doc.get("id")}). The value was not copied.'
+                    f'field "{key}" on {doc.get("document_type")} '
+                    f'"{doc.get("name")}" ({doc.get("id")}). '
+                    "No documented Arkenforge field matches it, and the value was not copied."
                 ),
                 document_type=doc.get("document_type") if isinstance(doc.get("document_type"), str) else None,
                 id=doc.get("id") if isinstance(doc.get("id"), str) else None,
@@ -807,17 +899,29 @@ def _retained_field_drops(doc: dict) -> list[dict]:
     return rows
 
 
-def _behavior_drops(inventory: dict) -> list[dict]:
+def _behavior_lines(inventory: dict) -> list[dict]:
     rows = []
     for behavior in inventory["behaviors"]:
         kind = behavior.get("kind") if isinstance(behavior.get("kind"), str) else "behavior"
         name = behavior.get("name") if isinstance(behavior.get("name"), str) else None
         label = f'"{name}"' if name else kind
+        if kind == "macro":
+            grade = MANUAL
+            summary = (
+                f"{kind} {label} maps to a Toolkit hotkey (v0.5.0.0, 2026-01-13). "
+                "The macro was not executed, and the hotkey text format is unpublished."
+            )
+        else:
+            grade = UNSUPPORTED
+            summary = (
+                f"{kind} {label} was not executed. "
+                "No documented Arkenforge equivalent was found."
+            )
         rows.append(
             _line(
-                "dropped",
+                grade,
                 "behavior-not-executed",
-                f"Dropped: {kind} {label} was not executed and has no UVTT field.",
+                summary,
                 document_type=kind,
                 id=behavior.get("id") if isinstance(behavior.get("id"), str) else None,
                 name=name,
@@ -827,36 +931,48 @@ def _behavior_drops(inventory: dict) -> list[dict]:
     return rows
 
 
-def _asset_drops(inventory: dict, carried_ref: str | None) -> list[dict]:
+def _asset_lines(inventory: dict, image_ref: str | None) -> list[dict]:
     rows = []
     for asset in inventory["assets"]:
         ref = asset.get("ref")
         if not isinstance(ref, str):
             continue
-        if ref == carried_ref and asset.get("present_in_package") and not asset.get("hostile") and not asset.get("external"):
+        if ref == image_ref and asset.get("present_in_package") and not asset.get("hostile") and not asset.get("external"):
             continue
         if asset.get("hostile"):
+            grade = UNSUPPORTED
             reason = "The reference leaves the package and was not opened."
         elif asset.get("external"):
+            grade = UNSUPPORTED
             reason = "External URLs are not fetched."
         elif not asset.get("present_in_package"):
+            grade = UNSUPPORTED
             reason = "The file is not in the package."
-        elif not asset.get("referenced_by"):
-            reason = "It is in the package and referenced by no document."
         else:
-            reason = "UVTT has no field for this file."
+            suffix = Path(ref).suffix.lower()
+            if suffix in LOOSE_IMPORT_SUFFIXES:
+                grade = MANUAL
+                reason = (
+                    "This extension is a confirmed loose import "
+                    "(JPG, PNG, WEBP, GIF, MP4, M4V, WEBM, MP3, OGG, or WAV). "
+                    "No package layout for a file beside the one UVTT image was published, "
+                    "so it stays in the Foundry package."
+                )
+            else:
+                grade = UNSUPPORTED
+                reason = "No confirmed Arkenforge import type matches this file."
         rows.append(
             _line(
-                "dropped",
+                grade,
                 "asset",
-                f'Dropped: asset "{ref}". {reason}',
+                f'asset "{ref}". {reason}',
                 path=ref,
             )
         )
     return rows
 
 
-def _pack_drops(inventory: dict) -> list[dict]:
+def _pack_lines(inventory: dict) -> list[dict]:
     rows = []
     for pack in inventory["packs"]:
         if pack.get("decoded") and pack.get("document_count"):
@@ -865,9 +981,12 @@ def _pack_drops(inventory: dict) -> list[dict]:
         storage = pack.get("storage")
         rows.append(
             _line(
-                "dropped",
+                UNSUPPORTED,
                 "pack-not-in-uvtt",
-                f'Dropped: pack "{name}" storage {storage} was not written to UVTT.',
+                (
+                    f'pack "{name}" storage {storage} was not loaded into the UVTT file. '
+                    "YAML is not executed, and no Arkenforge pack format was used."
+                ),
                 name=name if isinstance(name, str) else None,
                 path=pack.get("path") if isinstance(pack.get("path"), str) else None,
             )
@@ -875,16 +994,19 @@ def _pack_drops(inventory: dict) -> list[dict]:
     return rows
 
 
-def _package_file_drops(inventory: dict) -> list[dict]:
+def _package_file_lines(inventory: dict) -> list[dict]:
     provenance = inventory["provenance"]
     rows = []
     for script in provenance.get("scripts_not_executed") or []:
         path = script.get("path") if isinstance(script.get("path"), str) else None
         rows.append(
             _line(
-                "dropped",
+                UNSUPPORTED,
                 "package-script",
-                f'Dropped: package script "{path}" was not executed.',
+                (
+                    f'package script "{path}" was not executed. '
+                    "No Arkenforge scripting API was found."
+                ),
                 path=path,
             )
         )
@@ -892,30 +1014,38 @@ def _package_file_drops(inventory: dict) -> list[dict]:
         path = style.get("path") if isinstance(style.get("path"), str) else None
         rows.append(
             _line(
-                "dropped",
+                UNSUPPORTED,
                 "package-style",
-                f'Dropped: package style "{path}" was not applied.',
+                f'package style "{path}" was not applied. UVTT has no stylesheet.',
                 path=path,
             )
         )
     for key in provenance.get("manifest_unmapped") or {}:
         rows.append(
             _line(
-                "dropped",
+                UNSUPPORTED,
                 "manifest-field",
-                f'Dropped: manifest field "{key}". UVTT has no package manifest.',
+                f'manifest field "{key}". UVTT has no package manifest.',
                 path=key,
             )
         )
     return rows
 
 
-def _report(scene_id: str, scene_name: object, carried: list[dict], dropped: list[dict], gaps: list[dict]) -> dict:
+def _report(scene_id: str, scene_name: object, lines: list[dict]) -> dict:
     name = scene_name if isinstance(scene_name, str) else None
+    buckets = {NATIVE: [], APPROXIMATE: [], MANUAL: [], UNSUPPORTED: []}
+    for line in lines:
+        buckets[line["grade"]].append(line)
+    native = buckets[NATIVE]
+    approximate = buckets[APPROXIMATE]
+    manual = buckets[MANUAL]
+    unsupported = buckets[UNSUPPORTED]
     headline = (
-        f"Dropped {len(dropped)}. Carried {len(carried)}. Gaps {len(gaps)}. "
-        "The UVTT file is one map image with walls, portals, and lights. "
-        "Everything else in this inventory was left out."
+        f"Unsupported {len(unsupported)}. Manual {len(manual)}. "
+        f"Approximate {len(approximate)}. Native {len(native)}. "
+        "The importable file is UVTT JSON: map image, square grid, line of sight, portals, and lights. "
+        "Every other inventory entry is graded from public Arkenforge docs."
     )
     return {
         "headline": headline,
@@ -924,21 +1054,28 @@ def _report(scene_id: str, scene_name: object, carried: list[dict], dropped: lis
         "source": UVTT_SOURCE,
         "read_on": UVTT_READ_ON,
         "page_modified": UVTT_PAGE_MODIFIED,
-        "carried": carried,
-        "dropped": dropped,
-        "gaps": gaps,
+        "native": native,
+        "approximate": approximate,
+        "manual": manual,
+        "unsupported": unsupported,
+        "counts": {
+            "native": len(native),
+            "approximate": len(approximate),
+            "manual": len(manual),
+            "unsupported": len(unsupported),
+        },
     }
 
 
-def _carried_image_ref(carried: list[dict]) -> str | None:
-    for line in carried:
+def _image_ref(lines: list[dict]) -> str | None:
+    for line in lines:
         if line["code"] == "image":
             return line.get("path")
     return None
 
 
 def _line(
-    severity: str,
+    grade: str,
     code: str,
     summary: str,
     *,
@@ -947,10 +1084,18 @@ def _line(
     name: str | None = None,
     path: str | None = None,
 ) -> dict:
+    prefix = _GRADE_PREFIX.get(grade)
+    if prefix is None:
+        raise InventoryFatal(f"unknown UVTT grade {grade}")
+    text = summary.strip()
+    for old in ("Native:", "Approximate:", "Manual:", "Unsupported:", "Carried:", "Dropped:", "Gap:"):
+        if text.startswith(old):
+            text = text[len(old):].lstrip()
+            break
     return {
-        "severity": severity,
+        "grade": grade,
         "code": code,
-        "summary": summary,
+        "summary": f"{prefix} {text}",
         "document_type": document_type,
         "id": id,
         "name": name,
