@@ -1,0 +1,92 @@
+{
+  "id": "synthetic-module",
+  "title": "Synthetic Module",
+  "description": "Synthetic ForgeBridge fixture. Not a Foundry product and not commercial content.",
+  "version": "0.0.1",
+  "compatibility": {
+    "minimum": "11",
+    "verified": "14"
+  },
+  "authors": [
+    {
+      "name": "ForgeBridge fixture"
+    }
+  ],
+  "scripts": [
+    "scripts/trap.js"
+  ],
+  "esmodules": [
+    "scripts/trap.mjs"
+  ],
+  "styles": [
+    "styles/noop.css"
+  ],
+  "relationships": {
+    "systems": [
+      {
+        "id": "synthetic-core",
+        "type": "system"
+      }
+    ]
+  },
+  "documentTypes": {
+    "Actor": {
+      "synthetic-npc": {}
+    }
+  },
+  "notAFoundryManifestKey": {
+    "kept": true
+  },
+  "packs": [
+    {
+      "name": "scenes",
+      "label": "Scenes",
+      "path": "packs/scenes.db",
+      "type": "Scene"
+    },
+    {
+      "name": "actors",
+      "label": "Actors",
+      "path": "packs/actors.db",
+      "type": "Actor",
+      "system": "synthetic-core"
+    },
+    {
+      "name": "items",
+      "label": "Items",
+      "path": "packs/items.db",
+      "type": "Item",
+      "system": "synthetic-core"
+    },
+    {
+      "name": "journal",
+      "label": "Journal",
+      "path": "packs/journal.db",
+      "type": "JournalEntry"
+    },
+    {
+      "name": "tables",
+      "label": "Tables",
+      "path": "packs/tables.db",
+      "type": "RollTable"
+    },
+    {
+      "name": "playlists",
+      "label": "Playlists",
+      "path": "packs/playlists.db",
+      "type": "Playlist"
+    },
+    {
+      "name": "macros",
+      "label": "Macros",
+      "path": "packs/macros.db",
+      "type": "Macro"
+    },
+    {
+      "name": "unsafe-yaml",
+      "label": "Unsafe YAML",
+      "path": "packs/unsafe.yaml",
+      "type": "Macro"
+    }
+  ]
+}

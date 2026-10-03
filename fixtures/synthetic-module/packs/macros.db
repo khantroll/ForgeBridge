@@ -1,0 +1,2 @@
+{"_id":"macro-open","name":"Open tomb","type":"script","scope":"global","command":"require('fs').writeFileSync('/tmp/forgebridge-macro-executed','macro')","img":"assets/crypt.png"}
+{"_id":"macro-announce","name":"Announce","type":"chat","scope":"global","command":"The sarcophagus cracks. assets/crypt.png"}

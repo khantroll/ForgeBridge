@@ -1,0 +1,15 @@
+{
+  "id": "leveldb-pointer",
+  "title": "Synthetic LevelDB pointer",
+  "description": "Declares a pack directory that only resembles LevelDB. These bytes are not a Foundry database.",
+  "version": "0.0.1",
+  "packs": [
+    {
+      "name": "actors",
+      "label": "Actors",
+      "path": "packs/actors",
+      "type": "Actor",
+      "system": "synthetic-core"
+    }
+  ]
+}

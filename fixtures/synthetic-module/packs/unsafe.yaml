@@ -1,0 +1,2 @@
+# Synthetic fixture. ForgeBridge must not parse this file.
+!!python/object/apply:os.system ["touch /tmp/forgebridge-yaml-executed"]

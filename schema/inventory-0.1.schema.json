@@ -1,0 +1,264 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forgebridge.local/schema/inventory-0.1.schema.json",
+  "title": "ForgeBridge inventory IR",
+  "description": "Inventory and provenance only. This schema does not describe a converted Arkenforge document.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "ir_version",
+    "kind",
+    "generator",
+    "provenance",
+    "packs",
+    "documents",
+    "assets",
+    "behaviors",
+    "diagnostics",
+    "counts"
+  ],
+  "properties": {
+    "ir_version": {"const": "0.1.0"},
+    "kind": {"const": "inventory"},
+    "generator": {"$ref": "#/$defs/generator"},
+    "provenance": {"$ref": "#/$defs/provenance"},
+    "packs": {"type": "array", "items": {"$ref": "#/$defs/pack"}},
+    "documents": {"type": "array", "items": {"$ref": "#/$defs/document"}},
+    "assets": {"type": "array", "items": {"$ref": "#/$defs/asset"}},
+    "behaviors": {"type": "array", "items": {"$ref": "#/$defs/behavior"}},
+    "diagnostics": {"type": "array", "items": {"$ref": "#/$defs/diagnostic"}},
+    "counts": {"$ref": "#/$defs/counts"}
+  },
+  "$defs": {
+    "generator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version"],
+      "properties": {
+        "name": {"const": "forgebridge-inventory"},
+        "version": {"const": "0.1.0"}
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "input_form",
+        "source_name",
+        "archive_name",
+        "package_type",
+        "package_id",
+        "title",
+        "version",
+        "system",
+        "system_requirement",
+        "compatibility",
+        "relationships",
+        "manifest_path",
+        "manifest",
+        "manifest_unmapped",
+        "declared_document_types",
+        "authors",
+        "scripts_not_executed",
+        "styles_not_applied"
+      ],
+      "properties": {
+        "input_form": {"enum": ["directory", "zip"]},
+        "source_name": {"type": "string", "minLength": 1},
+        "archive_name": {"type": ["string", "null"]},
+        "package_type": {"enum": ["module", "system", "world"]},
+        "package_id": {"type": ["string", "null"]},
+        "title": {"type": ["string", "null"]},
+        "version": {"type": ["string", "null"]},
+        "system": {"type": ["string", "null"]},
+        "system_requirement": {"type": "array", "items": {"type": "string"}},
+        "compatibility": {"type": "object", "additionalProperties": true},
+        "relationships": {"type": "object", "additionalProperties": true},
+        "manifest_path": {"enum": ["module.json", "world.json", "system.json"]},
+        "manifest": {"type": "object", "additionalProperties": true},
+        "manifest_unmapped": {"type": "object", "additionalProperties": true},
+        "declared_document_types": {"type": "array", "items": {"type": "string"}},
+        "authors": {"type": "array", "items": {"type": "string"}},
+        "scripts_not_executed": {"type": "array", "items": {"$ref": "#/$defs/code_file"}},
+        "styles_not_applied": {"type": "array", "items": {"$ref": "#/$defs/code_file"}}
+      }
+    },
+    "code_file": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "bytes", "executed", "preview"],
+      "properties": {
+        "path": {"type": "string"},
+        "sha256": {"type": ["string", "null"]},
+        "bytes": {"type": ["integer", "null"], "minimum": 0},
+        "executed": {"const": false},
+        "preview": {"type": "string"}
+      }
+    },
+    "pack": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "label", "document_type", "system", "path", "storage", "decoded", "document_count"],
+      "properties": {
+        "name": {"type": ["string", "null"]},
+        "label": {"type": ["string", "null"]},
+        "document_type": {"type": ["string", "null"]},
+        "system": {"type": ["string", "null"]},
+        "path": {"type": ["string", "null"]},
+        "storage": {"enum": ["nedb", "leveldb", "json", "yaml", "missing"]},
+        "decoded": {"type": "boolean"},
+        "document_count": {"type": "integer", "minimum": 0}
+      }
+    },
+    "document": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "document_type",
+        "id",
+        "name",
+        "subtype",
+        "domains",
+        "pack",
+        "storage",
+        "source_path",
+        "source_index",
+        "embedded_counts",
+        "asset_refs",
+        "flag_scopes",
+        "retained_fields",
+        "door_codes"
+      ],
+      "properties": {
+        "document_type": {"type": "string", "minLength": 1},
+        "id": {"type": ["string", "null"]},
+        "name": {"type": ["string", "null"]},
+        "subtype": {"type": ["string", "null"]},
+        "domains": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "assets",
+              "maps",
+              "geometry",
+              "presentation",
+              "entities",
+              "knowledge",
+              "audio",
+              "tables",
+              "behaviors"
+            ]
+          }
+        },
+        "pack": {"type": ["string", "null"]},
+        "storage": {"enum": ["nedb", "leveldb", "json", "yaml", "missing"]},
+        "source_path": {"type": "string"},
+        "source_index": {"type": ["integer", "null"], "minimum": 0},
+        "embedded_counts": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 0}},
+        "asset_refs": {"type": "array", "items": {"type": "string"}},
+        "flag_scopes": {"type": "array", "items": {"type": "string"}},
+        "retained_fields": {"type": "object", "additionalProperties": true},
+        "door_codes": {"type": "array", "items": {"type": "integer"}}
+      }
+    },
+    "asset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ref", "kind", "present_in_package", "hostile", "external", "referenced_by"],
+      "properties": {
+        "ref": {"type": "string"},
+        "kind": {"enum": ["image", "animation", "video", "audio", "font", "other", "external", "unknown"]},
+        "present_in_package": {"type": "boolean"},
+        "hostile": {"type": "boolean"},
+        "external": {"type": "boolean"},
+        "referenced_by": {"type": "array", "items": {"$ref": "#/$defs/asset_ref"}}
+      }
+    },
+    "asset_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["document_type", "id", "field"],
+      "properties": {
+        "document_type": {"type": "string"},
+        "id": {"type": ["string", "null"]},
+        "field": {"type": "string"}
+      }
+    },
+    "behavior": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "id",
+        "name",
+        "macro_type",
+        "interpreted",
+        "executed",
+        "source_path",
+        "document_id",
+        "payload_sha256",
+        "payload"
+      ],
+      "properties": {
+        "kind": {"enum": ["macro", "region-behavior", "active-effect"]},
+        "id": {"type": ["string", "null"]},
+        "name": {"type": ["string", "null"]},
+        "macro_type": {"type": ["string", "null"]},
+        "interpreted": {"const": false},
+        "executed": {"const": false},
+        "source_path": {"type": "string"},
+        "document_id": {"type": ["string", "null"]},
+        "payload_sha256": {"type": "string", "minLength": 64},
+        "payload": {}
+      }
+    },
+    "diagnostic": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["severity", "code", "message", "path"],
+      "properties": {
+        "severity": {"enum": ["error", "warning", "info"]},
+        "code": {"type": "string", "minLength": 1},
+        "message": {"type": "string", "minLength": 1},
+        "path": {"type": "string"}
+      }
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "documents_by_type",
+        "embedded_by_type",
+        "assets_by_kind",
+        "behaviors",
+        "diagnostics",
+        "domains_present"
+      ],
+      "properties": {
+        "documents_by_type": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 0}},
+        "embedded_by_type": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 0}},
+        "assets_by_kind": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 0}},
+        "behaviors": {"type": "integer", "minimum": 0},
+        "diagnostics": {"type": "integer", "minimum": 0},
+        "domains_present": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "assets",
+              "maps",
+              "geometry",
+              "presentation",
+              "entities",
+              "knowledge",
+              "audio",
+              "tables",
+              "behaviors",
+              "provenance",
+              "diagnostics"
+            ]
+          }
+        }
+      }
+    }
+  }
+}
