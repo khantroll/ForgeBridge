@@ -115,7 +115,7 @@ class UvttSliceTests(unittest.TestCase):
         light = uvtt["environment"]["lights"][0]
         self.assertEqual(light["position"], {"x": 0.5, "y": 0.5})
         self.assertEqual(light["color"], "#ffcc88")
-        self.assertNotIn("range", light)
+        self.assertEqual(light["range"], 4)
         self.assertNotIn("intensity", light)
         self.assertNotIn("shadows", light)
         raw = (FIXTURE / "assets" / "crypt.png").read_bytes()
@@ -203,6 +203,69 @@ class UvttSliceTests(unittest.TestCase):
                 build_uvtt_slice(root, "scene-hex")
         self.assertIn("SQUARE", str(caught.exception))
         self.assertIn("does not write", str(caught.exception))
+
+    def test_dynamic_lighting_writes_ambient_color_and_range_in_squares(self) -> None:
+        png = (FIXTURE / "assets" / "crypt.png").read_bytes()
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "lighting-module"
+            _write_module(
+                root,
+                {
+                    "_id": "scene-lighting",
+                    "name": "Lighting",
+                    "width": 400,
+                    "height": 400,
+                    "grid": {"type": 1, "size": 100, "distance": 5, "units": "ft"},
+                    "environment": {"ambient_light": "#223344"},
+                    "levels": [{"background": {"src": "assets/crypt.png"}}],
+                    "lights": [
+                        {"_id": "torch", "x": 150, "y": 250,
+                         "config": {"dim": 20, "bright": 10, "color": "#ffaa44",
+                                    "luminosity": 0.5, "shadows": 0.2}}
+                    ],
+                },
+                png,
+            )
+            document = build_uvtt_slice(root, "scene-lighting")
+        uvtt = document["uvtt"]
+        self.assertEqual(uvtt["environment"]["ambient_light"], "#223344")
+        self.assertEqual(
+            uvtt["environment"]["lights"][0],
+            {"position": {"x": 1.5, "y": 2.5}, "range": 4, "color": "#ffaa44"},
+        )
+        self.assertEqual(validate(uvtt, load_schema(repo_schema("uvtt-core.schema.json"))), [])
+        native_codes = {item["code"] for item in document["loss_report"]["native"]}
+        approximate_codes = {item["code"] for item in document["loss_report"]["approximate"]}
+        self.assertIn("ambient-light", native_codes)
+        self.assertIn("light-range", native_codes)
+        self.assertIn("light-bright-radius", approximate_codes)
+        self.assertIn("light-rendering-properties", approximate_codes)
+
+    def test_darkness_source_is_reported_without_inventing_uvtt_range(self) -> None:
+        png = (FIXTURE / "assets" / "crypt.png").read_bytes()
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "darkness-module"
+            _write_module(
+                root,
+                {
+                    "_id": "scene-darkness",
+                    "name": "Darkness",
+                    "width": 200,
+                    "height": 200,
+                    "grid": {"type": 1, "size": 100, "distance": 5, "units": "ft"},
+                    "levels": [{"background": {"src": "assets/crypt.png"}}],
+                    "lights": [
+                        {"_id": "dark", "x": 100, "y": 100,
+                         "config": {"dim": -20, "bright": -10, "color": "#000000"}}
+                    ],
+                },
+                png,
+            )
+            document = build_uvtt_slice(root, "scene-darkness")
+        light = document["uvtt"]["environment"]["lights"][0]
+        self.assertNotIn("range", light)
+        unsupported_codes = {item["code"] for item in document["loss_report"]["unsupported"]}
+        self.assertIn("darkness-source", unsupported_codes)
 
     def test_plain_wall_is_line_of_sight_and_door_is_only_a_portal(self) -> None:
         png = (FIXTURE / "assets" / "crypt.png").read_bytes()
@@ -312,7 +375,7 @@ class UvttSliceTests(unittest.TestCase):
         self.assertEqual(uvtt["portals"][0]["position"], {"x": 0.5, "y": 0})
         self.assertIs(uvtt["portals"][0]["closed"], True)
         self.assertEqual(uvtt["environment"]["lights"][0]["color"], "#ffcc88")
-        self.assertNotIn("range", uvtt["environment"]["lights"][0])
+        self.assertEqual(uvtt["environment"]["lights"][0]["range"], 4)
         raw = (LEVELDB_SCENE / "assets" / "crypt.png").read_bytes()
         self.assertEqual(base64.b64decode(uvtt["image"]), raw)
         self.assertTrue(report["headline"].startswith("Unsupported "))
