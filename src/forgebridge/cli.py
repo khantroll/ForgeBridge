@@ -30,7 +30,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--uvtt-scene",
         metavar="SCENE_ID",
-        help="Write this scene id as UVTT JSON plus a graded loss report. Reads a module folder.",
+        help="Write this scene id as UVTT JSON plus a graded loss report. Reads a module folder or a .zip archive.",
     )
     parser.add_argument(
         "--uvtt-out",

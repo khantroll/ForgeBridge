@@ -9,12 +9,14 @@ import subprocess
 import sys
 import tempfile
 import unittest
+import zipfile
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
 SRC = REPO / "src"
 FIXTURE = REPO / "fixtures" / "synthetic-module"
 LEVELDB_SCENE = REPO / "fixtures" / "synthetic-leveldb-scene"
+LEVELDB_SCENE_ZIP = REPO / "fixtures" / "synthetic-leveldb-scene.zip"
 sys.path.insert(0, str(SRC))
 sys.path.insert(0, str(REPO / "scripts"))
 
@@ -397,13 +399,93 @@ class UvttSliceTests(unittest.TestCase):
         for marker in MARKERS:
             self.assertFalse(Path(marker).exists(), marker)
 
-    def test_zip_is_refused(self) -> None:
+    def test_zipped_leveldb_scene_matches_the_unpacked_uvtt(self) -> None:
+        zipped = build_uvtt_slice(LEVELDB_SCENE_ZIP, "scene-vault")
+        unpacked = build_uvtt_slice(LEVELDB_SCENE, "scene-vault")
+        self.assertEqual(validate(zipped["uvtt"], load_schema(repo_schema("uvtt-core.schema.json"))), [])
+        self.assertEqual(validate(zipped["loss_report"], load_schema(repo_schema("uvtt-loss-report.schema.json"))), [])
+        self.assertEqual(zipped["uvtt"], unpacked["uvtt"])
+        self.assertEqual(zipped["loss_report"]["counts"], unpacked["loss_report"]["counts"])
+        self.assertTrue(zipped["loss_report"]["headline"].startswith("Unsupported "))
+        self.assertEqual(base64.b64decode(zipped["uvtt"]["image"]), (LEVELDB_SCENE / "assets" / "crypt.png").read_bytes())
+        self.assertNotIn("writeFileSync", json.dumps(zipped))
+        for marker in MARKERS:
+            self.assertFalse(Path(marker).exists(), marker)
+
+    def test_cli_writes_uvtt_from_the_zipped_leveldb_scene(self) -> None:
+        env = os.environ.copy()
+        env["PYTHONPATH"] = str(SRC)
+        with tempfile.TemporaryDirectory() as tmp:
+            dest = Path(tmp) / "out" / "scene-vault.uvtt"
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    "-m",
+                    "forgebridge",
+                    str(LEVELDB_SCENE_ZIP),
+                    "--uvtt-scene",
+                    "scene-vault",
+                    "--uvtt-out",
+                    str(dest),
+                ],
+                check=False,
+                capture_output=True,
+                text=True,
+                env=env,
+            )
+            self.assertEqual(completed.returncode, 0, completed.stderr)
+            envelope = json.loads(completed.stdout)
+            written = json.loads(dest.read_text(encoding="utf-8"))
+            self.assertEqual(written, envelope["uvtt"])
+            self.assertEqual(written, build_uvtt_slice(LEVELDB_SCENE, "scene-vault")["uvtt"])
+            self.assertTrue(envelope["loss_report"]["headline"].startswith("Unsupported "))
+            self.assertNotIn("loss_report", written)
+        self.assertEqual(list(REPO.glob("**/*.uvtt")), [])
+        for marker in MARKERS:
+            self.assertFalse(Path(marker).exists(), marker)
+
+    def test_zip_entries_that_leave_the_archive_are_not_extracted(self) -> None:
+        outside_name = "forgebridge-zip-escaped.js"
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            archive = root / "hostile.zip"
+            outside = root.parent / outside_name
+            if outside.exists():
+                outside.unlink()
+            with zipfile.ZipFile(LEVELDB_SCENE_ZIP) as source, zipfile.ZipFile(archive, "w") as dest:
+                for info in source.infolist():
+                    dest.writestr(info, source.read(info))
+                dest.writestr(
+                    "../" + outside_name,
+                    "require('fs').writeFileSync('/tmp/forgebridge-zip-executed','zip')",
+                )
+                dest.writestr(
+                    "/tmp/forgebridge-abs.js",
+                    "require('fs').writeFileSync('/tmp/forgebridge-abs.js','abs')",
+                )
+            document = build_uvtt_slice(archive, "scene-vault")
+            self.assertFalse(outside.exists())
+            self.assertFalse(any(root.rglob(outside_name)))
+            self.assertFalse(Path("/tmp/forgebridge-abs.js").exists())
+            self.assertFalse(Path("/tmp/forgebridge-zip-executed").exists())
+            report = document["loss_report"]
+            rejected = [item for item in report["unsupported"] if item["code"] == "rejected-zip-entry"]
+            self.assertEqual(len(rejected), 2)
+            joined = "\n".join(item["summary"] for item in rejected)
+            self.assertIn("../" + outside_name, joined)
+            self.assertIn("/tmp/forgebridge-abs.js", joined)
+            self.assertNotIn("writeFileSync", json.dumps(document))
+            self.assertEqual(document["uvtt"]["resolution"]["map_size"], {"x": 2, "y": 2})
+        for marker in MARKERS:
+            self.assertFalse(Path(marker).exists(), marker)
+
+    def test_non_zip_file_is_refused(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             archive = Path(tmp) / "module.zip"
             archive.write_bytes(b"not a package")
             with self.assertRaises(InventoryFatal) as caught:
                 build_uvtt_slice(archive, "scene-crypt")
-        self.assertIn("folder", str(caught.exception))
+        self.assertIn("zip", str(caught.exception))
 
 
 def _write_module(root: Path, scene: dict, png: bytes) -> None:

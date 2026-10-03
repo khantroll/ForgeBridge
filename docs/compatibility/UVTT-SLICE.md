@@ -5,6 +5,7 @@ This slice writes one synthetic scene as a UVTT file Arkenforge can import, plus
 ```bash
 PYTHONPATH=src python3 -m forgebridge fixtures/synthetic-module --uvtt-scene scene-crypt --uvtt-out scene-crypt.uvtt
 PYTHONPATH=src python3 -m forgebridge fixtures/synthetic-leveldb-scene --uvtt-scene scene-vault --uvtt-out scene-vault.uvtt
+PYTHONPATH=src python3 -m forgebridge fixtures/synthetic-leveldb-scene.zip --uvtt-scene scene-vault --uvtt-out scene-vault.uvtt
 PYTHONPATH=src python3 -m unittest discover -s tests
 ```
 
@@ -59,8 +60,8 @@ The grades use [docs/research/ARKENFORGE.md](../research/ARKENFORGE.md), retriev
 
 Script bodies are not copied into the UVTT object or the report, and they are not executed.
 
-The same writer reads `scene-vault` from `fixtures/synthetic-leveldb-scene`. That scene lives in a LevelDB pack (`packs/scenes`), with walls, lights, and the other placeables stored as separate keys and put back on the scene before the UVTT fields are filled. The text fixture `scene-crypt` still works. `fixtures/leveldb-pointer` stays an unreadable trap directory.
+The same writer reads `scene-vault` from `fixtures/synthetic-leveldb-scene` and from `fixtures/synthetic-leveldb-scene.zip`. That scene lives in a LevelDB pack (`packs/scenes`), with walls, lights, and the other placeables stored as separate keys and put back on the scene before the UVTT fields are filled. Zip entries whose names leave the archive are not extracted and are not executed. The text fixture `scene-crypt` still works. `fixtures/leveldb-pointer` stays an unreadable trap directory.
 
 ## Following step
 
-Write this same UVTT file from a scene inside a zipped module whose scene pack is LevelDB. Not this slice. The writer still reads a module folder and refuses a zip archive.
+Beside the UVTT file, also copy out the scene's image and audio assets that Arkenforge's documented import list can take. Not this slice. Those types are already recorded in [docs/research/ARKENFORGE.md](../research/ARKENFORGE.md): JPG, PNG, WEBP, GIF, MP4, M4V, WEBM, MP3, OGG, and WAV. This step does not invent a note file, a token file, or a campaign format.

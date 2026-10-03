@@ -1,24 +1,28 @@
 # Project Status
 
-**Lifecycle:** UVTT FROM LEVELDB  
-**Implementation started:** Inventory CLI, an importable UVTT file, LevelDB compendium reading, and one LevelDB scene written as that file  
+**Lifecycle:** UVTT FROM A ZIPPED LEVELDB SCENE  
+**Implementation started:** Inventory CLI, an importable UVTT file, LevelDB compendium reading, and that file from a zipped LevelDB scene  
 **General converter started:** No
 
-The LevelDB inventory decode is the previous state. This slice is the current state. It writes scene `scene-vault` from a synthetic LevelDB pack as a UVTT file Arkenforge can import, and grades everything else in that package. The text scene `scene-crypt` still works. It is not a general Foundry-to-Arkenforge converter.
+The unpacked LevelDB scene is the previous state. This slice is the current state. It writes scene `scene-vault` from `fixtures/synthetic-leveldb-scene.zip` as a UVTT file Arkenforge can import, and grades everything else in that package. The unpacked LevelDB scene and the text scene `scene-crypt` still work. It is not a general Foundry-to-Arkenforge converter.
 
 ## What this slice does
 
+`PYTHONPATH=src python3 -m forgebridge fixtures/synthetic-leveldb-scene.zip --uvtt-scene scene-vault --uvtt-out scene-vault.uvtt`
+
+reads the LevelDB pack inside the zip, prints one JSON object with `uvtt` and `loss_report`, and writes only the `uvtt` object to the path given by `--uvtt-out`. That file is the Arkenforge import. The envelope on stdout is the graded report and is not itself an import file.
+
+Zip entries whose names leave the archive are not extracted and are not executed. They are graded unsupported.
+
+The UVTT object uses the same core fields as the folder fixtures, from [Arkenforge's UVTT page](https://arkenforge.com/universal-vtt-files/), read 2026-10-03 (`dateModified` 2026-08-22): map image, square resolution, line of sight, portals, and lights. Grades are `native`, `approximate`, `manual`, and `unsupported`. Notes are in [docs/compatibility/UVTT-SLICE.md](docs/compatibility/UVTT-SLICE.md).
+
+These commands are unchanged:
+
 `PYTHONPATH=src python3 -m forgebridge fixtures/synthetic-leveldb-scene --uvtt-scene scene-vault --uvtt-out scene-vault.uvtt`
-
-reads the LevelDB pack `packs/scenes`, prints one JSON object with `uvtt` and `loss_report`, and writes only the `uvtt` object to the path given by `--uvtt-out`. That file is the Arkenforge import. The envelope on stdout is the graded report and is not itself an import file.
-
-The UVTT object uses the same core fields as the text fixture, from [Arkenforge's UVTT page](https://arkenforge.com/universal-vtt-files/), read 2026-10-03 (`dateModified` 2026-08-22): map image, square resolution, line of sight, portals, and lights. Grades are `native`, `approximate`, `manual`, and `unsupported`. Notes are in [docs/compatibility/UVTT-SLICE.md](docs/compatibility/UVTT-SLICE.md).
-
-The text command is unchanged:
 
 `PYTHONPATH=src python3 -m forgebridge fixtures/synthetic-module --uvtt-scene scene-crypt --uvtt-out scene-crypt.uvtt`
 
-No `.uvtt` file is stored as a hand-written artifact. Tests run the writer against both fixtures. LevelDB values are parsed as JSON and are not executed.
+No `.uvtt` file is stored as a hand-written artifact. Tests run the writer against the zip, the unpacked LevelDB scene, and the text fixture. LevelDB values are parsed as JSON and are not executed.
 
 ## What the earlier work established
 
@@ -33,9 +37,9 @@ The inventory IR is `schema/inventory-0.1.schema.json`. `fixtures/synthetic-leve
 
 ## Next step
 
-**Write this same UVTT file from a scene inside a zipped module whose scene pack is LevelDB. Not started.**
+**Beside the UVTT file, also copy out the scene's image and audio assets that Arkenforge's documented import list can take. Not started.**
 
-The writer still reads a module folder and refuses a zip archive. Inventory can already read a zipped LevelDB pack. The next step is that zip path for one scene, with the same fields and grades. It does not add a note file, a token file, an audio package, or a campaign folder.
+Those types are already recorded in [docs/research/ARKENFORGE.md](docs/research/ARKENFORGE.md): JPG, PNG, WEBP, GIF, MP4, M4V, WEBM, MP3, OGG, and WAV. The map image is already inside the UVTT file as base64. This step would also write the scene's matching image and audio files next to that UVTT file. It does not invent a note file, a token file, or a campaign format.
 
 ## Still out of scope
 
