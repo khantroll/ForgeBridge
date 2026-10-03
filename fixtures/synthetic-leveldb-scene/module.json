@@ -1,0 +1,14 @@
+{
+  "id": "synthetic-leveldb-scene",
+  "title": "Synthetic LevelDB Scene",
+  "description": "Synthetic ForgeBridge fixture. One scene in a LevelDB compendium generated in this repo. Not a Foundry product and not commercial content.",
+  "version": "0.0.1",
+  "packs": [
+    {
+      "name": "scenes",
+      "label": "Scenes",
+      "path": "packs/scenes",
+      "type": "Scene"
+    }
+  ]
+}

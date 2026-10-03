@@ -1,5 +1,8 @@
 """Write one Foundry scene as UVTT JSON, plus a graded loss report.
 
+The scene may be a NeDB or JSON text pack, or a synthetic LevelDB pack.
+LevelDB values are parsed as JSON. They are not executed.
+
 The UVTT object uses only the core fields on
 https://arkenforge.com/universal-vtt-files/
 read 2026-10-03. That page's dateModified is 2026-08-22.
@@ -32,7 +35,8 @@ import json
 import math
 from pathlib import Path
 
-from forgebridge.inventory import MAX_ENTRY_BYTES, _safe_ref, inventory_path
+from forgebridge.inventory import MAX_ENTRIES, MAX_ENTRY_BYTES, _package_subdir, _safe_ref, inventory_path
+from forgebridge.leveldb import LevelDBUnavailable, read_leveldb_directory
 from forgebridge.validate import InventoryFatal
 
 UVTT_SOURCE = "https://arkenforge.com/universal-vtt-files/"
@@ -168,7 +172,7 @@ def _scene_row(inventory: dict, scene_id: str) -> dict:
         raise InventoryFatal(f"scene {scene_id!r} is not in this package inventory")
     row = matches[0]
     storage = row.get("storage")
-    if storage not in {"nedb", "json"}:
+    if storage not in {"nedb", "json", "leveldb"}:
         raise InventoryFatal(
             f"scene {scene_id!r} is stored as {storage}. This slice does not decode that storage."
         )
@@ -176,6 +180,8 @@ def _scene_row(inventory: dict, scene_id: str) -> dict:
 
 
 def _load_scene_payload(package: Path, row: dict, scene_id: str) -> dict:
+    if row.get("storage") == "leveldb":
+        return _load_leveldb_scene(package, row, scene_id)
     source = row.get("source_path")
     safe, problem = _safe_ref(source if isinstance(source, str) else None)
     if problem or not safe:
@@ -196,6 +202,31 @@ def _load_scene_payload(package: Path, row: dict, scene_id: str) -> dict:
         if doc_id is None and isinstance(payload.get("id"), str):
             doc_id = payload["id"]
         if doc_id == scene_id:
+            return payload
+    raise InventoryFatal(f"scene {scene_id!r} was not in {safe}")
+
+
+def _load_leveldb_scene(package: Path, row: dict, scene_id: str) -> dict:
+    source = row.get("source_path")
+    safe, problem = _safe_ref(source if isinstance(source, str) else None)
+    if problem or not safe:
+        raise InventoryFatal("scene pack path was rejected and was not read")
+    src = _package_subdir(package, safe)
+    if src is None:
+        raise InventoryFatal("scene pack path was rejected and was not read")
+    try:
+        result = read_leveldb_directory(src, max_entries=MAX_ENTRIES, max_value_bytes=MAX_ENTRY_BYTES)
+    except LevelDBUnavailable as exc:
+        raise InventoryFatal(str(exc)) from exc
+    if not result.opened:
+        raise InventoryFatal(
+            f"scene pack {safe} is LevelDB and was not opened. It was not read as text."
+        )
+    for declared, payload in result.documents:
+        if not isinstance(payload, dict):
+            continue
+        doc_id = payload.get("_id") if isinstance(payload.get("_id"), str) else None
+        if doc_id == scene_id and declared == "Scene":
             return payload
     raise InventoryFatal(f"scene {scene_id!r} was not in {safe}")
 

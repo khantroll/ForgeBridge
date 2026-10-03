@@ -14,8 +14,13 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[1]
 SRC = REPO / "src"
 FIXTURE = REPO / "fixtures" / "synthetic-module"
+LEVELDB_SCENE = REPO / "fixtures" / "synthetic-leveldb-scene"
 sys.path.insert(0, str(SRC))
+sys.path.insert(0, str(REPO / "scripts"))
 
+import build_synthetic_leveldb as leveldb_fixture  # noqa: E402
+
+from forgebridge.inventory import inventory_path  # noqa: E402
 from forgebridge.uvtt import build_uvtt_slice  # noqa: E402
 from forgebridge.validate import InventoryFatal, load_schema, repo_schema, validate  # noqa: E402
 
@@ -287,6 +292,108 @@ class UvttSliceTests(unittest.TestCase):
             self.assertNotIn("creator", written)
             self.assertEqual(base64.b64decode(written["image"]), raw)
         self.assertEqual(list(REPO.glob("**/*.uvtt")), [])
+        for marker in MARKERS:
+            self.assertFalse(Path(marker).exists(), marker)
+
+    def test_leveldb_scene_writes_importable_uvtt_and_grades(self) -> None:
+        inventory = inventory_path(LEVELDB_SCENE)
+        scene = next(item for item in inventory["documents"] if item["id"] == "scene-vault")
+        self.assertEqual(scene["storage"], "leveldb")
+        self.assertEqual(scene["document_type"], "Scene")
+        document = build_uvtt_slice(LEVELDB_SCENE, "scene-vault")
+        uvtt = document["uvtt"]
+        report = document["loss_report"]
+        self.assertEqual(validate(uvtt, load_schema(repo_schema("uvtt-core.schema.json"))), [])
+        self.assertEqual(validate(report, load_schema(repo_schema("uvtt-loss-report.schema.json"))), [])
+        self.assertEqual(uvtt["resolution"]["map_size"], {"x": 2, "y": 2})
+        self.assertEqual(uvtt["line_of_sight"], [])
+        self.assertEqual(uvtt["portals"][0]["position"], {"x": 0.5, "y": 0})
+        self.assertIs(uvtt["portals"][0]["closed"], True)
+        self.assertEqual(uvtt["environment"]["lights"][0]["color"], "#ffcc88")
+        self.assertNotIn("range", uvtt["environment"]["lights"][0])
+        raw = (LEVELDB_SCENE / "assets" / "crypt.png").read_bytes()
+        self.assertEqual(base64.b64decode(uvtt["image"]), raw)
+        self.assertTrue(report["headline"].startswith("Unsupported "))
+        self.assertGreater(
+            report["counts"]["unsupported"] + report["counts"]["manual"],
+            report["counts"]["native"],
+        )
+        loss_text = "\n".join(
+            item["summary"]
+            for grade in ("manual", "unsupported")
+            for item in report[grade]
+        )
+        for phrase in (
+            "VaultToken",
+            "Vault Keeper",
+            "Vault note",
+            "drip.wav",
+            "note-vault",
+            "region",
+            "not executed",
+            "notACoreField",
+            "homebrewRule",
+            "../../etc/passwd",
+        ):
+            self.assertIn(phrase, loss_text, phrase)
+        blob = json.dumps(document)
+        self.assertNotIn("writeFileSync", blob)
+        self.assertNotIn("VaultToken", json.dumps(uvtt))
+        self.assertNotIn("homebrewRule", json.dumps(uvtt))
+        self.assertFalse((LEVELDB_SCENE / "packs" / "scenes" / "LOCK").exists())
+        self.assertEqual(list(LEVELDB_SCENE.rglob("*.db")), [])
+        for marker in MARKERS:
+            self.assertFalse(Path(marker).exists(), marker)
+
+    def test_rebuilt_leveldb_scene_matches_committed_uvtt(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "synthetic-leveldb-scene"
+            (root / "assets").mkdir(parents=True)
+            (root / "module.json").write_text((LEVELDB_SCENE / "module.json").read_text(encoding="utf-8"), encoding="utf-8")
+            (root / "assets" / "crypt.png").write_bytes((LEVELDB_SCENE / "assets" / "crypt.png").read_bytes())
+            (root / "assets" / "drip.wav").write_bytes((LEVELDB_SCENE / "assets" / "drip.wav").read_bytes())
+            leveldb_fixture.build_scene(root / "packs" / "scenes")
+            fresh = build_uvtt_slice(root, "scene-vault")
+        committed = build_uvtt_slice(LEVELDB_SCENE, "scene-vault")
+        self.assertEqual(fresh["uvtt"], committed["uvtt"])
+        self.assertEqual(fresh["loss_report"]["counts"], committed["loss_report"]["counts"])
+        self.assertFalse((LEVELDB_SCENE / "packs" / "scenes" / "LOCK").exists())
+        for marker in MARKERS:
+            self.assertFalse(Path(marker).exists(), marker)
+
+    def test_cli_writes_leveldb_scene_uvtt_file(self) -> None:
+        env = os.environ.copy()
+        env["PYTHONPATH"] = str(SRC)
+        raw = (LEVELDB_SCENE / "assets" / "crypt.png").read_bytes()
+        with tempfile.TemporaryDirectory() as tmp:
+            dest = Path(tmp) / "out" / "scene-vault.uvtt"
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    "-m",
+                    "forgebridge",
+                    str(LEVELDB_SCENE),
+                    "--uvtt-scene",
+                    "scene-vault",
+                    "--uvtt-out",
+                    str(dest),
+                ],
+                check=False,
+                capture_output=True,
+                text=True,
+                env=env,
+            )
+            self.assertEqual(completed.returncode, 0, completed.stderr)
+            envelope = json.loads(completed.stdout)
+            written = json.loads(dest.read_text(encoding="utf-8"))
+            self.assertEqual(written, envelope["uvtt"])
+            self.assertTrue(envelope["loss_report"]["headline"].startswith("Unsupported "))
+            self.assertEqual(validate(written, load_schema(repo_schema("uvtt-core.schema.json"))), [])
+            self.assertNotIn("loss_report", written)
+            self.assertEqual(base64.b64decode(written["image"]), raw)
+            self.assertIn("VaultToken", envelope["loss_report"]["headline"] + json.dumps(envelope["loss_report"]))
+        self.assertEqual(list(REPO.glob("**/*.uvtt")), [])
+        self.assertFalse((LEVELDB_SCENE / "packs" / "scenes" / "LOCK").exists())
         for marker in MARKERS:
             self.assertFalse(Path(marker).exists(), marker)
 
