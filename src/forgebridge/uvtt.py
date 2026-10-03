@@ -86,6 +86,7 @@ LOOSE_IMPORT_SUFFIXES = {
     ".ogg",
     ".wav",
 }
+LOOSE_IMPORT_LIST = "JPG, PNG, WEBP, GIF, MP4, M4V, WEBM, MP3, OGG, and WAV"
 
 SCENE_FIELDS_EXPLAINED = {
     "_id",
@@ -175,7 +176,7 @@ def _slice_directory(package: Path, scene_id: str, rejected_zip_entries: list[st
     uvtt, lines = _scene_to_uvtt(package, payload)
     lines.extend(_other_document_lines(inventory, scene_id))
     lines.extend(_behavior_lines(inventory))
-    lines.extend(_asset_lines(inventory, _image_ref(lines)))
+    lines.extend(_asset_lines(inventory, _image_ref(lines), scene_id))
     lines.extend(_pack_lines(inventory))
     lines.extend(_package_file_lines(inventory))
     lines.extend(_rejected_zip_lines(rejected_zip_entries))
@@ -1051,13 +1052,135 @@ def _behavior_lines(inventory: dict) -> list[dict]:
     return rows
 
 
-def _asset_lines(inventory: dict, image_ref: str | None) -> list[dict]:
+def scene_loose_files(package: Path, scene_id: str) -> list[tuple[str, bytes]]:
+    """Return (basename, bytes) for scene image and audio files the import list allows."""
+    if package.is_symlink():
+        raise InventoryFatal("UVTT slice does not follow a symlinked package root.")
+    if package.is_file():
+        if package.suffix.lower() != ".zip":
+            raise InventoryFatal("UVTT slice reads a module folder or a .zip archive.")
+        with tempfile.TemporaryDirectory() as tmp:
+            root, _rejected = _safe_extract_zip(package, Path(tmp))
+            return _loose_files_in_directory(root, scene_id)
+    if not package.is_dir():
+        raise InventoryFatal("UVTT slice reads a module folder or a .zip archive.")
+    return _loose_files_in_directory(package, scene_id)
+
+
+def _loose_files_in_directory(package: Path, scene_id: str) -> list[tuple[str, bytes]]:
+    inventory = inventory_path(package)
+    files: list[tuple[str, bytes]] = []
+    seen: set[str] = set()
+    for asset in inventory["assets"]:
+        if _scene_asset_action(asset, scene_id) != "copy":
+            continue
+        ref = asset.get("ref")
+        if not isinstance(ref, str):
+            continue
+        safe, problem = _safe_ref(ref)
+        if problem or not safe:
+            continue
+        name = Path(safe).name
+        if not name or name in seen or name in {".", ".."} or "/" in name or "\\" in name:
+            continue
+        path = _package_file(package, safe)
+        if path.stat().st_size > MAX_ENTRY_BYTES:
+            continue
+        seen.add(name)
+        files.append((name, path.read_bytes()))
+    return files
+
+
+def _scene_asset_action(asset: dict, scene_id: str) -> str:
+    """copy, skip-type, blocked, or unrelated."""
+    if not _referenced_by_scene(asset, scene_id):
+        return "unrelated"
+    ref = asset.get("ref")
+    if not isinstance(ref, str):
+        return "blocked"
+    if asset.get("hostile") or asset.get("external"):
+        return "blocked"
+    safe, problem = _safe_ref(ref)
+    if problem or not safe:
+        return "blocked"
+    if Path(safe).suffix.lower() not in LOOSE_IMPORT_SUFFIXES:
+        return "skip-type"
+    if not asset.get("present_in_package"):
+        return "blocked"
+    return "copy"
+
+
+def _referenced_by_scene(asset: dict, scene_id: str) -> bool:
+    refs = asset.get("referenced_by")
+    if not isinstance(refs, list):
+        return False
+    return any(
+        isinstance(item, dict) and item.get("document_type") == "Scene" and item.get("id") == scene_id
+        for item in refs
+    )
+
+
+def _asset_lines(inventory: dict, image_ref: str | None, scene_id: str) -> list[dict]:
     rows = []
     for asset in inventory["assets"]:
         ref = asset.get("ref")
         if not isinstance(ref, str):
             continue
-        if ref == image_ref and asset.get("present_in_package") and not asset.get("hostile") and not asset.get("external"):
+        action = _scene_asset_action(asset, scene_id)
+        if action == "copy":
+            name = Path(ref).name
+            also = ""
+            if ref == image_ref:
+                also = " The same bytes are the UVTT image."
+            rows.append(
+                _line(
+                    APPROXIMATE,
+                    "loose-import",
+                    (
+                        f'asset "{ref}" is written beside the UVTT file as "{name}". '
+                        f"{Path(ref).suffix.lower()} is on Arkenforge's documented import list "
+                        f"({LOOSE_IMPORT_LIST}).{also}"
+                    ),
+                    path=ref,
+                )
+            )
+            continue
+        if action == "skip-type":
+            rows.append(
+                _line(
+                    UNSUPPORTED,
+                    "asset-type-skipped",
+                    (
+                        f'asset "{ref}" was skipped. This type is not on Arkenforge\'s documented '
+                        f"import list ({LOOSE_IMPORT_LIST})."
+                    ),
+                    path=ref,
+                )
+            )
+            continue
+        if action == "blocked" and _referenced_by_scene(asset, scene_id):
+            if asset.get("hostile"):
+                reason = "The reference leaves the package and was not opened."
+            elif asset.get("external"):
+                reason = "External URLs are not fetched."
+            elif not asset.get("present_in_package"):
+                reason = "The file is not in the package."
+            else:
+                reason = "The reference was not opened."
+            skipped = ""
+            if Path(ref).suffix.lower() not in LOOSE_IMPORT_SUFFIXES:
+                skipped = (
+                    f" Skipped. This type is not on Arkenforge's documented import list "
+                    f"({LOOSE_IMPORT_LIST})."
+                )
+            rows.append(
+                _line(
+                    UNSUPPORTED,
+                    "asset",
+                    f'asset "{ref}". {reason}{skipped}',
+                    path=ref,
+                )
+            )
             continue
         if asset.get("hostile"):
             grade = UNSUPPORTED
@@ -1074,13 +1197,15 @@ def _asset_lines(inventory: dict, image_ref: str | None) -> list[dict]:
                 grade = MANUAL
                 reason = (
                     "This extension is a confirmed loose import "
-                    "(JPG, PNG, WEBP, GIF, MP4, M4V, WEBM, MP3, OGG, or WAV). "
-                    "No package layout for a file beside the one UVTT image was published, "
-                    "so it stays in the Foundry package."
+                    f"({LOOSE_IMPORT_LIST}). "
+                    "It is not referenced by this scene, so it is not written beside the UVTT file."
                 )
             else:
                 grade = UNSUPPORTED
-                reason = "No confirmed Arkenforge import type matches this file."
+                reason = (
+                    f"Skipped. This type is not on Arkenforge's documented import list "
+                    f"({LOOSE_IMPORT_LIST})."
+                )
         rows.append(
             _line(
                 grade,

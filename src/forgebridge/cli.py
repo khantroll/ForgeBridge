@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 
 from forgebridge.inventory import inventory_path
-from forgebridge.uvtt import build_uvtt_slice
+from forgebridge.uvtt import build_uvtt_slice, scene_loose_files
 from forgebridge.validate import InventoryFatal, load_schema, repo_schema, validate
 
 
@@ -36,8 +36,8 @@ def main(argv: list[str] | None = None) -> int:
         "--uvtt-out",
         metavar="FILE",
         help=(
-            "After validation, write only the UVTT object to FILE. "
-            "That file is what Arkenforge imports. Stdout remains the envelope with the loss report."
+            "After validation, write the UVTT object to FILE and the scene's importable "
+            "image and audio files beside it. Stdout remains the envelope with the loss report."
         ),
     )
     args = parser.parse_args(argv)
@@ -75,12 +75,30 @@ def _uvtt(package: Path, scene_id: str, compact: bool, uvtt_out: str | None) -> 
         return 2
     if uvtt_out:
         try:
-            _write_uvtt_file(Path(uvtt_out), document["uvtt"])
-        except OSError as exc:
+            dest = Path(uvtt_out)
+            _write_uvtt_file(dest, document["uvtt"])
+            _write_loose_files(dest.parent, scene_loose_files(package, scene_id))
+        except (OSError, InventoryFatal) as exc:
             print(f"UVTT file was not written: {exc}", file=sys.stderr)
             return 1
     _print_json(document, compact)
     return 0
+
+
+def _write_loose_files(directory: Path, files: list[tuple[str, bytes]]) -> None:
+    directory.mkdir(parents=True, exist_ok=True)
+    root = directory.resolve()
+    for name, data in files:
+        if Path(name).name != name or name in {"", ".", ".."}:
+            raise InventoryFatal(f"loose asset name was rejected: {name}")
+        target = directory / name
+        try:
+            target.resolve().relative_to(root)
+        except (OSError, ValueError) as exc:
+            raise InventoryFatal(f"loose asset path leaves the output directory: {name}") from exc
+        if target.is_symlink():
+            raise InventoryFatal(f"refusing to write through a symlink: {name}")
+        target.write_bytes(data)
 
 
 def _write_uvtt_file(path: Path, uvtt: dict) -> None:

@@ -322,9 +322,12 @@ class UvttSliceTests(unittest.TestCase):
         )
         loss_text = "\n".join(
             item["summary"]
-            for grade in ("manual", "unsupported")
+            for grade in ("approximate", "manual", "unsupported")
             for item in report[grade]
         )
+        self.assertIn("not on Arkenforge's documented import list", loss_text)
+        loose = [item["path"] for item in report["approximate"] if item["code"] == "loose-import"]
+        self.assertEqual(loose, ["assets/crypt.png", "assets/drip.wav"])
         for phrase in (
             "VaultToken",
             "Vault Keeper",
@@ -476,6 +479,53 @@ class UvttSliceTests(unittest.TestCase):
             self.assertIn("/tmp/forgebridge-abs.js", joined)
             self.assertNotIn("writeFileSync", json.dumps(document))
             self.assertEqual(document["uvtt"]["resolution"]["map_size"], {"x": 2, "y": 2})
+        for marker in MARKERS:
+            self.assertFalse(Path(marker).exists(), marker)
+
+    def test_zip_command_writes_uvtt_and_loose_image_audio(self) -> None:
+        env = os.environ.copy()
+        env["PYTHONPATH"] = str(SRC)
+        png = (LEVELDB_SCENE / "assets" / "crypt.png").read_bytes()
+        wav = (LEVELDB_SCENE / "assets" / "drip.wav").read_bytes()
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            dest = root / "out" / "scene-vault.uvtt"
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    "-m",
+                    "forgebridge",
+                    str(LEVELDB_SCENE_ZIP),
+                    "--uvtt-scene",
+                    "scene-vault",
+                    "--uvtt-out",
+                    str(dest),
+                ],
+                check=False,
+                capture_output=True,
+                text=True,
+                env=env,
+            )
+            self.assertEqual(completed.returncode, 0, completed.stderr)
+            envelope = json.loads(completed.stdout)
+            written = json.loads(dest.read_text(encoding="utf-8"))
+            self.assertEqual(written, envelope["uvtt"])
+            self.assertEqual(base64.b64decode(written["image"]), png)
+            self.assertNotIn("loss_report", written)
+            self.assertEqual((dest.parent / "crypt.png").read_bytes(), png)
+            self.assertEqual((dest.parent / "drip.wav").read_bytes(), wav)
+            self.assertEqual(
+                sorted(path.name for path in dest.parent.iterdir()),
+                ["crypt.png", "drip.wav", "scene-vault.uvtt"],
+            )
+            self.assertFalse((root / "etc" / "passwd").exists())
+            self.assertFalse((root / "passwd").exists())
+            report = envelope["loss_report"]
+            joined = "\n".join(item["summary"] for item in report["unsupported"])
+            self.assertIn("../../etc/passwd", joined)
+            self.assertIn("not on Arkenforge's documented import list", joined)
+            self.assertNotIn("writeFileSync", completed.stdout)
+        self.assertEqual(list(REPO.glob("**/*.uvtt")), [])
         for marker in MARKERS:
             self.assertFalse(Path(marker).exists(), marker)
 
