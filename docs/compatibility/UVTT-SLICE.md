@@ -45,4 +45,4 @@ The same function builds the report from the inventory of the folder plus the sc
 
 ## Following step
 
-Decoding a real synthetic LevelDB compendium for inventory. Not this slice. `fixtures/leveldb-pointer` stays undecoded.
+Point the existing UVTT slice at one scene stored in a synthetic LevelDB pack. That step is named in [STATUS.md](../../STATUS.md) and is not done here. This slice still reads `scene-crypt` from the NeDB text fixture. `fixtures/leveldb-pointer` stays an unreadable trap directory.
