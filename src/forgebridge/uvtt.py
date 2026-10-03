@@ -355,7 +355,8 @@ def _scene_to_uvtt(package: Path, scene: dict) -> tuple[dict, list[dict]]:
     walls = scene.get("walls") if isinstance(scene.get("walls"), list) else []
     lights = scene.get("lights") if isinstance(scene.get("lights"), list) else []
     line_of_sight, portals = _walls_to_uvtt(walls, size, lines)
-    uvtt_lights = _lights_to_uvtt(lights, size, lines)
+    uvtt_lights = _lights_to_uvtt(lights, scene, size, lines)
+    ambient_light = _ambient_light(scene, lines)
     width = _number(scene.get("width"))
     height = _number(scene.get("height"))
     if width is None or height is None or width <= 0 or height <= 0:
@@ -457,6 +458,7 @@ def _scene_to_uvtt(package: Path, scene: dict) -> tuple[dict, list[dict]]:
         "portals": portals,
         "environment": {
             "baked_lighting": False,
+            **({"ambient_light": ambient_light} if ambient_light is not None else {}),
             "lights": uvtt_lights,
         },
         "image": base64.b64encode(image_bytes).decode("ascii"),
@@ -901,65 +903,82 @@ def _portal_closed(ds: object, wall_id: str | None) -> tuple[bool, dict | None]:
     )
 
 
-def _lights_to_uvtt(lights: list, size: float, lines: list[dict]) -> list[dict]:
+def _ambient_light(scene: dict, lines: list[dict]) -> str | None:
+    """Return a directly stored scene ambient hex color when one is available."""
+    environment = scene.get("environment")
+    candidates = []
+    if isinstance(environment, dict):
+        for key in ("ambient_light", "ambientLight"):
+            value = environment.get(key)
+            if isinstance(value, str):
+                candidates.append((f"environment.{key}", value))
+    for key in ("ambient_light", "ambientLight"):
+        value = scene.get(key)
+        if isinstance(value, str):
+            candidates.append((key, value))
+    for path, color in candidates:
+        if _hex_color(color):
+            lines.append(_line(NATIVE, "ambient-light",
+                f"scene ambient color {color} as UVTT environment.ambient_light.",
+                document_type="Scene", id=_text_id(scene), name=_text_name(scene), path=path))
+            return color
+        lines.append(_line(UNSUPPORTED, "ambient-light-invalid",
+            f"scene ambient color {color!r} is not a hex color and was not written.",
+            document_type="Scene", id=_text_id(scene), name=_text_name(scene), path=path))
+    if isinstance(environment, dict) and environment:
+        lines.append(_line(APPROXIMATE, "foundry-environment",
+            "Foundry scene environment data is richer than UVTT ambient_light. No ambient hex color was stored directly, so ForgeBridge did not invent one from darknessLevel, base/dark hue, luminosity, saturation, shadows, or globalLight.",
+            document_type="Scene", id=_text_id(scene), name=_text_name(scene), path="environment"))
+    return None
+
+
+def _lights_to_uvtt(lights: list, scene: dict, size: float, lines: list[dict]) -> list[dict]:
     written = []
+    grid = scene.get("grid") if isinstance(scene.get("grid"), dict) else {}
+    grid_distance = _number(grid.get("distance"))
     for light in lights:
         if not isinstance(light, dict):
             continue
         light_id = _text_id(light)
         config = light.get("config") if isinstance(light.get("config"), dict) else {}
         color = config.get("color") if isinstance(config.get("color"), str) else None
-        x = _number(light.get("x"))
-        y = _number(light.get("y"))
-        dim = config.get("dim")
-        bright = config.get("bright")
-        lines.append(
-            _line(
-                APPROXIMATE,
-                "light-range",
-                (
-                    f'light "{light_id or "no id"}" dim {dim!r} and bright {bright!r} '
-                    "were not written as range or intensity. Foundry LightData records dim, bright, "
-                    "and shadows as numbers and does not state the unit. UVTT shadows is a bool. "
-                    "No range, intensity, or shadows value was written."
-                ),
-                document_type="AmbientLight",
-                id=light_id,
-                path="config",
-            )
-        )
+        x, y = _number(light.get("x")), _number(light.get("y"))
+        dim, bright = _number(config.get("dim")), _number(config.get("bright"))
         if x is None or y is None or not _hex_color(color):
-            lines.append(
-                _line(
-                    UNSUPPORTED,
-                    "light-not-written",
-                    (
-                        f'light "{light_id or "no id"}" has no square position and hex color, '
-                        "so no UVTT light was written."
-                    ),
-                    document_type="AmbientLight",
-                    id=light_id,
-                )
-            )
+            lines.append(_line(UNSUPPORTED, "light-not-written",
+                f'light "{light_id or "no id"}" has no square position and hex color, so no UVTT light was written.',
+                document_type="AmbientLight", id=light_id))
             continue
-        written.append(
-            {
-                "position": {"x": _coord(x / size), "y": _coord(y / size)},
-                "color": color,
-            }
-        )
-        lines.append(
-            _line(
-                NATIVE,
-                "light",
-                f'light "{light_id or "no id"}" position and color {color} only.',
-                document_type="AmbientLight",
-                id=light_id,
-                path="config.color",
-            )
-        )
+        out = {"position": {"x": _coord(x / size), "y": _coord(y / size)}, "color": color}
+        radii = [value for value in (dim, bright) if value is not None]
+        if any(value < 0 for value in radii):
+            lines.append(_line(UNSUPPORTED, "darkness-source",
+                f'light "{light_id or "no id"}" has negative dim/bright radius {config.get("dim")!r}/{config.get("bright")!r}. Foundry uses negative light radii for darkness/blackness; UVTT documents a light range but no darkness-source equivalent. Range was not written.',
+                document_type="AmbientLight", id=light_id, path="config"))
+        elif radii and grid_distance is not None and grid_distance > 0:
+            outer = max(radii)
+            out["range"] = _coord(outer / grid_distance)
+            lines.append(_line(NATIVE, "light-range",
+                f'light "{light_id or "no id"}" outer radius {_plain(outer)} distance units at {_plain(grid_distance)} units per square as UVTT range {_plain(outer / grid_distance)} squares.',
+                document_type="AmbientLight", id=light_id, path="config.dim"))
+            if dim is not None and bright is not None and dim != bright:
+                lines.append(_line(APPROXIMATE, "light-bright-radius",
+                    f'light "{light_id or "no id"}" has separate Foundry dim/bright radii {_plain(dim)}/{_plain(bright)}. UVTT has one range, so only the outer radius is represented.',
+                    document_type="AmbientLight", id=light_id, path="config.bright"))
+        elif radii:
+            lines.append(_line(APPROXIMATE, "light-range-no-grid-distance",
+                f'light "{light_id or "no id"}" has dim/bright radii {config.get("dim")!r}/{config.get("bright")!r}, but the scene grid has no positive distance-units-per-square value. UVTT range is in squares, so ForgeBridge did not guess a conversion.',
+                document_type="AmbientLight", id=light_id, path="grid.distance"))
+        richer = [key for key in ("alpha","angle","animation","attenuation","coloration","contrast","darkness","luminosity","saturation","shadows") if key in config]
+        if richer:
+            lines.append(_line(APPROXIMATE, "light-rendering-properties",
+                f'light "{light_id or "no id"}" Foundry rendering properties {", ".join(richer)} were not mapped to UVTT intensity/shadows because the formats do not document equivalent semantics.',
+                document_type="AmbientLight", id=light_id, path="config"))
+        written.append(out)
+        lines.append(_line(NATIVE, "light",
+            f'light "{light_id or "no id"}" position and color {color}' + (f", range {out['range']} squares." if "range" in out else " only."),
+            document_type="AmbientLight", id=light_id, path="config.color"))
     return written
-
 
 def _other_document_lines(inventory: dict, scene_id: str) -> list[dict]:
     rows = []
