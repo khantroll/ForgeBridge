@@ -1,7 +1,7 @@
 # Project Status
 
 **Lifecycle:** UVTT DYNAMIC LIGHTING SLICE  
-**Implementation started:** Inventory CLI, importable UVTT, loose scene assets, ambient color, and deterministic AmbientLight range conversion  
+**Implementation started:** Inventory CLI, importable UVTT, loose scene assets, embedded Adventure scene discovery, ambient color, and deterministic AmbientLight range conversion  
 **General converter started:** No
 
 The zipped LevelDB scene is the previous state. This slice is the current state. One command writes scene `scene-vault` from `fixtures/synthetic-leveldb-scene.zip` as a UVTT file and copies that scene's PNG and WAV beside it. The unpacked LevelDB scene and the text scene `scene-crypt` still produce the same UVTT object. It is not a general Foundry-to-Arkenforge converter.
@@ -34,6 +34,16 @@ Public docs were re-read on 2026-10-03 and written up with citations:
 - [docs/compatibility/UVTT-SLICE.md](docs/compatibility/UVTT-SLICE.md) — the importable UVTT file, the four grades, the LevelDB scene, and the loose image and audio files.
 
 The inventory IR is `schema/inventory-0.1.schema.json`. `fixtures/synthetic-leveldb` is still decoded into the inventory. `fixtures/leveldb-pointer` still fails closed. Unknown fields are retained. Imported JavaScript, macros, HTML, and YAML are not executed.
+
+## Real Foundry Adventure scene support
+
+A real Foundry v13 Adventure pack exposed a storage shape the synthetic scene pack did not cover: the pack can contain one top-level `Adventure` document whose `scenes` array contains the actual Scene documents.
+
+The inventory now keeps the parent Adventure and also promotes each embedded Scene into the normal scene inventory. Promoted scenes retain their containing Adventure id/name/source index under `retained_fields._forgebridge_parent_adventure`. `--uvtt-scene SCENE_ID` uses that provenance to reopen the parent Adventure and select the embedded Scene, then sends it through the same Scene -> UVTT path as ordinary scene packs.
+
+Foundry virtual asset paths of the form `modules/<this-package>/...`, `worlds/<this-package>/...`, or `systems/<this-package>/...` may resolve to the corresponding package-local path when the virtual package name matches the package directory. Traversal and symlink protections remain in force.
+
+A synthetic regression covers a two-scene Adventure, parent preservation, scene discovery, provenance, scene selection, wall/light conversion, and package-local virtual background resolution.
 
 ## Dynamic lighting slice
 
