@@ -603,7 +603,7 @@ class UvttSliceTests(unittest.TestCase):
                 "name": "Adventure Hall",
                 "width": 200,
                 "height": 200,
-                "img": f"modules/{root.name}/assets/crypt.png",
+                "background": {"src": f"modules/{root.name}/assets/crypt.png"},
                 "grid": {"type": 1, "size": 100, "distance": 5, "units": "ft"},
                 "walls": [
                     {"_id": "adv-wall", "c": [0, 0, 100, 0], "door": 1, "ds": 0}
@@ -627,7 +627,7 @@ class UvttSliceTests(unittest.TestCase):
                 "name": "Adventure Yard",
                 "width": 100,
                 "height": 100,
-                "img": f"modules/{root.name}/assets/crypt.png",
+                "background": {"src": f"modules/{root.name}/assets/crypt.png"},
                 "grid": {"type": 1, "size": 100, "distance": 5, "units": "ft"},
                 "walls": [],
                 "lights": [],
