@@ -552,6 +552,9 @@ def _background_ref(scene: dict) -> str | None:
             background = level.get("background")
             if isinstance(background, dict) and isinstance(background.get("src"), str) and background["src"].strip():
                 return background["src"]
+    background = scene.get("background")
+    if isinstance(background, dict) and isinstance(background.get("src"), str) and background["src"].strip():
+        return background["src"]
     img = scene.get("img")
     if isinstance(img, str) and img.strip():
         return img
