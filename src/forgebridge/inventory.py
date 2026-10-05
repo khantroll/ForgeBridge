@@ -96,7 +96,7 @@ EMBEDDED_DOMAIN = {
 # Types without a pinned list keep their whole source document instead of being guessed.
 PINNED_KEYS = {
     "Scene": {
-        "_id", "_stats", "active", "backgroundColor", "drawings", "environment", "flags",
+        "_id", "_stats", "active", "background", "backgroundColor", "drawings", "environment", "flags",
         "fog", "folder", "grid", "height", "initial", "initialLevel", "journal",
         "journalEntryPage", "levels", "lights", "name", "navigation", "navName",
         "navOrder", "notes", "ownership", "padding", "playlist", "playlistSound",
