@@ -144,9 +144,9 @@ def _copy_flat(src: Path, dest: Path, result: LevelDBResult, max_value_bytes: in
 
 def _open_and_decode(dest: Path, result: LevelDBResult, *, max_entries: int, max_value_bytes: int) -> None:
     try:
-        import plyvel
+        import plyvel_next as plyvel
     except ImportError as exc:
-        raise LevelDBUnavailable("reading LevelDB requires plyvel==1.5.1") from exc
+        raise LevelDBUnavailable("reading LevelDB requires plyvel-next==2.1.2") from exc
     try:
         database = plyvel.DB(os.fspath(dest), create_if_missing=False)
     except plyvel.Error as exc:
