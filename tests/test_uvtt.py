@@ -592,6 +592,120 @@ class UvttSliceTests(unittest.TestCase):
         for marker in MARKERS:
             self.assertFalse(Path(marker).exists(), marker)
 
+    def test_adventure_embedded_scene_is_promoted_selected_and_converted(self) -> None:
+        png = (FIXTURE / "assets" / "crypt.png").read_bytes()
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "adventure-module"
+            (root / "packs").mkdir(parents=True)
+            (root / "assets").mkdir()
+            scene_one = {
+                "_id": "adv-scene-one",
+                "name": "Adventure Hall",
+                "width": 200,
+                "height": 200,
+                "img": f"modules/{root.name}/assets/crypt.png",
+                "grid": {"type": 1, "size": 100, "distance": 5, "units": "ft"},
+                "walls": [
+                    {"_id": "adv-wall", "c": [0, 0, 100, 0], "door": 1, "ds": 0}
+                ],
+                "lights": [
+                    {
+                        "_id": "adv-light",
+                        "x": 50,
+                        "y": 50,
+                        "config": {"dim": 20, "bright": 10, "color": "#ffaa44"},
+                    }
+                ],
+                "sounds": [],
+                "tokens": [],
+                "tiles": [],
+                "notes": [],
+                "regions": [],
+            }
+            scene_two = {
+                "_id": "adv-scene-two",
+                "name": "Adventure Yard",
+                "width": 100,
+                "height": 100,
+                "img": f"modules/{root.name}/assets/crypt.png",
+                "grid": {"type": 1, "size": 100, "distance": 5, "units": "ft"},
+                "walls": [],
+                "lights": [],
+            }
+            adventure = {
+                "_id": "adv-one",
+                "name": "Synthetic Adventure",
+                "scenes": [scene_one, scene_two],
+                "actors": [],
+                "items": [],
+                "journal": [],
+                "playlists": [],
+            }
+            (root / "module.json").write_text(
+                json.dumps(
+                    {
+                        "id": root.name,
+                        "title": "Adventure module",
+                        "version": "13.0.0",
+                        "packs": [
+                            {
+                                "name": "adventure",
+                                "label": "Adventure",
+                                "path": "packs/adventure.json",
+                                "type": "Adventure",
+                                "system": "dnd5e",
+                            }
+                        ],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            (root / "packs" / "adventure.json").write_text(
+                json.dumps(adventure),
+                encoding="utf-8",
+            )
+            (root / "assets" / "crypt.png").write_bytes(png)
+
+            inventory = inventory_path(root)
+            self.assertEqual(validate(inventory, load_schema()), [])
+            parent = next(
+                item for item in inventory["documents"] if item["id"] == "adv-one"
+            )
+            self.assertEqual(parent["document_type"], "Adventure")
+            self.assertEqual(parent["embedded_counts"]["Scene"], 2)
+
+            scenes = [
+                item
+                for item in inventory["documents"]
+                if item["document_type"] == "Scene"
+            ]
+            self.assertEqual(
+                [(item["id"], item["name"]) for item in scenes],
+                [
+                    ("adv-scene-one", "Adventure Hall"),
+                    ("adv-scene-two", "Adventure Yard"),
+                ],
+            )
+            provenance = scenes[0]["retained_fields"]["_forgebridge_parent_adventure"]
+            self.assertEqual(
+                provenance,
+                {"id": "adv-one", "name": "Synthetic Adventure", "source_index": 0},
+            )
+
+            document = build_uvtt_slice(root, "adv-scene-one")
+            uvtt = document["uvtt"]
+            self.assertEqual(
+                validate(uvtt, load_schema(repo_schema("uvtt-core.schema.json"))),
+                [],
+            )
+            self.assertEqual(uvtt["resolution"]["map_size"], {"x": 2, "y": 2})
+            self.assertEqual(len(uvtt["portals"]), 1)
+            self.assertEqual(uvtt["environment"]["lights"][0]["range"], 4)
+            self.assertEqual(uvtt["environment"]["lights"][0]["color"], "#ffaa44")
+            self.assertEqual(base64.b64decode(uvtt["image"]), png)
+            for marker in MARKERS:
+                self.assertFalse(Path(marker).exists(), marker)
+
     def test_non_zip_file_is_refused(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             archive = Path(tmp) / "module.zip"
