@@ -291,6 +291,19 @@ def _load_scene_payload(package: Path, row: dict, scene_id: str) -> dict:
         payloads = _payloads_json(text)
     else:
         payloads = _payloads_jsonl(text)
+
+    parent_id = _parent_adventure_id(row)
+    if parent_id is not None:
+        for payload in payloads:
+            doc_id = payload.get("_id") if isinstance(payload.get("_id"), str) else None
+            if doc_id == parent_id:
+                scene = _embedded_adventure_scene(payload, scene_id)
+                if scene is not None:
+                    return scene
+        raise InventoryFatal(
+            f"scene {scene_id!r} was not in Adventure {parent_id!r} in {safe}"
+        )
+
     for payload in payloads:
         doc_id = payload.get("_id") if isinstance(payload.get("_id"), str) else None
         if doc_id is None and isinstance(payload.get("id"), str):
@@ -316,13 +329,48 @@ def _load_leveldb_scene(package: Path, row: dict, scene_id: str) -> dict:
         raise InventoryFatal(
             f"scene pack {safe} is LevelDB and was not opened. It was not read as text."
         )
+    parent_id = _parent_adventure_id(row)
     for declared, payload in result.documents:
         if not isinstance(payload, dict):
             continue
         doc_id = payload.get("_id") if isinstance(payload.get("_id"), str) else None
-        if doc_id == scene_id and declared == "Scene":
+        if parent_id is not None and doc_id == parent_id and declared == "Adventure":
+            scene = _embedded_adventure_scene(payload, scene_id)
+            if scene is not None:
+                return scene
+        if parent_id is None and doc_id == scene_id and declared == "Scene":
             return payload
+    if parent_id is not None:
+        raise InventoryFatal(
+            f"scene {scene_id!r} was not in Adventure {parent_id!r} in {safe}"
+        )
     raise InventoryFatal(f"scene {scene_id!r} was not in {safe}")
+
+
+def _parent_adventure_id(row: dict) -> str | None:
+    retained = row.get("retained_fields")
+    if not isinstance(retained, dict):
+        return None
+    parent = retained.get("_forgebridge_parent_adventure")
+    if not isinstance(parent, dict):
+        return None
+    value = parent.get("id")
+    return value if isinstance(value, str) and value else None
+
+
+def _embedded_adventure_scene(adventure: dict, scene_id: str) -> dict | None:
+    scenes = adventure.get("scenes")
+    if not isinstance(scenes, list):
+        return None
+    for scene in scenes:
+        if not isinstance(scene, dict):
+            continue
+        doc_id = scene.get("_id") if isinstance(scene.get("_id"), str) else None
+        if doc_id is None and isinstance(scene.get("id"), str):
+            doc_id = scene["id"]
+        if doc_id == scene_id:
+            return scene
+    return None
 
 
 def _payloads_json(text: str) -> list[dict]:
@@ -533,20 +581,34 @@ def _read_image(package: Path, ref: str) -> tuple[str, bytes]:
 
 def _package_file(package: Path, safe: str) -> Path:
     root = package.resolve()
-    path = package / safe
-    current = path
-    while True:
-        if current.is_symlink():
-            raise InventoryFatal(f"symlink was not followed: {safe}")
-        if current.resolve() == root or current == package:
-            break
-        parent = current.parent
-        if parent == current:
-            break
-        current = parent
-    if not _contained(root, path) or not path.is_file():
-        raise InventoryFatal(f"path is not a file inside the package: {safe}")
-    return path
+    candidates = [safe]
+    parts = safe.split("/")
+    if (
+        len(parts) >= 3
+        and parts[0] in {"modules", "worlds", "systems"}
+        and parts[1] == package.name
+    ):
+        candidates.append("/".join(parts[2:]))
+
+    for candidate in candidates:
+        path = package / candidate
+        current = path
+        unsafe = False
+        while True:
+            if current.is_symlink():
+                unsafe = True
+                break
+            if current.resolve() == root or current == package:
+                break
+            parent = current.parent
+            if parent == current:
+                break
+            current = parent
+        if unsafe:
+            continue
+        if _contained(root, path) and path.is_file():
+            return path
+    raise InventoryFatal(f"path is not a file inside the package: {safe}")
 
 
 def _contained(root: Path, path: Path) -> bool:
