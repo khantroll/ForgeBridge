@@ -80,3 +80,7 @@ Exports now include full linked JournalEntry data under `scene_notes` in the pre
 ## Linked dependency milestone (2026-10-08)
 
 The real Crypt note export now verifies all 19 exact journal/page matches, no read errors, and complete retention of its 21-page journal. The dependency resolver follows recognized journal/page and roll-table UUID links recursively while preserving original references and full objects. Exact compendium namespaces, relative-page links, source scope, cycle detection, explicit failure statuses, and traversal bounds prevent silent guesses. The readable GM reference includes linked rules and table outcomes; no native destination objects or dice execution are introduced. All 11 relative links in the uploaded Crypt journal resolve. Next: run a new export against the original package to verify external rules pages and tables, then investigate native note representation.
+
+### Native note research — 2026-10-08
+
+Added a bounded inert MS-NRBF inspector (`src/forgebridge/nrbf.py`). Parsed all 30 native files in the user-supplied Town package and correlated its seven note marker targets with note metadata/content. See `docs/research/NATIVE-NOTES.md` for observed classes and the controlled sample needed next. The supplied token notes contain no prose/link/table fields. Native writing remains unimplemented; current UVTT output is unchanged. Verified the fresh Crypt companions: 19 placed notes and all 29 discovered dependency links resolved, two complete roll tables, no errors/truncation.
