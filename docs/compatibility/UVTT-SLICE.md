@@ -1,69 +1,55 @@
-# Importable UVTT file
+# Arkenforge UVTT compatibility slice
 
-This slice writes one synthetic scene as a UVTT file Arkenforge can import, plus a graded loss report. It is not a general converter. It does not write a campaign, a note file, a token file, a hotkey file, a MyAssets folder, or a Foundry module. It does not invent an Arkenforge API.
+ForgeBridge exports one selected Foundry scene to UVTT, copies its referenced loose media beside the output, and saves the complete selected source scene in a `.forgebridge.json` companion. UVTT is a useful compatibility layer, not the ceiling of the converter's intended feature support.
 
 ```bash
+python3 -m pip install -r requirements.txt
 PYTHONPATH=src python3 -m forgebridge fixtures/synthetic-module --uvtt-scene scene-crypt --uvtt-out scene-crypt.uvtt
-PYTHONPATH=src python3 -m forgebridge fixtures/synthetic-leveldb-scene --uvtt-scene scene-vault --uvtt-out scene-vault.uvtt
-PYTHONPATH=src python3 -m forgebridge fixtures/synthetic-leveldb-scene.zip --uvtt-scene scene-vault --uvtt-out scene-vault.uvtt
 PYTHONPATH=src python3 -m unittest discover -s tests
 ```
 
-Stdout is one JSON object, `{"uvtt", "loss_report"}`. `--uvtt-out` writes the `uvtt` object and, beside it, the scene's image and audio files whose extensions are on the documented import list. The UVTT file is the map import. The envelope is not: it has `loss_report`, which is outside the UVTT core fields.
+Stdout contains `uvtt`, `loss_report`, and `source_scene`. Import the `.uvtt` file into Arkenforge. The companion JSON is ForgeBridge preservation data, not an Arkenforge import file. It retains full wall restrictions, light configurations (including skipped lights), notes/tokens/audio references, flags, and other selected scene data without inventory truncation. Script strings may be retained as inert JSON; they are never executed. Referenced journal/actor documents outside the selected scene still require future correlation work.
 
-The command exits 0 when `uvtt` matches `schema/uvtt-core.schema.json` and `loss_report` matches `schema/uvtt-loss-report.schema.json`. It exits 1 when the scene is missing, the pack is not text, or the grid is not square. It exits 2 when a schema check fails, and it does not write the file in that case. No `.uvtt` file is checked in. The tests generate the object.
+## Evidence from the real import, 2026-10-08
 
-Inventory without `--uvtt-scene` is unchanged. See [INVENTORY-SPIKE.md](INVENTORY-SPIKE.md).
+The original Count's Manor export used numeric point arrays, relative door bounds, nested lights, and a format placeholder. The map image was WEBP. A user-supplied native Arkenforge `Town.uvtt` provided concrete wire examples; the accompanying native package contains notes, audio, ambience, and map metadata beyond UVTT. Neither reference establishes a feature ceiling.
 
-## Field list actually used
+The corrected test used an RGBA PNG, translated coordinates, named points, absolute portal bounds, top-level lights, opaque ARGB colors, and native-export lighting defaults. In Arkenforge v0.5.1.17, the user confirmed successful image import, aligned walls and doors, selectable/editable lights after ungrouping, visible dynamic illumination, and responsive door switches. Enabling a door's **Blocks Light** property made it block the light. The untouched imported door had that property disabled.
 
-[Universal VTT files](https://arkenforge.com/universal-vtt-files/), read 2026-10-03. The page `datePublished` is 2022-03-05 and `dateModified` is 2026-08-22. The sample map linked from that page was not downloaded.
+This verifies the test's geometry and rendering structure, not every source setting. Moving a light indicator without its illumination moving remains unresolved. The original Foundry ZIP is needed to validate the generic writer against the actual scene and inspect the 16 skipped lights.
 
-The page's core tags, in its own outline, are:
+## Emitted structure
 
-- `format`: a decimal version. The page does not give the number. This slice writes `0.0` and grades that approximate.
-- `resolution.map_origin` `{x, y}`
-- `resolution.map_size` `{x, y}` in squares
-- `resolution.pixels_per_grid`
-- `line_of_sight`: an array of `[x][y]` values per object
-- `objects_line_of_sight`: the same shape. Tokens and tiles are not placed here.
-- `portals`: `position` `{x, y}`, `bounds` (an array of x,y values; the page has no example, so this slice uses `[x, y]` pairs relative to `position` and grades that approximate), `rotation` in radians, `closed`, `freestanding` (the page does not define it; wall segments are written `false`)
-- `environment.baked_lighting`
-- `environment.ambient_light` (omitted when the scene has no hex ambient color)
-- `environment.lights`: `position`, `range`, `intensity`, `color`, `shadows`. This slice writes `position` and `color` only.
-- `image`: base64 PNG or WEBP
-
-The same page says Arkenforge adds `software` and `creator` for its own use. Those are not core tags. This slice omits them.
-
-Positions in the file are squares. For `scene-crypt`, Foundry `grid.type` is `1` (`GRID_TYPES.SQUARE` on the Version 14 API, retrieved 2026-10-03) and `grid.size` is 100 pixels, so a 200 by 200 scene is `map_size` 2 by 2. A grid type other than square does not produce a file. The slice refuses to call a hex grid a field of squares.
-
-Door codes `1` and `2` become portals and are not also copied into `line_of_sight`. `ds` `0` is `WALL_DOOR_STATES.CLOSED` and `ds` `1` is `OPEN` (Version 14, retrieved 2026-10-03), which sets `closed`. `LOCKED` (`2`) has no UVTT value, so a locked door would be `closed` true and graded approximate. The crypt wall is `door` 1 and `ds` 0. The door code itself is approximate because a portal has no type field. The portal geometry is native.
-
-`LightData.dim`, `bright`, and `shadows` are numbers on the Version 14 class page (retrieved 2026-10-03). That page does not state whether dim and bright are pixels or squares. UVTT `shadows` is a bool. Range, intensity, and shadows are left out and graded approximate. Position and hex color are native.
-
-The image is the level background `assets/crypt.png`, read from inside the package. Paths that leave the package, external URLs, and symlinks are not opened. The thumbnail is not a second image.
-
-Confirmed loose imports, from the animated-map FAQ (`dateModified` 2025-12-10) and the v0.5.0.0 notes (2026-01-13), are JPG, PNG, WEBP, GIF, MP4, M4V, WEBM, MP3, OGG, and WAV. Those files are not bundled beside the UVTT image. No package layout for that was published, so they stay in the Foundry package and are graded manual.
-
-## Grades
-
-The same function builds the report from the inventory of the folder plus the scene document. The headline starts with `Unsupported` and counts unsupported, manual, approximate, and native lines. Each summary starts with `Native:`, `Approximate:`, `Manual:`, or `Unsupported:`.
-
-The grades use [docs/research/ARKENFORGE.md](../research/ARKENFORGE.md), retrieved 2026-10-03. They are the best grade those public pages support.
-
-| Grade | Meaning on this slice |
+| Field | Writer behavior |
 |---|---|
-| native | A documented UVTT field filled in the file: the map image, square resolution, `baked_lighting`, a portal's position and closed flag, a line-of-sight segment, and a light's position and color. |
-| approximate | Written or deliberately omitted with a documented mismatch: `format` 0.0, portal bounds, `freestanding`, omitted `software` and `creator`, door type, locked or unknown door state, light dim/bright/shadows, grid distance and units, thumbnail, a scene image that is not the chosen background, and a scene image or audio file written beside the UVTT file because that extension is a loose import. |
-| manual | A Toolkit UI feature with no file this slice can write. Scene and level names. Tokens (UVTT cannot carry selectable tokens; tokens exist in the UI). In-package tiles. Notes. Actors, journals, items (5e note fields, not a general item system), rollable tables, playlists, and macros (hotkeys; the macro is not executed). Loose image and audio files that this scene does not reference. |
-| unsupported | No documented equivalent, or the data cannot be used. Regions and their scripts. Active effects. Flags, unknown scene fields, and other retained fields such as `homebrewRule`. Hostile, missing, and external assets. Package scripts (not executed), styles, the YAML pack, and extra manifest keys. A wall with no geometry, or a light with no position and hex color. |
+| `format` | `1.0`, as in the native reference |
+| `resolution` | Unpadded scene width/height in squares, origin zero, grid pixels per square |
+| `line_of_sight` | Arrays of named `{x, y}` points |
+| `portals.bounds` | Absolute named endpoints; never rotated a second time |
+| `portals.position` | Unsigned endpoint deltas, following the native Arkenforge exporter |
+| `portals.rotation` | Zero because bounds already supply orientation |
+| `portals.closed` | Source door state; locked becomes closed with an approximation warning |
+| `environment` | `baked_lighting: false`, optional directly stored ambient hex color |
+| `lights` | Top-level array, normalized positions, outer range in squares, opaque eight-digit ARGB color |
+| Light rendering defaults | Intensity `0.5`, shadows `true`, explicitly graded approximate; not equivalents of Foundry luminosity/numeric shadows |
+| `image` | Compatible RGB/RGBA PNG; WEBP/palette/grayscale sources decoded with Pillow and converted without resizing |
 
-Script bodies are not copied into the UVTT object or the report, and they are not executed.
+Already compatible RGB/RGBA PNG bytes are preserved. Invalid images and images larger than 16000 pixels on an axis fail with a clear error. The observed compatibility failure was resolved by conversion to PNG; this does not mean all WEBP imports fail in Arkenforge.
 
-The same writer reads `scene-vault` from `fixtures/synthetic-leveldb-scene` and from `fixtures/synthetic-leveldb-scene.zip`. That scene lives in a LevelDB pack (`packs/scenes`), with walls, lights, and the other placeables stored as separate keys and put back on the scene before the UVTT fields are filled. Zip entries whose names leave the archive are not extracted and are not executed. The text fixture `scene-crypt` still works. `fixtures/leveldb-pointer` stays an unreadable trap directory.
+For geometry, stored `dimensions.sceneX/sceneY` are used if present. Otherwise each padding offset is derived from scene dimensions and rounded up to grid spaces. Missing padding assumes zero and is reported. Background translation offsets are included; rotation and scale transforms are currently rejected rather than producing misleading alignment. The real test required an 800/1000 pixel translation, matching a 3000 by 4000 scene at 100 pixels/grid with 0.25 padding, but the source padding value still needs verification. No manor-specific constant is embedded in the writer.
 
-`--uvtt-out` also writes the scene's image and audio files beside the UVTT file when the extension is on the import list in [docs/research/ARKENFORGE.md](../research/ARKENFORGE.md): JPG, PNG, WEBP, GIF, MP4, M4V, WEBM, MP3, OGG, and WAV. For `scene-vault` those files are `crypt.png` and `drip.wav`. The map image stays inside the UVTT file as well. A type that is not on that list is skipped and graded unsupported. Paths that leave the archive are not written.
+## Door blocking limitation
 
-## Following step
+UVTT's single `closed` boolean does not independently express Arkenforge's light/vision blocking capabilities and the current toggle state. Preserve the source state and record each portal index, wall id, and original `light`, `sight`, `move`, `sound`, `dir`, `threshold`, and `ds` settings in the report and companion. After import, set the appropriate properties in **Customise -> Blocking**. Do not enable light blocking indiscriminately on transparent windows. No unverified custom UVTT tags or automatic source-state changes are introduced.
 
-Write `environment.ambient_light` when a synthetic scene stores a hex ambient color. Not this slice. The UVTT page documents that field. The scenes in this repository do not have one, so the file still omits it. This step does not invent a note file, a token file, or a campaign format.
+This importer behavior needs a native map representation or a verified extension to become automatic. The current writer corrects compatibility but does not claim full blocking-semantic fidelity. More advanced ordinary wall restriction modes likewise remain beyond the UVTT subset.
+
+## Lighting limitations
+
+Outer dim/bright radii divide by `grid.distance`; separate bright/dim zones remain approximate. Negative-radius darkness sources have no translated range. A missing/invalid color or position is reported rather than fabricated. The complete source configuration remains in the companion for later work. Painted illumination in the background image cannot be removed by changing imported dynamic lights.
+
+## Reports and validation
+
+Both UVTT and loss report are checked against bundled schemas. Counts currently include package inventory in addition to the selected scene. `unsupported` means not translated by this slice, not proof that Arkenforge lacks the capability. The UVTT schema rejects legacy point arrays and nested lights. Regression cases cover padding, independent scene origins, reversed door endpoints, image decoding/conversion, unsupported background transforms, preserved skipped-light data, and companion output. Existing text, LevelDB, Adventure, ZIP, asset containment, and non-execution checks remain.
+
+References: [Arkenforge UVTT](https://arkenforge.com/universal-vtt-files/), [Foundry Scene dimensions](https://foundryvtt.com/api/v12/classes/client.Scene.html#getDimensions), [Arkenforge blocking controls](https://arkenforge.com/arkenforge-v0-4-2-0-update/), [Arkenforge 0.5 light controls](https://arkenforge.com/v0-5release/). The private native samples and real map are not checked into this repository.

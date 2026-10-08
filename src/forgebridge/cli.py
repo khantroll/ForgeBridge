@@ -37,7 +37,7 @@ def main(argv: list[str] | None = None) -> int:
         metavar="FILE",
         help=(
             "After validation, write the UVTT object to FILE and the scene's importable "
-            "image and audio files beside it. Stdout remains the envelope with the loss report."
+            "image/audio files and a .forgebridge.json source/settings sidecar beside it. Stdout remains the envelope with the loss report."
         ),
     )
     args = parser.parse_args(argv)
@@ -78,6 +78,12 @@ def _uvtt(package: Path, scene_id: str, compact: bool, uvtt_out: str | None) -> 
             dest = Path(uvtt_out)
             _write_uvtt_file(dest, document["uvtt"])
             _write_loose_files(dest.parent, scene_loose_files(package, scene_id))
+            _write_uvtt_file(dest.with_suffix(".forgebridge.json"), {
+                "schema_version": "1.0",
+                "scene_id": scene_id,
+                "source_scene": document["source_scene"],
+                "loss_report": document["loss_report"],
+            })
         except (OSError, InventoryFatal) as exc:
             print(f"UVTT file was not written: {exc}", file=sys.stderr)
             return 1
@@ -102,6 +108,8 @@ def _write_loose_files(directory: Path, files: list[tuple[str, bytes]]) -> None:
 
 
 def _write_uvtt_file(path: Path, uvtt: dict) -> None:
+    if path.is_symlink():
+        raise OSError(f"refusing to write through a symlink: {path}")
     if path.exists() and path.is_dir():
         raise OSError(f"{path} is a directory")
     path.parent.mkdir(parents=True, exist_ok=True)

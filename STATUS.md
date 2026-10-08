@@ -14,7 +14,7 @@ reads the LevelDB pack inside the zip, prints one JSON object with `uvtt` and `l
 
 Asset types that are not on that list are skipped and graded unsupported. Zip entries whose names leave the archive are not extracted and are not executed.
 
-The UVTT object is unchanged: the core fields on [Arkenforge's UVTT page](https://arkenforge.com/universal-vtt-files/), read 2026-10-03 (`dateModified` 2026-08-22). Notes are in [docs/compatibility/UVTT-SLICE.md](docs/compatibility/UVTT-SLICE.md).
+The current UVTT object follows the compatibility fixes below, based on the core fields on [Arkenforge's UVTT page](https://arkenforge.com/universal-vtt-files/), read 2026-10-03 (`dateModified` 2026-08-22). Notes are in [docs/compatibility/UVTT-SLICE.md](docs/compatibility/UVTT-SLICE.md).
 
 These commands still write a UVTT file. They also write loose image and audio files for the scene they read:
 
@@ -59,7 +59,12 @@ The current branch translates the deterministic UVTT lighting subset:
 
 Walls and portals remain the collision/line-of-sight geometry consumed by the target lighting engine.
 
-## Next step
+## Real Arkenforge compatibility validation (2026-10-08)
 
-**Validate this lighting slice against a real, legally usable Foundry scene imported into Arkenforge.** Synthetic tests establish the transformation rules; the next useful evidence is whether Arkenforge renders the emitted ambient color, ranges, walls, and portals as expected. Do not add token vision until this scene-lighting validation is complete.
+The user-supplied native UVTT reference and Count's Manor import exposed wire-shape errors. The exporter now writes format 1.0, named point objects, absolute door bounds, top-level lights, native-compatible colors/defaults, and embedded compatible PNGs. Canvas origins derive from scene padding or stored dimensions and apply consistently to walls, doors, and lights. Source-specific constants are not used.
 
+The working test confirmed image compatibility, geometry alignment, editable lights, dynamic illumination, and door switches. Door light blocking required enabling Blocks Light in Arkenforge; this is now a per-portal manual compatibility warning with original restrictions/state recorded. Light movement remains unresolved. Defaults for light intensity/shadows are explicitly approximate.
+
+The full selected scene is now saved in a `.forgebridge.json` companion and included in stdout, preserving skipped lights, restriction settings, and unknown data for future correlation. UVTT does not define the destination's capabilities. The supplied native package demonstrated notes, audio, ambience, and map metadata beyond this interchange subset.
+
+Next: obtain the original Foundry ZIP, regenerate Count's Manor with this writer, verify padding from its actual source, investigate the 16 skipped lights, and compare native map fields for independent blocking/toggle semantics and light positioning. Do not claim those unresolved parts are automatic or verified.

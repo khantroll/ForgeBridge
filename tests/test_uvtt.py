@@ -88,6 +88,7 @@ class UvttSliceTests(unittest.TestCase):
             set(uvtt),
             {
                 "format",
+                "lights",
                 "resolution",
                 "line_of_sight",
                 "objects_line_of_sight",
@@ -98,26 +99,26 @@ class UvttSliceTests(unittest.TestCase):
         )
         self.assertNotIn("software", uvtt)
         self.assertNotIn("creator", uvtt)
-        self.assertEqual(uvtt["format"], 0.0)
+        self.assertEqual(uvtt["format"], 1.0)
         self.assertEqual(uvtt["resolution"]["map_origin"], {"x": 0, "y": 0})
         self.assertEqual(uvtt["resolution"]["map_size"], {"x": 2, "y": 2})
         self.assertEqual(uvtt["resolution"]["pixels_per_grid"], 100)
         self.assertEqual(uvtt["line_of_sight"], [])
         self.assertEqual(uvtt["objects_line_of_sight"], [])
         portal = uvtt["portals"][0]
-        self.assertEqual(portal["position"], {"x": 0.5, "y": 0})
-        self.assertEqual(portal["bounds"], [[-0.5, 0], [0.5, 0]])
+        self.assertEqual(portal["position"], {"x": 1, "y": 0})
+        self.assertEqual(portal["bounds"], [{"x": 0, "y": 0}, {"x": 1, "y": 0}])
         self.assertEqual(portal["rotation"], 0)
         self.assertIs(portal["closed"], True)
         self.assertIs(portal["freestanding"], False)
         self.assertNotIn("ambient_light", uvtt["environment"])
         self.assertIs(uvtt["environment"]["baked_lighting"], False)
-        light = uvtt["environment"]["lights"][0]
+        light = uvtt["lights"][0]
         self.assertEqual(light["position"], {"x": 0.5, "y": 0.5})
-        self.assertEqual(light["color"], "#ffcc88")
+        self.assertEqual(light["color"], "ffffcc88")
         self.assertEqual(light["range"], 4)
-        self.assertNotIn("intensity", light)
-        self.assertNotIn("shadows", light)
+        self.assertEqual(light["intensity"], 0.5)
+        self.assertIs(light["shadows"], True)
         raw = (FIXTURE / "assets" / "crypt.png").read_bytes()
         self.assertEqual(base64.b64decode(uvtt["image"]), raw)
         for marker in MARKERS:
@@ -156,9 +157,8 @@ class UvttSliceTests(unittest.TestCase):
         for phrase in PHRASES:
             self.assertIn(phrase, loss_text, phrase)
         approximate_text = "\n".join(item["summary"] for item in report["approximate"])
-        self.assertIn("does not publish", approximate_text)
-        self.assertIn("0.0", approximate_text)
-        self.assertIn("bounds", approximate_text)
+        self.assertIn("compatibility defaults", approximate_text)
+        self.assertIn("source_scene", document)
         native_codes = {item["code"] for item in report["native"]}
         self.assertIn("image", native_codes)
         self.assertIn("portal", native_codes)
@@ -167,7 +167,7 @@ class UvttSliceTests(unittest.TestCase):
         manual_types = {item["document_type"] for item in report["manual"]}
         for dtype in ("Actor", "Item", "JournalEntry", "RollTable", "Playlist", "Macro", "Token", "Note"):
             self.assertIn(dtype, manual_types, dtype)
-        blob = json.dumps(document)
+        blob = json.dumps(document["loss_report"])
         self.assertNotIn("writeFileSync", blob)
         self.assertNotIn("/tmp/forgebridge", blob)
         uvtt_blob = json.dumps(document["uvtt"])
@@ -230,8 +230,8 @@ class UvttSliceTests(unittest.TestCase):
         uvtt = document["uvtt"]
         self.assertEqual(uvtt["environment"]["ambient_light"], "#223344")
         self.assertEqual(
-            uvtt["environment"]["lights"][0],
-            {"position": {"x": 1.5, "y": 2.5}, "range": 4, "color": "#ffaa44"},
+            uvtt["lights"][0],
+            {"position": {"x": 1.5, "y": 2.5}, "range": 4, "color": "ffffaa44", "intensity": 0.5, "shadows": True},
         )
         self.assertEqual(validate(uvtt, load_schema(repo_schema("uvtt-core.schema.json"))), [])
         native_codes = {item["code"] for item in document["loss_report"]["native"]}
@@ -262,7 +262,7 @@ class UvttSliceTests(unittest.TestCase):
                 png,
             )
             document = build_uvtt_slice(root, "scene-darkness")
-        light = document["uvtt"]["environment"]["lights"][0]
+        light = document["uvtt"]["lights"][0]
         self.assertNotIn("range", light)
         unsupported_codes = {item["code"] for item in document["loss_report"]["unsupported"]}
         self.assertIn("darkness-source", unsupported_codes)
@@ -288,9 +288,9 @@ class UvttSliceTests(unittest.TestCase):
                 png,
             )
             uvtt = build_uvtt_slice(root, "scene-walls")["uvtt"]
-        self.assertEqual(uvtt["line_of_sight"], [[[0, 0], [0, 1]]])
+        self.assertEqual(uvtt["line_of_sight"], [[{"x": 0, "y": 0}, {"x": 0, "y": 1}]])
         self.assertEqual(len(uvtt["portals"]), 1)
-        self.assertEqual(uvtt["portals"][0]["position"], {"x": 0.5, "y": 0})
+        self.assertEqual(uvtt["portals"][0]["position"], {"x": 1, "y": 0})
 
     def test_cli_prints_schema_valid_slice(self) -> None:
         env = os.environ.copy()
@@ -372,10 +372,10 @@ class UvttSliceTests(unittest.TestCase):
         self.assertEqual(validate(report, load_schema(repo_schema("uvtt-loss-report.schema.json"))), [])
         self.assertEqual(uvtt["resolution"]["map_size"], {"x": 2, "y": 2})
         self.assertEqual(uvtt["line_of_sight"], [])
-        self.assertEqual(uvtt["portals"][0]["position"], {"x": 0.5, "y": 0})
+        self.assertEqual(uvtt["portals"][0]["position"], {"x": 1, "y": 0})
         self.assertIs(uvtt["portals"][0]["closed"], True)
-        self.assertEqual(uvtt["environment"]["lights"][0]["color"], "#ffcc88")
-        self.assertEqual(uvtt["environment"]["lights"][0]["range"], 4)
+        self.assertEqual(uvtt["lights"][0]["color"], "ffffcc88")
+        self.assertEqual(uvtt["lights"][0]["range"], 4)
         raw = (LEVELDB_SCENE / "assets" / "crypt.png").read_bytes()
         self.assertEqual(base64.b64decode(uvtt["image"]), raw)
         self.assertTrue(report["headline"].startswith("Unsupported "))
@@ -404,7 +404,7 @@ class UvttSliceTests(unittest.TestCase):
             "../../etc/passwd",
         ):
             self.assertIn(phrase, loss_text, phrase)
-        blob = json.dumps(document)
+        blob = json.dumps(document["loss_report"])
         self.assertNotIn("writeFileSync", blob)
         self.assertNotIn("VaultToken", json.dumps(uvtt))
         self.assertNotIn("homebrewRule", json.dumps(uvtt))
@@ -474,7 +474,7 @@ class UvttSliceTests(unittest.TestCase):
         self.assertEqual(zipped["loss_report"]["counts"], unpacked["loss_report"]["counts"])
         self.assertTrue(zipped["loss_report"]["headline"].startswith("Unsupported "))
         self.assertEqual(base64.b64decode(zipped["uvtt"]["image"]), (LEVELDB_SCENE / "assets" / "crypt.png").read_bytes())
-        self.assertNotIn("writeFileSync", json.dumps(zipped))
+        self.assertNotIn("writeFileSync", json.dumps(zipped["uvtt"]))
         for marker in MARKERS:
             self.assertFalse(Path(marker).exists(), marker)
 
@@ -540,7 +540,7 @@ class UvttSliceTests(unittest.TestCase):
             joined = "\n".join(item["summary"] for item in rejected)
             self.assertIn("../" + outside_name, joined)
             self.assertIn("/tmp/forgebridge-abs.js", joined)
-            self.assertNotIn("writeFileSync", json.dumps(document))
+            self.assertNotIn("writeFileSync", json.dumps(document["uvtt"]))
             self.assertEqual(document["uvtt"]["resolution"]["map_size"], {"x": 2, "y": 2})
         for marker in MARKERS:
             self.assertFalse(Path(marker).exists(), marker)
@@ -579,7 +579,7 @@ class UvttSliceTests(unittest.TestCase):
             self.assertEqual((dest.parent / "drip.wav").read_bytes(), wav)
             self.assertEqual(
                 sorted(path.name for path in dest.parent.iterdir()),
-                ["crypt.png", "drip.wav", "scene-vault.uvtt"],
+                ["crypt.png", "drip.wav", "scene-vault.forgebridge.json", "scene-vault.uvtt"],
             )
             self.assertFalse((root / "etc" / "passwd").exists())
             self.assertFalse((root / "passwd").exists())
@@ -587,7 +587,7 @@ class UvttSliceTests(unittest.TestCase):
             joined = "\n".join(item["summary"] for item in report["unsupported"])
             self.assertIn("../../etc/passwd", joined)
             self.assertIn("not on Arkenforge's documented import list", joined)
-            self.assertNotIn("writeFileSync", completed.stdout)
+            self.assertNotIn("writeFileSync", json.dumps(envelope["uvtt"]))
         self.assertEqual(list(REPO.glob("**/*.uvtt")), [])
         for marker in MARKERS:
             self.assertFalse(Path(marker).exists(), marker)
@@ -700,8 +700,8 @@ class UvttSliceTests(unittest.TestCase):
             )
             self.assertEqual(uvtt["resolution"]["map_size"], {"x": 2, "y": 2})
             self.assertEqual(len(uvtt["portals"]), 1)
-            self.assertEqual(uvtt["environment"]["lights"][0]["range"], 4)
-            self.assertEqual(uvtt["environment"]["lights"][0]["color"], "#ffaa44")
+            self.assertEqual(uvtt["lights"][0]["range"], 4)
+            self.assertEqual(uvtt["lights"][0]["color"], "ffffaa44")
             self.assertEqual(base64.b64decode(uvtt["image"]), png)
             for marker in MARKERS:
                 self.assertFalse(Path(marker).exists(), marker)

@@ -181,7 +181,7 @@ def build_scene(dest: Path) -> None:
 
 
 def _write(dest: Path, entries: list) -> None:
-    import plyvel
+    import plyvel_next as plyvel
 
     if dest.exists():
         shutil.rmtree(dest)

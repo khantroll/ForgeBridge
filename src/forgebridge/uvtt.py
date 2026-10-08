@@ -11,9 +11,10 @@ read 2026-10-03. That page's dateModified is 2026-08-22.
 Core fields used: format, resolution.map_origin, resolution.map_size,
 resolution.pixels_per_grid, line_of_sight, objects_line_of_sight, portals
 (position, bounds, rotation, closed, freestanding), environment.baked_lighting,
-environment.ambient_light, environment.lights (position, range, color), and image.
+environment.ambient_light, top-level lights, and image.
+Exact point/color shapes follow a user-supplied Arkenforge export tested 2026-10-08.
 software and creator are Arkenforge extras on that page, so they are omitted.
-The page does not publish the format decimal and does not show a bounds example.
+The tested Arkenforge export uses format 1.0 and absolute {x, y} portal bounds.
 
 Grades use that page plus the public Toolkit notes recorded in
 docs/research/ARKENFORGE.md (retrieved 2026-10-03). native is a UVTT field this
@@ -35,10 +36,13 @@ from __future__ import annotations
 
 import base64
 import json
+import io
 import math
 import tempfile
 import zipfile
 from pathlib import Path
+
+from PIL import Image, UnidentifiedImageError
 
 from forgebridge.inventory import (
     MAX_ENTRIES,
@@ -93,6 +97,9 @@ SCENE_FIELDS_EXPLAINED = {
     "_id",
     "name",
     "width",
+    "padding",
+    "background",
+    "dimensions",
     "height",
     "img",
     "grid",
@@ -185,7 +192,7 @@ def _slice_directory(package: Path, scene_id: str, rejected_zip_entries: list[st
     lines.extend(_package_file_lines(inventory))
     lines.extend(_rejected_zip_lines(rejected_zip_entries))
     report = _report(scene_id, payload.get("name"), lines)
-    return {"uvtt": uvtt, "loss_report": report}
+    return {"uvtt": uvtt, "loss_report": report, "source_scene": payload}
 
 
 def _safe_extract_zip(archive: Path, dest: Path) -> tuple[Path, list[str]]:
@@ -406,8 +413,9 @@ def _scene_to_uvtt(package: Path, scene: dict) -> tuple[dict, list[dict]]:
     _grade_scene_fields(scene, image_ref, lines)
     walls = scene.get("walls") if isinstance(scene.get("walls"), list) else []
     lights = scene.get("lights") if isinstance(scene.get("lights"), list) else []
-    line_of_sight, portals = _walls_to_uvtt(walls, size, lines)
-    uvtt_lights = _lights_to_uvtt(lights, scene, size, lines)
+    origin = _scene_origin(scene, size, lines)
+    line_of_sight, portals = _walls_to_uvtt(walls, size, lines, origin)
+    uvtt_lights = _lights_to_uvtt(lights, scene, size, lines, origin)
     ambient_light = _ambient_light(scene, lines)
     width = _number(scene.get("width"))
     height = _number(scene.get("height"))
@@ -446,36 +454,16 @@ def _scene_to_uvtt(package: Path, scene: dict) -> tuple[dict, list[dict]]:
         _line(
             NATIVE,
             "baked-lighting",
-            "environment.baked_lighting false. The scene lights are separate data, not paint in the image.",
+            "environment.baked_lighting false enables imported dynamic lights; this does not remove illumination already painted into the background.",
             document_type="Scene",
             id=_text_id(scene),
             name=_text_name(scene),
             path=image_ref,
         )
     )
-    lines.append(
-        _line(
-            APPROXIMATE,
-            "format-decimal-unpublished",
-            (
-                "format is documented as a decimal version. The UVTT page, read "
-                f"{UVTT_READ_ON}, does not publish that number. This slice writes 0.0 "
-                "as a placeholder and does not claim that Arkenforge expects 0.0."
-            ),
-            path=UVTT_SOURCE,
-        )
-    )
-    lines.append(
-        _line(
-            APPROXIMATE,
-            "portal-bounds-unspecified",
-            (
-                "portal bounds are documented as an array of x,y values. The UVTT page, read "
-                f"{UVTT_READ_ON}, has no example. This slice writes [x, y] pairs relative to position."
-            ),
-            path=UVTT_SOURCE,
-        )
-    )
+    lines.append(_line(NATIVE, "arkenforge-wire-shape",
+        "format 1.0, named x/y points, absolute portal bounds, and top-level lights "
+        "match the user-supplied Arkenforge export and the successful 2026-10-08 import test."))
     lines.append(
         _line(
             APPROXIMATE,
@@ -499,7 +487,7 @@ def _scene_to_uvtt(package: Path, scene: dict) -> tuple[dict, list[dict]]:
         )
     )
     uvtt = {
-        "format": 0.0,
+        "format": 1.0,
         "resolution": {
             "map_origin": {"x": 0, "y": 0},
             "map_size": {"x": _coord(width / size), "y": _coord(height / size)},
@@ -511,8 +499,8 @@ def _scene_to_uvtt(package: Path, scene: dict) -> tuple[dict, list[dict]]:
         "environment": {
             "baked_lighting": False,
             **({"ambient_light": ambient_light} if ambient_light is not None else {}),
-            "lights": uvtt_lights,
         },
+        "lights": uvtt_lights,
         "image": base64.b64encode(image_bytes).decode("ascii"),
     }
     return uvtt, lines
@@ -579,7 +567,50 @@ def _read_image(package: Path, ref: str) -> tuple[str, bytes]:
         raise InventoryFatal(f"UVTT image is not a PNG: {ref}")
     if suffix == ".webp" and not (len(data) >= 12 and data.startswith(b"RIFF") and data[8:12] == b"WEBP"):
         raise InventoryFatal(f"UVTT image is not a WEBP: {ref}")
+    try:
+        with Image.open(io.BytesIO(data)) as image:
+            image.load()
+            if image.width > 16000 or image.height > 16000:
+                raise InventoryFatal(f"UVTT background exceeds Arkenforge's 16000 pixel limit: {ref}")
+            # Preserve already compatible PNGs; convert WEBP and palette/grayscale images.
+            if image.format != "PNG" or image.mode not in {"RGB", "RGBA"}:
+                output = io.BytesIO()
+                image.convert("RGBA").save(output, format="PNG")
+                data = output.getvalue()
+    except (UnidentifiedImageError, OSError, ValueError, Image.DecompressionBombError) as exc:
+        raise InventoryFatal(f"UVTT image could not be decoded: {ref}: {exc}") from exc
     return safe, data
+
+
+def _scene_origin(scene: dict, size: float, lines: list[dict]) -> tuple[float, float]:
+    """Normalize canvas coordinates to the unpadded scene/background rectangle."""
+    dimensions = scene.get("dimensions")
+    explicit = isinstance(dimensions, dict) and all(_number(dimensions.get(k)) is not None for k in ("sceneX", "sceneY"))
+    if explicit:
+        x, y = float(dimensions["sceneX"]), float(dimensions["sceneY"])
+    else:
+        padding = _number(scene.get("padding", 0))
+        width, height = _number(scene.get("width")), _number(scene.get("height"))
+        if padding is None or padding < 0 or width is None or height is None:
+            raise InventoryFatal("scene padding and dimensions must be finite non-negative numbers")
+        x = math.ceil(width * padding / size) * size
+        y = math.ceil(height * padding / size) * size
+    background = scene.get("background")
+    if isinstance(background, dict):
+        for key in ("offsetX", "offsetY", "rotation", "scaleX", "scaleY"):
+            if key in background:
+                value = _number(background[key])
+                if value is None:
+                    raise InventoryFatal(f"background.{key} must be a finite number")
+                if key in {"rotation", "scaleX", "scaleY"} and value != (0 if key == "rotation" else 1):
+                    raise InventoryFatal(f"background.{key} transformation is not yet supported; refusing misaligned UVTT")
+        x += background.get("offsetX", 0)
+        y += background.get("offsetY", 0)
+    lines.append(_line(NATIVE if explicit else APPROXIMATE, "coordinate-origin",
+        f"Subtract canvas background origin {_plain(x)}, {_plain(y)} pixels from all walls, portals, and lights. "
+        + ("Uses stored sceneX/sceneY." if explicit else "Uses padding rounded up to whole grid spaces; absent padding assumes zero. Confirm against the source scene."),
+        document_type="Scene", id=_text_id(scene), path="padding"))
+    return x, y
 
 
 def _package_file(package: Path, safe: str) -> Path:
@@ -845,7 +876,7 @@ def _grade_placeables(scene: dict, lines: list[dict]) -> None:
         )
 
 
-def _walls_to_uvtt(walls: list, size: float, lines: list[dict]) -> tuple[list, list]:
+def _walls_to_uvtt(walls: list, size: float, lines: list[dict], origin: tuple[float, float] = (0, 0)) -> tuple[list, list]:
     line_of_sight = []
     portals = []
     for wall in walls:
@@ -869,6 +900,8 @@ def _walls_to_uvtt(walls: list, size: float, lines: list[dict]) -> tuple[list, l
             )
             continue
         (x1, y1), (x2, y2) = segment
+        ox, oy = origin[0] / size, origin[1] / size
+        x1, y1, x2, y2 = x1 - ox, y1 - oy, x2 - ox, y2 - oy
         door = wall.get("door")
         if isinstance(door, int) and not isinstance(door, bool) and door in PORTAL_DOOR_CODES:
             closed, state_line = _portal_closed(wall.get("ds"), wall_id)
@@ -887,20 +920,21 @@ def _walls_to_uvtt(walls: list, size: float, lines: list[dict]) -> tuple[list, l
                     path="door",
                 )
             )
-            mx = _coord((x1 + x2) / 2)
-            my = _coord((y1 + y2) / 2)
-            portals.append(
-                {
-                    "position": {"x": mx, "y": my},
-                    "bounds": [
-                        [_coord(x1 - mx), _coord(y1 - my)],
-                        [_coord(x2 - mx), _coord(y2 - my)],
-                    ],
-                    "rotation": _coord(math.atan2(y2 - y1, x2 - x1)),
-                    "closed": closed,
-                    "freestanding": False,
-                }
-            )
+            portals.append({
+                # The native Arkenforge exporter stores unsigned endpoint deltas here.
+                "position": {"x": _coord(abs(x2 - x1)), "y": _coord(abs(y2 - y1))},
+                "bounds": [{"x": _coord(x1), "y": _coord(y1)}, {"x": _coord(x2), "y": _coord(y2)}],
+                "rotation": 0,
+                "closed": closed,
+                "freestanding": False,
+            })
+            restrictions = {key: wall.get(key) for key in ("light", "sight", "move", "sound", "dir", "threshold") if key in wall}
+            lines.append(_line(MANUAL, "portal-blocking-properties",
+                f'portal {len(portals)-1}, wall "{wall_id or "no id"}": source restrictions {json.dumps(restrictions, sort_keys=True)}, ds={wall.get("ds")!r}. '
+                "UVTT closed preserves the initial door state but cannot separately encode Arkenforge Blocks Light/Blocks Vision and toggle state. "
+                "The tested open portal imported with Blocks Light disabled; enable the intended blocking capabilities in Customise -> Blocking after import. "
+                "Full source settings are preserved in the source scene sidecar; do not enable light blocking on transparent windows indiscriminately.",
+                document_type="Wall", id=wall_id, path="light"))
             lines.append(
                 _line(
                     NATIVE,
@@ -916,7 +950,7 @@ def _walls_to_uvtt(walls: list, size: float, lines: list[dict]) -> tuple[list, l
                 )
             )
             continue
-        line_of_sight.append([[_coord(x1), _coord(y1)], [_coord(x2), _coord(y2)]])
+        line_of_sight.append([{"x": _coord(x1), "y": _coord(y1)}, {"x": _coord(x2), "y": _coord(y2)}])
         lines.append(
             _line(
                 NATIVE,
@@ -1001,7 +1035,7 @@ def _ambient_light(scene: dict, lines: list[dict]) -> str | None:
     return None
 
 
-def _lights_to_uvtt(lights: list, scene: dict, size: float, lines: list[dict]) -> list[dict]:
+def _lights_to_uvtt(lights: list, scene: dict, size: float, lines: list[dict], origin: tuple[float, float] = (0, 0)) -> list[dict]:
     written = []
     grid = scene.get("grid") if isinstance(scene.get("grid"), dict) else {}
     grid_distance = _number(grid.get("distance"))
@@ -1018,7 +1052,15 @@ def _lights_to_uvtt(lights: list, scene: dict, size: float, lines: list[dict]) -
                 f'light "{light_id or "no id"}" has no square position and hex color, so no UVTT light was written.',
                 document_type="AmbientLight", id=light_id))
             continue
-        out = {"position": {"x": _coord(x / size), "y": _coord(y / size)}, "color": color}
+        digits = color[1:]
+        if len(digits) == 3:
+            digits = "".join(char * 2 for char in digits)
+        out = {"position": {"x": _coord((x - origin[0]) / size), "y": _coord((y - origin[1]) / size)},
+               "color": "ff" + digits, "intensity": 0.5, "shadows": True}
+        lines.append(_line(APPROXIMATE, "light-import-defaults",
+            f'light "{light_id or "no id"}": opaque ARGB color, intensity 0.5, shadows true match the working Arkenforge test. '
+            "These are compatibility defaults, not equivalent Foundry luminosity or numeric shadows; full source config is preserved in the sidecar.",
+            document_type="AmbientLight", id=light_id, path="config"))
         radii = [value for value in (dim, bright) if value is not None]
         if any(value < 0 for value in radii):
             lines.append(_line(UNSUPPORTED, "darkness-source",
@@ -1378,7 +1420,7 @@ def _report(scene_id: str, scene_name: object, lines: list[dict]) -> dict:
         f"Unsupported {len(unsupported)}. Manual {len(manual)}. "
         f"Approximate {len(approximate)}. Native {len(native)}. "
         "The importable file is UVTT JSON: map image, square grid, line of sight, portals, and lights. "
-        "Every other inventory entry is graded from public Arkenforge docs."
+        "Counts include package inventory as well as the selected scene. Unsupported means this slice did not translate a feature, not that Arkenforge cannot support it. The full selected source scene is preserved separately."
     )
     return {
         "headline": headline,

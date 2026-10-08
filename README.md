@@ -208,3 +208,7 @@ That session is the inventory spike recorded in [STATUS.md](STATUS.md). The curr
 
 This README captures the ForgeBridge concept. A UVTT file plus the scene's importable image and audio files is the current work.
 
+
+## Tested Arkenforge import compatibility (2026-10-08)
+
+Install `requirements.txt` before exporting; Pillow normalizes embedded backgrounds to compatible PNG. UVTT output now uses the native-tested geometry/light structure. Every `--uvtt-out` also writes a `.forgebridge.json` companion preserving the complete selected source scene and loss report. Imported door states are preserved, but blocking capabilities may need enabling in Arkenforge. See [the current compatibility notes](docs/compatibility/UVTT-SLICE.md) for evidence, limitations, and the next source-scene validation.
