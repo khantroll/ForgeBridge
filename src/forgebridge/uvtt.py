@@ -959,10 +959,49 @@ def _walls_to_uvtt(walls: list, size: float, lines: list[dict], origin: tuple[fl
                 )
             )
             continue
-        line_of_sight.append([{"x": _coord(x1), "y": _coord(y1)}, {"x": _coord(x2), "y": _coord(y2)}])
+        restrictions = {key: wall.get(key) for key in ("light", "sight", "move", "sound", "dir", "threshold") if key in wall}
+        bounds = [{"x": _coord(x1), "y": _coord(y1)}, {"x": _coord(x2), "y": _coord(y2)}]
+        # UVTT LOS cannot represent a movement-only wall without inventing an
+        # opaque light/vision barrier. Keep its complete source in the sidecar.
+        if wall.get("light") == 0 and wall.get("sight") == 0:
+            lines.append(_line(MANUAL, "wall-transparent-omitted",
+                f'wall "{wall_id or "no id"}", bounds {json.dumps(bounds, sort_keys=True)}: '
+                f'source restrictions {json.dumps(restrictions, sort_keys=True)}. '
+                "Source light=0 and sight=0: omitted from UVTT line_of_sight so it does not become opaque. "
+                "If needed, recreate its movement/sound blocking separately in Arkenforge; leave Blocks Light and Blocks Vision disabled. "
+                "The complete source wall remains in the source scene sidecar.",
+                document_type="Wall", id=wall_id, path="c"))
+            continue
+        segment_index = len(line_of_sight)
+        line_of_sight.append(bounds)
+        threshold = wall.get("threshold")
+        has_threshold = (
+            any(value is not None and value is not False for value in threshold.values())
+            if isinstance(threshold, dict) else threshold is not None and threshold is not False
+        )
+        simple_optical_wall = (
+            wall.get("light") == 20 and wall.get("sight") == 20
+            and wall.get("dir", 0) == 0 and not has_threshold
+        )
+        if not simple_optical_wall:
+            instructions = []
+            for key, label in (("light", "Light"), ("sight", "Vision")):
+                if wall.get(key) == 0:
+                    instructions.append(f"Source {key}=0: disable Blocks {label}.")
+                elif wall.get(key) == 20:
+                    instructions.append(f"Source {key}=20: enable Blocks {label}.")
+                else:
+                    instructions.append(f"Source {key}={wall.get(key)!r}: inspect this restriction; it is not equivalent to a simple on/off setting.")
+            lines.append(_line(MANUAL, "wall-blocking-properties",
+                f'line_of_sight {segment_index}, wall "{wall_id or "no id"}", bounds {json.dumps(bounds, sort_keys=True)}: '
+                f'source restrictions {json.dumps(restrictions, sort_keys=True)}. '
+                "UVTT retains this segment's geometry but cannot independently encode its light/vision modes, direction, or thresholds. "
+                "After import review Customise -> Blocking. " + " ".join(instructions) + " "
+                "Movement/sound restrictions also require review; complete source settings remain in the sidecar.",
+                document_type="Wall", id=wall_id, path="light"))
         lines.append(
             _line(
-                NATIVE,
+                NATIVE if simple_optical_wall else APPROXIMATE,
                 "line-of-sight",
                 (
                     f'wall "{wall_id or "no id"}" as one line_of_sight segment. '
@@ -978,7 +1017,7 @@ def _walls_to_uvtt(walls: list, size: float, lines: list[dict], origin: tuple[fl
             _line(
                 NATIVE,
                 "line-of-sight-empty",
-                "line_of_sight is empty. Door walls were written as portals and were not also written as walls.",
+                "line_of_sight is empty. Door walls use portals; walls explicitly transparent to both light and vision are omitted.",
                 document_type="Wall",
             )
         )

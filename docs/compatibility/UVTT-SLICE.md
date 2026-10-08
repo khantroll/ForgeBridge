@@ -24,7 +24,7 @@ This verifies the test's geometry and rendering structure, not every source sett
 |---|---|
 | `format` | `1.0`, as in the native reference |
 | `resolution` | Unpadded scene width/height in squares, origin zero, grid pixels per square |
-| `line_of_sight` | Arrays of named `{x, y}` points |
+| `line_of_sight` | Arrays of named `{x, y}` points; non-door walls explicitly transparent to both light and vision are omitted |
 | `portals.bounds` | Absolute named endpoints; never rotated a second time |
 | `portals.position` | Unsigned endpoint deltas, following the native Arkenforge exporter |
 | `portals.rotation` | Zero because bounds already supply orientation |
@@ -42,7 +42,15 @@ For geometry, stored `dimensions.sceneX/sceneY` are used if present. Otherwise e
 
 UVTT's single `closed` boolean does not independently express Arkenforge's light/vision blocking capabilities and the current toggle state. Preserve the source state and record each portal index, wall id, and original `light`, `sight`, `move`, `sound`, `dir`, `threshold`, and `ds` settings in the report and companion. After import, set the appropriate properties in **Customise -> Blocking**. Do not enable light blocking indiscriminately on transparent windows. No unverified custom UVTT tags or automatic source-state changes are introduced.
 
-This importer behavior needs a native map representation or a verified extension to become automatic. The current writer corrects compatibility but does not claim full blocking-semantic fidelity. More advanced ordinary wall restriction modes likewise remain beyond the UVTT subset.
+This importer behavior needs a native map representation or a verified extension to become automatic. The current writer corrects compatibility but does not claim full blocking-semantic fidelity.
+
+## Ordinary wall blocking
+
+The fireplace test confirmed that importing every source wall as opaque traps lights behind Foundry movement-only barriers. Non-door walls with explicit `light=0` and `sight=0` now stay out of UVTT `line_of_sight`. Their source records remain intact in the companion; `wall-transparent-omitted` reports identify their normalized endpoints and movement/sound settings for recreation if needed. This avoids inventing optical blocking at the cost of requiring separate movement/sound setup. Missing restriction fields are not assumed to be zero.
+
+Mixed light/vision modes remain as geometry because UVTT has no independently verified per-segment blocking flags. `wall-blocking-properties` reports give the emitted segment index, normalized endpoints, source wall id and restrictions, and explicit instructions to disable Blocks Light or Blocks Vision when the source value is zero. Limited/proximity/directional/threshold modes require inspection rather than an invented Boolean equivalent. Both-light-and-vision-normal walls retain ordinary LOS geometry. Doors are handled first, so transparent doors remain portals and retain their source open/closed state.
+
+The user confirmed that disabling light blocking on the fireplace-front barrier lets the lights illuminate the room. No light relocation, radius cap, blanket shadow disabling, or invented custom UVTT properties are used as a workaround.
 
 ## Lighting limitations
 

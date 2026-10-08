@@ -11,11 +11,79 @@ from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
 from forgebridge.cli import main
-from forgebridge.uvtt import _scene_to_uvtt, build_uvtt_slice
+from forgebridge.uvtt import _scene_to_uvtt, _walls_to_uvtt, build_uvtt_slice
 from forgebridge.validate import InventoryFatal, load_schema, repo_schema, validate
 
 
 class ArkenforgeCompatibilityTests(unittest.TestCase):
+    def test_fireplace_movement_wall_does_not_become_an_opaque_barrier(self):
+        walls = [
+            {'_id': 'fireplace-front', 'c': [2000, 1600, 2000, 2900],
+             'light': 0, 'sight': 0, 'move': 20, 'sound': 0},
+            {'_id': 'outer-wall', 'c': [1962, 1575, 1962, 2900],
+             'light': 20, 'sight': 20},
+        ]
+        original = json.loads(json.dumps(walls))
+        lines = []
+        los, portals = _walls_to_uvtt(walls, 100, lines, (800, 1000))
+        self.assertEqual(len(los), 1)
+        self.assertAlmostEqual(los[0][0]['x'], 11.62)
+        self.assertAlmostEqual(los[0][1]['x'], 11.62)
+        self.assertEqual([p['y'] for p in los[0]], [5.75, 19])
+        self.assertEqual(portals, [])
+        self.assertEqual(walls, original)
+        warning = next(x for x in lines if x['code'] == 'wall-transparent-omitted')
+        self.assertIn('fireplace-front', warning['summary'])
+        self.assertIn('"move": 20', warning['summary'])
+        self.assertIn('"x": 12', warning['summary'])
+        self.assertIn('recreate', warning['summary'])
+
+    def test_mixed_optical_walls_keep_geometry_and_get_specific_instructions(self):
+        for light, sight, instruction in [(0, 20, 'disable Blocks Light'),
+                                           (20, 0, 'disable Blocks Vision'),
+                                           (0, 10, 'not equivalent to a simple on/off')]:
+            with self.subTest(light=light, sight=sight):
+                lines = []
+                los, _ = _walls_to_uvtt([{'_id': 'mixed', 'c': [0, 0, 100, 0],
+                                         'light': light, 'sight': sight}], 100, lines)
+                self.assertEqual(len(los), 1)
+                warning = next(x for x in lines if x['code'] == 'wall-blocking-properties')
+                self.assertIn('line_of_sight 0', warning['summary'])
+                self.assertIn(instruction, warning['summary'])
+
+    def test_missing_optical_settings_do_not_imply_transparency(self):
+        for restrictions in [{}, {'light': 0}, {'sight': 0}]:
+            with self.subTest(restrictions=restrictions):
+                lines = []
+                los, _ = _walls_to_uvtt([{'c': [0, 0, 100, 0], **restrictions}], 100, lines)
+                self.assertEqual(len(los), 1)
+                self.assertTrue(any(x['code'] == 'wall-blocking-properties' for x in lines))
+
+    def test_directional_and_threshold_walls_are_reported_for_review(self):
+        for overrides in [{'dir': 1}, {'threshold': {'light': 5}}, {'light': 30}]:
+            with self.subTest(overrides=overrides):
+                lines = []
+                los, _ = _walls_to_uvtt([{'c': [0, 0, 100, 0], 'light': 20,
+                                         'sight': 20, **overrides}], 100, lines)
+                self.assertEqual(len(los), 1)
+                self.assertTrue(any(x['code'] == 'wall-blocking-properties' for x in lines))
+
+    def test_transparent_doors_remain_portals_with_source_state(self):
+        lines = []
+        los, portals = _walls_to_uvtt([{'_id': 'entrance', 'c': [0, 0, 100, 0],
+                                      'door': 1, 'ds': 0, 'light': 0, 'sight': 0}], 100, lines)
+        self.assertEqual(los, [])
+        self.assertEqual(len(portals), 1)
+        self.assertTrue(portals[0]['closed'])
+        self.assertTrue(any(x['code'] == 'portal-blocking-properties' for x in lines))
+
+    def test_default_null_thresholds_do_not_require_optical_adjustment(self):
+        lines = []
+        _walls_to_uvtt([{'c': [0, 0, 100, 0], 'light': 20, 'sight': 20,
+                        'threshold': {'attenuation': False, 'light': None,
+                                      'sight': None, 'sound': None}}], 100, lines)
+        self.assertFalse(any(x['code'] == 'wall-blocking-properties' for x in lines))
+
     def scene(self, root, *, mode='RGB', image_format='PNG', **overrides):
         output = io.BytesIO()
         Image.new(mode, (30, 40)).save(output, format=image_format)
