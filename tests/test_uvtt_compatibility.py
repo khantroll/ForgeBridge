@@ -89,7 +89,7 @@ class ArkenforgeCompatibilityTests(unittest.TestCase):
             with self.assertRaisesRegex(InventoryFatal, 'decoded'):
                 _scene_to_uvtt(root, scene)
 
-    def test_source_scene_preserves_window_properties_and_skipped_lights(self):
+    def test_source_scene_preserves_window_properties_and_untinted_lights(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             scene = self.scene(root)
@@ -103,6 +103,12 @@ class ArkenforgeCompatibilityTests(unittest.TestCase):
             document = build_uvtt_slice(root, 'scene')
             self.assertEqual(document['source_scene'], scene)
             self.assertTrue(document['uvtt']['portals'][0]['closed'])
+            self.assertEqual(len(document['uvtt']['lights']), 2)
+            self.assertEqual(document['uvtt']['lights'][1]['color'], 'ffffffff')
+            warning = next(line for line in document['loss_report']['manual']
+                           if line['code'] == 'portal-blocking-properties')
+            self.assertIn('leave Blocks Light disabled', warning['summary'])
+            self.assertIn('leave Blocks Vision disabled', warning['summary'])
             dest = root / 'out' / 'test.uvtt'
             from contextlib import redirect_stdout
             with redirect_stdout(io.StringIO()):
@@ -111,6 +117,19 @@ class ArkenforgeCompatibilityTests(unittest.TestCase):
             self.assertEqual(companion['source_scene'], scene)
             self.assertIn('loss_report', companion)
             self.assertNotIn('source_scene', json.loads(dest.read_text()))
+
+    def test_unset_light_tints_are_valid_but_bad_colors_and_positions_are_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            lights = [{'x': 900, 'y': 1100, 'config': {'dim': 5, 'color': color}}
+                      for color in (None, '', '  ', '#123456', 'invalid', 42)]
+            lights.append({'y': 1100, 'config': {'color': None, 'dim': 5}})
+            uvtt, lines = _scene_to_uvtt(root, self.scene(root, lights=lights))
+            self.assertEqual([light['color'] for light in uvtt['lights']],
+                             ['ffffffff', 'ffffffff', 'ffffffff', 'ff123456'])
+            self.assertEqual([light['range'] for light in uvtt['lights']], [1, 1, 1, 1])
+            self.assertEqual(sum(line['code'] == 'light-untinted' for line in lines), 3)
+            self.assertEqual(sum(line['code'] == 'light-not-written' for line in lines), 3)
 
 
 if __name__ == '__main__':

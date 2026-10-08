@@ -929,10 +929,19 @@ def _walls_to_uvtt(walls: list, size: float, lines: list[dict], origin: tuple[fl
                 "freestanding": False,
             })
             restrictions = {key: wall.get(key) for key in ("light", "sight", "move", "sound", "dir", "threshold") if key in wall}
+            blocking_instructions = []
+            for key, label in (("light", "Light"), ("sight", "Vision")):
+                if wall.get(key) == 0:
+                    blocking_instructions.append(f"Source {key}=0: leave Blocks {label} disabled, including when closed.")
+                elif wall.get(key) == 20:
+                    blocking_instructions.append(f"Source {key}=20: enable Blocks {label} for the closed state.")
+                else:
+                    blocking_instructions.append(f"Inspect the source {key} restriction before setting Blocks {label}.")
             lines.append(_line(MANUAL, "portal-blocking-properties",
                 f'portal {len(portals)-1}, wall "{wall_id or "no id"}": source restrictions {json.dumps(restrictions, sort_keys=True)}, ds={wall.get("ds")!r}. '
                 "UVTT closed preserves the initial door state but cannot separately encode Arkenforge Blocks Light/Blocks Vision and toggle state. "
-                "The tested open portal imported with Blocks Light disabled; enable the intended blocking capabilities in Customise -> Blocking after import. "
+                "Review the intended blocking capabilities in Customise -> Blocking after import. "
+                + " ".join(blocking_instructions) + " "
                 "Full source settings are preserved in the source scene sidecar; do not enable light blocking on transparent windows indiscriminately.",
                 document_type="Wall", id=wall_id, path="light"))
             lines.append(
@@ -1044,14 +1053,26 @@ def _lights_to_uvtt(lights: list, scene: dict, size: float, lines: list[dict], o
             continue
         light_id = _text_id(light)
         config = light.get("config") if isinstance(light.get("config"), dict) else {}
-        color = config.get("color") if isinstance(config.get("color"), str) else None
+        raw_color = config.get("color")
+        untinted = raw_color is None or (isinstance(raw_color, str) and not raw_color.strip())
+        color = "#ffffff" if untinted else raw_color
         x, y = _number(light.get("x")), _number(light.get("y"))
         dim, bright = _number(config.get("dim")), _number(config.get("bright"))
-        if x is None or y is None or not _hex_color(color):
+        if x is None or y is None:
             lines.append(_line(UNSUPPORTED, "light-not-written",
-                f'light "{light_id or "no id"}" has no square position and hex color, so no UVTT light was written.',
+                f'light "{light_id or "no id"}" has missing or invalid x/y coordinates, so no UVTT light was written.',
                 document_type="AmbientLight", id=light_id))
             continue
+        if not _hex_color(color):
+            lines.append(_line(UNSUPPORTED, "light-not-written",
+                f'light "{light_id or "no id"}" has invalid non-empty color {raw_color!r}, so no UVTT light was written.',
+                document_type="AmbientLight", id=light_id, path="config.color"))
+            continue
+        if untinted:
+            lines.append(_line(APPROXIMATE, "light-untinted",
+                f'light "{light_id or "no id"}" has an unset tint, which is a valid Foundry light. '
+                "Represented as neutral white in UVTT rather than discarded. The original unset value and animation are preserved in source_scene.",
+                document_type="AmbientLight", id=light_id, path="config.color"))
         digits = color[1:]
         if len(digits) == 3:
             digits = "".join(char * 2 for char in digits)
