@@ -4,7 +4,7 @@
 
 The user supplied a Town MyAssets export. It is private test input, not a repository fixture. `forgebridge.nrbf.inspect_nrbf` successfully consumed all 30 native binary files (`.rwmap`, `.rwnote`, `.rwmeta`, `.rwamb`) in that archive. The map yielded 4,835 object records. Seven note files yielded 27 records each, except one with listener/vision fields yielding 34. All seven map note references matched both note metadata and note files in the archive.
 
-This is successful structural inspection, not proof that newly generated files import into Arkenforge. No native writer exists yet. Existing UVTT conversion is unchanged.
+This is successful structural inspection, not proof that newly generated files import into Arkenforge. An experimental synthetic note writer now exists; it has not been import-tested in the Toolkit. Existing UVTT conversion is unchanged.
 
 ## Format reader
 
@@ -38,7 +38,7 @@ print(root['class'], list(root['members']))
 
 The note files and their metadata share a base path. The map root is `ArkenMapUpgrade`; placements are associated with its tile graph. `_embeddedLinks` exists but contained no `EmbeddedLink` instances in this sample; it is not the demonstrated mechanism for these seven map markers.
 
-## Required controlled sample
+## Controlled sample request (fulfilled)
 
 Create a small new test map and export its pack with linked content included. Add:
 
@@ -48,8 +48,20 @@ Create a small new test map and export its pack with linked content included. Ad
 4. Put A and B on the map, one grid square apart horizontally, and record which note is to the right. This permits position-scale/sign calibration without assuming native units.
 5. Leave notes GM-only if the UI allows, and include that setting in the test report.
 
-Upload the exported pack ZIP. The purpose is to establish exact field types, IDs, link encoding, table representation, and a known position delta. Only then implement a native writer and request an Arkenforge import test. Do not copy unknown token fields into a prose note or infer table serialization from field names alone.
+Upload the exported pack ZIP. The purpose is to establish exact field types, IDs, link encoding, table representation, and a known position delta. That sample has since been supplied; the first native writer/import test is described below. Do not copy unknown token fields into a prose note or infer table serialization from field names alone.
 
 ## Foundry reference preservation verified
 
 The user's new Crypt companions contain 19 resolved placed notes and 29 resolved discovered dependency references, with no source read errors or traversal truncation. The retained graph contains five journals (76 pages total) and two tables: Despair (`1d3`, three outcomes) and Nightmare (`1d6`, six outcomes). The readable notes match `render_notes_text` exactly after newline normalization. Every reference source path and target ID was checked, all documents belong to the selected adventure, and the original scene/root journal payloads are unchanged. This verifies the supported traversal, not every possible Foundry link syntax or native import.
+
+## Controlled sample received and first generated files
+
+The later MyAssets ZIP contains native FB Test A/B notes and metadata. A has a text field linking to B and a three-result table (ranges 1–1, 2–2, 3–3); B links back to A. Text is an ArkenTextString wrapping an active List<ArkenTextCharacter>. Each character stores size/alignment/font settings/color and an optional `_link` metadata path. An empty `_visibleToPlayers` list is observed, but its runtime meaning is not yet tested. Rollable rows are `ArkenNoteFieldRollableTableRow` objects with `_from`, `_to`, and `_data` rich text.
+
+The second ZIP includes the note placements in `Maps/Autosave/New Map.rwmap`, while the manually saved map has no test markers. A is at native (13.1831483841, 2.1409082413), B at (17.2942581177, 2.2149820328). B is to A's right; this arbitrary delta does not establish grid scale/sign calibration. Both notes point to their matching metadata files.
+
+`forgebridge.native` uses only fixed observed class/member metadata. It constructs fresh objects, unique field IDs, empty visibility lists matching the sample, and unique test-folder paths. It emits typed NRBF records directly, preserving inherited members, reference identities, typed arrays, and active list sizes. Font-settings value records are inline with negative object IDs, as in the sample. Text is currently plain, with explicit native links, rather than a general HTML conversion. Supported text is limited to 64,000 BMP characters per field; unsupported characters/ranges fail explicitly. No source macros, user assembly code, dice formulas, or HTML are executed.
+
+The first generated artifact contains four files: two `.rwnote`/`.rwmeta` pairs under `MyAssets/Encyclopedia/Notes/ForgeBridgeTests`. A and B link to one another. A has three table outcomes on ranges 1–1, 2–2, 3–3. Metadata has no stale map reference. Empty player lists mirror the exported sample and do not establish a GM-only guarantee. This command does not accept a Foundry package or emit a native map.
+
+All files reparse with the inert inspector and tests verify recovered content, target closure, ranges, repeated inherited members, and archive paths. This establishes internal structural consistency only. Native import/rendering, link clicks, dice rolls, field-ID behavior, permissions, and subsequent saves must be verified in Arkenforge. After that, extend to the retained Crypt graph with explicit conversion/loss reporting.

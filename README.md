@@ -212,3 +212,26 @@ This README captures the ForgeBridge concept. A UVTT file plus the scene's impor
 ## Tested Arkenforge import compatibility (2026-10-08)
 
 Install `requirements.txt` before exporting; Pillow normalizes embedded backgrounds to compatible PNG. UVTT output now uses the native-tested geometry/light structure. Every `--uvtt-out` also writes a `.forgebridge.json` companion preserving the complete selected source scene and loss report. Imported door states are preserved, but blocking capabilities may need enabling in Arkenforge. See [the current compatibility notes](docs/compatibility/UVTT-SLICE.md) for evidence, limitations, and the next source-scene validation.
+
+### Experimental native note smoke test
+
+The native writer is an import experiment, separate from Foundry/UVTT conversion.
+Generate two synthetic linked notes and one three-result table:
+
+```powershell
+$env:PYTHONPATH = "$PWD\src"
+py -m forgebridge.native --out ForgeBridge_Native_Notes_Test.zip
+```
+
+Choose a new output filename; existing files are not overwritten. Extract the
+ZIP and copy its `ForgeBridgeTests` folder from
+`MyAssets/Encyclopedia/Notes/` into the matching folder in your existing
+Arkenforge `MyAssets` directory while the Toolkit is closed. Reopen the Toolkit,
+search for `ForgeBridge Native Test A`, inspect its text/line breaks, click its
+link to B and B's link back, and roll A's table. The three possible results are
+`ForgeBridge result one`, `ForgeBridge result two`, and `ForgeBridge result three`.
+
+There is no generated map, actor conversion, or Crypt-content export in this
+command. Native import, visibility semantics, and automatic map placement still
+require Toolkit testing. The original source companions preserve content and
+permissions. See `docs/research/NATIVE-NOTES.md` for observations and limits.

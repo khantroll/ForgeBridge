@@ -84,3 +84,7 @@ The real Crypt note export now verifies all 19 exact journal/page matches, no re
 ### Native note research — 2026-10-08
 
 Added a bounded inert MS-NRBF inspector (`src/forgebridge/nrbf.py`). Parsed all 30 native files in the user-supplied Town package and correlated its seven note marker targets with note metadata/content. See `docs/research/NATIVE-NOTES.md` for observed classes and the controlled sample needed next. The supplied token notes contain no prose/link/table fields. Native writing remains unimplemented; current UVTT output is unchanged. Verified the fresh Crypt companions: 19 placed notes and all 29 discovered dependency links resolved, two complete roll tables, no errors/truncation.
+
+### Native note writer smoke test — 2026-10-08
+
+The user supplied native test notes with bidirectional links and a rollable-table field, then an archive with their map markers in an autosave. Added an experimental generator (`python -m forgebridge.native --out NEW.zip`) for two synthetic linked notes and one three-result table. The fixed schema contains observed type/member metadata only, without private sample text or account names. Generated text, link targets, ranges, inherited fields, ZIP paths, and no-overwrite behavior are tested. It is separate from the existing Foundry exporter. No successful native Toolkit import is claimed; that manual test is next. The previously requested sample is now available; no further sample is required for this first note/table import experiment.
