@@ -38,7 +38,8 @@ def correlate_notes(scene, candidates, origin, size, read_errors=()):
             if entry_id.startswith('JournalEntry.') and len(entry_id.split('.')) == 2:
                 entry_id = entry_id.split('.')[1]
             # Unknown UUID namespaces stay explicit; never resolve by a suffix alone.
-            matches = [c for c in candidates if _id(c['payload']) == entry_id]
+            matches = [c for c in candidates if c.get('document_type', 'JournalEntry') == 'JournalEntry'
+                       and _id(c['payload']) == entry_id]
             if matches:
                 priority = min(c['priority'] for c in matches)
                 matches = [c for c in matches if c['priority'] == priority]
@@ -68,6 +69,8 @@ def correlate_notes(scene, candidates, origin, size, read_errors=()):
                         note['title'] = source_note.get('text') or found[0][1].get('name') or note['title']
         result['notes'].append(note)
     result['counts'] = dict(Counter(n['status'] for n in result['notes']))
+    from forgebridge.dependencies import resolve_dependencies
+    result['dependencies'] = resolve_dependencies(result, candidates)
     return result
 
 
@@ -137,4 +140,53 @@ def render_notes_text(bundle):
                 parts.append(f"Media reference: {page['src']}")
     if bundle.get('read_errors'):
         parts += ['', 'Source read errors:'] + list(bundle['read_errors'])
+    graph = bundle.get('dependencies')
+    if graph:
+        parts += ['', 'LINKED REFERENCES', 'Source UUIDs remain unchanged; this list records their resolution.']
+        for edge in graph['references']:
+            parts.append(f"{edge.get('label') or edge['uuid']}: {edge['status']} ({edge['uuid']})")
+        if graph['truncated']:
+            parts.append('Dependency traversal reached its documented limit; this reference is incomplete.')
+        root_keys = {(j['source']['source_path'], j['source'].get('parent_adventure_id'), _id(j['payload']))
+                     for j in bundle['journals']}
+        shown_pages = {}
+        for note in bundle['notes']:
+            if note['status'] == 'resolved':
+                journal = bundle['journals'][note['journal_index']]
+                key = (journal['source']['source_path'], journal['source'].get('parent_adventure_id'), _id(journal['payload']))
+                shown_pages.setdefault(key, set()).add(note['page_index'])
+        for index, document in enumerate(graph['documents']):
+            payload, source = document['payload'], document['source']
+            key = (source['source_path'], source.get('parent_adventure_id'), _id(payload))
+            targets = [e['target']['page_index'] for e in graph['references']
+                       if e['status'] == 'resolved' and e['target']['document_index'] == index]
+            pages = payload.get('pages', [])
+            pages = pages if isinstance(pages, list) else []
+            selected_pages = {i for i in range(len(pages)) if None in targets or i in targets}
+            if key in root_keys and document['document_type'] == 'JournalEntry':
+                shown = shown_pages.get(key, set())
+                if None in shown:
+                    continue
+                selected_pages -= shown
+                if not selected_pages:
+                    continue
+            parts += ['', f"LINKED {document['document_type']}: {payload.get('name') or _id(payload)}"]
+            if document['document_type'] == 'RollTable':
+                parts.append(f"Formula: {payload.get('formula', 'unspecified')} (reference only; no roll executed)")
+                results = payload.get('results', [])
+                for result in results if isinstance(results, list) else []:
+                    if isinstance(result, dict):
+                        parts.append(f"Range {result.get('range')}; weight {result.get('weight')}: " + _plain_text(result.get('text', '')))
+            else:
+                for i, page in enumerate(pages):
+                    if isinstance(page, dict) and i in selected_pages:
+                        parts.append(str(page.get('name') or 'Untitled page'))
+                        text = page.get('text')
+                        if isinstance(text, dict):
+                            content = text.get('content')
+                            parts.append(content if text.get('format') == 2 and isinstance(content, str) else _plain_text(content))
+                        if page.get('src'):
+                            parts.append(f"Media reference: {page['src']}")
+                if not pages:
+                    parts.append(_plain_text(payload.get('content', '')))
     return '\n'.join(parts) + '\n'

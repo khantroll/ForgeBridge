@@ -146,6 +146,36 @@ class NotesTests(unittest.TestCase):
             self.assertIn('Room description', dest.with_suffix('.notes.txt').read_text())
             self.assertNotIn('scene_notes', json.loads(dest.read_text()))
 
+    def test_adventure_dependency_loader_follows_journal_to_table_in_each_storage(self):
+        for storage in ['json', 'nedb', 'leveldb']:
+            with self.subTest(storage=storage), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                self.fixture(root, storage)
+                if storage == 'leveldb':
+                    import plyvel_next as plyvel
+                    db = plyvel.DB(str(root / 'packs/adventures'))
+                    parent = json.loads(db.get(b'!adventures!adventure'))
+                else:
+                    path = root / ('packs/adventures.json' if storage == 'json' else 'packs/adventures.db')
+                    objects = json.loads(path.read_text()) if storage == 'json' else [json.loads(s) for s in path.read_text().splitlines()]
+                    parent = objects[0]
+                parent['journal'][0]['pages'][0]['text']['content'] = '@UUID[JournalEntry.rules.JournalEntryPage.page]{Fear}'
+                rules = self.candidate()['payload']; rules['_id'] = 'rules'
+                rules['pages'][0]['text']['content'] = '@UUID[RollTable.fear]{Fear Table}'
+                parent['journal'].append(rules)
+                parent['tables'] = [{'_id': 'fear', 'name': 'Fear Table', 'formula': '1d20',
+                                     'results': [{'_id': 'r', 'range': [1, 20], 'weight': 1, 'text': 'Afraid'}]}]
+                if storage == 'leveldb':
+                    db.put(b'!adventures!adventure', json.dumps(parent).encode()); db.close()
+                else:
+                    objects[0] = parent
+                    path.write_text(json.dumps(objects) if storage == 'json' else '\n'.join(json.dumps(o) for o in objects))
+                document = build_uvtt_slice(root, 'scene')
+                graph = document['scene_notes']['dependencies']
+                self.assertEqual(graph['counts'], {'resolved': 2})
+                self.assertEqual(len(graph['documents']), 3)
+                self.assertIn('Afraid', render_notes_text(document['scene_notes']))
+
     def test_journal_paths_cannot_escape_package_or_follow_symlinks(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp) / 'module'; root.mkdir()

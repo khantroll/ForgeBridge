@@ -2,7 +2,7 @@
 
 > **Status: UVTT, SOURCE PRESERVATION, AND JOURNAL CORRELATION**
 >
-> The current work exports one scene as UVTT, copies its loose image/audio assets, and preserves full scene data plus linked journals in a companion JSON. A readable room-notes reference accompanies the map. Native Arkenforge note creation is not implemented. See [STATUS.md](STATUS.md).
+> The current work exports one scene as UVTT, copies its loose image/audio assets, and preserves full scene data plus linked journals and roll-table dependencies in a companion JSON. A readable room-notes reference accompanies the map. Native Arkenforge note creation is not implemented. See [STATUS.md](STATUS.md).
 
 ForgeBridge is a proposed migration/transpilation tool for converting **Foundry Virtual Tabletop** content into the closest practical **Arkenforge** equivalent.
 

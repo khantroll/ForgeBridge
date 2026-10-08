@@ -196,6 +196,14 @@ def _slice_directory(package: Path, scene_id: str, rejected_zip_entries: list[st
             document_type='Note', id=note.get('note_id'), path='entryId'))
     for error in scene_notes['read_errors']:
         lines.append(_line(UNSUPPORTED, 'journal-source-read', error, document_type='JournalEntry'))
+    dependencies = scene_notes['dependencies']
+    if dependencies['references'] or dependencies['truncated']:
+        lines.append(_line(MANUAL, 'journal-dependencies',
+            f"Linked-content resolution counts: {json.dumps(dependencies['counts'], sort_keys=True)}; "
+            f"traversal limited: {dependencies['truncated']}. "
+            "Full referenced journal/table source objects and exact link statuses are in scene_notes.dependencies. "
+            "The .notes.txt reference includes linked text and table ranges/weights; no native notes or table rolls are created.",
+            document_type='JournalEntry'))
     lines.extend(_other_document_lines(inventory, scene_id))
     lines.extend(_behavior_lines(inventory))
     lines.extend(_asset_lines(inventory, _image_ref(lines), scene_id))
@@ -244,7 +252,7 @@ def _scene_notes(package: Path, inventory: dict, scene_row: dict, scene: dict) -
     rows = []
     if parent_id:
         rows.append({**scene_row, 'document_type': 'Adventure'})
-    rows.extend(row for row in inventory['documents'] if row.get('document_type') == 'JournalEntry')
+    rows.extend(row for row in inventory['documents'] if row.get('document_type') in {'JournalEntry', 'RollTable'})
     seen = set()
     if scene.get('notes'):
         for row in rows:
@@ -258,24 +266,28 @@ def _scene_notes(package: Path, inventory: dict, scene_row: dict, scene: dict) -
                 errors.append(str(exc))
                 continue
             source = {'pack': row.get('pack'), 'source_path': row.get('source_path'),
-                      'parent_adventure_id': parent_id if row['document_type'] == 'Adventure' else None}
+                      'parent_adventure_id': parent_id if row['document_type'] == 'Adventure' else None,
+                      'pack_id': None if row['document_type'] == 'Adventure' else
+                          f"{inventory['provenance']['package_id']}.{row.get('pack')}"}
             if row['document_type'] == 'Adventure':
                 parents = [p for p in payloads if _text_id(p) == parent_id]
                 if len(parents) != 1:
                     errors.append('selected parent Adventure was missing or ambiguous during journal correlation')
                     continue
-                journals = parents[0].get('journal', [])
-                if not isinstance(journals, list):
-                    errors.append('selected Adventure journal collection was not an array')
-                    continue
-                if any(not isinstance(j, dict) for j in journals):
-                    errors.append('selected Adventure contains journal references without full source objects')
-                priority = 0
+                for field, kind in [('journal', 'JournalEntry'), ('tables', 'RollTable')]:
+                    objects = parents[0].get(field, [])
+                    if not isinstance(objects, list):
+                        errors.append(f'selected Adventure {field} collection was not an array')
+                        continue
+                    if any(not isinstance(obj, dict) for obj in objects):
+                        errors.append(f'selected Adventure contains {field} references without full source objects')
+                    candidates.extend({'document_type': kind, 'source': source, 'payload': obj, 'priority': 0}
+                                      for obj in objects if isinstance(obj, dict))
             else:
-                journals = payloads
                 priority = 1 if row.get('pack') == scene_row.get('pack') else 2
-            candidates.extend({'source': source, 'payload': journal, 'priority': priority}
-                              for journal in journals if isinstance(journal, dict))
+                candidates.extend({'document_type': row['document_type'], 'source': source,
+                                   'payload': obj, 'priority': priority}
+                                  for obj in payloads if isinstance(obj, dict))
     size = _square_grid(scene)
     origin = _scene_origin(scene, size, [])
     return correlate_notes(scene, candidates, origin, size, errors)
