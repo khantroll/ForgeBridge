@@ -8,7 +8,7 @@ PYTHONPATH=src python3 -m forgebridge fixtures/synthetic-module --uvtt-scene sce
 PYTHONPATH=src python3 -m unittest discover -s tests
 ```
 
-Stdout contains `uvtt`, `loss_report`, and `source_scene`. Import the `.uvtt` file into Arkenforge. The companion JSON is ForgeBridge preservation data, not an Arkenforge import file. It retains full wall restrictions, light configurations (including skipped lights), notes/tokens/audio references, flags, and other selected scene data without inventory truncation. Script strings may be retained as inert JSON; they are never executed. Referenced journal/actor documents outside the selected scene still require future correlation work.
+Stdout contains `uvtt`, `loss_report`, `source_scene`, and `scene_notes`. Import the `.uvtt` file into Arkenforge. The companion JSON is ForgeBridge preservation data, not an Arkenforge import file. It retains full wall restrictions, light configurations (including skipped lights), notes/tokens/audio references, flags, and other selected scene data without inventory truncation. Script strings may be retained as inert JSON; they are never executed. Linked journal data is now correlated as described below; actor document correlation remains future work.
 
 ## Evidence from the real import, 2026-10-08
 
@@ -16,7 +16,7 @@ The original Count's Manor export used numeric point arrays, relative door bound
 
 The corrected test used an RGBA PNG, translated coordinates, named points, absolute portal bounds, top-level lights, opaque ARGB colors, and native-export lighting defaults. In Arkenforge v0.5.1.17, the user confirmed successful image import, aligned walls and doors, selectable/editable lights after ungrouping, visible dynamic illumination, and responsive door switches. Enabling a door's **Blocks Light** property made it block the light. The tested entrance portals had that property disabled, matching their source light=0 setting; enabling it was an override of the original behavior.
 
-This verifies the test's geometry and rendering structure, not every source setting. Moving a light indicator without its illumination moving remains unresolved. The subsequent full source report confirmed padding 0.25 and identified all 16 skipped lights as valid unset-tint lights; these now export as neutral white with an approximation warning. The two entrance portals have source light=0 and sight=0, so their lack of blocking was intentional.
+This verifies the test's geometry and rendering structure, not every source setting. The subsequent fresh export test confirmed that illumination moves with its light source. The subsequent full source report confirmed padding 0.25 and identified all 16 skipped lights as valid unset-tint lights; these now export as neutral white with an approximation warning. The two entrance portals have source light=0 and sight=0, so their lack of blocking was intentional.
 
 ## Emitted structure
 
@@ -67,3 +67,15 @@ References: [Arkenforge UVTT](https://arkenforge.com/universal-vtt-files/), [Fou
 The Count's Manor report contains 24 AmbientLights: eight tinted and sixteen with `config.color: null`. Foundry's [lighting documentation](https://foundryvtt.com/article/lighting/) says new lights start with a blank color and clearing that field removes tint. UVTT neutral white is an approximation of untinted illumination; it does not recover torch/ghost animation. All sixteen have valid positions and positive ranges. Fifteen have outer range one square; one ghost light has outer range forty squares. Do not cap the large radius or drop the light merely because its tint is unset.
 
 The twelve portals comprise ten light/vision-blocking door segments (`light=20`, `sight=20`) and two transparent entrance segments (`light=0`, `sight=0`, `move=20`). Nine are initially open and three closed. The entrance test correctly passed light in both states; the earlier interpretation of that as a missing blocking setting was mistaken. Portal warnings now distinguish source blocking settings, and transparent portals are not made opaque.
+
+## Map note and journal correlation
+
+Each export now includes `scene_notes` in stdout and the `.forgebridge.json` companion, plus a `.notes.txt` GM reference. These are preservation/reference outputs, not native Arkenforge note files. No new fields are added to the importable UVTT.
+
+For embedded Adventure scenes, journal lookup first uses the selected parent Adventure's `journal` collection. Standalone JournalEntry packs are fallback sources; matches in the scene's own pack take priority over other packs. The other Adventure variants are never searched implicitly. Bare entry IDs and `JournalEntry.ID` references are supported; other UUID namespaces remain explicit unresolved references rather than guessed suffix matches.
+
+Each note records its full source settings, normalized map position in grid squares, status, and indexes into deduplicated linked journals/pages. Linked journal objects, all their pages, raw rich text, media references, permissions, flags, and unknown fields are retained without inventory truncation. A requested page must match exactly once; missing/duplicate entries or pages stay unresolved. Whole-entry notes and legacy journal content are supported. The readable reference strips HTML tags and script/style content without rendering, fetching media, or executing anything. Markdown page text stays text; rich formatting and original links remain in JSON. Permissions are retained but not enforced by this GM-only reference; do not distribute it as player material without review.
+
+Re-export a scene using the existing CLI command, then open its `.notes.txt` and inspect `scene_notes.counts` and `read_errors` in the companion. JSON, NeDB, LevelDB, parent Adventure scoping, zipped CLI output, missing/ambiguous references, legacy text, path containment, and inert HTML are covered by regression tests. Resolution of the 19 real Crypt notes awaits a new export from the original package.
+
+The first-floor fresh export now passes fireplace illumination and light movement. Count's Crypt (4000 by 4200 pixels, padding 0.25) passes wall/door alignment, movable interior illumination, and door occlusion in the user's manual test. Its report records 66 exported lights, 23 portals, 199 LOS segments, and seven omitted optically transparent barriers.

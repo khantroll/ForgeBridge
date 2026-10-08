@@ -579,7 +579,7 @@ class UvttSliceTests(unittest.TestCase):
             self.assertEqual((dest.parent / "drip.wav").read_bytes(), wav)
             self.assertEqual(
                 sorted(path.name for path in dest.parent.iterdir()),
-                ["crypt.png", "drip.wav", "scene-vault.forgebridge.json", "scene-vault.uvtt"],
+                ["crypt.png", "drip.wav", "scene-vault.forgebridge.json", "scene-vault.notes.txt", "scene-vault.uvtt"],
             )
             self.assertFalse((root / "etc" / "passwd").exists())
             self.assertFalse((root / "passwd").exists())

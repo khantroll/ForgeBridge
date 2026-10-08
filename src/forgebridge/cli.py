@@ -8,6 +8,7 @@ import sys
 from pathlib import Path
 
 from forgebridge.inventory import inventory_path
+from forgebridge.notes import render_notes_text
 from forgebridge.uvtt import build_uvtt_slice, scene_loose_files
 from forgebridge.validate import InventoryFatal, load_schema, repo_schema, validate
 
@@ -37,7 +38,7 @@ def main(argv: list[str] | None = None) -> int:
         metavar="FILE",
         help=(
             "After validation, write the UVTT object to FILE and the scene's importable "
-            "image/audio files and a .forgebridge.json source/settings sidecar beside it. Stdout remains the envelope with the loss report."
+            "image/audio files, a .forgebridge.json source/journal sidecar, and a .notes.txt GM reference beside it. Stdout remains the envelope with the loss report."
         ),
     )
     args = parser.parse_args(argv)
@@ -82,8 +83,13 @@ def _uvtt(package: Path, scene_id: str, compact: bool, uvtt_out: str | None) -> 
                 "schema_version": "1.0",
                 "scene_id": scene_id,
                 "source_scene": document["source_scene"],
+                "scene_notes": document["scene_notes"],
                 "loss_report": document["loss_report"],
             })
+            notes_dest = dest.with_suffix('.notes.txt')
+            if notes_dest.is_symlink() or notes_dest.is_dir():
+                raise OSError(f'refusing to write notes reference to {notes_dest}')
+            notes_dest.write_text(render_notes_text(document['scene_notes']), encoding='utf-8')
         except (OSError, InventoryFatal) as exc:
             print(f"UVTT file was not written: {exc}", file=sys.stderr)
             return 1

@@ -54,6 +54,7 @@ from forgebridge.inventory import (
     inventory_path,
 )
 from forgebridge.leveldb import LevelDBUnavailable, read_leveldb_directory
+from forgebridge.notes import correlate_notes
 from forgebridge.validate import InventoryFatal
 
 UVTT_SOURCE = "https://arkenforge.com/universal-vtt-files/"
@@ -148,7 +149,8 @@ _MANUAL_DOCUMENT = {
     ),
     "JournalEntry": (
         "Notes exist in the Toolkit, including adventure templates (v0.5.0.0, 2026-01-13). "
-        "No journal file format was published, and the page text was not interpreted."
+        "Linked journal/page source data is correlated in the ForgeBridge companion. "
+        "No native Arkenforge note writer is implemented."
     ),
     "RollTable": (
         "Rollable tables exist in the Toolkit (v0.5.0.0, 2026-01-13). "
@@ -166,7 +168,7 @@ _MANUAL_DOCUMENT = {
 
 
 def build_uvtt_slice(package: Path, scene_id: str) -> dict:
-    """Return {"uvtt", "loss_report"} for one scene in a module folder or zip."""
+    """Return UVTT, report, full source scene, and correlated scene notes."""
     if package.is_symlink():
         raise InventoryFatal("UVTT slice does not follow a symlinked package root.")
     if package.is_file():
@@ -185,6 +187,15 @@ def _slice_directory(package: Path, scene_id: str, rejected_zip_entries: list[st
     scene_row = _scene_row(inventory, scene_id)
     payload = _load_scene_payload(package, scene_row, scene_id)
     uvtt, lines = _scene_to_uvtt(package, payload)
+    scene_notes = _scene_notes(package, inventory, scene_row, payload)
+    for note in scene_notes['notes']:
+        lines.append(_line(MANUAL, 'note-journal-correlation',
+            f"note {note['note_index']}, status {note['status']}. "
+            "See scene_notes in the companion JSON and the .notes.txt GM reference. "
+            "These preserve/correlate source data; they do not create native Arkenforge notes.",
+            document_type='Note', id=note.get('note_id'), path='entryId'))
+    for error in scene_notes['read_errors']:
+        lines.append(_line(UNSUPPORTED, 'journal-source-read', error, document_type='JournalEntry'))
     lines.extend(_other_document_lines(inventory, scene_id))
     lines.extend(_behavior_lines(inventory))
     lines.extend(_asset_lines(inventory, _image_ref(lines), scene_id))
@@ -192,7 +203,82 @@ def _slice_directory(package: Path, scene_id: str, rejected_zip_entries: list[st
     lines.extend(_package_file_lines(inventory))
     lines.extend(_rejected_zip_lines(rejected_zip_entries))
     report = _report(scene_id, payload.get("name"), lines)
-    return {"uvtt": uvtt, "loss_report": report, "source_scene": payload}
+    return {"uvtt": uvtt, "loss_report": report, "source_scene": payload, "scene_notes": scene_notes}
+
+
+def _journal_pack_payloads(package: Path, row: dict) -> list[dict]:
+    """Read complete source objects using the same containment and size limits."""
+    safe, problem = _safe_ref(row.get('source_path'))
+    if problem or not safe:
+        raise InventoryFatal('journal pack path was rejected')
+    storage = row.get('storage')
+    if storage == 'leveldb':
+        src = _package_subdir(package, safe)
+        if src is None:
+            raise InventoryFatal('journal pack directory was rejected')
+        try:
+            result = read_leveldb_directory(src, max_entries=MAX_ENTRIES, max_value_bytes=MAX_ENTRY_BYTES)
+        except LevelDBUnavailable as exc:
+            raise InventoryFatal(str(exc)) from exc
+        if not result.opened:
+            raise InventoryFatal(f'journal pack {safe} could not be opened')
+        # Never silently report a partial pack as fully resolved.
+        if result.diagnostics:
+            raise InventoryFatal(f'journal pack {safe} has read diagnostics; inspect its inventory before correlation')
+        return [p for kind, p in result.documents if kind == row.get('document_type') and isinstance(p, dict)]
+    if storage not in {'json', 'nedb'}:
+        raise InventoryFatal(f'journal pack {safe} has unsupported storage {storage!r}')
+    path = _package_file(package, safe)
+    if path.stat().st_size > MAX_ENTRY_BYTES:
+        raise InventoryFatal('journal pack exceeds the read budget')
+    try:
+        text = path.read_text(encoding='utf-8-sig')
+    except (OSError, UnicodeError) as exc:
+        raise InventoryFatal(f'journal pack {safe} was not readable text') from exc
+    return _payloads_json(text) if storage == 'json' else _payloads_jsonl(text)
+
+
+def _scene_notes(package: Path, inventory: dict, scene_row: dict, scene: dict) -> dict:
+    candidates, errors = [], []
+    parent_id = _parent_adventure_id(scene_row)
+    rows = []
+    if parent_id:
+        rows.append({**scene_row, 'document_type': 'Adventure'})
+    rows.extend(row for row in inventory['documents'] if row.get('document_type') == 'JournalEntry')
+    seen = set()
+    if scene.get('notes'):
+        for row in rows:
+            key = (row.get('source_path'), row.get('document_type'))
+            if key in seen:
+                continue
+            seen.add(key)
+            try:
+                payloads = _journal_pack_payloads(package, row)
+            except (InventoryFatal, OSError) as exc:
+                errors.append(str(exc))
+                continue
+            source = {'pack': row.get('pack'), 'source_path': row.get('source_path'),
+                      'parent_adventure_id': parent_id if row['document_type'] == 'Adventure' else None}
+            if row['document_type'] == 'Adventure':
+                parents = [p for p in payloads if _text_id(p) == parent_id]
+                if len(parents) != 1:
+                    errors.append('selected parent Adventure was missing or ambiguous during journal correlation')
+                    continue
+                journals = parents[0].get('journal', [])
+                if not isinstance(journals, list):
+                    errors.append('selected Adventure journal collection was not an array')
+                    continue
+                if any(not isinstance(j, dict) for j in journals):
+                    errors.append('selected Adventure contains journal references without full source objects')
+                priority = 0
+            else:
+                journals = payloads
+                priority = 1 if row.get('pack') == scene_row.get('pack') else 2
+            candidates.extend({'source': source, 'payload': journal, 'priority': priority}
+                              for journal in journals if isinstance(journal, dict))
+    size = _square_grid(scene)
+    origin = _scene_origin(scene, size, [])
+    return correlate_notes(scene, candidates, origin, size, errors)
 
 
 def _safe_extract_zip(archive: Path, dest: Path) -> tuple[Path, list[str]]:

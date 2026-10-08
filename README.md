@@ -1,8 +1,8 @@
 # ForgeBridge
 
-> **Status: UVTT PLUS LOOSE IMAGE AND AUDIO**
+> **Status: UVTT, SOURCE PRESERVATION, AND JOURNAL CORRELATION**
 >
-> The concept below is unchanged. The current work writes one zipped LevelDB scene as a UVTT file and copies that scene's importable image and audio files beside it. The UVTT object is unchanged. A general converter has not started. See [STATUS.md](STATUS.md).
+> The current work exports one scene as UVTT, copies its loose image/audio assets, and preserves full scene data plus linked journals in a companion JSON. A readable room-notes reference accompanies the map. Native Arkenforge note creation is not implemented. See [STATUS.md](STATUS.md).
 
 ForgeBridge is a proposed migration/transpilation tool for converting **Foundry Virtual Tabletop** content into the closest practical **Arkenforge** equivalent.
 
