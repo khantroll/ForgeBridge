@@ -88,7 +88,8 @@ class TextCompiler(HTMLParser):
         return self.parts or [('', None)]
 
 
-def companion_files(companion, *, map_markers=False):
+def companion_files(companion, *, map_markers=False, media_fields=None):
+    media_fields = media_fields or {}
     bundle = companion.get('scene_notes')
     if not isinstance(bundle, dict) or not isinstance(bundle.get('dependencies'), dict):
         raise ValueError('Companion needs scene_notes.dependencies; export it again with ForgeBridge')
@@ -170,10 +171,14 @@ def companion_files(companion, *, map_markers=False):
         return TextCompiler(resolve, issues, origin).compile(text if isinstance(text, str) else '', plain=plain)
 
     builder = NoteBuilder()
+    attached_media = []
     def emit(key, name, specs):
         fields = []
         for uid, (kind, title, value) in enumerate(specs, 1):
             fields.append(builder.table_field(title, value, uid) if kind == 'table' else builder.text_field(title, value, uid))
+        for attachment in media_fields.get(key, []):
+            fields.append(builder.media_field('Image attachment ' + str(len(attached_media) + 1), attachment['target'], len(fields) + 1))
+            attached_media.append({'note': paths[key] + '.rwmeta', **attachment})
         files[paths[key] + '.rwnote'] = Writer(builder.schema['libraries']).write(builder.note(name, fields, tag='ForgeBridge import'))
         files[paths[key] + '.rwmeta'] = Writer(builder.schema['libraries']).write(builder.metadata(name))
 
@@ -250,13 +255,19 @@ def companion_files(companion, *, map_markers=False):
         placements.append(placement)
         navigation += [(str(note.get('title') or 'Map note'), placement['target']), ('\n', None)]
     emit((None, None), 'ForgeBridge — ' + str(bundle.get('scene_name') or bundle.get('scene_id')), [
-        ('text', 'Import limitations', [('Plain text conversion. Review player visibility before sharing. Media are references. ' + ('Room markers are supplied in the separate native map copy. ' if map_markers else 'Map markers are not placed automatically. ') + 'Keep this folder at the exact path in INSTALL.txt.', None)]),
+        ('text', 'Import limitations', [('Plain text conversion. Review player visibility before sharing. ' + ('Supported images have native attachments; other media remain references. ' if media_fields else 'Media are references. ') + ('Room markers are supplied in the separate native map copy. ' if map_markers else 'Map markers are not placed automatically. ') + 'Keep this folder at the exact path in INSTALL.txt.', None)]),
         ('text', 'Scene notes', navigation or [('No placed notes in source', None)]),
         ('text', 'Linked documents', sum(([(names[(di, None)], paths[(di, None)] + '.rwmeta'), ('\n', None)] for di in range(len(documents))), []))])
+    attached_refs = {a['ref'] for a in attached_media}
+    for issue in issues:
+        if issue.get('src') in attached_refs and issue['code'] in {'media_reference_only', 'page_media_reference_only', 'journal_media_reference_only'}:
+            issue['code'] = 'media_attached_native_field'
     report = {'schema_version': '1.0', 'native_folder': base.rstrip('/'), 'scene_id': bundle.get('scene_id'),
         'counts': {'notes': len(paths), 'journal_pages': sum(k[1] is not None for k in paths),
                    'documents': len(documents), 'native_tables': len(native_tables), 'rewritten_uuid_occurrences': len(rewritten),
-                   'unresolved_uuid_occurrences': len(unresolved), 'map_note_references': len(placements)},
+                   'unresolved_uuid_occurrences': len(unresolved), 'map_note_references': len(placements),
+                   'native_image_attachments': len(attached_media)},
+        'attached_media': attached_media,
         'native_tables': native_tables, 'rewritten_links': rewritten, 'unresolved_links': unresolved,
         'placements': placements, 'issues': issues, 'source_read_errors': bundle.get('read_errors', []),
         'dependency_truncated': graph.get('truncated', False) or expanded['truncated'] or len(edges) >= 4096,

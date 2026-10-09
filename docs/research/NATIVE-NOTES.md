@@ -176,3 +176,13 @@ media-category parent layout, and relocates only their containing test folder.
 Internal asset renaming is no longer attempted. This avoids the unverified
 v1 filename/name/provenance mismatch; it does not prove which change caused
 the failure. The new note/field link still requires Toolkit validation.
+
+The user confirmed diagnostic v2 image display and note/restart persistence.
+Source-image mode now patches encoded byte-array records without altering
+native asset names, filenames, provenance or other preset fields. Images are
+normalized to RGBA PNG; thumbnails fit within 128×128 with their aspect ratio
+preserved. `_thumbnailScale` uses thumbnail width / image width, inferred from
+the square sample. That ratio and non-square image display remain runtime
+unverified. This mode is for note attachments, not native map asset placement.
+Current package verification and synthetic tests establish structure/scoping,
+not proof that every source image displays correctly in Toolkit.

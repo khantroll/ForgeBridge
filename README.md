@@ -357,3 +357,33 @@ present. The revised v2 test retains original asset names/provenance and the
 source media-category folder layout. Its note is **ForgeBridge Generated Image
 Test v2**. This is a diagnostic revision; the lookup cause and runtime success
 remain unconfirmed.
+
+The user subsequently confirmed v2 image display, note reopening and Toolkit
+restart all pass. The exact v1 lookup cause is still uncertain.
+
+### Attach collected images to converted journal notes
+
+Use the existing source companion, collected handout bundle and small exported
+native media template. Keep all three input files in the working folder:
+
+```powershell
+$env:PYTHONPATH = "$PWD\src"
+py -m forgebridge.native_media --template-pack FB_Media_notes.zip --companion counts_crypt_links.forgebridge.json --media-bundle counts_crypt_handouts_v1.zip --out counts_crypt_image_notes_v1.zip
+```
+
+The output supplies generated notes and native image pairs. Follow INSTALL.txt:
+back up MyAssets, then merge the contents and replace matching generated note
+files. This regenerates notes from the source companion, so retain any manual
+edits in the backup. Note folder/filenames and room-marker targets are unchanged.
+No map or room labels are emitted. Image pages and inline images get native
+Media fields; repeated references share one asset and duplicate occurrences in
+a note share one field. PNG/JPEG/static WebP/GIF are re-encoded as RGBA PNG with
+aspect-preserving thumbnails. The template's native names/filename agree and
+its media-category layout is retained. Thumbnail scaling and arbitrary image
+display still need Toolkit verification; map asset placement is unverified.
+
+The handout report's scene, reference origins and copied asset sizes/hashes must
+match the current companion and ZIP. PDFs and animations remain references;
+collection gaps and failed images are reported. `conversion-report.json` lists
+native image assets, attached note targets and unresolved media. Check portrait
+and landscape handouts, room-note navigation, and note/restart persistence.

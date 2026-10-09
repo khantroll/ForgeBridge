@@ -1,7 +1,8 @@
-"""Generate a new note Media field using a supplied native image asset pair.
+"""Generate native image-note tests or attach collected source images to notes.
 
 This controlled import test preserves the supplied embedded image and thumbnail.
-It does not yet turn arbitrary Foundry image/PDF files into native assets.
+Source-image conversion is separate and requires further Toolkit validation.
+PDF conversion is not implemented.
 """
 import argparse
 import hashlib
@@ -122,8 +123,17 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--template-pack', required=True)
     parser.add_argument('--out', required=True)
+    parser.add_argument('--companion', help='Retained scene companion for source-image attachments')
+    parser.add_argument('--media-bundle', help='Collected handout ZIP for --companion')
     args = parser.parse_args(argv)
+    if bool(args.companion) != bool(args.media_bundle):
+        parser.error('--companion and --media-bundle must be used together')
     try:
+        if args.companion:
+            from forgebridge.native_images import write_source_images_zip
+            report = write_source_images_zip(args.companion, args.media_bundle, args.template_pack, args.out)
+            print(f"Wrote {report['counts']['native_image_assets']} image assets and {report['counts']['native_image_attachments']} note attachments; see conversion-report.json. Toolkit validation required.")
+            return 0
         report = write_media_smoke_zip(args.template_pack, args.out)
     except (OSError, ValueError, zipfile.BadZipFile) as exc:
         print(str(exc), file=sys.stderr)

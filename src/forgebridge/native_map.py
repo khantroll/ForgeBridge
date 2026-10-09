@@ -100,7 +100,7 @@ def clone(reader, oid, memo=None):
     return result
 
 
-def patch_stream(reader, patches, writer):
+def patch_stream(reader, patches, writer, *, max_items=2000000):
     """Apply disjoint byte spans, append records before the original message end."""
     result = bytearray()
     end = 0
@@ -121,7 +121,7 @@ def patch_stream(reader, patches, writer):
     updated = bytes(result)
     if len(updated) > 64 * 1024 * 1024:
         raise ValueError('Native map exceeds limit')
-    Reader(updated).read()
+    Reader(updated, max_items=max_items).read()
     return updated
 
 
