@@ -231,7 +231,37 @@ search for `ForgeBridge Native Test A`, inspect its text/line breaks, click its
 link to B and B's link back, and roll A's table. The three possible results are
 `ForgeBridge result one`, `ForgeBridge result two`, and `ForgeBridge result three`.
 
-There is no generated map, actor conversion, or Crypt-content export in this
-command. Native import, visibility semantics, and automatic map placement still
-require Toolkit testing. The original source companions preserve content and
-permissions. See `docs/research/NATIVE-NOTES.md` for observations and limits.
+The user verified synthetic text, bidirectional links and matching table
+outcomes in the Toolkit. Links require the exact installation path. A subsequent
+startup log showed denied writes under Program Files; it does not establish
+that the generated files damaged installed packs. Visibility remains unverified.
+
+### Experimental native journals from a companion
+
+Convert the already-retained scene journals/pages and supported tables:
+
+```powershell
+$env:PYTHONPATH = "$PWD\src"
+py -m forgebridge.native --companion counts_crypt_links.forgebridge.json --out counts_crypt_native_notes.zip
+```
+
+This does not read the original Foundry package again. The ZIP includes a scene
+index, journal indexes, separate page notes, table notes, `INSTALL.txt`, a
+conversion report and the unchanged source companion. Copy only the generated
+`ForgeBridge-...` folder into the existing `MyAssets\Encyclopedia\Notes` directory.
+Keep its name and filenames unchanged: native links target the exact metadata
+paths. Existing output ZIPs are never overwritten. Different retained content
+gets a different folder to avoid overwriting a previous import.
+
+Resolved journal/page/table UUIDs become native links. Additional pages are
+checked against already-retained documents only; unresolved links remain literal
+source references and are reported. HTML becomes plain text; media are explicit
+references rather than copied assets. Non-BMP text characters are replaced and
+reported. Original HTML, source permissions and all unknown data remain in the
+companion. Only contiguous, unit-weight text outcomes on `1dN` replacement
+tables become rollable; other table semantics remain readable references.
+
+Review visibility before player use. Native source-content rendering and rolls
+still require Toolkit testing. No native map or actor conversion is generated;
+the report retains scene-note grid positions and exact native targets for later
+map-placement work. See `docs/research/NATIVE-NOTES.md` for evidence and limits.

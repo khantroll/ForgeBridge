@@ -4,7 +4,7 @@
 
 The user supplied a Town MyAssets export. It is private test input, not a repository fixture. `forgebridge.nrbf.inspect_nrbf` successfully consumed all 30 native binary files (`.rwmap`, `.rwnote`, `.rwmeta`, `.rwamb`) in that archive. The map yielded 4,835 object records. Seven note files yielded 27 records each, except one with listener/vision fields yielding 34. All seven map note references matched both note metadata and note files in the archive.
 
-This is successful structural inspection, not proof that newly generated files import into Arkenforge. An experimental synthetic note writer now exists; it has not been import-tested in the Toolkit. Existing UVTT conversion is unchanged.
+This is successful structural inspection, not proof that arbitrary newly generated files import into Arkenforge. The synthetic writer subsequently passed the user's text/link/table Toolkit test; source conversion still needs runtime validation. Existing UVTT conversion is unchanged.
 
 ## Format reader
 
@@ -64,4 +64,12 @@ The second ZIP includes the note placements in `Maps/Autosave/New Map.rwmap`, wh
 
 The first generated artifact contains four files: two `.rwnote`/`.rwmeta` pairs under `MyAssets/Encyclopedia/Notes/ForgeBridgeTests`. A and B link to one another. A has three table outcomes on ranges 1–1, 2–2, 3–3. Metadata has no stale map reference. Empty player lists mirror the exported sample and do not establish a GM-only guarantee. This command does not accept a Foundry package or emit a native map.
 
-All files reparse with the inert inspector and tests verify recovered content, target closure, ranges, repeated inherited members, and archive paths. This establishes internal structural consistency only. Native import/rendering, link clicks, dice rolls, field-ID behavior, permissions, and subsequent saves must be verified in Arkenforge. After that, extend to the retained Crypt graph with explicit conversion/loss reporting.
+All files reparse with the inert inspector and tests verify recovered content, target closure, ranges, repeated inherited members, and archive paths. The user verified text rendering, A/B clicks once the install path matched, and a table roll displaying both Value: 1 and its corresponding text. Permission meanings and save/reload behavior remain unverified. Startup recovery logs showed denied writes under Program Files, not evidence that every installed pack was corrupt.
+
+## Retained source conversion
+
+`forgebridge.native --companion SOURCE.forgebridge.json --out NEW.zip` compiles only retained source documents. Each journal page gets its own target; a journal index links its pages, and a scene index links the 19 source placements. A content-derived folder name and fixed generated basenames are used consistently by files, navigation, rewritten UUIDs and the installation instructions. Map grid positions remain in a report; no `.rwmap` is emitted.
+
+Known dependency statuses are preserved. Pages beyond the original traversal can resolve additional UUIDs against the same retained scoped documents; missing/unsupported references stay literal and are reported. HTML is flattened without executing it; images/PDFs and external HTML links remain explicit references, and non-BMP characters are replaced with reported losses. The original full companion is packaged unchanged. Visibility lists mirror the sample and must be reviewed before player use.
+
+Only replacement tables with `1dN`, contiguous one-value ranges, unit weights and text outcomes become native rollable fields. Titles plus descriptions are preserved; unsupported dice, weights, document draws and without-replacement behavior become reference text. Despair and Nightmare meet this narrow rule. Source-content conversion is not runtime-verified by the synthetic smoke test; manual import/rendering/links/rolls are the next gate.

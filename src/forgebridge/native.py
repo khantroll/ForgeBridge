@@ -1,4 +1,4 @@
-"""Experimental native note smoke test; Arkenforge import is not yet verified.
+"""Experimental native notes; synthetic text, links and tables passed import tests.
 
 This emits only known note classes from the user's exported sample. It does
 not create maps, load CLR types, or convert source permissions automatically.
@@ -8,6 +8,7 @@ from dataclasses import dataclass
 import argparse
 import json
 from pathlib import Path
+from pathlib import PurePosixPath
 import struct
 import zipfile
 
@@ -65,8 +66,9 @@ class NoteBuilder:
         if sum(len(text) for text, link in segments) > 64000:
             raise ValueError('Native text exceeds experimental limit')
         for text, link in segments:
-            if link is not None and (not link.startswith('MyAssets/Encyclopedia/Notes/ForgeBridgeTests/') or '..' in link or not link.endswith('.rwmeta')):
-                raise ValueError('Link is outside the generated test notes')
+            if link is not None and (not link.startswith('MyAssets/Encyclopedia/Notes/') or
+                    '..' in PurePosixPath(link).parts or '\\' in link or not link.endswith('.rwmeta')):
+                raise ValueError('Link is outside the generated notes')
             for char in text:
                 if ord(char) > 65535 or 0xD800 <= ord(char) <= 0xDFFF:
                     raise ValueError('Non-BMP native characters are not yet supported')
@@ -96,17 +98,18 @@ class NoteBuilder:
             if any(start <= b and end >= a for a, b in covered):
                 raise ValueError('Overlapping native table ranges')
             covered.add((start, end))
-            built.append(self.node('ArkenNoteFieldRollableTableRow', {'_from': start, '_to': end, '_data': self.text([(text, None)])}))
+            segments = [(text, None)] if isinstance(text, str) else text
+            built.append(self.node('ArkenNoteFieldRollableTableRow', {'_from': start, '_to': end, '_data': self.text(segments)}))
         return self.node('ArkenNoteFieldRollableTable', {**self.field_members(name, uid),
             '_rows': self.sequence('System.Collections.Generic.List`1[[ArkenNoteFieldRollableTableRow, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]', built)})
 
-    def note(self, name, fields):
+    def note(self, name, fields, *, tag='ForgeBridge smoke test'):
         entries = [self.node('KVPOrderedList`1+KVPEntry', {'_order': i, '_value': f}) for i, f in enumerate(fields)]
         ordered = self.node('KVPOrderedList', {'_entries': self.sequence('System.Collections.Generic.List`1[[KVPOrderedList`1+KVPEntry`1[[ArkenNoteField, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[ArkenNoteField, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]', entries)})
         category = self.node('ArkenNoteFieldCategory', {**self.field_members('', 0), '_content': ordered,
             '_color': self.vector(.15, .15, .15), '_open': True})
         return self.node('ArkenNoteUpgrade', {'_name': name, '_pack': '', '_creator': 'ForgeBridge', '_aliases': self.strings(),
-            '_tags': self.strings(['ForgeBridge smoke test']), '_tooltipSummary': '', '_noteIcon': self.icon(),
+            '_tags': self.strings([tag]), '_tooltipSummary': '', '_noteIcon': self.icon(),
             '_bgColour': self.vector(.15, .15, .15), '_locked': False, '_linkColourFix': True, '_noteIconFieldFix': True,
             '_indicatedStats': self.sequence('System.Collections.Generic.List`1[[ArkenNoteFieldStat, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]', []),
             '_noteFields': category, '_bgImage': None, '_bgImageTiled': False, 'nextUID': len(fields) + 1})
@@ -257,8 +260,15 @@ def write_smoke_zip(dest):
 def main():
     parser = argparse.ArgumentParser(description='Generate experimental native Arkenforge note smoke-test files')
     parser.add_argument('--out', required=True, help='New ZIP output path')
+    parser.add_argument('--companion', help='Existing .forgebridge.json to convert instead of generating a smoke test')
     args = parser.parse_args()
-    try: count = write_smoke_zip(args.out)
+    try:
+        if args.companion:
+            from forgebridge.native_export import write_companion_zip
+            report = write_companion_zip(args.companion, args.out)
+            print(f"Wrote {report['counts']['notes']} native notes; see INSTALL.txt and conversion-report.json in ZIP. Real source import requires verification.")
+            return
+        count = write_smoke_zip(args.out)
     except (ValueError, OSError) as exc: parser.exit(1, str(exc) + '\n')
     print(f'Wrote {count} native test files. Arkenforge import remains unverified.')
 
