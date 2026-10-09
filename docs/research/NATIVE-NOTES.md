@@ -140,3 +140,14 @@ it replaces them when on and removes them when off, retaining unrelated text.
 The export switch is not a new in-Toolkit setting. The supplied sample yielded
 19 original markers and 19 generated labels in the separate test map; visual
 appearance, editing and save/reload tests are pending.
+
+The user subsequently confirmed text appears but rejected its visual style for
+continued testing. Simulated player view kept labels visible after deselection
+and hid the background image. Actual player output has not been tested. Labels
+remain optional, default off, and are deferred at the user's request.
+
+`forgebridge.handouts` now collects retained journal/table media from the original
+Foundry package into a separate inspection ZIP. It does not create `.rwfile`
+objects, add native media fields or rewrite existing native note links. A
+controlled native note containing an imported image/PDF reference is still
+needed before implementing those representations.

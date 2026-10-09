@@ -2,7 +2,7 @@
 
 > **Status: UVTT, SOURCE PRESERVATION, AND JOURNAL CORRELATION**
 >
-> The current work exports one scene as UVTT, copies its loose image/audio assets, and preserves full scene data plus linked journals and roll-table dependencies in a companion JSON. A readable room-notes reference accompanies the map. Native Arkenforge note creation is not implemented. See [STATUS.md](STATUS.md).
+> The current work exports one scene as UVTT, copies its loose image/audio assets, and preserves full scene data plus linked journals and roll-table dependencies in a companion JSON. Experimental native notes, tables and calibrated map markers have passed the Crypt runtime checks. Handout media collection is available separately; native media links and player visibility remain unverified. See [STATUS.md](STATUS.md).
 
 ForgeBridge is a proposed migration/transpilation tool for converting **Foundry Virtual Tabletop** content into the closest practical **Arkenforge** equivalent.
 
@@ -307,3 +307,30 @@ labels have Hidden from players enabled, do not emit light or block movement,
 light, vision or sound, and remain separate editable text objects. Verify their
 appearance and Player View before use. Re-exporting a labelled map with labels
 off removes ForgeBridge-labelled text objects; unrelated manual text remains.
+
+### Collect journal handout files
+
+Labels are deferred for further testing. Keep `--marker-labels off` (the default).
+The Toolkit's simulated view left selected and deselected labels visible while
+the map image disappeared; this is not a successful player visibility test.
+
+To collect image, PDF, audio and video references from the retained journal/table
+documents, use the original Foundry package and the existing companion:
+
+```powershell
+$env:PYTHONPATH = "$PWD\src"
+py -m forgebridge.handouts --package "C:\AMD\lob-counts_manor-pk-v13.zip" --companion counts_crypt_links.forgebridge.json --out counts_crypt_handouts_v1.zip
+```
+
+Extract this ZIP to a separate folder. `assets/` contains original media;
+`handout-report.json` maps references and journal fields to those files, records
+sizes/hashes, and distinguishes missing, external, other-package, rejected and
+unsupported references. Repeated references share one file; identical basenames
+in different source directories remain distinct. URL-encoded local paths are
+decoded, with traversal and symlink checks. No URLs are fetched and no source
+content is executed. Collection is limited to 64 MiB per file and 256 MiB total.
+
+This is a collection for inspection, not an Arkenforge import pack: do not copy
+it into MyAssets. Existing native note links are unchanged. Native handout
+fields/media linking still need a controlled exported sample and Toolkit test.
+Use a new output filename; existing files are not overwritten.

@@ -287,11 +287,19 @@ class InventoryTests(unittest.TestCase):
         self.assertEqual(missing.stdout, "")
 
     def test_reader_source_has_no_dynamic_execution(self) -> None:
-        banned = ("eval(", "exec(", "subprocess", "os.system", "importlib", "pickle", "urllib", "yaml.load")
+        import ast
+        banned = ("eval(", "exec(", "subprocess", "os.system", "importlib", "pickle", "yaml.load")
         for path in (SRC / "forgebridge").glob("*.py"):
             text = path.read_text(encoding="utf-8")
             for token in banned:
                 self.assertNotIn(token, text, f"{path.name} contains {token}")
+            # Pure URL parsing is permitted; network-capable imports are not.
+            for node in ast.walk(ast.parse(text)):
+                if isinstance(node, ast.Import):
+                    self.assertFalse(any(a.name.startswith('urllib') for a in node.names))
+                elif isinstance(node, ast.ImportFrom) and (node.module or '').startswith('urllib'):
+                    self.assertEqual(node.module, 'urllib.parse')
+                    self.assertTrue({a.name for a in node.names} <= {'unquote', 'urlsplit'})
 
 
 if __name__ == "__main__":
