@@ -72,7 +72,7 @@ def native_image_pair(template_file, template_meta, data):
                  'native_preset_defaults': 'Copied from supplied image; map placement behavior is unverified'})
 
 
-def source_image_files(companion, media_bundle, template_pack):
+def source_image_files(companion, media_bundle, template_pack, *, pdf_pages=False):
     occurrences = []
     refs = media_references(companion, occurrence_order=occurrences)
     template, tr = media_smoke_files(template_pack)
@@ -81,6 +81,7 @@ def source_image_files(companion, media_bundle, template_pack):
     basename = PurePosixPath(native_base).name
     parent = PurePosixPath(native_base).parent.parent
     fields, output, rows, compiled, total = {}, {}, [], {}, 0
+    pdf_page_total = 0
     with zipfile.ZipFile(media_bundle) as archive:
         entries = archive.infolist()
         if len(entries) > 4096 or sum(i.file_size for i in entries) > MAX_TOTAL:
@@ -107,7 +108,8 @@ def source_image_files(companion, media_bundle, template_pack):
             if row.get('status') != 'copied':
                 rows.append({**item, 'status': 'collection_gap'})
                 continue
-            if Path(ref.split('?', 1)[0]).suffix.lower() not in IMAGE_SUFFIXES:
+            is_pdf = PurePosixPath(urlsplit(ref).path).suffix.lower() == '.pdf'
+            if Path(ref.split('?', 1)[0]).suffix.lower() not in IMAGE_SUFFIXES and not (is_pdf and pdf_pages):
                 rows.append({**item, 'status': 'non_image_reference_only'})
                 continue
             path = row.get('bundled_path')
@@ -122,22 +124,51 @@ def source_image_files(companion, media_bundle, template_pack):
                 raise ValueError('Bundled image does not match collection hash/size')
             try:
                 if digest not in compiled:
-                    rwfile, rwmeta, details = native_image_pair(template_file, template_meta, data)
-                    media_path = str(parent / ('ForgeBridgeImage-' + digest[:20]) / basename)
-                    total += len(rwfile) + len(rwmeta)
-                    if total > MAX_TOTAL:
-                        raise ValueError('Native images exceed total package limit')
-                    output[media_path + '.rwfile'], output[media_path + '.rwmeta'] = rwfile, rwmeta
-                    compiled[digest] = (media_path + '.rwmeta', details)
-                target, details = compiled[digest]
+                    if is_pdf:
+                        from forgebridge.pdf_pages import render_pdf_pages
+                        images = render_pdf_pages(data)
+                        pdf_page_total += len(images)
+                        if pdf_page_total > 128:
+                            raise ValueError('PDF page total exceeds 128 page limit')
+                    else:
+                        images = [data]
+                    pending, page_results = {}, []
+                    for pi, image_data in enumerate(images, 1):
+                        rwfile, rwmeta, details = native_image_pair(template_file, template_meta, image_data)
+                        if is_pdf:
+                            details['thumbnail_scale_status'] = 'Computed width ratio; PDF page Toolkit validation pending'
+                        folder = ('ForgeBridgePDF-' if is_pdf else 'ForgeBridgeImage-') + digest[:20]
+                        if is_pdf:
+                            folder += '-P' + str(pi).zfill(3)
+                        media_path = str(parent / folder / basename)
+                        total += len(rwfile) + len(rwmeta)
+                        if total > MAX_TOTAL:
+                            raise ValueError('Native images exceed total package limit')
+                        pending[media_path + '.rwfile'], pending[media_path + '.rwmeta'] = rwfile, rwmeta
+                        page_results.append({'target': media_path + '.rwmeta', **details})
+                    if is_pdf:
+                        original = 'original-pdfs/' + digest + '.pdf'
+                        total += len(data)
+                        if total > MAX_TOTAL:
+                            raise ValueError('Native images exceed total package limit')
+                        pending[original] = data
+                    output.update(pending)
+                    compiled[digest] = page_results
+                page_results = compiled[digest]
             except (OSError, ValueError, Image.DecompressionBombError) as exc:
-                if total > MAX_TOTAL:
+                if total > MAX_TOTAL or pdf_page_total > 128:
                     raise
-                rows.append({**item, 'status': 'image_reference_only', 'reason': str(exc)})
+                rows.append({**item, 'status': 'pdf_reference_only' if is_pdf else 'image_reference_only', 'reason': str(exc)})
                 continue
-            rows.append({**item, 'status': 'native_image', 'target': target,
-                         'source_sha256': digest, **details})
-    targets = {row['ref']: row['target'] for row in rows if row['status'] == 'native_image'}
+            if is_pdf:
+                rows.append({**item, 'status': 'native_pdf_pages', 'source_sha256': digest,
+                             'original_pdf': 'original-pdfs/' + digest + '.pdf',
+                             'pages': page_results, 'page_count': len(page_results),
+                             'runtime_status': 'PDF page readability and persistence require Toolkit testing'})
+            else:
+                rows.append({**item, 'status': 'native_image', 'source_sha256': digest, **page_results[0]})
+    targets = {row['ref']: row['pages'] if row['status'] == 'native_pdf_pages' else [row]
+               for row in rows if row['status'] in {'native_image', 'native_pdf_pages'}}
     # Scan order is scoped to each note: a reused image can precede another
     # image on one page and follow it on another. Archive order is irrelevant.
     for ref, origin in occurrences:
@@ -147,28 +178,38 @@ def source_image_files(companion, media_bundle, template_pack):
         key = (origin['document_index'], int(match.group(1)) if match else None)
         stem = PurePosixPath(unquote(urlsplit(ref).path)).stem
         label = re.sub(r'\s+', ' ', stem.replace('_', ' ').replace('-', ' ')).strip()[:160] or 'Image'
-        attachment = {'ref': ref, 'target': targets[ref], 'label': 'Image — ' + label}
         bucket = fields.setdefault(key, [])
-        if not any(a['ref'] == ref for a in bucket):
-            bucket.append(attachment)
+        if any(a['ref'] == ref for a in bucket):
+            continue
+        is_pdf = PurePosixPath(urlsplit(ref).path).suffix.lower() == '.pdf'
+        for pi, page in enumerate(targets[ref], 1):
+            title = ('PDF — ' + label + ' — Page ' + str(pi) + ' of ' + str(len(targets[ref]))) if is_pdf else 'Image — ' + label
+            bucket.append({'ref': ref, 'target': page['target'], 'label': title})
     return output, fields, rows
 
 
-def write_source_images_zip(companion_path, media_bundle, template_pack, dest):
+def write_source_images_zip(companion_path, media_bundle, template_pack, dest, *, pdf_pages=False):
     companion_path, dest = Path(companion_path), Path(dest)
     if companion_path.stat().st_size > MAX_FILE:
         raise ValueError('Companion exceeds size limit')
     if dest.exists() or dest.is_symlink():
         raise ValueError('Choose a new output filename')
     companion = json.loads(companion_path.read_text(encoding='utf-8'))
-    media, fields, rows = source_image_files(companion, media_bundle, template_pack)
+    media, fields, rows = source_image_files(companion, media_bundle, template_pack, pdf_pages=pdf_pages)
     notes, report = companion_files(companion, media_fields=fields)
     if set(media) & set(notes):
         raise ValueError('Media conflicts with note output')
     files = {**notes, **media}
     report['source_media'] = rows
-    report['counts']['native_image_assets'] = len(media) // 2
+    report['counts']['native_image_assets'] = sum(n.endswith('.rwfile') for n in media)
+    report['counts']['native_pdf_documents'] = sum(r['status'] == 'native_pdf_pages' for r in rows)
+    report['counts']['native_pdf_pages'] = sum(r.get('page_count', 0) for r in rows)
+    pdf_refs = {r['ref'] for r in rows if r['status'] == 'native_pdf_pages'}
+    report['counts']['native_pdf_attachments'] = sum(a['ref'] in pdf_refs for a in report['attached_media'])
+    report['pdf_mode'] = 'page_images' if pdf_pages else 'references'
     report['status'] = 'Count\'s Crypt source-image display, proportions, note reopening and Toolkit restart passed user testing. Other packages require Toolkit testing.'
+    if pdf_pages:
+        report['status'] += ' PDF page images require Toolkit readability/reopen/restart testing.'
     files['conversion-report.json'] = json.dumps(report, indent=2, ensure_ascii=True).encode()
     files['INSTALL.txt'] = ("ForgeBridge native journal image attachments\n\n"
         "Close Arkenforge and back up MyAssets, including the existing generated notes.\n"
@@ -180,7 +221,10 @@ def write_source_images_zip(companion_path, media_bundle, template_pack, dest):
         "Follow a link to an image handout; confirm it displays at the correct aspect ratio.\n"
         "Check both a portrait and a landscape image, then close/reopen and restart.\n"
         "PNG/JPEG/static WebP/GIF are normalized to native RGBA PNG with thumbnails.\n"
-        "PDFs, animations, unsupported/missing media remain references in the report.\n"
+        "With --pdf-pages, PDFs render as numbered page image fields; inspect readability.\n"
+        "Original converted PDFs are preserved in original-pdfs OUTSIDE MyAssets.\n"
+        "PDF pages are images, not searchable text or interactive PDF documents.\n"
+        "Without that option PDFs remain references, as do failed/unsupported media.\n"
         "No map/labels are generated; existing room marker targets stay the same.\n"
         "Player visibility remains unverified. This package contains private content.\n").encode()
     if sum(map(len, files.values())) > MAX_TOTAL:

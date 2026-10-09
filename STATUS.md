@@ -154,3 +154,21 @@ Validation: 119 tests pass, adding page scoping, attachment closure, stable note
 The user supplied a conversion report with 48 native image assets and 55 attachments across 84 notes, no source read errors, 10 PDF references and seven expected collection gaps (six other-pack images and one SVG). The user confirmed source image display/proportions, note reopening and Toolkit restart all pass. This verifies the tested Count's Crypt package; other packages and native map asset placement remain unverified.
 
 Attachments now follow occurrence order within each individual note, including reused images appearing in different orders across pages. Readable filename-based Media field titles replace global attachment numbers. Deduplication, existing note paths and marker targets are retained. Attachments remain below the text; the library panel's generated document order is unchanged. Validation: 120 tests pass, including opposite image order across pages and decoded native field titles. Labels remain off; PDF support and player visibility are pending.
+
+## Optional PDF page handouts (2026-10-09)
+
+User confirmed attachment ordering passes in Toolkit. The uploaded collected
+handout bundle contains ten PDFs, seventeen total pages. Added opt-in
+`--pdf-pages` and optional pinned PDFium renderer dependency. PDF page images
+use the verified native image encoding and category layout, attach to existing
+notes in numbered page order, and preserve original PDFs outside MyAssets.
+Existing note paths/marker targets remain stable; no labels/map are emitted.
+PDF interactivity/searchable text is not reproduced. Invalid/encrypted PDFs
+remain references. Bounds: 32 pages/document, 128 package pages, at most 2400
+pixels per side, 64 MiB rendered PNGs per document and existing package limits.
+
+Validation: 123 tests pass with the optional renderer installed, including
+coloured page order, portrait/landscape dimensions, decoded native payloads,
+original PDF bytes, default-off behavior, malformed PDF fallback and page/byte
+limits. Actual PDF page display/readability/persistence requires the user's
+Toolkit test. Labels remain off; player visibility remains deferred.

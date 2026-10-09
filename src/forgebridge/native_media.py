@@ -125,13 +125,16 @@ def main(argv=None):
     parser.add_argument('--out', required=True)
     parser.add_argument('--companion', help='Retained scene companion for source-image attachments')
     parser.add_argument('--media-bundle', help='Collected handout ZIP for --companion')
+    parser.add_argument('--pdf-pages', action='store_true', help='Render collected PDFs as numbered image attachments (optional PDF dependency)')
     args = parser.parse_args(argv)
     if bool(args.companion) != bool(args.media_bundle):
         parser.error('--companion and --media-bundle must be used together')
+    if args.pdf_pages and not args.companion:
+        parser.error('--pdf-pages requires --companion and --media-bundle')
     try:
         if args.companion:
             from forgebridge.native_images import write_source_images_zip
-            report = write_source_images_zip(args.companion, args.media_bundle, args.template_pack, args.out)
+            report = write_source_images_zip(args.companion, args.media_bundle, args.template_pack, args.out, pdf_pages=args.pdf_pages)
             print(f"Wrote {report['counts']['native_image_assets']} image assets and {report['counts']['native_image_attachments']} note attachments; see conversion-report.json. Toolkit validation required.")
             return 0
         report = write_media_smoke_zip(args.template_pack, args.out)

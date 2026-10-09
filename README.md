@@ -390,3 +390,27 @@ match the current companion and ZIP. PDFs and animations remain references;
 collection gaps and failed images are reported. `conversion-report.json` lists
 native image assets, attached note targets and unresolved media. Check portrait
 and landscape handouts, room-note navigation, and note/restart persistence.
+
+### Optional PDF handout page images
+
+Arkenforge's published import formats do not list PDF. To view collected PDF
+handouts inside notes, install the optional renderer and enable page images:
+
+```powershell
+py -m pip install -r requirements-pdf.txt
+py -m forgebridge.native_media --template-pack FB_Media_notes.zip --companion counts_crypt_links.forgebridge.json --media-bundle counts_crypt_handouts_v1.zip --pdf-pages --out counts_crypt_pdf_notes_v1.zip
+```
+
+This keeps existing note/marker paths and image attachments. Each PDF becomes
+numbered native Media fields in source/page order. Successfully converted
+original PDFs are retained byte-for-byte in `original-pdfs/` outside MyAssets,
+with source references and hashes in the conversion report. They are page
+images, not searchable text or interactive PDFs. Rendering is up to 144 dpi,
+capped at 2400 pixels per side, 32 pages per PDF and 128 pages per package.
+Invalid/encrypted PDFs remain explicit references; package size limits still
+apply. Without `--pdf-pages`, PDF references behave as before.
+
+Back up MyAssets and any manually edited generated notes before replacing them.
+Check a single-page letter and all six pages of Court of Ravenloft for readable
+text, correct page order, note reopening and Toolkit restart. PDF page runtime
+behavior is pending; labels remain off and player visibility is unverified.

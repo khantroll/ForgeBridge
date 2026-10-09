@@ -193,3 +193,9 @@ than the handout report's alphabetic reference order. A shared image can occur
 in opposite orders on different pages. Field titles derive from decoded source
 filenames; asset internal names remain untouched. Images remain separate fields
 below the text, not an attempted recreation of inline HTML placement.
+
+Optional PDF mode rasterizes each collected PDF into numbered native Media
+fields using the same asset pair encoding. PDF originals are preserved outside
+MyAssets and mapped in the report. This is image-based handout support, not an
+observed native PDF reader schema. Source-image runtime verification does not
+prove PDF page readability or persistence; those require Toolkit testing.
