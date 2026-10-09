@@ -261,7 +261,27 @@ reported. Original HTML, source permissions and all unknown data remain in the
 companion. Only contiguous, unit-weight text outcomes on `1dN` replacement
 tables become rollable; other table semantics remain readable references.
 
-Review visibility before player use. Native source-content rendering and rolls
-still require Toolkit testing. No native map or actor conversion is generated;
+Review visibility before player use. The user verified Crypt room/rules links
+and table rolls; handout files remain missing. This notes-only command generates
+no native map or actor conversion;
 the report retains scene-note grid positions and exact native targets for later
 map-placement work. See `docs/research/NATIVE-NOTES.md` for evidence and limits.
+
+### Experimental markers in an exported native map
+
+`forgebridge.native_map` copies a single manually saved map export and inserts
+the companion's room-note markers using an explicitly calibrated transform.
+It requires an existing native note marker as its template. For the supplied
+Crypt calibration export, one grid square is 2.56 native units and the image's
+upper-left corner is (0, 0):
+
+```powershell
+$env:PYTHONPATH = "$PWD\src"
+py -m forgebridge.native_map --template-pack assets_with_markers.zip --companion counts_crypt_links.forgebridge.json --out counts_crypt_native_map.zip --name ForgeBridge_Crypt_With_Notes --units-per-grid 2.56 --origin 0 0 --remove-marker "FB Cal A" --remove-marker "FB Cal B" --remove-marker "FB Cal C"
+```
+
+The ZIP contains a separately named map, generated notes, and the exported
+media. Existing image, wall, door and light records are preserved. It does not
+build a native map from scratch or infer a transform for other maps. Output
+must use a new filename. Toolkit placement, clicking, save/reload and player
+visibility tests remain pending.

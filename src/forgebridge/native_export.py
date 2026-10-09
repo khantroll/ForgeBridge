@@ -88,7 +88,7 @@ class TextCompiler(HTMLParser):
         return self.parts or [('', None)]
 
 
-def companion_files(companion):
+def companion_files(companion, *, map_markers=False):
     bundle = companion.get('scene_notes')
     if not isinstance(bundle, dict) or not isinstance(bundle.get('dependencies'), dict):
         raise ValueError('Companion needs scene_notes.dependencies; export it again with ForgeBridge')
@@ -250,7 +250,7 @@ def companion_files(companion):
         placements.append(placement)
         navigation += [(str(note.get('title') or 'Map note'), placement['target']), ('\n', None)]
     emit((None, None), 'ForgeBridge — ' + str(bundle.get('scene_name') or bundle.get('scene_id')), [
-        ('text', 'Import limitations', [('Plain text conversion. Review player visibility before sharing. Media are references. Map markers are not placed automatically. Keep this folder at the exact path in INSTALL.txt.', None)]),
+        ('text', 'Import limitations', [('Plain text conversion. Review player visibility before sharing. Media are references. ' + ('Room markers are supplied in the separate native map copy. ' if map_markers else 'Map markers are not placed automatically. ') + 'Keep this folder at the exact path in INSTALL.txt.', None)]),
         ('text', 'Scene notes', navigation or [('No placed notes in source', None)]),
         ('text', 'Linked documents', sum(([(names[(di, None)], paths[(di, None)] + '.rwmeta'), ('\n', None)] for di in range(len(documents))), []))])
     report = {'schema_version': '1.0', 'native_folder': base.rstrip('/'), 'scene_id': bundle.get('scene_id'),

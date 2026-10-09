@@ -73,3 +73,29 @@ All files reparse with the inert inspector and tests verify recovered content, t
 Known dependency statuses are preserved. Pages beyond the original traversal can resolve additional UUIDs against the same retained scoped documents; missing/unsupported references stay literal and are reported. HTML is flattened without executing it; images/PDFs and external HTML links remain explicit references, and non-BMP characters are replaced with reported losses. The original full companion is packaged unchanged. Visibility lists mirror the sample and must be reviewed before player use.
 
 Only replacement tables with `1dN`, contiguous one-value ranges, unit weights and text outcomes become native rollable fields. Titles plus descriptions are preserved; unsupported dice, weights, document draws and without-replacement behavior become reference text. Despair and Nightmare meet this narrow rule. Source-content conversion is not runtime-verified by the synthetic smoke test; manual import/rendering/links/rolls are the next gate.
+
+## Crypt runtime check and calibrated native map copy
+
+The user subsequently verified actual Crypt room/note links, rules links and
+table rolls. Missing handout assets remain a known limitation.
+
+The manually saved map export includes three named calibration markers near
+the upper-left image corner. The background's centre is (51.2, -53.76); its
+4000×4200 PNG represents 40×42 grid squares at 2.56 native units per square.
+Thus a source grid point (x, y) maps to (2.56x, -2.56y). The manual markers
+approximately confirm this transform; their small placement jitter is not
+treated as a scale or shear correction.
+
+`forgebridge.native_map` copies all original binary records except map name,
+tile-list array/size/version and next UID. It appends fresh marker wrappers and
+preset graphs using source metadata, with unique IDs and preserved inherited
+reference identities. Removed calibration markers remain harmless unreachable
+records. A reparse comparison verifies all other original objects are unchanged.
+Map metadata is renamed separately while retaining shared string definitions.
+Exported media and generated notes accompany the separately named copy.
+
+This experiment needs an explicit calibrated transform and a supplied native
+marker; it does not create maps from source geometry. The generated Crypt copy
+has 19 exact note targets. Toolkit alignment, clicking and save/reload remain
+unverified until the user tests this artifact. Visibility is still a manual
+review, and handout files are still not embedded.

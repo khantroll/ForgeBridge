@@ -20,6 +20,9 @@ class Reader:
         self.max_records, self.max_items, self.max_depth = max_records, max_items, max_depth
         self.record_count, self.item_count = 0, 0
         self.objects, self.classes, self.libraries = {}, {}, {}
+        # Side tables support byte-preserving edits without changing the inert graph.
+        self.object_metadata, self.record_spans, self.member_spans = {}, {}, {}
+        self.array_metadata, self.array_payload_starts = {}, {}
         self.depth = 0
 
     def take(self, count):
@@ -107,16 +110,22 @@ class Reader:
                 return value
 
     def members(self, oid, metadata):
+        self.object_metadata[oid] = metadata
+        self.member_spans[oid] = {}
         obj = {'class': metadata['name'], 'library_id': metadata['library_id'], 'members': {}}
         ref = self.put(oid, obj)
         for name, kind, info in zip(metadata['names'], metadata['types'], metadata['infos']):
+            start = self.pos
             value = self.primitive(info) if kind == 0 else self.value()
+            self.member_spans[oid][name] = (start, self.pos)
             if isinstance(value, dict) and ('nulls' in value or 'end' in value):
                 raise NrbfError('Unexpected array null run or message end in class')
             obj['members'][name] = value
         return ref
 
     def array(self, oid, lengths, kind, info, bounds=None):
+        self.array_metadata[oid] = (kind, info)
+        self.array_payload_starts[oid] = self.pos
         size = self.count(math.prod(lengths))
         obj = {'array_type': kind, 'lengths': lengths, 'lower_bounds': bounds, 'items': []}
         ref = self.put(oid, obj)
@@ -143,7 +152,11 @@ class Reader:
             raise NrbfError('Record or nesting limit exceeded')
         self.depth += 1
         try:
-            return self._record()
+            start = self.pos
+            value = self._record()
+            if self.data[start] in (1, 4, 5, 6, 7, 15, 16, 17):
+                self.record_spans[value['ref']] = (start, self.pos)
+            return value
         finally:
             self.depth -= 1
 
