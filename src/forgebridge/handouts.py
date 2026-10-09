@@ -46,7 +46,7 @@ class MediaParser(HTMLParser):
             self.suppressed.pop()
 
 
-def media_references(companion):
+def media_references(companion, *, occurrence_order=None):
     documents = companion.get('scene_notes', {}).get('dependencies', {}).get('documents')
     if not isinstance(documents, list) or len(documents) > 256:
         raise ValueError('Companion needs a bounded retained dependency graph')
@@ -59,6 +59,8 @@ def media_references(companion):
             if len(ref) > 8192:
                 raise ValueError('Media reference exceeds length limit')
             refs.setdefault(ref, []).append(origin)
+            if occurrence_order is not None:
+                occurrence_order.append((ref, origin))
             if sum(len(x) for x in refs.values()) > 4096:
                 raise ValueError('Too many media references')
         if isinstance(value, str):

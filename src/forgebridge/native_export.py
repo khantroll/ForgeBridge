@@ -177,7 +177,7 @@ def companion_files(companion, *, map_markers=False, media_fields=None):
         for uid, (kind, title, value) in enumerate(specs, 1):
             fields.append(builder.table_field(title, value, uid) if kind == 'table' else builder.text_field(title, value, uid))
         for attachment in media_fields.get(key, []):
-            fields.append(builder.media_field('Image attachment ' + str(len(attached_media) + 1), attachment['target'], len(fields) + 1))
+            fields.append(builder.media_field(attachment.get('label') or 'Image attachment ' + str(len(attached_media) + 1), attachment['target'], len(fields) + 1))
             attached_media.append({'note': paths[key] + '.rwmeta', **attachment})
         files[paths[key] + '.rwnote'] = Writer(builder.schema['libraries']).write(builder.note(name, fields, tag='ForgeBridge import'))
         files[paths[key] + '.rwmeta'] = Writer(builder.schema['libraries']).write(builder.metadata(name))

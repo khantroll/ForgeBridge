@@ -6,6 +6,7 @@ from pathlib import Path, PurePosixPath
 import re
 import struct
 import zipfile
+from urllib.parse import unquote, urlsplit
 
 from PIL import Image, ImageOps
 
@@ -67,12 +68,13 @@ def native_image_pair(template_file, template_meta, data):
                 {'dimensions': list(image.size), 'thumbnail_dimensions': list(thumb.size),
                  'normalized_png_sha256': hashlib.sha256(full.getvalue()).hexdigest(),
                  'thumbnail_scale': scale,
-                 'thumbnail_scale_status': 'Computed width ratio; arbitrary-image Toolkit validation pending',
+                 'thumbnail_scale_status': 'Computed width ratio; Count\'s Crypt source-image display/reopen/restart passed; other packages require testing',
                  'native_preset_defaults': 'Copied from supplied image; map placement behavior is unverified'})
 
 
 def source_image_files(companion, media_bundle, template_pack):
-    refs = media_references(companion)
+    occurrences = []
+    refs = media_references(companion, occurrence_order=occurrences)
     template, tr = media_smoke_files(template_pack)
     native_base = tr['media_path'][:-7]
     template_file, template_meta = template[native_base + '.rwfile'], template[native_base + '.rwmeta']
@@ -133,16 +135,22 @@ def source_image_files(companion, media_bundle, template_pack):
                     raise
                 rows.append({**item, 'status': 'image_reference_only', 'reason': str(exc)})
                 continue
-            for origin in refs[ref]:
-                di, field = origin['document_index'], origin['path']
-                match = re.match(r'^pages\[(\d+)\]\.', field)
-                key = (di, int(match.group(1)) if match else None)
-                attachment = {'ref': ref, 'target': target}
-                bucket = fields.setdefault(key, [])
-                if attachment not in bucket:
-                    bucket.append(attachment)
             rows.append({**item, 'status': 'native_image', 'target': target,
                          'source_sha256': digest, **details})
+    targets = {row['ref']: row['target'] for row in rows if row['status'] == 'native_image'}
+    # Scan order is scoped to each note: a reused image can precede another
+    # image on one page and follow it on another. Archive order is irrelevant.
+    for ref, origin in occurrences:
+        if ref not in targets:
+            continue
+        match = re.match(r'^pages\[(\d+)\]\.', origin['path'])
+        key = (origin['document_index'], int(match.group(1)) if match else None)
+        stem = PurePosixPath(unquote(urlsplit(ref).path)).stem
+        label = re.sub(r'\s+', ' ', stem.replace('_', ' ').replace('-', ' ')).strip()[:160] or 'Image'
+        attachment = {'ref': ref, 'target': targets[ref], 'label': 'Image — ' + label}
+        bucket = fields.setdefault(key, [])
+        if not any(a['ref'] == ref for a in bucket):
+            bucket.append(attachment)
     return output, fields, rows
 
 
@@ -160,7 +168,7 @@ def write_source_images_zip(companion_path, media_bundle, template_pack, dest):
     files = {**notes, **media}
     report['source_media'] = rows
     report['counts']['native_image_assets'] = len(media) // 2
-    report['status'] = 'Native reused-image v2 passed display/reopen/restart. Source image encoding and attachments require Toolkit testing.'
+    report['status'] = 'Count\'s Crypt source-image display, proportions, note reopening and Toolkit restart passed user testing. Other packages require Toolkit testing.'
     files['conversion-report.json'] = json.dumps(report, indent=2, ensure_ascii=True).encode()
     files['INSTALL.txt'] = ("ForgeBridge native journal image attachments\n\n"
         "Close Arkenforge and back up MyAssets, including the existing generated notes.\n"

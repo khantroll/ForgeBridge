@@ -182,7 +182,14 @@ Source-image mode now patches encoded byte-array records without altering
 native asset names, filenames, provenance or other preset fields. Images are
 normalized to RGBA PNG; thumbnails fit within 128×128 with their aspect ratio
 preserved. `_thumbnailScale` uses thumbnail width / image width, inferred from
-the square sample. That ratio and non-square image display remain runtime
-unverified. This mode is for note attachments, not native map asset placement.
+the square sample. The user subsequently confirmed source-image proportions, display, note
+reopening and Toolkit restart for the Count's Crypt package. Other packages
+still require runtime checks. This mode is for note attachments, not native map asset placement.
 Current package verification and synthetic tests establish structure/scoping,
 not proof that every source image displays correctly in Toolkit.
+
+Source Media fields now follow each note's reference occurrence order rather
+than the handout report's alphabetic reference order. A shared image can occur
+in opposite orders on different pages. Field titles derive from decoded source
+filenames; asset internal names remain untouched. Images remain separate fields
+below the text, not an attempted recreation of inline HTML placement.

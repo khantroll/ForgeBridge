@@ -355,8 +355,7 @@ must pass before integrating source handouts. Native visibility is unverified.
 The first image test reported a missing `.rwfile` despite both files being
 present. The revised v2 test retains original asset names/provenance and the
 source media-category folder layout. Its note is **ForgeBridge Generated Image
-Test v2**. This is a diagnostic revision; the lookup cause and runtime success
-remain unconfirmed.
+Test v2**. The exact v1 lookup cause remains unconfirmed.
 
 The user subsequently confirmed v2 image display, note reopening and Toolkit
 restart all pass. The exact v1 lookup cause is still uncertain.
@@ -379,8 +378,12 @@ No map or room labels are emitted. Image pages and inline images get native
 Media fields; repeated references share one asset and duplicate occurrences in
 a note share one field. PNG/JPEG/static WebP/GIF are re-encoded as RGBA PNG with
 aspect-preserving thumbnails. The template's native names/filename agree and
-its media-category layout is retained. Thumbnail scaling and arbitrary image
-display still need Toolkit verification; map asset placement is unverified.
+its media-category layout is retained. The user confirmed Count's Crypt source-image
+display, proportions, note reopening and Toolkit restart. Other packages still
+require Toolkit checks; native map asset placement is unverified. Attachments
+follow each note's source occurrence order and use readable source-filename
+titles (for example, Image — Raven skull cane). They remain below the text;
+original HTML layout is not reproduced.
 
 The handout report's scene, reference origins and copied asset sizes/hashes must
 match the current companion and ZIP. PDFs and animations remain references;

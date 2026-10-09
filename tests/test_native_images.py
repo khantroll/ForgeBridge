@@ -45,6 +45,30 @@ def inputs(root, *, animated=False):
 
 
 class NativeImageTests(unittest.TestCase):
+    def test_image_order_is_local_to_page_and_labels_are_readable(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            template, companion, bundle, x = inputs(tmp)
+            pages = x['scene_notes']['dependencies']['documents'][0]['payload']['pages']
+            pages[0]['text']['content'] = '<img src="private/portrait.jpg"><img src="private/image.webp"><img src="private/portrait.jpg">'
+            pages.append({'_id': 'reverse', 'name': 'Reverse', 'text': {'content':
+                '<img src="private/image.webp"><img src="private/portrait.jpg">'}})
+            companion.write_text(json.dumps(x))
+            bundle.unlink()
+            write_handouts_zip(Path(tmp) / 'package', companion, bundle)
+            dest = Path(tmp) / 'ordered.zip'
+            report = write_source_images_zip(companion, bundle, template, dest)
+            with zipfile.ZipFile(dest) as z:
+                for suffix, expected in [('P000', ['portrait', 'image']),
+                                         (f'P{len(pages)-1:03}', ['image', 'portrait'])]:
+                    note = next(a['note'] for a in report['attached_media'] if a['note'].endswith(suffix + '.rwmeta'))
+                    attached = [a for a in report['attached_media'] if a['note'] == note]
+                    self.assertEqual([Path(a['ref']).stem for a in attached], expected)
+                    reader = Reader(z.read(note[:-7] + '.rwnote')); reader.read()
+                    fields = [o['members'] for o in reader.objects.values()
+                              if isinstance(o, dict) and o.get('class') == 'ArkenNoteFieldMedia']
+                    self.assertEqual([reader.objects[f['_name']['ref']] for f in fields],
+                                     ['Image — ' + name for name in expected])
+
     def test_scoped_attachments_shared_assets_and_existing_note_targets(self):
         with tempfile.TemporaryDirectory() as tmp:
             template, companion, bundle, x = inputs(tmp)
