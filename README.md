@@ -347,7 +347,13 @@ py -m forgebridge.native_media --template-pack FB_Media_notes.zip --out native_i
 ```
 
 Follow its INSTALL.txt. It generates a fresh note with a native Media field,
-relocates and renames the supplied image asset pair, and preserves image and
-thumbnail bytes. It does not overwrite the original note/map, add room labels,
+relocates the supplied image asset pair while keeping its original filename,
+metadata and complete file bytes. It does not overwrite the original note/map, add room labels,
 convert arbitrary Foundry images or handle PDFs. Toolkit display and persistence
 must pass before integrating source handouts. Native visibility is unverified.
+
+The first image test reported a missing `.rwfile` despite both files being
+present. The revised v2 test retains original asset names/provenance and the
+source media-category folder layout. Its note is **ForgeBridge Generated Image
+Test v2**. This is a diagnostic revision; the lookup cause and runtime success
+remain unconfirmed.

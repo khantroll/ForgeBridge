@@ -14,33 +14,7 @@ import zipfile
 from PIL import Image
 
 from forgebridge.native import NoteBuilder, Writer
-from forgebridge.native_map import AppendWriter, patch_stream
 from forgebridge.nrbf import Reader
-
-
-def renamed_asset(data, name, expected_class):
-    reader = Reader(data)
-    graph = reader.read()
-    if reader.objects[graph['root_id']].get('class') != expected_class:
-        raise ValueError('Unexpected native image asset type')
-    writer, patches = AppendWriter(reader), []
-    for oid, obj in reader.objects.items():
-        if not isinstance(obj, dict) or 'members' not in obj:
-            continue
-        for key in obj['members']:
-            bare = key.split('+')[-1]
-            value = name if bare in {'_name', '_tileName'} else 'ForgeBridge' if bare in {'_creator', '_tileCreator'} else None
-            if value is not None:
-                a, b = reader.member_spans[oid][key]
-                patches.append((a, b, writer.encoded(value)))
-    result = patch_stream(reader, patches, writer)
-    check = Reader(result)
-    check.read()
-    # Renaming never changes embedded content, thumbnails or preset values.
-    for oid, obj in reader.objects.items():
-        if isinstance(obj, dict) and 'bytes' in obj and check.objects.get(oid) != obj:
-            raise ValueError('Embedded image changed unexpectedly')
-    return result
 
 
 def media_smoke_files(template):
@@ -67,6 +41,11 @@ def media_smoke_files(template):
     meta = asset[:-7] + '.rwmeta'
     if meta not in files or notes[0][:-7] + '.rwmeta' not in files:
         raise ValueError('Sample needs matching note and image metadata')
+    for path, expected in [(asset, 'ArkenTileUpgrade'), (meta, 'ArkenTileMeta')]:
+        check = Reader(files[path])
+        graph = check.read()
+        if check.objects[graph['root_id']].get('class') != expected:
+            raise ValueError('Unexpected native image asset type')
     reader = Reader(files[notes[0]])
     reader.read()
     fields = [o for o in reader.objects.values() if isinstance(o, dict) and o.get('class') == 'ArkenNoteFieldMedia']
@@ -86,23 +65,26 @@ def media_smoke_files(template):
         dimensions = [image.width, image.height]
         image.verify()
     digest = hashlib.sha256(files[asset] + files[meta]).hexdigest()[:12]
-    folder = 'ForgeBridgeMediaTest-' + digest
-    name = 'ForgeBridge Generated Image Test'
+    folder = 'ForgeBridgeMediaTest-v2-' + digest
+    name = 'ForgeBridge Generated Image Test v2'
     note_path = 'MyAssets/Encyclopedia/Notes/' + folder + '/Image-Test'
-    media_path = 'MyAssets/Media/' + folder + '/Image-Test'
+    # Keep the source filename, metadata and media-category parent layout.
+    # Only the containing note-specific folder is changed for isolation.
+    media_path = str(PurePosixPath(asset).parent.parent / folder / PurePosixPath(asset).stem)
     builder = NoteBuilder()
     note_fields = [builder.text_field('Test instructions', [('The image below should match your original image-handout test. Close and reopen this note, then save/restart and verify it remains visible. Player visibility is unverified.', None)], 1),
                    builder.media_field('Generated image attachment', media_path + '.rwmeta', 2)]
     output = {
         note_path + '.rwnote': Writer(builder.schema['libraries']).write(builder.note(name, note_fields)),
         note_path + '.rwmeta': Writer(builder.schema['libraries']).write(builder.metadata(name)),
-        media_path + '.rwfile': renamed_asset(files[asset], 'ForgeBridge Test Image', 'ArkenTileUpgrade'),
-        media_path + '.rwmeta': renamed_asset(files[meta], 'ForgeBridge Test Image', 'ArkenTileMeta'),
+        media_path + '.rwfile': files[asset],
+        media_path + '.rwmeta': files[meta],
     }
     report = {'schema_version': '1.0', 'note_name': name, 'note_path': note_path + '.rwmeta',
               'media_path': media_path + '.rwmeta', 'image_dimensions': dimensions,
               'embedded_image_sha256': hashlib.sha256(images[0]).hexdigest(),
               'image_and_thumbnail_preserved': True, 'native_media_field_generated': True,
+              'native_asset_pair_byte_identical': True, 'original_asset_filename_preserved': True,
               'arbitrary_source_image_conversion': False, 'pdf_conversion': False,
               'runtime_status': 'Requires Toolkit display and save/reopen testing'}
     output['media-test-report.json'] = json.dumps(report, indent=2).encode()
@@ -115,9 +97,11 @@ def media_smoke_files(template):
         "then restart the Toolkit and confirm it remains visible.\n"
         "This is a new note and image copy; original notes/maps are untouched.\n"
         "It tests a generated Media field and relocated native image asset.\n"
+        "The entire image asset pair, including names/creator/presets, is unchanged.\n"
         "Source image bytes/thumbnail are preserved. PDF/source-media conversion\n"
         "and player visibility are not verified. No map or labels are included.\n"
-        f"To remove, move only {folder} from both Notes and Media outside MyAssets.\n"
+        f"To remove, move only {folder} from Notes and {PurePosixPath(media_path).parent}\n"
+        "outside MyAssets.\n"
         "This contains private sample media; do not publish it.\n").encode()
     return output, report
 

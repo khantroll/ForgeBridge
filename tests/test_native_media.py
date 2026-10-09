@@ -66,6 +66,8 @@ class NativeMediaTests(unittest.TestCase):
             self.assertEqual(path.read_bytes(), source)
             self.assertEqual(report['image_dimensions'], [4, 3])
             self.assertFalse(report['arbitrary_source_image_conversion'])
+            self.assertTrue(report['native_asset_pair_byte_identical'])
+            self.assertTrue(report['media_path'].endswith('/Image.rwmeta'))
             r = Reader(files[report['note_path'][:-7] + '.rwnote'])
             r.read()
             fields = [o['members'] for o in r.objects.values() if isinstance(o, dict) and o.get('class') == 'ArkenNoteFieldMedia']
@@ -76,12 +78,14 @@ class NativeMediaTests(unittest.TestCase):
             self.assertEqual(f['_visibleToPlayers'], f['ArkenNoteField+_visibleToPlayers'])
             self.assertIn(report['media_path'], files)
             for ext in ('.rwfile', '.rwmeta'):
+                with zipfile.ZipFile(path) as original_zip:
+                    self.assertEqual(files[report['media_path'][:-7] + ext], original_zip.read('MyAssets/Media/Sample/Image' + ext))
                 asset = Reader(files[report['media_path'][:-7] + ext])
                 graph = asset.read()
                 self.assertEqual([o['bytes'] for o in asset.objects.values() if isinstance(o, dict) and 'bytes' in o], [original])
                 m = asset.objects[graph['root_id']]['members']
-                self.assertEqual(asset.objects[m['_name']['ref']], 'ForgeBridge Test Image')
-                self.assertEqual(asset.objects[m['_creator']['ref']], 'ForgeBridge')
+                self.assertEqual(asset.objects[m['_name']['ref']], 'Original image')
+                self.assertEqual(asset.objects[m['_creator']['ref']], 'Test author')
 
     def test_zip_and_no_overwrite(self):
         with tempfile.TemporaryDirectory() as tmp:

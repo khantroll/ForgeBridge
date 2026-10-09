@@ -168,3 +168,11 @@ sample asset pair, changing names/creator while leaving embedded byte arrays
 unchanged. It does not infer thumbnail sizing, preset dimensions or arbitrary
 image construction. The exported original is untouched. Runtime display and
 persistence remain a manual gate before general handout packaging.
+
+The first test failed at runtime with a missing `.rwfile` message; the user
+confirmed both asset files are present. The diagnostic v2 generator keeps
+the original filename and both entire asset files unchanged, retains their
+media-category parent layout, and relocates only their containing test folder.
+Internal asset renaming is no longer attempted. This avoids the unverified
+v1 filename/name/provenance mismatch; it does not prove which change caused
+the failure. The new note/field link still requires Toolkit validation.
