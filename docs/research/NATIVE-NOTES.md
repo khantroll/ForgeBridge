@@ -151,3 +151,20 @@ Foundry package into a separate inspection ZIP. It does not create `.rwfile`
 objects, add native media fields or rewrite existing native note links. A
 controlled native note containing an imported image/PDF reference is still
 needed before implementing those representations.
+
+## Controlled native image note received
+
+The next export supplies one `ArkenNoteFieldMedia`. Its `_contentPathRelative`
+string names the media `.rwmeta`; `_frameColor`/`_headingColor` are SVector3,
+`_showBorder` is Boolean, `_customScale` is Single, and base name/visibility/UID
+members are repeated with shared references. The field links to an
+`ArkenTileMeta` and matching `.rwfile` whose root is `ArkenTileUpgrade`.
+The image uses `ArkenImage` with X/Y=-1, channels=4 and encoded PNG byte arrays.
+The supplied full image is 500×500 RGBA; metadata has a 128×128 PNG thumbnail.
+This is evidence of PNG media encoding, not PDF support or general sizing rules.
+
+The controlled generator writes a fresh note/Media field and relocates the
+sample asset pair, changing names/creator while leaving embedded byte arrays
+unchanged. It does not infer thumbnail sizing, preset dimensions or arbitrary
+image construction. The exported original is untouched. Runtime display and
+persistence remain a manual gate before general handout packaging.

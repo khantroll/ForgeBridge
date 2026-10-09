@@ -88,6 +88,14 @@ class NoteBuilder:
             '_fieldColor': self.vector(.15, .15, .15), '_headingColor': self.vector(1., 1., 1.),
             '_bgOpacity': 1., '_showBorder': False, '_font': 'ToolkitDefault'})
 
+    def media_field(self, name, target, uid):
+        if (not isinstance(target, str) or not target.startswith('MyAssets/Media/') or
+                '\\' in target or '..' in PurePosixPath(target).parts or not target.endswith('.rwmeta')):
+            raise ValueError('Media target must be native metadata inside MyAssets/Media')
+        return self.node('ArkenNoteFieldMedia', {**self.field_members(name, uid),
+            '_contentPathRelative': target, '_frameColor': self.vector(.15, .15, .15),
+            '_headingColor': self.vector(1., 1., 1.), '_showBorder': True, '_customScale': 1.})
+
     def table_field(self, name, rows, uid):
         if not rows or len(rows) > 256:
             raise ValueError('Table must have 1 to 256 rows')

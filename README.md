@@ -334,3 +334,20 @@ This is a collection for inspection, not an Arkenforge import pack: do not copy
 it into MyAssets. Existing native note links are unchanged. Native handout
 fields/media linking still need a controlled exported sample and Toolkit test.
 Use a new output filename; existing files are not overwritten.
+
+### Native image attachment test
+
+A controlled exported image note established `ArkenNoteFieldMedia` and its
+`_contentPathRelative` link to native media `.rwmeta`. The supplied image and
+thumbnail are embedded PNGs in `.rwfile` and `.rwmeta` respectively. Generate
+a separate test note from this small export:
+
+```powershell
+py -m forgebridge.native_media --template-pack FB_Media_notes.zip --out native_image_test.zip
+```
+
+Follow its INSTALL.txt. It generates a fresh note with a native Media field,
+relocates and renames the supplied image asset pair, and preserves image and
+thumbnail bytes. It does not overwrite the original note/map, add room labels,
+convert arbitrary Foundry images or handle PDFs. Toolkit display and persistence
+must pass before integrating source handouts. Native visibility is unverified.

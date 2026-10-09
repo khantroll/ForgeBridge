@@ -576,6 +576,55 @@
         8
       ],
       "library_id": 29
+    },
+    {
+      "name": "ArkenNoteFieldMedia",
+      "names": [
+        "_contentPathRelative",
+        "_frameColor",
+        "_headingColor",
+        "_showBorder",
+        "_customScale",
+        "_name",
+        "_visibleToPlayers",
+        "_UID",
+        "ArkenNoteField+_name",
+        "ArkenNoteField+_visibleToPlayers",
+        "ArkenNoteField+_UID"
+      ],
+      "types": [
+        1,
+        4,
+        4,
+        0,
+        0,
+        1,
+        3,
+        0,
+        1,
+        3,
+        0
+      ],
+      "infos": [
+        null,
+        {
+          "name": "SVector3",
+          "library_id": 2
+        },
+        {
+          "name": "SVector3",
+          "library_id": 2
+        },
+        1,
+        11,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        8,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        8
+      ],
+      "library_id": 2
     }
   ]
 }
