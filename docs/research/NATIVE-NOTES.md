@@ -96,6 +96,23 @@ Exported media and generated notes accompany the separately named copy.
 
 This experiment needs an explicit calibrated transform and a supplied native
 marker; it does not create maps from source geometry. The generated Crypt copy
-has 19 exact note targets. Toolkit alignment, clicking and save/reload remain
-unverified until the user tests this artifact. Visibility is still a manual
-review, and handout files are still not embedded.
+has 19 exact note targets. The user confirmed the markers open their linked descriptions and survive
+saving, switching maps and reopening. Source coordinates are preserved.
+Visibility is still a manual review, and handout files are still not embedded.
+
+## Label behavior and optional native text
+
+Foundry's core map-note label is a hover label, while always-visible labels are
+an optional module enhancement. Arkenforge's v0.5 notes explicitly removed its
+older Hover Text field and added map text. The supplied native marker presets
+already contain correct `_name`/`_tileName` values, and generated note metadata
+contains correct room names. No native map text object is present in the supplied
+archives. The user's lack of a hover tooltip therefore does not prove a missing
+marker-name field in our conversion.
+
+Preserve names and source positions by default; persistent labels should be an
+opt-in feature. Before implementing native text labels, obtain one current
+Map Builder -> Text object in a saved-map export, and compare a freshly placed
+native note marker's hover behavior to a converted marker. Do not rely on the
+legacy `_tooltipSummary` field as a current label API without runtime evidence.
+See STATUS.md for public sources.

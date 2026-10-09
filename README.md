@@ -283,5 +283,7 @@ py -m forgebridge.native_map --template-pack assets_with_markers.zip --companion
 The ZIP contains a separately named map, generated notes, and the exported
 media. Existing image, wall, door and light records are preserved. It does not
 build a native map from scratch or infer a transform for other maps. Output
-must use a new filename. Toolkit placement, clicking, save/reload and player
-visibility tests remain pending.
+must use a new filename. The user verified the Crypt markers open their notes and persist after
+save/reload. Player visibility remains unverified. Permanent room labels are
+planned as an optional feature, off by default; no label switch is implemented
+yet.
