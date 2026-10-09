@@ -138,7 +138,8 @@ def rename_metadata(data, name):
 
 
 def insert_markers(data, placements, *, name, units_per_grid, origin=(0., 0.),
-                   template_name='FB Cal A', remove_names=()):
+                   template_name='FB Cal A', remove_names=(), marker_labels=False,
+                   text_template="Igor's Room", label_offset=(1.25, 0.)):
     """Return a new map and insertion report; source bytes are never modified.
 
     Source grid coordinates increase right/down; native coordinates right/up.
@@ -150,6 +151,8 @@ def insert_markers(data, placements, *, name, units_per_grid, origin=(0., 0.),
         raise ValueError('Invalid calibrated map transform')
     if not isinstance(placements, list) or not 1 <= len(placements) <= 2048:
         raise ValueError('Expected 1 to 2048 marker placements')
+    if type(marker_labels) is not bool or len(label_offset) != 2 or not all(math.isfinite(v) for v in label_offset):
+        raise ValueError('Invalid marker label options')
     reader = Reader(data)
     graph = reader.read()
     objects = reader.objects
@@ -166,7 +169,7 @@ def insert_markers(data, placements, *, name, units_per_grid, origin=(0., 0.),
     array_id = tiles['_items']['ref']
     array = objects[array_id]
     active = array['items'][:tiles['_size']]
-    template, kept, max_uid, max_order = [], [], 0, 0
+    template, text_templates, kept, existing, max_uid, max_order = [], [], [], {}, 0, 0
     for ref in active:
         tile = members(ref)
         preset = resolve(tile['_tileInfo'])
@@ -177,36 +180,77 @@ def insert_markers(data, placements, *, name, units_per_grid, origin=(0., 0.),
         marker = preset['class'] == 'ArkenTilePresetContentLink'
         if marker and title == template_name:
             template.append(ref['ref'])
+        if marker and title not in remove_names:
+            existing.setdefault(resolve(p.get('_contentBasePath')), []).append(ref['ref'])
+        text = preset['class'] == 'ArkenTilePresetText'
+        if text and resolve(p.get('_text')) == text_template:
+            text_templates.append(ref['ref'])
+        if text and str(resolve(p.get('_name')) or '').startswith('ForgeBridge label: '):
+            continue  # Re-exporting on/off replaces only our generated labels.
         if not (marker and title in remove_names):
             kept.append(ref)
     if len(template) != 1:
         raise ValueError('Expected exactly one named calibration marker')
+    if marker_labels:
+        if len(text_templates) != 1:
+            raise ValueError('Labels require exactly one native text object matching --text-template')
+        kept = [ref for ref in kept if ref['ref'] != text_templates[0]]
     max_uid = max(max_uid, root['members']['_nextUID'] - 1)
     writer = AppendWriter(reader)
     refs = [Reference(ref['ref']) for ref in kept]
     report = []
-    for i, placement in enumerate(placements):
+    def update_fields(preset, values):
+        for key in preset:
+            bare = key.split('+')[-1]
+            if bare in values:
+                preset[key] = values[bare]
+    def allocate_uid():
+        nonlocal max_uid, max_order
+        max_uid += 1
+        max_order += 1
+        return max_uid, max_order
+    for placement in placements:
         target, position = placement.get('target'), placement.get('grid_position')
         if not isinstance(target, str) or not target.startswith('MyAssets/Encyclopedia/Notes/') or not target.endswith('.rwmeta') or '\\' in target or '..' in target.split('/'):
             raise ValueError('Marker target must be a native note metadata path')
         if not isinstance(position, dict) or not all(type(position.get(k)) in (int, float) and math.isfinite(position[k]) for k in ('x', 'y')):
             raise ValueError('Marker has no finite grid position')
-        tile = clone(reader, template[0])
-        p = tile.members['_tileInfo'].members
-        x, y = origin[0] + position['x'] * units_per_grid, origin[1] - position['y'] * units_per_grid
-        p['_position'].members.update(x=x, y=y)
-        uid, order = max_uid + i + 1, max_order + i + 1
         title = str(placement.get('title') or 'Map note')
-        for key in p:
-            bare = key.split('+')[-1]
-            if bare == '_contentBasePath': p[key] = target
-            elif bare == '_contentType': p[key] = 'note'
-            elif bare in ('_tileName', '_name'): p[key] = title
-            elif bare == '_uID': p[key] = uid
-            elif bare == '_sortingOrder': p[key] = order
-            elif bare == '_groupID': p[key] = -1
-        refs.append(Reference(writer.allocate(tile)))
-        report.append({**placement, 'native_map_placement': True, 'native_position': {'x': x, 'y': y}, 'native_uid': uid})
+        matches = existing.get(target, [])
+        if len(matches) > 1:
+            raise ValueError('Multiple existing markers share this note target')
+        if matches:
+            p = members(members({'ref': matches[0]})['_tileInfo'])
+            point = members(p['_position'])
+            x, y, uid, level = point['x'], point['y'], p['_uID'], p.get('_mapLevel', 0)
+        else:
+            tile = clone(reader, template[0])
+            p = tile.members['_tileInfo'].members
+            x, y = origin[0] + position['x'] * units_per_grid, origin[1] - position['y'] * units_per_grid
+            p['_position'].members.update(x=x, y=y)
+            uid, order = allocate_uid()
+            level = p.get('_mapLevel', 0)
+            update_fields(p, {'_contentBasePath': target, '_contentType': 'note',
+                '_tileName': title, '_name': title, '_uID': uid, '_sortingOrder': order, '_groupID': -1})
+            refs.append(Reference(writer.allocate(tile)))
+        entry = {**placement, 'native_map_placement': True, 'native_position': {'x': x, 'y': y},
+                 'native_uid': uid, 'existing_marker_preserved': bool(matches)}
+        entry.pop('label', None)
+        if marker_labels:
+            label = clone(reader, text_templates[0])
+            p = label.members['_tileInfo'].members
+            lx, ly = x + label_offset[0] * units_per_grid, y - label_offset[1] * units_per_grid
+            p['_position'].members.update(x=lx, y=ly)
+            label_uid, order = allocate_uid()
+            update_fields(p, {'_text': title, '_name': 'ForgeBridge label: ' + title,
+                '_uID': label_uid, '_sortingOrder': order, '_groupID': -1, '_mapLevel': level,
+                '_hidden': True, '_blocksLight': False, '_ignoreTimeOfDay': True})
+            p['_blocking'].members.update({k: False for k in ('_blockingEnabled', '_light', '_vision', '_sound', '_movement')})
+            p['_lighting'].members['_hasLight'] = False
+            refs.append(Reference(writer.allocate(label)))
+            entry['label'] = {'text': title, 'native_uid': label_uid, 'native_position': {'x': lx, 'y': ly},
+                              'hidden_from_players_flag': True}
+        report.append(entry)
     capacity = max(len(refs), len(array['items']))
     replacement = Array(refs + [None] * (capacity - len(refs)), *reader.array_metadata[array_id])
     writer.array(replacement, array_id)
@@ -219,7 +263,7 @@ def insert_markers(data, placements, *, name, units_per_grid, origin=(0., 0.),
     kind = reader.object_metadata[root_id]['infos'][reader.object_metadata[root_id]['names'].index('_nextUID')]
     if kind not in (8, 9):
         raise ValueError('Unsupported UID counter type')
-    field(root_id, '_nextUID', struct.pack('<i' if kind == 8 else '<q', max_uid + len(placements) + 1))
+    field(root_id, '_nextUID', struct.pack('<i' if kind == 8 else '<q', max_uid + 1))
     field(tiles_id, '_size', struct.pack('<i', len(refs)))
     field(tiles_id, '_version', struct.pack('<i', tiles['_version'] + 1))
     updated = patch_stream(reader, patches, writer)
@@ -231,7 +275,8 @@ def insert_markers(data, placements, *, name, units_per_grid, origin=(0., 0.),
 
 
 def write_map_zip(template_pack, companion, dest, *, name, units_per_grid,
-                  origin=(0., 0.), template_name='FB Cal A', remove_names=()):
+                  origin=(0., 0.), template_name='FB Cal A', remove_names=(), marker_labels=False,
+                  text_template="Igor's Room", label_offset=(1.25, 0.)):
     """Build a separate native test package from a single saved-map export."""
     from forgebridge.native_export import companion_files
     dest, companion = Path(dest), Path(companion)
@@ -256,14 +301,17 @@ def write_map_zip(template_pack, companion, dest, *, name, units_per_grid,
     map_path = maps[0]
     metadata_path = map_path[:-6] + '.rwmeta'
     updated, placements = insert_markers(files.pop(map_path), report['placements'], name=name,
-        units_per_grid=units_per_grid, origin=origin, template_name=template_name, remove_names=remove_names)
+        units_per_grid=units_per_grid, origin=origin, template_name=template_name, remove_names=remove_names,
+        marker_labels=marker_labels, text_template=text_template, label_offset=label_offset)
     metadata = rename_metadata(files.pop(metadata_path), name)
     folder = str(PurePosixPath(map_path).parent)
     files[folder + '/' + name + '.rwmap'] = updated
     files[folder + '/' + name + '.rwmeta'] = metadata
     report['placements'] = placements
     report['native_map'] = {'name': name, 'units_per_grid': units_per_grid, 'origin': list(origin),
-                            'markers': len(placements), 'runtime_validation': 'pending'}
+                            'markers': len(placements), 'marker_labels': 'on' if marker_labels else 'off',
+                            'labels': sum('label' in p for p in placements), 'label_offset_grid': list(label_offset),
+                            'runtime_validation': 'pending'}
     report['status'] = 'Generated native map placement requires Toolkit validation. See project status for previously verified source imports.'
     generated['conversion-report.json'] = json.dumps(report, ensure_ascii=True, indent=2).encode()
     generated['INSTALL.txt'] = (f'ForgeBridge native map test: {name}\n\n'
@@ -273,13 +321,23 @@ def write_map_zip(template_pack, companion, dest, *, name, units_per_grid,
         f'Open the new saved map {name}. The original saved map is not replaced.\n'
         'Verify room marker positions, clicking a room note, and save/reload.\n'
         'Existing image, barriers, doors and lights are preserved from the exported map.\n'
+        'Existing room markers and exported note files are preserved when already present.\n'
+        f"Generated room labels: {'ON' if marker_labels else 'OFF'}. Labels are separate editable text objects.\n"
+        'Generated labels have Hidden from players enabled; check Player View before use.\n'
         'Player visibility is unverified; review it before player use.\n'
         'PDF/image handouts remain references; their files are not supplied.\n'
         'Keep reports outside MyAssets. This package contains private source content.\n').encode()
+    preserved = []
     for path, data in generated.items():
-        if path in files and files[path] != data:
-            raise ValueError('Generated notes conflict with exported content')
-        files[path] = data
+        if path in files:
+            if not path.startswith(report['native_folder'] + '/') or not path.endswith(('.rwnote', '.rwmeta')):
+                raise ValueError('Generated content conflicts with exported content')
+            Reader(files[path]).read()
+            preserved.append(path)
+        else:
+            files[path] = data
+    report['preserved_exported_note_files'] = preserved
+    files['conversion-report.json'] = json.dumps(report, ensure_ascii=True, indent=2).encode()
     if sum(len(data) for data in files.values()) > 256 * 1024 * 1024:
         raise ValueError('Output archive exceeds limit')
     dest.parent.mkdir(parents=True, exist_ok=True)
@@ -299,11 +357,15 @@ def main():
     parser.add_argument('--origin', nargs=2, type=float, default=(0., 0.))
     parser.add_argument('--template-name', default='FB Cal A')
     parser.add_argument('--remove-marker', action='append', default=[])
+    parser.add_argument('--marker-labels', choices=('off', 'on'), default='off')
+    parser.add_argument('--text-template', default="Igor's Room")
+    parser.add_argument('--label-offset', nargs=2, type=float, default=(1.25, 0.))
     args = parser.parse_args()
     report = write_map_zip(args.template_pack, args.companion, args.out, name=args.name,
         units_per_grid=args.units_per_grid, origin=args.origin,
-        template_name=args.template_name, remove_names=args.remove_marker)
-    print(f"Wrote {report['native_map']['markers']} markers; Toolkit map validation pending.")
+        template_name=args.template_name, remove_names=args.remove_marker,
+        marker_labels=args.marker_labels == 'on', text_template=args.text_template, label_offset=args.label_offset)
+    print(f"Wrote {report['native_map']['markers']} markers and {report['native_map']['labels']} labels; Toolkit map validation pending.")
 
 
 if __name__ == '__main__':

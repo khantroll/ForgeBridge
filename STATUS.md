@@ -110,3 +110,11 @@ Foundry core shows Text Labels on hover; permanent labels are an optional enhanc
 Decision: persistent room labels should be optional and off by default. Preserve source positions and room names. Native text serialization is not present in the supplied samples, so implementing editable native labels requires one current native text object exported with its map. Compare a newly placed native note marker against the imported one before claiming a hover fix. No label switch or hover fix is implemented yet.
 
 Sources: https://foundryvtt.com/article/map-notes/ ; https://foundryvtt.com/packages/pin-cushion ; https://arkenforge.com/v0-5release/ ; Arkenforge maintainer explanation at https://www.reddit.com/r/Arkenforge/comments/1g8ezwa/can_i_make_an_overworld_style_map_with_pins/ .
+
+## Optional native room labels implemented (2026-10-09)
+
+The new private saved-map export supplies one `ArkenTilePresetText` object. Text is a string; its font is null (native default), font size 10, white tint, scale 1, and Hidden from players is enabled. Implemented `--marker-labels off|on`, default off, using a cloned native text template. Labels are separate editable text objects with unique UIDs; they inherit the native style, use a configurable grid offset, enable the hidden flag, ignore time-of-day tinting and neither illuminate nor block the map. Toolkit display controls are not modified.
+
+Existing exact-target room markers now retain their native positions, UIDs and objects instead of being duplicated. Re-exporting replaces/removes only generated labels, preserving unrelated manual text. Exported note files are preserved, including edits, while missing companion notes are supplied. A separately named private Crypt map contains 19 original room markers and 19 generated labels. All original source objects outside map name, tile list and UID counter compare unchanged; original notes/media are byte-identical and target closure/ZIP CRC/native reparsing checks pass.
+
+Validation: 102 local tests pass, including default-off behavior, native-template requirement, label hidden/nonblocking settings, inherited shared positions, existing marker preservation, label on/off re-export and edited-note preservation. Generated label appearance, editing/save/reload and Player View still need Toolkit testing. The previously tested unlabelled map remains untouched.

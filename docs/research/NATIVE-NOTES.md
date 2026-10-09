@@ -106,7 +106,7 @@ Foundry's core map-note label is a hover label, while always-visible labels are
 an optional module enhancement. Arkenforge's v0.5 notes explicitly removed its
 older Hover Text field and added map text. The supplied native marker presets
 already contain correct `_name`/`_tileName` values, and generated note metadata
-contains correct room names. No native map text object is present in the supplied
+contains correct room names. At that stage no native map text object was present in the supplied
 archives. The user's lack of a hover tooltip therefore does not prove a missing
 marker-name field in our conversion.
 
@@ -116,3 +116,27 @@ Map Builder -> Text object in a saved-map export, and compare a freshly placed
 native note marker's hover behavior to a converted marker. Do not rely on the
 legacy `_tooltipSummary` field as a current label API without runtime evidence.
 See STATUS.md for public sources.
+
+## Native map text sample and optional labels
+
+The next saved-map export provides `ArkenTilePresetText`: `_text` is a String,
+`_font` is nullable String, `_fontSize` is Single, and outline/style properties
+are ordinary primitive/vector members. It shares its position/scale/tint,
+blocking and other references with inherited base members, like content links.
+The manual sample has `_hidden=True` in both own/inherited fields.
+
+The native map exporter now supports opt-in labels, default off. It clones
+this text wrapper/preset graph, changes only title/name, position, UID, sorting
+order, level and relevant light/visibility settings, and preserves style/font
+size. It uses the same byte-preserving append approach as markers. Labels
+remain independent native text objects. Hidden flags are explicitly set, but
+Player View is not yet runtime-verified.
+
+Room markers already present by exact note target remain unchanged, including
+user-adjusted positions. Duplicate target placements fail explicitly.
+Exported native notes are preserved rather than regenerated over user edits.
+Re-exporting identifies generated labels by their `ForgeBridge label: ` names;
+it replaces them when on and removes them when off, retaining unrelated text.
+The export switch is not a new in-Toolkit setting. The supplied sample yielded
+19 original markers and 19 generated labels in the separate test map; visual
+appearance, editing and save/reload tests are pending.

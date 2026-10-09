@@ -284,6 +284,26 @@ The ZIP contains a separately named map, generated notes, and the exported
 media. Existing image, wall, door and light records are preserved. It does not
 build a native map from scratch or infer a transform for other maps. Output
 must use a new filename. The user verified the Crypt markers open their notes and persist after
-save/reload. Player visibility remains unverified. Permanent room labels are
-planned as an optional feature, off by default; no label switch is implemented
-yet.
+save/reload. Player visibility remains unverified. Permanent room labels are optional and off by default.
+
+To generate editable native room labels, the template export must contain a
+text object whose text matches `--text-template` (default `Igor's Room`). Use
+`--marker-labels on`; use `--marker-labels off` or omit the option to add none.
+The switch is an **export option**, not an added Toolkit control.
+
+For the supplied saved Crypt map with native text:
+
+```powershell
+$env:PYTHONPATH = "$PWD\src"
+py -m forgebridge.native_map --template-pack MyAssets_with_text.zip --companion counts_crypt_links.forgebridge.json --out counts_crypt_labels.zip --name ForgeBridge_Crypt_With_Labels --units-per-grid 2.56 --origin 0 0 --template-name "Igor's Room" --marker-labels on
+```
+
+Matching existing room markers keep their exact native positions and UIDs;
+exported native notes are preserved. The template's manual text object is
+replaced with one generated label per room. Label style/font/size come from
+that native object. Labels default to 1.25 grid squares right of the marker;
+`--label-offset X Y` changes this offset (positive Y means down). Generated
+labels have Hidden from players enabled, do not emit light or block movement,
+light, vision or sound, and remain separate editable text objects. Verify their
+appearance and Player View before use. Re-exporting a labelled map with labels
+off removes ForgeBridge-labelled text objects; unrelated manual text remains.
