@@ -51,6 +51,27 @@ def recovered(files):
 
 
 class NativeExportTests(unittest.TestCase):
+    def test_readable_folder_rewrites_links_and_marker_targets(self):
+        original, old_report = companion_files(source())
+        files, report = companion_files(source(), note_folder='ForgeBridge - Manor - 2nd Floor')
+        new = 'MyAssets/Encyclopedia/Notes/ForgeBridge - Manor - 2nd Floor'
+        self.assertEqual(report['native_folder'], new)
+        self.assertEqual(report['counts'], old_report['counts'])
+        self.assertEqual(recovered(files)[2], recovered(original)[2])
+        links = recovered(files)[1]
+        self.assertTrue(links)
+        self.assertTrue(all(link in files for link in links))
+        self.assertTrue(all(link.startswith(new + '/') for link in links))
+        for before, after in zip(old_report['placements'], report['placements']):
+            self.assertEqual(after['target'], before['target'].replace(old_report['native_folder'], new))
+        graph = inspect_nrbf(files[new + '/000-Scene-Index.rwnote'])
+        self.assertTrue(any(isinstance(v, str) and v.endswith(' — Start Here') for v in graph['objects'].values()))
+
+    def test_readable_folder_rejects_unsafe_names(self):
+        for name in ('', '../Notes', 'nested/name', 'a\\b', 'C:Notes', 'NUL', 'COM1.txt', 'trailing.', 'trailing ', 'bad\nname'):
+            with self.subTest(name=name), self.assertRaisesRegex(ValueError, 'single folder'):
+                companion_files(source(), note_folder=name)
+
     def test_pages_cycles_and_all_targets_exist(self):
         files, report = companion_files(source())
         texts, links, tables = recovered(files)

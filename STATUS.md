@@ -172,3 +172,23 @@ coloured page order, portrait/landscape dimensions, decoded native payloads,
 original PDF bytes, default-off behavior, malformed PDF fallback and page/byte
 limits. Actual PDF page display/readability/persistence requires the user's
 Toolkit test. Labels remain off; player visibility remains deferred.
+
+## Second-floor tests and readable naming (2026-10-14)
+
+The user confirmed manual map opening, all five second-floor marker links and
+marker persistence. Toolkit logs show automatic UVTT opening looks for map
+metadata under Media/Cartographer/MapImport while the importer actually saves
+it under Maps/MapImport; opening from the map browser worked. The exported
+background image had a magenta light enabled, and all seven door barriers had
+light-blocking flags set. Isolated door runtime behavior remains unconfirmed.
+The user confirmed linked documents are present in the correct order and the
+Upper Hall marker is present; second-floor handout image/PDF display and restart
+persistence were not explicitly confirmed by that response.
+
+Added optional readable `--note-folder` to native map and handout commands,
+with portable-name validation. Internal note links and map marker paths derive
+from the selected folder; default hashed paths are preserved for compatibility.
+Navigation notes now read `<scene name> — Start Here`. Separate migration test
+copies avoid overwriting tested maps. 125 tests pass, including renamed-folder
+link closure, rewritten marker targets and unsafe/reserved filename rejection.
+Labels remain off and native marker icons are retained at the user's request.

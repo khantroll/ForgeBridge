@@ -88,7 +88,7 @@ class TextCompiler(HTMLParser):
         return self.parts or [('', None)]
 
 
-def companion_files(companion, *, map_markers=False, media_fields=None):
+def companion_files(companion, *, map_markers=False, media_fields=None, note_folder=None):
     media_fields = media_fields or {}
     bundle = companion.get('scene_notes')
     if not isinstance(bundle, dict) or not isinstance(bundle.get('dependencies'), dict):
@@ -128,7 +128,13 @@ def companion_files(companion, *, map_markers=False, media_fields=None):
         edges.append({**edge, 'origin': origin, 'target': target})
         known.add(key)
     digest = hashlib.sha256(json.dumps({'scene': bundle.get('scene_id'), 'documents': documents}, sort_keys=True).encode()).hexdigest()[:12]
-    base = f'MyAssets/Encyclopedia/Notes/ForgeBridge-{digest}/'
+    if note_folder is not None and (not isinstance(note_folder, str) or not note_folder or
+            len(note_folder) > 160 or re.search(r'[<>:"/\\|?*\x00-\x1f]', note_folder) or
+            note_folder[-1] in '. ' or note_folder in ('.', '..') or
+            note_folder.split('.')[0].upper() in {'CON', 'PRN', 'AUX', 'NUL',
+                *(f'COM{i}' for i in range(1, 10)), *(f'LPT{i}' for i in range(1, 10))}):
+        raise ValueError('Note folder must be a portable single folder name')
+    base = 'MyAssets/Encyclopedia/Notes/' + (note_folder or f'ForgeBridge-{digest}') + '/'
     paths, names = {(None, None): base + '000-Scene-Index'}, {}
     for di, document in enumerate(documents):
         payload = document['payload']
@@ -254,7 +260,7 @@ def companion_files(companion, *, map_markers=False, media_fields=None):
                      'native_map_placement': False}
         placements.append(placement)
         navigation += [(str(note.get('title') or 'Map note'), placement['target']), ('\n', None)]
-    emit((None, None), 'ForgeBridge — ' + str(bundle.get('scene_name') or bundle.get('scene_id')), [
+    emit((None, None), str(bundle.get('scene_name') or bundle.get('scene_id')) + ' — Start Here', [
         ('text', 'Import limitations', [('Plain text conversion. Review player visibility before sharing. ' + ('Supported images have native attachments; other media remain references. ' if media_fields else 'Media are references. ') + ('Room markers are supplied in the separate native map copy. ' if map_markers else 'Map markers are not placed automatically. ') + 'Keep this folder at the exact path in INSTALL.txt.', None)]),
         ('text', 'Scene notes', navigation or [('No placed notes in source', None)]),
         ('text', 'Linked documents', sum(([(names[(di, None)], paths[(di, None)] + '.rwmeta'), ('\n', None)] for di in range(len(documents))), []))])

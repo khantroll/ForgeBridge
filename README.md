@@ -414,3 +414,17 @@ Back up MyAssets and any manually edited generated notes before replacing them.
 Check a single-page letter and all six pages of Court of Ravenloft for readable
 text, correct page order, note reopening and Toolkit restart. PDF page runtime
 behavior is pending; labels remain off and player visibility is unverified.
+
+### Readable note folders
+
+Native map and source-media commands accept `--note-folder`, for example
+`--note-folder "ForgeBridge - Manor - 2nd Floor"`. Use the same value for both
+commands so generated map markers and image/PDF notes share their target paths.
+The folder must be one portable name, without slashes or reserved Windows names.
+Choose a distinct folder for each scene/package. Without the option, existing
+hash-based folder paths stay compatible. Navigation note titles now use the
+scene name followed by `— Start Here`.
+
+Changing this option changes note paths: regenerate map markers and notes
+together in a separate map copy. Renaming a folder in File Explorer alone will
+break references. Keep the old map and notes until the new copy is verified.

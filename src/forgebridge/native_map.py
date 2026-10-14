@@ -276,7 +276,7 @@ def insert_markers(data, placements, *, name, units_per_grid, origin=(0., 0.),
 
 def write_map_zip(template_pack, companion, dest, *, name, units_per_grid,
                   origin=(0., 0.), template_name='FB Cal A', remove_names=(), marker_labels=False,
-                  text_template="Igor's Room", label_offset=(1.25, 0.)):
+                  text_template="Igor's Room", label_offset=(1.25, 0.), note_folder=None):
     """Build a separate native test package from a single saved-map export."""
     from forgebridge.native_export import companion_files
     dest, companion = Path(dest), Path(companion)
@@ -297,7 +297,7 @@ def write_map_zip(template_pack, companion, dest, *, name, units_per_grid,
         if len(maps) != 1 or maps[0][:-6] + '.rwmeta' not in paths:
             raise ValueError('Export must contain one saved map and its metadata')
         files = {p: archive.read(p) for p in paths}
-    generated, report = companion_files(json.loads(companion.read_text(encoding='utf-8')), map_markers=True)
+    generated, report = companion_files(json.loads(companion.read_text(encoding='utf-8')), map_markers=True, note_folder=note_folder)
     map_path = maps[0]
     metadata_path = map_path[:-6] + '.rwmeta'
     updated, placements = insert_markers(files.pop(map_path), report['placements'], name=name,
@@ -358,13 +358,15 @@ def main():
     parser.add_argument('--template-name', default='FB Cal A')
     parser.add_argument('--remove-marker', action='append', default=[])
     parser.add_argument('--marker-labels', choices=('off', 'on'), default='off')
+    parser.add_argument('--note-folder', help='Readable note folder; use the same value for map and handout exports')
     parser.add_argument('--text-template', default="Igor's Room")
     parser.add_argument('--label-offset', nargs=2, type=float, default=(1.25, 0.))
     args = parser.parse_args()
     report = write_map_zip(args.template_pack, args.companion, args.out, name=args.name,
         units_per_grid=args.units_per_grid, origin=args.origin,
         template_name=args.template_name, remove_names=args.remove_marker,
-        marker_labels=args.marker_labels == 'on', text_template=args.text_template, label_offset=args.label_offset)
+        marker_labels=args.marker_labels == 'on', text_template=args.text_template, label_offset=args.label_offset,
+        note_folder=args.note_folder)
     print(f"Wrote {report['native_map']['markers']} markers and {report['native_map']['labels']} labels; Toolkit map validation pending.")
 
 
