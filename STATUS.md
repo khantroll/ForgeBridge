@@ -192,3 +192,25 @@ Navigation notes now read `<scene name> — Start Here`. Separate migration test
 copies avoid overwriting tested maps. 125 tests pass, including renamed-folder
 link closure, rewritten marker targets and unsafe/reserved filename rejection.
 Labels remain off and native marker icons are retained at the user's request.
+
+## Second-floor regression complete; combined package command (2026-10-14)
+
+The user confirmed the second-floor handouts persist and door blocking works.
+Five marker links and map/marker persistence previously passed. Readable names
+are accepted. This completes the requested second-floor regression; player
+visibility remains deferred and labels remain off. No claim is made that every
+individual source asset or additional scene was exhaustively tested.
+
+Added `python -m forgebridge.package` to collect source media (or use a matching
+bundle), compile map markers and enriched native notes, and emit one combined
+ZIP/report/INSTALL. It uses a calibrated native map export and the observed
+native media template. Marker and attachment targets are checked before output;
+media conflicts, mismatched bundles, unsafe folders and overwrite attempts fail.
+Existing exported generated notes require explicit `--regenerate-notes`, retaining
+backup guidance for manual edits. Native marker icons remain unchanged.
+
+Validation: 129 tests pass. New integration tests cover collected media, map and
+note target closure, background preservation, source equality, default labels-off,
+no overwrite, wrong-scene failure without partial output, explicit regeneration
+and conflicting asset rejection. Native export/Toolkit import and calibration
+remain required; the command does not automate the licensed application.

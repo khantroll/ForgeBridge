@@ -428,3 +428,30 @@ scene name followed by `— Start Here`.
 Changing this option changes note paths: regenerate map markers and notes
 together in a separate map copy. Renaming a folder in File Explorer alone will
 break references. Keep the old map and notes until the new copy is verified.
+
+### One-command native package build
+
+After exporting the scene companion and saving/exporting its calibrated native
+Arkenforge map, build markers, linked notes, images and optional PDF pages in
+one operation. Install `requirements.txt` and, for PDFs, `requirements-pdf.txt`.
+Use a map export containing the `FB Cal A` marker and its note. For the tested
+second-floor inputs:
+
+```powershell
+$env:PYTHONPATH = "$PWD\src"
+py -m forgebridge.package --package "C:\AMD\lob-counts_manor-pk-v13.zip" --companion counts_manor_second_floor_test.forgebridge.json --map-template "MyAssets(1).zip" --media-template FB_Media_notes.zip --name "Manor - 2nd Floor - ForgeBridge" --note-folder "ForgeBridge - Manor - 2nd Floor" --units-per-grid 2.56 --pdf-pages --out manor_second_floor_complete.zip
+```
+
+`--package` collects assets from the original source. Alternatively use
+`--media-bundle` with a previously collected bundle matching this companion.
+The command produces one ZIP, conversion report and INSTALL.txt; the original
+PDFs and collection report remain outside MyAssets. Labels stay off, and native
+marker icons are retained. Scale/origin must be calibrated to the supplied map;
+2.56 is the tested second-floor value, not a universal assumption.
+
+If the export includes existing generated notes in the selected note folder,
+the command stops. Back up those notes and pass `--regenerate-notes` only when
+rebuilding from source is intended. Other exported assets may not be silently
+replaced with conflicting media. Existing output filenames are never overwritten.
+Inputs must come from the same scene/package. The native map export and Toolkit
+import steps are still necessary; this command does not control Arkenforge.
