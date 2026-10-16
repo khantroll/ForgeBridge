@@ -1,0 +1,79 @@
+{
+  "kind": "file-level only; no runtime claims",
+  "packages": {
+    "manor-token-closed.zip": {
+      "sha256": "c756fa7f1104a397fe582140787771f116dbdc5d2234a7c107502e1354b031b3",
+      "bytes": 15066393,
+      "native_files_parsed": 14,
+      "closed_metadata_reference_occurrences": 15
+    },
+    "manor-fresh-combined.zip": {
+      "sha256": "b1507311c955c3b8fc896705c6c22746d7e75462bc24e2ec88d958da092de004",
+      "bytes": 58032474,
+      "native_files_parsed": 176,
+      "closed_metadata_reference_occurrences": 161
+    }
+  },
+  "controls": {
+    "control-before": {
+      "sha256": "2d5b0c77cce8c8036b013b294315caf3870c9351886672f1574ae7f98ea4c012",
+      "position": {
+        "x": 53.62068176269531,
+        "y": -41.15850830078125
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "uid": 1
+    },
+    "control-size2": {
+      "sha256": "f55c55b2fa5058cc0164b910aa48e56e27c72649d0479eab61920a4052467dc8",
+      "position": {
+        "x": 53.62068176269531,
+        "y": -41.15850830078125
+      },
+      "scale": {
+        "x": 1.0240000486373901,
+        "y": 1.0240000486373901
+      },
+      "uid": 83
+    },
+    "control-moved": {
+      "sha256": "7623c043fabb766a2bd3781ae6e88caade4db31ba3860cfe700a56f30f4b40a3",
+      "position": {
+        "x": 56.31999969482422,
+        "y": -41.15850830078125
+      },
+      "scale": {
+        "x": 1.0240000486373901,
+        "y": 1.0240000486373901
+      },
+      "uid": 83
+    },
+    "control-transform": {
+      "sha256": "c5a5ef39be65f8f2ca607c13859668910622d963e13d8b106639d5df920c16e2",
+      "position": {
+        "x": 56.31999969482422,
+        "y": -41.15850830078125
+      },
+      "scale": {
+        "x": 1.5,
+        "y": 1.0240000486373901
+      },
+      "uid": 83
+    },
+    "control-reopened": {
+      "sha256": "a4f1180526866691982037827a3d79e3d76d64a5e6b1c3b29979625959636d4e",
+      "position": {
+        "x": 56.31999969482422,
+        "y": -41.15850830078125
+      },
+      "scale": {
+        "x": 1.0240000486373901,
+        "y": 1.0240000486373901
+      },
+      "uid": 83
+    }
+  }
+}

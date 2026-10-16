@@ -214,3 +214,61 @@ note target closure, background preservation, source equality, default labels-of
 no overwrite, wrong-scene failure without partial output, explicit regeneration
 and conflicting asset rejection. Native export/Toolkit import and calibration
 remain required; the command does not automate the licensed application.
+
+
+## Native token semantics and bounded writer (2026-10-16)
+
+Resumed `cursor/dynamic-lighting-c6b0` / PR #8 from 90b721b, preserving existing
+source assets, campaigns and unrelated local files. Toolkit v0.5.1.18 desktop
+control works. On the isolated fresh manor, Stoker's native Size 1→2 doubles its
+sprite bounds around a fixed center. Numeric movement saves and persists after a
+blank-map switch/reopen. A separate horizontal transform 1.024→1.5 saves but resets
+to 1.024 on reopening with Size still 2. This confirms Size normalization for this
+control; the earlier transform-only result was not evidence of a converter bug.
+Restart persistence of these latest edits is still pending.
+
+Added Foundry token adapter → immutable Token IR → experimental native target
+writer. The bounded slice preserves qualified source identity, texture reference,
+name, calibrated center, square footprint, texture scale (baked centered RGBA
+canvas), rotation and hidden serialization. Padding/grid and native origin/scale
+are explicit; no universal 2.56 assumption. Native Size is converted separately
+when source/native grid calibration differs. Both inherited transform copies are
+updated. Original control maps/notes are preserved, including map backlinks;
+output overwrite and native map-name collisions are refused. Non-square or
+animated textures, rectangular footprints, mirrored/oversize textures and custom
+anchors/transforms remain unsupported with reasons. Actors/stat blocks, scripts,
+vision, light behavior and other fields stay retained-only and are reported. No
+Foundry scripts execute. Rotation orientation and actual player hidden behavior
+remain unverified.
+
+The generated Stoker candidate has source center (12.5,18.5), native (32,-47.36),
+Size 1 and .8 texture scale. File-level checks pass: deterministic archive bytes,
+native reparsing, metadata closure, source preservation and calibration tests.
+Generated-token import, comparison with the manual control and restart remain
+DEFERRED, so this is not a completed automatic-token runtime milestone.
+
+Prepared a combined candidate from the newly UVTT-imported saved map, retaining
+fresh geometry. Its calibration is still a file-derived candidate requiring UI
+cross-check; cloning only FB Cal A from the old template does not validate fresh
+geometry behavior. All 176 native files parse and 161 metadata reference
+occurrences close. Created an original synthetic red/blue/green animation fixture;
+playback/position/persistence have not been observed.
+
+Activating Toolkit's local player stream opened a Windows Firewall modal for its
+Node.js server. The tool sees that modal over Toolkit but exposes no selectable
+PickerHost window; dismissal through Toolkit did not work. No firewall access was
+granted. User cancellation is needed to restore interaction; this blocks the
+remaining runtime work, not file generation. Actual player output is DEFERRED.
+All-five-marker navigation, representative rolls, every PDF page, wall/door
+blocking, fireplace/moved-light checks, bounded local fog and animation remain
+unfinished on the current packages. Earlier user-confirmed passes are kept
+separate. Labels remain off. Two unresolved table UUIDs and seven media gaps are
+unchanged.
+
+Validation: 136 tests run, 132 pass, four WinError 1314 symlink tests skipped;
+skips are not passed safety checks. See the updated summary and controlled-change
+evidence in `validation/2026-10-15/VALIDATION.md`, plus the compact Oct 16 file
+audit. Next milestone: dismiss the modal, import the generated token candidate
+without conflicts, compare Size/texture/placement with the control, then
+save/switch/reopen/restart; complete fresh combined-map and independent fog/media
+runtime checks before extending token conversion.

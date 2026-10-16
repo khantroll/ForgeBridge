@@ -1,8 +1,8 @@
 # ForgeBridge
 
-> **Status: UVTT, SOURCE PRESERVATION, AND JOURNAL CORRELATION**
+> **Status: NATIVE TOKEN SLICE AND RUNTIME VALIDATION**
 >
-> The current work exports one scene as UVTT, copies its loose image/audio assets, and preserves full scene data plus linked journals and roll-table dependencies in a companion JSON. Experimental native notes, tables and calibrated map markers have passed the Crypt runtime checks. Handout media collection is available separately; native media links and player visibility remain unverified. See [STATUS.md](STATUS.md).
+> ForgeBridge exports scene geometry through UVTT and builds calibrated native map markers, linked notes, tables, images and optional PDF-page handouts. Earlier Crypt/manor user confirmations and current-build observations are recorded separately. An experimental native token writer now uses a source adapter → token IR → target adapter, following controlled Toolkit Size/movement tests. Generated-token runtime, complete fresh-map regression, local fog, animation and player output remain unfinished; labels stay off. See [STATUS.md](STATUS.md) and [validation log](validation/2026-10-15/VALIDATION.md).
 
 ForgeBridge is a proposed migration/transpilation tool for converting **Foundry Virtual Tabletop** content into the closest practical **Arkenforge** equivalent.
 
@@ -455,3 +455,35 @@ rebuilding from source is intended. Other exported assets may not be silently
 replaced with conflicting media. Existing output filenames are never overwritten.
 Inputs must come from the same scene/package. The native map export and Toolkit
 import steps are still necessary; this command does not control Arkenforge.
+
+
+## Experimental placed-token slice
+
+This requires an exported native map containing one manually created **Token**
+control with a native Size field, its note/image files and dependencies. Save and
+reopen that control first: Toolkit 0.5.1.18 normalizes transform-only sprite scale
+from Size. Preserve the original control export and use a distinct output/map name.
+
+```powershell
+$env:PYTHONPATH = "$PWD\src"
+py -m forgebridge.native_tokens --template-pack CONTROL.zip --companion SCENE.forgebridge.json --package MODULE_FOLDER --out NEW-TOKENS.zip --name "Separate Token Test" --control-name "Stoker_token_1" --units-per-grid 2.56 --control-units-per-grid 2.56 --origin 0 0
+```
+
+The values above describe the tested control, not universal defaults. Calibrate
+`--units-per-grid` as native units per **source** square and
+`--control-units-per-grid` as native units per **native Size** square. The origin is
+the native upper-left of the unpadded background. Source padding (rounded to source
+grid cells), grid size and token half-footprint enter center placement. For the
+manor, (2000,2800) source pixels become center (12.5,18.5) source squares, then
+(32,-47.36) native units with the observed calibration.
+
+This slice supports square footprints, centered static square textures and positive
+texture scales up to one. Texture scaling is baked into a transparent canvas;
+Size controls the footprint. It writes identity, name, image, position, Size,
+rotation and hidden flags; rotated orientation and actual player visibility still
+need runtime validation. Actors, statistics, scripts, vision, fog, lights and combat
+behavior remain retained source data with explicit report entries. Unsupported
+geometry/media are reported rather than replaced. The archive preserves the
+original control map/note assets because native metadata can link back to them;
+installation must abort on conflicting existing content. The command does not
+install anything and refuses output overwrite or a colliding map name.
