@@ -37,7 +37,7 @@ def build_package(companion, map_template, media_template, dest, *, name,
         if preserved and not regenerate_notes:
             raise ValueError('Export contains existing generated notes. Back up manual edits and use --regenerate-notes to replace them')
         report = write_source_images_zip(companion, media_bundle, media_template,
-            notes_zip, pdf_pages=pdf_pages, note_folder=note_folder)
+            notes_zip, pdf_pages=pdf_pages, note_folder=note_folder, map_markers=True)
         if report['native_folder'] != map_report['native_folder']:
             raise ValueError('Map and media note folders do not match')
         with zipfile.ZipFile(map_zip) as archive:

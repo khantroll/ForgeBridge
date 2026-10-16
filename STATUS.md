@@ -1,10 +1,21 @@
 # Project Status
 
-**Lifecycle:** UVTT DYNAMIC LIGHTING SLICE  
+**Lifecycle:** NATIVE TOKEN SLICE AND RUNTIME VALIDATION
 **Implementation started:** Inventory CLI, importable UVTT, loose scene assets, embedded Adventure scene discovery, ambient color, and deterministic AmbientLight range conversion  
-**General converter started:** No
+**General converter:** Bounded scene/content/token slices implemented; complete actor and behavior conversion pending.
 
-The zipped LevelDB scene is the previous state. This slice is the current state. One command writes scene `scene-vault` from `fixtures/synthetic-leveldb-scene.zip` as a UVTT file and copies that scene's PNG and WAV beside it. The unpacked LevelDB scene and the text scene `scene-crypt` still produce the same UVTT object. It is not a general Foundry-to-Arkenforge converter.
+Latest milestone (2026-10-16): generated native Stoker import, calibrated placement,
+Size/texture scaling, movement and save/switch/reopen/Toolkit restart now pass.
+Actual player streaming works after firewall approval. Fresh combined-map loading,
+calibration, all five room-note links, representative Despair rolls and all 17 PDF
+page displays/order pass. Native synthetic GIF playback and position survive a
+Toolkit restart. Full geometry regression, local fog and animated-media
+conversion remain incomplete. The sections below retain earlier milestone history;
+the final follow-up and validation log describe the current limits.
+
+The earlier UVTT milestone below remains supported. Native map/content packages
+and the bounded token writer are later milestones, described at the end of this
+file. Complete actor/stat/behavior conversion remains pending.
 
 ## What this slice does
 
@@ -272,3 +283,46 @@ audit. Next milestone: dismiss the modal, import the generated token candidate
 without conflicts, compare Size/texture/placement with the control, then
 save/switch/reopen/restart; complete fresh combined-map and independent fog/media
 runtime checks before extending token conversion.
+
+## Runtime follow-up after firewall approval (2026-10-16)
+
+The firewall modal is resolved by the user's approval. Actual browser player
+streaming works: covered output is black with native fog text, and Clear all fog
+reveals the projected map/grid. Bounded local reveal/hide remains inconclusive;
+this is not automatic Foundry fog or vision conversion.
+
+Installed only absent files from conflict-checked native test ZIPs (100 files;
+existing identical dependencies skipped). Generated Stoker now passes native
+import, calibrated center, Size1/.512 transform, .8 raster texture scaling,
+one-square movement and save/switch/reopen/Toolkit restart. Control Size2/X22
+also persists. Rotation orientation and actual player hidden state are unverified.
+
+Fresh combined package loads and saves/reopens, its half-grid calibration agrees
+with the UI, and all five room markers open correct native notes. Journal order
+and all 17 PDF page images/order pass, plus representative Despair rolls (1 and 3).
+Ismark opens in a readable enlarged preview. Older combined-map full regression
+remains unfinished. Library fireplace on/off
+visibly changes local illumination at night; opaque door/wall isolation and
+moved-light alignment are still incomplete. An inconclusive selection-wide edit
+was discarded; saved baseline hash remains unchanged.
+
+Synthetic GIF import, red/blue/green playback, numeric movement and map reopen
+work natively, including GIF playback/position/FPS after Toolkit restart. Two PNG-sequence attempts created only
+one-frame objects and remain failed attempts with unresolved cause. Neither
+workflow implements automatic animated-media conversion. Labels stay off; source
+table/media gaps are unchanged. See the appended validation results and compact
+runtime file audit for hashes and precise scopes. Next: finish
+bounded fog/geometry/content regression before broadening the token writer.
+
+Resume checkpoint: the combined Start Here note incorrectly claimed markers were
+not automatic because the media-note stage dropped its map context. Fixed that
+context propagation and checked the serialized text in a package regression.
+Four package and six native-image tests pass. A separate fresh wording-check
+build parses all 176 native files and closes 161 metadata references; it was not
+installed. The runtime-tested package hashes remain unchanged.
+
+The local fog polygon retry was also inconclusive; it was discarded by switching
+to Blank without saving the fresh combined map. No native fog defect established.
+Next implementation milestone: validate rotated and hidden generated tokens
+against actual player output, then extend the bounded writer to a per-scene token
+set. Keep actor/stat-block conversion separate and retain unsupported behavior.

@@ -1,0 +1,8 @@
+{
+  "scope": "file checks only; package not installed or observed in Toolkit",
+  "package": "manor-fresh-wording-check.zip",
+  "sha256": "869ca9b971aaeb295f73a872ea63e52b88827ce34ea2bdf2540d04ec4f0a0873",
+  "native_files_parsed": 176,
+  "closed_metadata_references": 161,
+  "combined_marker_wording": true
+}

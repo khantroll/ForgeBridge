@@ -2,7 +2,7 @@
 
 > **Status: NATIVE TOKEN SLICE AND RUNTIME VALIDATION**
 >
-> ForgeBridge exports scene geometry through UVTT and builds calibrated native map markers, linked notes, tables, images and optional PDF-page handouts. Earlier Crypt/manor user confirmations and current-build observations are recorded separately. An experimental native token writer now uses a source adapter → token IR → target adapter, following controlled Toolkit Size/movement tests. Generated-token runtime, complete fresh-map regression, local fog, animation and player output remain unfinished; labels stay off. See [STATUS.md](STATUS.md) and [validation log](validation/2026-10-15/VALIDATION.md).
+> ForgeBridge exports scene geometry through UVTT and builds calibrated native map markers, linked notes, tables, images and optional PDF-page handouts. The bounded source adapter → token IR → native target slice now passes a generated Stoker import, placement, movement and save/reopen/restart check in Toolkit v0.5.1.18. Actual player streaming works after firewall approval; whole-map fog and native GIF playback have been observed separately from conversion. Complete geometry/content regression, bounded fog and animated-media conversion remain unfinished; labels stay off. Historical user confirmations and current observations are separated in [STATUS.md](STATUS.md) and the [validation log](validation/2026-10-15/VALIDATION.md).
 
 ForgeBridge is a proposed migration/transpilation tool for converting **Foundry Virtual Tabletop** content into the closest practical **Arkenforge** equivalent.
 

@@ -18,14 +18,16 @@ This log distinguishes **file-level checks** from **observations inside Arkenfor
 | PASS | Fresh UVTT import and map existence | Fresh manor image/barrier/door/light overlays render; separate map and manual Stoker survive map switch/reopen. Fresh map reopened after the preceding Toolkit restart. These observations do not pass blocking behavior. |
 | PASS | Manual token Size/movement through reopen | Size 1→2 visibly doubles Stoker around fixed center. Numeric X move persists after save→blank→reopen. Details and native comparison hashes in Oct 16 section. |
 | FAIL | Transform-only token scale persistence | Horizontal 1.5 saves but normalizes to 1.024 on reopen while Size remains 2. Causal control confirms Size normalization; this is not a converter defect. |
-| PASS | Experimental token writer, file level | Source adapter→Token IR→native target; deterministic package, calibrated placement, native Size, scaled RGBA image, rotation/hidden serialization, identity and explicit losses. Generated token has NOT yet been observed in Toolkit. |
+| PASS | Bounded token writer and generated Stoker runtime | Source adapter→Token IR→native target. Generated Stoker displays with Size 1, .512 transform, scaled texture and calibrated UI center (12.5,-18.5). Movement to X13.5 survives save, map switch/reopen and Toolkit restart. Rotation/player hidden remain unverified. |
 | PASS | Sample current-package notes/image after restart | Conservatory marker, Journal and First Floor navigation; Counts Manor 1st key image visibly displays. Scope is these samples only. |
-| DEFERRED | Complete five-marker/navigation/table/image/PDF runtime regression | All five markers, table rolls and all 17 PDF pages have not been exercised in this build. Earlier user confirmations are separate historical evidence. |
-| PASS | Native whole-map fog, GM view only | Enable/clear/cover changes observed; covered state persists through map switch/reopen. |
-| DEFERRED | Local fog reveal/hide, restart and player output | Local bounded change still inconclusive. Stream activation opened a Windows Firewall modal; no actual player output observed. |
-| DEFERRED | Wall blocking, door open/close blocking, fireplaces, moved lights | Overlays and a door UI response observed; behavioral isolation still outstanding on current packages. |
-| PASS | Fresh-map combined candidate, file level | Uses the newly UVTT-imported saved geometry, not the older template geometry. 176 native files parse; 161 metadata reference occurrences close. UI calibration/import/reopen remains pending. |
-| DEFERRED | Generated token restart, full rebuilt package runtime, animation | Firewall modal currently blocks Toolkit interaction. Synthetic three-frame media prepared; playback/position/persistence unobserved. |
+| PASS | Fresh combined notes, representative table and PDF pages | All five room links, journal/source index order, Despair rolls (1 and 3), and all 17 PDF page images observed across this follow-up. Ismark enlarged preview readable. Older combined-map exhaustive regression remains separate and incomplete. |
+| PASS | Native whole-map fog and actual player stream | After user firewall approval, browser player output shows black fog-covered output, then visible map/grid after Clear all fog. Earlier covered state persists through map switch/reopen. This does not establish bounded local fog persistence. |
+| DEFERRED | Bounded local fog reveal/hide and restart | Rectangle/brush attempts did not establish a visible local change. Tool drag/input limitation remains possible; not established as a Toolkit defect. Player output is available. |
+| DEFERRED | Wall blocking, door open/close blocking and moved lights | Overlays and a door UI response observed; behavioral isolation still outstanding. Fresh-map Library fireplace on/off illumination passed at night; moved-light alignment remains inconclusive. |
+| PASS | Fresh-map combined candidate, scoped runtime | Newly imported saved geometry; 176 native files parse, 161 metadata references close. Map loads, FB Cal A reads (.5,-.5), all five markers activate correct notes, journal index displays source order, and Strahd PDF handout displays. Saved map switches away and reopens. Full behavioral regression remains incomplete. |
+| PASS | Native GIF import, playback, movement and restart | Synthetic GIF visibly changes colors at X-1,Y0; save→switch→reopen and full Toolkit restart retain playback, scale1 and FPS2. No automatic Foundry animation conversion claimed. |
+| FAIL | PNG-sequence test attempts | Both filename-list and visibly selected three-file imports save one frame, not a playable sequence. Cause/workflow unresolved; separate from successful GIF import. |
+| DEFERRED | Full rebuilt package runtime | Door/blocking/moved-light and bounded fog remain unfinished. Fresh combined map loads after Toolkit restart; notes/table/PDF observations are scoped below. Firewall blocker resolved. |
 | DEFERRED | Labels | Remain off by request; player-facing behavior untested. |
 
 ## Explicit source gaps
@@ -34,7 +36,7 @@ The conversion report has no source read errors. Two table UUIDs remain missing 
 
 ## Original tools blocker — resolved historical state
 
-The following describes the initial failure, resolved by the later desktop/permissions results. The current blocker is the Oct 16 firewall modal, not missing desktop control.
+The following describes the initial failure, resolved by the later desktop/permissions results. The subsequent firewall modal was resolved by the user's approval; desktop control and actual player output now work.
 
 The normal shell, Node REPL and CUA runtime fail before starting with `helper_unknown_error: setup refresh had errors`; CUA diagnostics additionally report `windows sandbox failed`. Read-only and workspace commands succeeded through approved shell escalation, allowing file checks and package generation. The app terminal tool reports no attached terminal session.
 
@@ -260,3 +262,199 @@ new token import and save/switch/reopen/restart, and fresh combined-map runtime.
 These are unfinished tests; desktop permissions are otherwise working. Labels
 stay off/deferred. Two unresolved source table UUIDs and seven media gaps remain
 as listed earlier; no replacements invented and no imported scripts executed.
+
+## Firewall approved; resumed runtime — 2026-10-16
+
+This follow-up supersedes the firewall blocker above. Enumerated current windows
+before acting; the modal was gone following the user's approval. Used Windows
+Computer Use and Toolkit **v0.5.1.18**, launcher **7.0.0.3**. No firewall settings
+were changed by the agent.
+
+### Player stream and fog
+
+PASS (actual player output) — Settings → Display → Active extended screens →
+Player Screen → Stream settings exposes a local address. Opened that address in
+the in-app browser and clicked Start Streaming. Observed black output with
+Toolkit's "Fog of war is active" text. Clicked Clear all fog in the isolated
+fresh manor; actual browser output changed to the projected grass/grid and manor
+image. This is player-output evidence, not inferred GM appearance.
+
+DEFERRED — Local erase/paint brush and rectangle drags did not produce a clearly
+bounded reveal/hide patch. Edit-history increments alone are not evidence. The
+input tool has no configurable hold duration; Unity canvas drags also failed to
+move UI panels. Do not diagnose a native fog bug or claim Foundry fog/token-vision
+conversion. Local persistence/player rendering still require a successful bounded
+control change.
+
+### Safe runtime installation and generated token
+
+PASS (installation/file checks) — Refreshed only the original-control map pair
+inside the install ZIPs to match the newly saved local control. Generated map,
+token/note/media payloads were unchanged. Preflight found zero conflicting native
+files: token ZIP 6 absent/8 identical; fresh combined ZIP 94 absent/82 identical.
+With Toolkit closed, installed **100 absent files only**, using exclusive creates;
+identical existing files were skipped. No existing campaign/asset/note overwritten.
+Reports and source PDFs remain outside MyAssets. Local package bytes are private.
+
+| Installed package | SHA256 | File checks |
+|---|---|---|
+| runtime-token-install.zip | 257f08a197aa00a5e1886b9e9f9a377a2ddc4a02c8650dd0c68252a20d69926d | 14 native files parse; 15 metadata references close |
+| runtime-fresh-install.zip | 4d49c52d88b65ce716db85e75527569b4a1c823dc58ac425d629cd2c48b8671d | 176 native files parse; 161 metadata references close |
+
+PASS (runtime) — Opened **ForgeBridge Token Slice 2026-10-16**. Generated Stoker
+displays a native token note with the correct dog texture and **Size 1**. UI
+Transforms reads **X12.500,Y-18.500, scale .512,.512, rotation 0**, matching the
+padded source's grid center and calibrated native (32,-47.36). Manual Size-2
+control remains separate and visibly larger. Generated texture has the expected
+centered .8 image scale baked into its canvas; this is raster approximation, not
+independently persistent sprite-transform resizing.
+
+PASS (runtime) — Changed only generated Stoker X to **13.5**; sprite moves one
+grid square right, Size stays 1. Saved, switched to the isolated Blank map and
+reopened: X13.5,Y-18.5,.512,.512 and Size1 persist. Closed Toolkit with save,
+restarted through launcher and reopened; the same fields, texture and moved
+sprite persist. Manual control in the candidate also reads Size2, X22,Y-16.078,
+scale1.024,1.024 after restart. Hidden player behavior and rotated orientation
+remain DEFERRED. A loose-image import was not used as evidence of token migration.
+
+Saved token-map SHA256 **cb89ac912b598a65a5252d024875e92d83faa464118d7c677afaf6b083b91134**.
+File inspection corroborates generated native X34.559998,Y-47.360001 and both
+scales .512000024. Runtime evidence is the UI sequence above, not this hash.
+
+Restart recovery note: launcher initially retained a stale Running indicator.
+Direct EXE launch returned E02 (launcher required); its empty error session later
+closed with Alt+F4. Refreshed launcher and launched normally. No application
+validation was performed in the E02 session and no licensing bypass attempted.
+
+### Fresh combined-map observations
+
+PASS (scoped runtime) — **ForgeBridge Fresh Combined 2026-10-16** loads. FB Cal A
+is centered half a grid square from the upper-left background edge and Transforms
+reads **(.500,-.500)**, agreeing with the candidate calibration. All five room
+markers select the correct native targets and Activate content link displays:
+Library, Conservatory, Upper Hall, Secret Room, Servant's Quarters. Library →
+2. Manor opens the ordered page list (First Floor through Approach the Manor;
+Second Floor precedes Upper Hall/Servant's Quarters/Library/Secret Room/Conservatory).
+Secret Room → Letter - To Count from Strahd opens its PDF note and visibly renders
+Page1of1. This is one observed PDF page, not a pass for all17.
+
+PASS (save/switch/reopen, limited) — Saved combined map, switched to Blank,
+reopened; map/calibration marker render. Saved map SHA256
+**9bb7582719689c43b686c526686bc85f1296fb028d1936eb4f658450e9d88cc8**.
+All-five checks here apply to the fresh combined candidate; the older combined
+package still has only the previously recorded Conservatory/image sample.
+
+PASS (scoped fireplace runtime) — Manually ungrouped imported UVTT objects on the
+fresh combined test map. At the native night preset, disabling Library fireplace
+light (UI radius3.56, intensity100) visibly removes illumination from adjacent
+floor/furnishings; re-enabling restores it. Night view also shows wall-cast shadow
+wedges. Opaque-wall/door isolation remains incomplete, so the overlays/shadows are
+not a full blocking PASS.
+
+DEFERRED (movement test) — First numeric X12→10 moved the selected light outside
+the west wall and removed its interior contribution. A second numeric edit
+unexpectedly selected/transformed all content. This invalidates a clean alignment
+comparison; no converter change is justified. Switched away without saving those
+experiments; the explicit combined saved-map hash remains unchanged. A newer
+experiment autosave may exist: choose **No** to "load more recent autosave" when
+restoring the baseline. Temporary F6 camera focus binding and its newly created
+Profile1 were removed; native Default hotkey profile restored.
+
+### Animated media capability, separate from conversion
+
+FAIL (test attempts, cause unresolved) — PNG sequence import with three quoted
+paths produced one frame. Retried with three visibly highlighted files in a
+PNG-only directory: again saved one frame (ForgeBridgeSignal-03). Both controls
+remain on the isolated Blank map; second object moved to X2,Y0 and retained that
+position after restart. This does not prove working animation playback.
+
+PASS (native GIF import/playback/position) — Quick Import → Import as map asset
+accepts the identified synthetic forgebridge-signal.gif (hash above), displays
+GIF Complete, and creates a separate animated object. Observed red FB1, blue FB2
+and green FB3 at a fixed center; moved X0→-1,Y0 and the playing image follows.
+Set native FPS2. Saved data has three frames; this corroborates the observed
+playback, rather than replacing it. Save→fresh combined→Blank reopen resumes
+visible color changes at X-1. GIF restart remains pending. Native import defaults
+to FPS30; source GIF frame durations are not automatically preserved by this UI
+workflow. ForgeBridge animated-media writer remains unimplemented. Foundry
+torch/ghost procedural light configurations stay separate, retained and unmapped.
+
+Audit: `audit_runtime_files.py` checks installed ZIP CRC/native parsing/reference
+closure and saved-map token/frame fields, producing `runtime-file-audit.json`.
+It explicitly makes no runtime PASS claims. No converter code changed during
+this runtime follow-up; existing 136-test result remains 132 pass/4 symlink skips.
+
+### Resume checkpoint: restart and complete PDF display (2026-10-16)
+
+PASS — Enumerated windows and inspected the existing Blank animation map before
+acting. Midday had completed to 12.00. Closed Toolkit normally, verified its window
+was absent, refreshed the stale launcher and launched Toolkit v0.5.1.18 normally.
+Opened Blank: GIF visibly changes red/blue/green; Animation reads FPS2 and frame3,
+Transforms X-1.000,Y0.000,scale1.000 on both axes. This closes GIF restart playback
+and placement. It remains a manual native-media capability, not conversion.
+
+PASS — Opened Fresh Combined after restart, declining the newer experimental
+autosave. The saved manor/calibration content loads. Start Here shows room order
+Upper Hall, Servant's Quarters, Library, Secret Room, Conservatory. Opened PDF
+Handouts through its linked-document index, then individual note links. Observed
+all 17 page images across this follow-up (Strahd was observed before restart):
+
+| PDF handout | Pages displayed in order | Result |
+|---|---|---|
+| Letter to Count from Dr Seward | 1/1 | PASS |
+| Letter to Count from Strahd | 1/1 (earlier in this follow-up) | PASS |
+| Letter to Strahd from Elizabeth | 1/1 | PASS |
+| Letter to Margret | 1/1 | PASS |
+| Dr Seward's note | 1/1 | PASS |
+| Night of Darkness | 1/1 | PASS |
+| Arcane Tome of Knowledge | 1/2,2/2 | PASS |
+| Count's Journal | 1/2,2/2 | PASS |
+| Court of Ravenloft | 1/6 through 6/6, scroll track to later pages | PASS |
+| Letter to Ismark | 1/1; enlarged image preview readable | PASS |
+
+These are native UI rendering/order observations, not exhaustive transcription
+or every-page enlarged readability/player sharing checks. No original PDFs or
+user notes edited. The older combined-map exhaustive regression is still distinct.
+
+PASS — Start Here → Despair opens native rollable table with retained unresolved
+media reference. Roll returned Value1/Apathy, then Value3/Insane, displaying the
+corresponding source text. This is the representative current-package roll check;
+missing source table/media references remain explicit.
+
+FAIL → FIXED (generated wording, file level) — Native Start Here incorrectly said
+"Map markers are not placed automatically" in the combined map package. The media
+note stage lost the map-marker context when replacing text-only notes. Threaded
+that context through the native image-note writer; standalone exports retain the
+default. Package regression decodes actual serialized note text and asserts the
+combined wording. Four package and six native-image tests pass after the fix.
+Installed packages were not overwritten; this text correction applies to new
+builds. No token/geometry schema changed.
+
+Automated rerun before the wording fix: 136 tests,132 pass,4 symlink skips with
+approved temp-directory access (47.951s). Sandbox attempt had 74 temp permission
+errors, not converter failures. Skips still do not pass symlink protection checks.
+
+PASS (new-build file checks only) — Built separately named **ForgeBridge Fresh
+Wording Check 2026-10-16** using the fresh calibrated template, original source,
+same 2.56 calibration, PDF pages enabled and labels off. Added the preserved
+control-map pair to close its existing note backlink, as for the earlier fresh
+candidate. CRC passes; 176 native files parse; 161 metadata references close.
+Decoded native text contains the corrected marker wording. ZIP SHA256
+**869ca9b971aaeb295f73a872ea63e52b88827ce34ea2bdf2540d04ec4f0a0873**.
+It is **not installed or runtime-tested**; installed package hashes above remain
+the runtime evidence. Compact `wording-package-audit.json` records this scope.
+
+DEFERRED — Another bounded fog attempt on Fresh Combined: erase point and
+polygon-selection clicks yielded history increments/zero-size indication without
+an observed bounded reveal. Escaped the brush and switched to Blank without
+saving this experiment. Reliable canvas press/drag behavior remains uncertain;
+the available API has no hold-duration control. This does not establish a Toolkit
+or converter defect. Shortest independent control is one deliberate human bounded
+reveal/hide on the isolated map, followed by save/switch/reopen/restart and actual
+player checks. Desktop and firewall access themselves are working.
+
+Still DEFERRED: opaque wall and door blocking isolation, moved-light alignment,
+bounded local fog persistence/player output, rotated-token orientation and hidden
+token player output, plus exhaustive older combined-map regression. Labels stay
+off. Native animated-media conversion is unimplemented. Next token implementation
+milestone is a calibrated per-scene token set after rotation/hidden controls.

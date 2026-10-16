@@ -8,6 +8,7 @@ from forgebridge.native_export import companion_files
 from forgebridge.nrbf import Reader
 from forgebridge.package import build_package
 from test_native_images import inputs
+from test_native_export import recovered
 from test_native_map import fixture, node, FixtureWriter
 
 
@@ -39,6 +40,12 @@ class PackageTests(unittest.TestCase):
                 self.assertEqual(z.read('MyAssets/Media/background.rwfile'), b'unchanged background')
                 self.assertEqual(json.loads(z.read('source-companion.json')), source)
                 self.assertIn('handout-report.json', z.namelist())
+                note_strings = recovered({p: z.read(p) for p in z.namelist()
+                                          if p.endswith('.rwnote')})[0]
+                self.assertTrue(any('Room markers are supplied in the separate native map copy.' in s
+                                    for s in note_strings))
+                self.assertFalse(any('Map markers are not placed automatically.' in s
+                                     for s in note_strings))
                 for p in report['placements']:
                     self.assertTrue(p['native_map_placement'])
                     self.assertIn(p['target'], z.namelist())
