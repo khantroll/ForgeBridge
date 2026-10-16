@@ -80,7 +80,19 @@ class TokenTests(unittest.TestCase):
             root = Path(tmp); package = root / 'source'; package.mkdir()
             raw = io.BytesIO(); Image.new('RGBA', (20, 20), 'red').save(raw, 'PNG')
             (package / 'token.png').write_bytes(raw.getvalue())
+            from copy import deepcopy
             s = scene(); companion = root / 'source.json'
+            original = deepcopy(s['tokens'][0])
+            for i, size in enumerate((2., .5), start=1):
+                token = deepcopy(original)
+                token.update(_id='other-' + str(i), name='Other ' + str(i),
+                             width=size, height=size, x=2000+200*i,
+                             rotation=90*i, hidden=i == 1)
+                s['tokens'].append(token)
+            missing = deepcopy(original)
+            missing['_id'] = 'missing'; missing['texture']['src'] = 'missing.png'
+            rectangle = deepcopy(original); rectangle.update(_id='rectangle', width=2)
+            s['tokens'].extend((missing, rectangle, deepcopy(original)))
             companion.write_text(json.dumps({'source_scene': s}))
             image_pack = root / 'image.zip'; sample(image_pack)
             with zipfile.ZipFile(image_pack) as z:
@@ -100,7 +112,11 @@ class TokenTests(unittest.TestCase):
             report = write_token_zip(template, companion, package, a, **args)
             write_token_zip(template, companion, package, b, **args)
             self.assertEqual(a.read_bytes(), b.read_bytes())
-            self.assertEqual(report['unsupported'], [])
+            self.assertEqual(len(report['unsupported']), 3)
+            self.assertEqual(len(report['tokens']), 3)
+            self.assertEqual(len({t['source_id'] for t in report['tokens']}), 3)
+            self.assertEqual(len({t['placement']['target'] for t in report['tokens']}), 3)
+            self.assertEqual(len({t['placement']['native_uid'] for t in report['tokens']}), 3)
             with zipfile.ZipFile(a) as z:
                 self.assertIsNone(z.testzip())
                 self.assertEqual(json.loads(z.read('token-report.json'))['source_scene'], s)
@@ -115,6 +131,7 @@ class TokenTests(unittest.TestCase):
                 write_token_zip(template, companion, package, root / 'collision.zip', **{**args, 'name': 'Control'})
             self.assertFalse((root / 'collision.zip').exists())
             # Texture traversal is rejected before producing an archive.
+            s['tokens'] = [deepcopy(original)]
             s['tokens'][0]['texture']['src'] = '../escape.png'
             companion.write_text(json.dumps({'source_scene': s}))
             with self.assertRaises(ValueError):

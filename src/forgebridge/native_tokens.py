@@ -90,7 +90,8 @@ def png_control(data):
 
 def token_files(map_data, tokens, textures, *, name, units_per_grid, origin,
                 control_name, note_control, note_metadata, image_control,
-                image_metadata, control_canvas_edge, control_units_per_grid):
+                image_metadata, control_canvas_edge, control_units_per_grid, control_map_data=None,
+                namespace=None):
     """Return a new native map, companion native files and an honest loss report.
 
     All source interpretation happens before this target adapter. Calibration is
@@ -109,7 +110,7 @@ def token_files(map_data, tokens, textures, *, name, units_per_grid, origin,
     nr = Reader(note_control); nr.read()
     sizes = [o['members']['_squareSizeNew'] for o in nr.objects.values()
              if isinstance(o, dict) and o.get('class') == 'ArkenNoteFieldSize']
-    mr = Reader(map_data); mr.read()
+    mr = Reader(map_data if control_map_data is None else control_map_data); mr.read()
     def resolve(v): return mr.objects[v['ref']] if isinstance(v, dict) and 'ref' in v else v
     controls = [o['members'] for o in mr.objects.values() if isinstance(o, dict)
                 and o.get('class') == 'ArkenTilePresetContentLink'
@@ -130,7 +131,7 @@ def token_files(map_data, tokens, textures, *, name, units_per_grid, origin,
                 or type(token.hidden) is not bool):
             raise ValueError('Unsupported IR token geometry')
         # Identity, rather than readable name, determines stable collision-free paths.
-        key = hashlib.sha256(token.identity.encode('utf8')).hexdigest()[:24]
+        key = hashlib.sha256(((namespace + '\0' if namespace is not None else '') + token.identity).encode('utf8')).hexdigest()[:24]
         base = 'MyAssets/Encyclopedia/Notes/ForgeBridgeTokens/' + key
         media = 'MyAssets/Media/Encyclopedia/Tokens/ForgeBridgeTokens/' + key + '/Token'
         png = token_canvas(textures[token.texture], token.texture_scale, control_canvas_edge)
@@ -152,7 +153,7 @@ def token_files(map_data, tokens, textures, *, name, units_per_grid, origin,
                      'unverified': ['Rotated token orientation', 'Actual player visibility of hidden token'],
                      'image': image_report})
     updated, report = insert_markers(map_data, placements, name=name, units_per_grid=units_per_grid,
-                                     origin=origin, template_name=control_name)
+                                     origin=origin, template_name=control_name, template_data=control_map_data)
     reader = Reader(updated); reader.read(); writer = AppendWriter(reader); patches = []
     targets = {p['target']: (t, r) for t, p, r in zip(tokens, placements, rows)}
     def value(v): return reader.objects[v['ref']] if isinstance(v, dict) and 'ref' in v else v
@@ -178,13 +179,66 @@ def token_files(map_data, tokens, textures, *, name, units_per_grid, origin,
     return updated, files, rows
 
 
+def compile_scene_tokens(map_data, source_scene, package, control_files, control_map_path, *,
+                         name, units_per_grid, control_units_per_grid, control_name, origin=(0., 0.), namespace=None):
+    """Compose source-adapted tokens into an existing map using a separate control.
+
+    Returns generated dependencies and explicit per-token refusals. The caller
+    merges dependencies without overwriting unrelated native content.
+    """
+    from forgebridge.foundry_tokens import scene_tokens
+    from forgebridge.uvtt import _package_file, _safe_ref
+    from forgebridge.validate import InventoryFatal
+    reader = Reader(control_files[control_map_path]); reader.read()
+    def value(v): return reader.objects[v['ref']] if isinstance(v, dict) and 'ref' in v else v
+    controls = [o['members'] for o in reader.objects.values() if isinstance(o, dict)
+                and o.get('class') == 'ArkenTilePresetContentLink'
+                and value(o['members'].get('_tileName')) == control_name]
+    if len(controls) != 1: raise ValueError('Expected one named control')
+    note_path = value(controls[0]['_contentBasePath'])
+    note = control_files[note_path[:-7] + '.rwnote']
+    nr = Reader(note); nr.read()
+    icons = [o['members']['_iconPath'] for o in nr.objects.values()
+             if isinstance(o, dict) and o.get('class') == 'ArkenNoteIcon']
+    if len(icons) != 1: raise ValueError('Expected one token image')
+    image_path = nr.objects[icons[0]['ref']]
+    image = control_files[image_path[:-7] + '.rwfile']
+    ir = Reader(image, max_items=64 * 1024 * 1024); ir.read()
+    blobs = [o['bytes'] for o in ir.objects.values() if isinstance(o, dict) and 'bytes' in o]
+    if len(blobs) != 1: raise ValueError('Expected one encoded control image')
+    with Image.open(io.BytesIO(bytes(blobs[0]))) as control_image:
+        if control_image.width != control_image.height: raise ValueError('Control image must be square')
+        edge = control_image.width
+    tokens, rejected = scene_tokens(source_scene)
+    textures, ready = {}, []
+    for token in tokens:
+        try:
+            safe, problem = _safe_ref(token.texture)
+            if problem or not safe: raise ValueError('Unsafe source texture path')
+            path = _package_file(Path(package), safe)
+            if path.stat().st_size > 32 * 1024 * 1024: raise ValueError('Source texture exceeds bound')
+            data = path.read_bytes()
+            token_canvas(data, token.texture_scale, edge)  # refuse unsupported media before any output
+            textures[token.texture] = data
+            ready.append(token)
+        except (ValueError, OSError, InventoryFatal) as exc:
+            rejected.append({'source_id': token.identity, 'status': 'unsupported', 'reason': str(exc)})
+    if not ready:
+        return map_data, {}, [], rejected
+    updated, generated, rows = token_files(map_data, ready, textures, name=name,
+        units_per_grid=units_per_grid, origin=origin, control_name=control_name,
+        note_control=note, note_metadata=control_files[note_path], image_control=image,
+        image_metadata=control_files[image_path], control_canvas_edge=edge,
+        control_units_per_grid=control_units_per_grid,
+        control_map_data=control_files[control_map_path], namespace=namespace)
+    return updated, generated, rows, rejected
+
+
 def write_token_zip(template_pack, companion, package, dest, *, name,
                     units_per_grid, control_units_per_grid, control_name,
                     origin=(0., 0.)):
     """Build from a native export containing the sized control and its assets."""
-    from forgebridge.foundry_tokens import scene_tokens
     from forgebridge.native_map import rename_metadata
-    from forgebridge.uvtt import _package_file, _safe_ref
     dest = Path(dest)
     if dest.exists() or dest.is_symlink(): raise ValueError('Choose a new output filename')
     if (not name or len(name) > 128 or PurePosixPath(name).name != name
@@ -195,7 +249,6 @@ def write_token_zip(template_pack, companion, package, dest, *, name,
     if Path(companion).stat().st_size > 64 * 1024 * 1024:
         raise ValueError('Companion exceeds bound')
     source = json.loads(Path(companion).read_text(encoding='utf8'))
-    tokens, rejected = scene_tokens(source['source_scene'])
     with zipfile.ZipFile(template_pack) as archive:
         entries = [e for e in archive.infolist() if not e.is_dir()]
         paths = [e.filename for e in entries]
@@ -209,46 +262,11 @@ def write_token_zip(template_pack, companion, package, dest, *, name,
     maps = [p for p in paths if p.endswith('.rwmap')]
     if len(maps) != 1: raise ValueError('Expected one native map')
     map_path = maps[0]; meta_path = map_path[:-6] + '.rwmeta'
-    reader = Reader(files[map_path]); reader.read()
-    def value(v): return reader.objects[v['ref']] if isinstance(v, dict) and 'ref' in v else v
-    controls = [o['members'] for o in reader.objects.values() if isinstance(o, dict)
-                and o.get('class') == 'ArkenTilePresetContentLink'
-                and value(o['members'].get('_tileName')) == control_name]
-    if len(controls) != 1: raise ValueError('Expected one named control')
-    note_path = value(controls[0]['_contentBasePath'])
-    note = files[note_path[:-7] + '.rwnote']
-    nr = Reader(note); nr.read()
-    icons = [o['members']['_iconPath'] for o in nr.objects.values()
-             if isinstance(o, dict) and o.get('class') == 'ArkenNoteIcon']
-    if len(icons) != 1: raise ValueError('Expected one token image')
-    image_path = nr.objects[icons[0]['ref']]
-    image = files[image_path[:-7] + '.rwfile']
-    ir = Reader(image, max_items=64 * 1024 * 1024); ir.read()
-    blobs = [o['bytes'] for o in ir.objects.values() if isinstance(o, dict) and 'bytes' in o]
-    if len(blobs) != 1: raise ValueError('Expected one encoded control image')
-    with Image.open(io.BytesIO(bytes(blobs[0]))) as control_image:
-        if control_image.width != control_image.height: raise ValueError('Control image must be square')
-        edge = control_image.width
-    textures, ready = {}, []
-    for token in tokens:
-        try:
-            safe, problem = _safe_ref(token.texture)
-            if problem or not safe: raise ValueError('Unsafe source texture path')
-            path = _package_file(Path(package), safe)
-            if path.stat().st_size > 32 * 1024 * 1024: raise ValueError('Source texture exceeds bound')
-            data = path.read_bytes()
-            token_canvas(data, token.texture_scale, edge)  # refuse unsupported media before any output
-            textures[token.texture] = data
-            ready.append(token)
-        except (ValueError, OSError) as exc:
-            rejected.append({'source_id': token.identity, 'status': 'unsupported', 'reason': str(exc)})
-    if not ready:
+    updated, generated, rows, rejected = compile_scene_tokens(files[map_path], source['source_scene'],
+        package, files, map_path, name=name, units_per_grid=units_per_grid, origin=origin,
+        control_name=control_name, control_units_per_grid=control_units_per_grid)
+    if not rows:
         raise ValueError('No supported tokens; refusals: ' + json.dumps(rejected, ensure_ascii=True))
-    updated, generated, rows = token_files(files[map_path], ready, textures, name=name,
-        units_per_grid=units_per_grid, origin=origin, control_name=control_name,
-        note_control=note, note_metadata=files[note_path], image_control=image,
-        image_metadata=files[image_path], control_canvas_edge=edge,
-        control_units_per_grid=control_units_per_grid)
     for path in generated:
         if path in files: raise ValueError('Generated token would replace exported content; use a clean control export')
     # Native note metadata can link back to its original map. Preserve that

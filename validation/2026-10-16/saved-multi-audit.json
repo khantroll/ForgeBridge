@@ -1,0 +1,79 @@
+{
+  "scope": "File comparison only; runtime observations are in VALIDATION.md",
+  "saved_map_sha256": "9f704435b385c3e4bac645bba994fd89554ff01c2d1ec5da47ebe40fb451e6b6",
+  "generated_map_sha256": "5451c9dddf288267b7b30d3fc29ad5f21cbfb5bb7b2e5887c20729b3065c9039",
+  "generated_token_count": 5,
+  "token_fields_equal": true,
+  "tokens": {
+    "Scene.d0XKyRuR4GqdOagf.Token.1udgfiUDjLf6jWUS": {
+      "name": "Stoker",
+      "uid": 89,
+      "position": {
+        "x": 32.0,
+        "y": -47.36000061035156
+      },
+      "scale": {
+        "x": 0.5120000243186951,
+        "y": 0.5120000243186951
+      },
+      "rotation": -0.0,
+      "hidden": false
+    },
+    "Scene.d0XKyRuR4GqdOagf.Token.fb-arrow-0": {
+      "name": "FB Arrow 0",
+      "uid": 90,
+      "position": {
+        "x": 5.119999885559082,
+        "y": -5.119999885559082
+      },
+      "scale": {
+        "x": 0.5120000243186951,
+        "y": 0.5120000243186951
+      },
+      "rotation": -0.0,
+      "hidden": false
+    },
+    "Scene.d0XKyRuR4GqdOagf.Token.fb-arrow-1": {
+      "name": "FB Arrow 90",
+      "uid": 91,
+      "position": {
+        "x": 12.800000190734863,
+        "y": -5.119999885559082
+      },
+      "scale": {
+        "x": 0.5120000243186951,
+        "y": 0.5120000243186951
+      },
+      "rotation": -90.0,
+      "hidden": false
+    },
+    "Scene.d0XKyRuR4GqdOagf.Token.fb-arrow-2": {
+      "name": "FB Arrow 180",
+      "uid": 92,
+      "position": {
+        "x": 20.479999542236328,
+        "y": -5.119999885559082
+      },
+      "scale": {
+        "x": 1.0240000486373901,
+        "y": 1.0240000486373901
+      },
+      "rotation": -180.0,
+      "hidden": true
+    },
+    "Scene.d0XKyRuR4GqdOagf.Token.fb-arrow-3": {
+      "name": "FB Arrow 270",
+      "uid": 93,
+      "position": {
+        "x": 28.15999984741211,
+        "y": -5.119999885559082
+      },
+      "scale": {
+        "x": 0.25600001215934753,
+        "y": 0.25600001215934753
+      },
+      "rotation": -270.0,
+      "hidden": false
+    }
+  }
+}

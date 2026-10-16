@@ -139,7 +139,7 @@ def rename_metadata(data, name):
 
 def insert_markers(data, placements, *, name, units_per_grid, origin=(0., 0.),
                    template_name='FB Cal A', remove_names=(), marker_labels=False,
-                   text_template="Igor's Room", label_offset=(1.25, 0.)):
+                   text_template="Igor's Room", label_offset=(1.25, 0.), template_data=None):
     """Return a new map and insertion report; source bytes are never modified.
 
     Source grid coordinates increase right/down; native coordinates right/up.
@@ -189,6 +189,25 @@ def insert_markers(data, placements, *, name, units_per_grid, origin=(0., 0.),
             continue  # Re-exporting on/off replaces only our generated labels.
         if not (marker and title in remove_names):
             kept.append(ref)
+    template_reader = reader
+    if template_data is not None:
+        if marker_labels:
+            raise ValueError('External controls do not supply label templates')
+        template_reader = Reader(template_data)
+        control_graph = template_reader.read()
+        if template_reader.libraries != reader.libraries:
+            raise ValueError('Native control and target libraries differ')
+        def control_value(v):
+            return template_reader.objects[v['ref']] if isinstance(v, dict) and 'ref' in v else v
+        control_root = template_reader.objects[control_graph['root_id']]
+        if control_root.get('class') != 'ArkenMapUpgrade':
+            raise ValueError('Expected supported native control map')
+        control_tiles = control_value(control_root['members']['_tiles'])['members']
+        control_active = control_value(control_tiles['_items'])['items'][:control_tiles['_size']]
+        template = [ref['ref'] for ref in control_active
+                    if (p := control_value(control_value(ref)['members']['_tileInfo'])).get('class')
+                    == 'ArkenTilePresetContentLink'
+                    and control_value(p['members'].get('_tileName')) == template_name]
     if len(template) != 1:
         raise ValueError('Expected exactly one named calibration marker')
     if marker_labels:
@@ -224,7 +243,7 @@ def insert_markers(data, placements, *, name, units_per_grid, origin=(0., 0.),
             point = members(p['_position'])
             x, y, uid, level = point['x'], point['y'], p['_uID'], p.get('_mapLevel', 0)
         else:
-            tile = clone(reader, template[0])
+            tile = clone(template_reader, template[0])
             p = tile.members['_tileInfo'].members
             x, y = origin[0] + position['x'] * units_per_grid, origin[1] - position['y'] * units_per_grid
             p['_position'].members.update(x=x, y=y)
@@ -276,7 +295,8 @@ def insert_markers(data, placements, *, name, units_per_grid, origin=(0., 0.),
 
 def write_map_zip(template_pack, companion, dest, *, name, units_per_grid,
                   origin=(0., 0.), template_name='FB Cal A', remove_names=(), marker_labels=False,
-                  text_template="Igor's Room", label_offset=(1.25, 0.), note_folder=None):
+                  text_template="Igor's Room", label_offset=(1.25, 0.), note_folder=None,
+                  marker_template_pack=None):
     """Build a separate native test package from a single saved-map export."""
     from forgebridge.native_export import companion_files
     dest, companion = Path(dest), Path(companion)
@@ -300,11 +320,22 @@ def write_map_zip(template_pack, companion, dest, *, name, units_per_grid,
     generated, report = companion_files(json.loads(companion.read_text(encoding='utf-8')), map_markers=True, note_folder=note_folder)
     map_path = maps[0]
     metadata_path = map_path[:-6] + '.rwmeta'
-    updated, placements = insert_markers(files.pop(map_path), report['placements'], name=name,
+    marker_data = None
+    if marker_template_pack is not None:
+        from forgebridge.native_dependencies import read_export
+        marker_files = read_export(marker_template_pack)
+        marker_maps = [p for p in marker_files if p.endswith('.rwmap')]
+        if len(marker_maps) != 1:
+            raise ValueError('Expected one marker control map')
+        marker_data = marker_files[marker_maps[0]]
+    updated, placements = insert_markers(files[map_path], report['placements'], name=name,
         units_per_grid=units_per_grid, origin=origin, template_name=template_name, remove_names=remove_names,
-        marker_labels=marker_labels, text_template=text_template, label_offset=label_offset)
-    metadata = rename_metadata(files.pop(metadata_path), name)
+        marker_labels=marker_labels, text_template=text_template, label_offset=label_offset,
+        template_data=marker_data)
+    metadata = rename_metadata(files[metadata_path], name)
     folder = str(PurePosixPath(map_path).parent)
+    if folder + '/' + name + '.rwmap' in files:
+        raise ValueError('Choose a distinct map name; the source map is preserved')
     files[folder + '/' + name + '.rwmap'] = updated
     files[folder + '/' + name + '.rwmeta'] = metadata
     report['placements'] = placements

@@ -2,7 +2,7 @@
 
 > **Status: NATIVE TOKEN SLICE AND RUNTIME VALIDATION**
 >
-> ForgeBridge exports scene geometry through UVTT and builds calibrated native map markers, linked notes, tables, images and optional PDF-page handouts. The bounded source adapter → token IR → native target slice now passes a generated Stoker import, placement, movement and save/reopen/restart check in Toolkit v0.5.1.18. Actual player streaming works after firewall approval; whole-map fog and native GIF playback have been observed separately from conversion. Complete geometry/content regression, bounded fog and animated-media conversion remain unfinished; labels stay off. Historical user confirmations and current observations are separated in [STATUS.md](STATUS.md) and the [validation log](validation/2026-10-15/VALIDATION.md).
+> ForgeBridge builds one calibrated native scene package containing geometry, room markers, linked notes, tables, image/PDF attachments and generated tokens. A fresh manor package with five tokens passes asymmetric rotation and hidden-state checks in actual player output through save/reopen/Toolkit restart (v0.5.1.18). Targeted opaque-wall/door blocking and moved-light alignment also pass. Latest suite: 137 run, 133 passed, four Windows symlink tests skipped. Native export/calibration and installation remain manual; bounded fog, GIF migration, actors and behavior conversion remain incomplete. Labels stay off. See [STATUS.md](STATUS.md) and the [validation log](validation/2026-10-15/VALIDATION.md) for precise scopes.
 
 ForgeBridge is a proposed migration/transpilation tool for converting **Foundry Virtual Tabletop** content into the closest practical **Arkenforge** equivalent.
 
@@ -480,10 +480,31 @@ manor, (2000,2800) source pixels become center (12.5,18.5) source squares, then
 This slice supports square footprints, centered static square textures and positive
 texture scales up to one. Texture scaling is baked into a transparent canvas;
 Size controls the footprint. It writes identity, name, image, position, Size,
-rotation and hidden flags; rotated orientation and actual player visibility still
-need runtime validation. Actors, statistics, scripts, vision, fog, lights and combat
+rotation and hidden flags. Asymmetric 0/90/180/270-degree arrows and hidden-state
+round trips pass in actual player output on the documented combined test scene,
+including Toolkit restart. Other scenes still require validation. Actors, statistics, scripts, vision, fog, lights and combat
 behavior remain retained source data with explicit report entries. Unsupported
 geometry/media are reported rather than replaced. The archive preserves the
 original control map/note assets because native metadata can link back to them;
 installation must abort on conflicting existing content. The command does not
 install anything and refuses output overwrite or a colliding map name.
+
+To include the same token writer in the complete scene package, use the original
+source directory and add the calibrated token control options:
+
+```powershell
+py -m forgebridge.package --package MODULE_FOLDER --companion SCENE.forgebridge.json --map-template FRESH-NATIVE-EXPORT.zip --marker-template-pack MARKER-CONTROL.zip --media-template IMAGE-NOTE-CONTROL.zip --name "Separate Combined Scene" --note-folder "Separate Scene Notes" --units-per-grid 2.56 --origin 0 0 --token-control-pack TOKEN-CONTROL.zip --token-control-name "Stoker_token_1" --control-units-per-grid 2.56 --pdf-pages --out NEW-COMBINED.zip
+```
+
+Omit `--marker-template-pack` when the geometry export already contains the
+calibration marker control. The builder clones controls into the same generated
+map, preserves existing map content and original map/metadata backlinks, includes
+required control dependencies, and rejects conflicting or missing references.
+Token assets are deterministic and namespaced by output map name to prevent
+different scene copies from sharing mutable token notes. No ZIP surgery is needed.
+The reports retain full source data and per-token rejection reasons; a missing
+texture does not discard other supported tokens. Install only absent or identical
+files and stop on conflicts with existing content. GIF import/playback remains a
+manual Arkenforge operation; procedural Foundry light animations have no proven
+mapping. Neither native fog operation nor token hidden state implements Foundry
+vision/fog conversion.

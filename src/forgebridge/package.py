@@ -16,9 +16,15 @@ MAX_TOTAL = 256 * 1024 * 1024
 def build_package(companion, map_template, media_template, dest, *, name,
                   note_folder, units_per_grid, origin=(0., 0.), package=None,
                   media_bundle=None, pdf_pages=False, template_name='FB Cal A',
-                  regenerate_notes=False):
+                  regenerate_notes=False, token_control_pack=None, token_control_name=None,
+                  control_units_per_grid=None, marker_template_pack=None):
     if (package is None) == (media_bundle is None):
         raise ValueError('Provide exactly one source package or collected media bundle')
+    token_options = (token_control_pack, token_control_name, control_units_per_grid)
+    if any(v is not None for v in token_options) and not all(v is not None for v in token_options):
+        raise ValueError('Tokens require control pack, control name and control units per grid')
+    if token_control_pack is not None and (package is None or not Path(package).is_dir()):
+        raise ValueError('Tokens require the original source package directory for texture resolution')
     dest = Path(dest)
     if dest.exists() or dest.is_symlink():
         raise ValueError('Choose a new output filename')
@@ -32,7 +38,7 @@ def build_package(companion, map_template, media_template, dest, *, name,
         map_zip, notes_zip = root / 'map.zip', root / 'notes.zip'
         map_report = write_map_zip(map_template, companion, map_zip, name=name,
             units_per_grid=units_per_grid, origin=origin, template_name=template_name,
-            marker_labels=False, note_folder=note_folder)
+            marker_labels=False, note_folder=note_folder, marker_template_pack=marker_template_pack)
         preserved = map_report['preserved_exported_note_files']
         if preserved and not regenerate_notes:
             raise ValueError('Export contains existing generated notes. Back up manual edits and use --regenerate-notes to replace them')
@@ -56,6 +62,36 @@ def build_package(companion, map_template, media_template, dest, *, name,
         report['status'] = 'Combined native package built; check this scene in Toolkit. See STATUS.md for tested scenes. Player visibility remains unverified.'
         if collection is not None:
             files['handout-report.json'] = json.dumps(collection, indent=2).encode()
+        if token_control_pack is not None:
+            from forgebridge.native_dependencies import read_export, merge_native
+            from forgebridge.native_tokens import compile_scene_tokens
+            controls = read_export(token_control_pack)
+            control_maps = [p for p in controls if p.endswith('.rwmap')]
+            if len(control_maps) != 1:
+                raise ValueError('Expected one token control map')
+            map_path = next(p for p in files if p.endswith('/' + name + '.rwmap'))
+            source = json.loads(Path(companion).read_text(encoding='utf8'))
+            updated, generated, rows, rejected = compile_scene_tokens(files[map_path], source['source_scene'],
+                package, controls, control_maps[0], name=name, units_per_grid=units_per_grid,
+                origin=origin, control_name=token_control_name, control_units_per_grid=control_units_per_grid,
+                namespace=name)
+            merge_native(files, controls)
+            if set(generated) & set(files):
+                raise ValueError('Generated tokens conflict with existing exported content; use a clean source export')
+            merge_native(files, generated)
+            files[map_path] = updated
+            token_report = {'tokens': rows, 'unsupported': rejected, 'native_namespace': name,
+                'calibration': {'units_per_grid': units_per_grid, 'origin': list(origin),
+                                'control_units_per_grid': control_units_per_grid},
+                'source_scene': source['source_scene'],
+                'limits': ['No actor/stat blocks, scripts, vision/fog or procedural light animation converted',
+                           'GIF migration remains manual; labels off; runtime validation is separate']}
+            files['token-report.json'] = json.dumps(token_report, indent=2).encode()
+            report['token_conversion'] = {k: v for k, v in token_report.items() if k != 'source_scene'}
+            report['counts']['native_tokens'] = len(rows)
+            report['counts']['unsupported_tokens'] = len(rejected)
+        from forgebridge.native_dependencies import check_metadata_references
+        report['closed_metadata_references'] = check_metadata_references(files)
         for placement in report['placements']:
             if placement['target'] not in files:
                 raise ValueError('Room marker target is missing')
@@ -99,6 +135,10 @@ def main(argv=None):
     parser.add_argument('--template-name', default='FB Cal A')
     parser.add_argument('--pdf-pages', action='store_true')
     parser.add_argument('--regenerate-notes', action='store_true')
+    parser.add_argument('--marker-template-pack', help='Separate native marker control export when absent from geometry map')
+    parser.add_argument('--token-control-pack', help='Native export with sized control token and closed dependencies')
+    parser.add_argument('--token-control-name')
+    parser.add_argument('--control-units-per-grid', type=float)
     parser.add_argument('--out', required=True)
     args = parser.parse_args(argv)
     try:
@@ -106,7 +146,9 @@ def main(argv=None):
             args.out, name=args.name, note_folder=args.note_folder,
             units_per_grid=args.units_per_grid, origin=args.origin, package=args.package,
             media_bundle=args.media_bundle, pdf_pages=args.pdf_pages,
-            template_name=args.template_name, regenerate_notes=args.regenerate_notes)
+            template_name=args.template_name, regenerate_notes=args.regenerate_notes,
+            marker_template_pack=args.marker_template_pack, token_control_pack=args.token_control_pack,
+            token_control_name=args.token_control_name, control_units_per_grid=args.control_units_per_grid)
     except (OSError, ValueError, zipfile.BadZipFile) as exc:
         print(str(exc), file=sys.stderr)
         return 1

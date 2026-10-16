@@ -195,7 +195,7 @@ class NativeMapTests(unittest.TestCase):
             with zipfile.ZipFile(folder / 'new.zip') as archive:
                 self.assertIsNone(archive.testzip())
                 self.assertEqual(archive.read('MyAssets/Media/background.rwfile'), b'unchanged media')
-                self.assertNotIn('MyAssets/Maps/Original.rwmap', archive.namelist())
+                self.assertEqual(archive.read('MyAssets/Maps/Original.rwmap'), fixture())
                 self.assertIn(report['placements'][0]['target'], archive.namelist())
                 self.assertTrue(report['placements'][0]['native_map_placement'])
             with self.assertRaises(ValueError):

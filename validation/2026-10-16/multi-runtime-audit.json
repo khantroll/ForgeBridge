@@ -1,0 +1,359 @@
+{
+  "scope": "file checks only; see VALIDATION.md for observed behavior",
+  "package": "scene-v2.zip",
+  "sha256": "9c9cc84a5a514065e8321a0dcc406dd5aa1fe8281c7abaa9f4ace0253ca5d5f8",
+  "native_files_parsed": 194,
+  "closed_metadata_references": 195,
+  "counts": {
+    "notes": 46,
+    "journal_pages": 41,
+    "documents": 4,
+    "native_tables": 1,
+    "rewritten_uuid_occurrences": 20,
+    "unresolved_uuid_occurrences": 2,
+    "map_note_references": 5,
+    "native_image_attachments": 36,
+    "native_image_assets": 36,
+    "native_pdf_documents": 10,
+    "native_pdf_pages": 17,
+    "native_pdf_attachments": 17,
+    "native_tokens": 5,
+    "unsupported_tokens": 3
+  },
+  "tokens": [
+    {
+      "source_id": "Scene.d0XKyRuR4GqdOagf.Token.1udgfiUDjLf6jWUS",
+      "texture": "modules/lob-counts_manor-pk-v13/assets/tokens/Stoker_token.webp",
+      "footprint": [
+        1.0,
+        1.0
+      ],
+      "texture_scale": [
+        0.8,
+        0.8
+      ],
+      "native_size_squares": 1.0,
+      "rotation_clockwise": 0.0,
+      "hidden_flag": false,
+      "status": "experimental_native_token",
+      "retained_only_fields": [
+        "_movementHistory",
+        "_regions",
+        "actorId",
+        "actorLink",
+        "alpha",
+        "bar1",
+        "bar2",
+        "delta",
+        "detectionModes",
+        "displayBars",
+        "displayName",
+        "disposition",
+        "elevation",
+        "flags",
+        "light",
+        "lockRotation",
+        "locked",
+        "movementAction",
+        "occludable",
+        "ring",
+        "shape",
+        "sight",
+        "sort",
+        "turnMarker",
+        "texture.alphaThreshold"
+      ],
+      "approximations": [
+        "Texture scale baked into centered RGBA canvas; pixel rounding/resampling",
+        "Native Size controls square footprint; no independent persistent transform scale"
+      ],
+      "unverified": [
+        "Rotated token orientation",
+        "Actual player visibility of hidden token"
+      ],
+      "image": {
+        "dimensions": [
+          500,
+          500
+        ],
+        "thumbnail_dimensions": [
+          128,
+          128
+        ],
+        "normalized_png_sha256": "8c46a30c5290e91e92e88a420330cb2fcb73911bb1a751c3edb8baa486c2f814",
+        "thumbnail_scale": 0.256,
+        "thumbnail_scale_status": "Computed width ratio; Count's Crypt source-image display/reopen/restart passed; other packages require testing",
+        "native_preset_defaults": "Copied from supplied image; map placement behavior is unverified"
+      },
+      "serialized_scale": 0.5120000243186951,
+      "placement": {
+        "title": "Stoker",
+        "target": "MyAssets/Encyclopedia/Notes/ForgeBridgeTokens/d0785cd8389cece624829a7e.rwmeta",
+        "grid_position": {
+          "x": 12.5,
+          "y": 18.5
+        },
+        "native_map_placement": true,
+        "native_position": {
+          "x": 32.0,
+          "y": -47.36
+        },
+        "native_uid": 89,
+        "existing_marker_preserved": false
+      }
+    },
+    {
+      "source_id": "Scene.d0XKyRuR4GqdOagf.Token.fb-arrow-0",
+      "texture": "modules/lob-counts_manor-pk-v13/assets/forgebridge-arrow.png",
+      "footprint": [
+        1.0,
+        1.0
+      ],
+      "texture_scale": [
+        1.0,
+        1.0
+      ],
+      "native_size_squares": 1.0,
+      "rotation_clockwise": 0.0,
+      "hidden_flag": false,
+      "status": "experimental_native_token",
+      "retained_only_fields": [
+        "flags"
+      ],
+      "approximations": [
+        "Texture scale baked into centered RGBA canvas; pixel rounding/resampling",
+        "Native Size controls square footprint; no independent persistent transform scale"
+      ],
+      "unverified": [
+        "Rotated token orientation",
+        "Actual player visibility of hidden token"
+      ],
+      "image": {
+        "dimensions": [
+          500,
+          500
+        ],
+        "thumbnail_dimensions": [
+          128,
+          128
+        ],
+        "normalized_png_sha256": "30a421c54ec63c5fe9d888302a01421c55a2580021b8b78cdecf33dbc18ef925",
+        "thumbnail_scale": 0.256,
+        "thumbnail_scale_status": "Computed width ratio; Count's Crypt source-image display/reopen/restart passed; other packages require testing",
+        "native_preset_defaults": "Copied from supplied image; map placement behavior is unverified"
+      },
+      "serialized_scale": 0.5120000243186951,
+      "placement": {
+        "title": "FB Arrow 0",
+        "target": "MyAssets/Encyclopedia/Notes/ForgeBridgeTokens/c9f9ac06f875fea8a28bee5e.rwmeta",
+        "grid_position": {
+          "x": 2.0,
+          "y": 2.0
+        },
+        "native_map_placement": true,
+        "native_position": {
+          "x": 5.12,
+          "y": -5.12
+        },
+        "native_uid": 90,
+        "existing_marker_preserved": false
+      }
+    },
+    {
+      "source_id": "Scene.d0XKyRuR4GqdOagf.Token.fb-arrow-1",
+      "texture": "modules/lob-counts_manor-pk-v13/assets/forgebridge-arrow.png",
+      "footprint": [
+        1.0,
+        1.0
+      ],
+      "texture_scale": [
+        1.0,
+        1.0
+      ],
+      "native_size_squares": 1.0,
+      "rotation_clockwise": 90.0,
+      "hidden_flag": false,
+      "status": "experimental_native_token",
+      "retained_only_fields": [
+        "flags"
+      ],
+      "approximations": [
+        "Texture scale baked into centered RGBA canvas; pixel rounding/resampling",
+        "Native Size controls square footprint; no independent persistent transform scale"
+      ],
+      "unverified": [
+        "Rotated token orientation",
+        "Actual player visibility of hidden token"
+      ],
+      "image": {
+        "dimensions": [
+          500,
+          500
+        ],
+        "thumbnail_dimensions": [
+          128,
+          128
+        ],
+        "normalized_png_sha256": "30a421c54ec63c5fe9d888302a01421c55a2580021b8b78cdecf33dbc18ef925",
+        "thumbnail_scale": 0.256,
+        "thumbnail_scale_status": "Computed width ratio; Count's Crypt source-image display/reopen/restart passed; other packages require testing",
+        "native_preset_defaults": "Copied from supplied image; map placement behavior is unverified"
+      },
+      "serialized_scale": 0.5120000243186951,
+      "placement": {
+        "title": "FB Arrow 90",
+        "target": "MyAssets/Encyclopedia/Notes/ForgeBridgeTokens/a0a8b66a3869a4a335f74796.rwmeta",
+        "grid_position": {
+          "x": 5.0,
+          "y": 2.0
+        },
+        "native_map_placement": true,
+        "native_position": {
+          "x": 12.8,
+          "y": -5.12
+        },
+        "native_uid": 91,
+        "existing_marker_preserved": false
+      }
+    },
+    {
+      "source_id": "Scene.d0XKyRuR4GqdOagf.Token.fb-arrow-2",
+      "texture": "modules/lob-counts_manor-pk-v13/assets/forgebridge-arrow.png",
+      "footprint": [
+        2.0,
+        2.0
+      ],
+      "texture_scale": [
+        1.0,
+        1.0
+      ],
+      "native_size_squares": 2.0,
+      "rotation_clockwise": 180.0,
+      "hidden_flag": true,
+      "status": "experimental_native_token",
+      "retained_only_fields": [
+        "flags"
+      ],
+      "approximations": [
+        "Texture scale baked into centered RGBA canvas; pixel rounding/resampling",
+        "Native Size controls square footprint; no independent persistent transform scale"
+      ],
+      "unverified": [
+        "Rotated token orientation",
+        "Actual player visibility of hidden token"
+      ],
+      "image": {
+        "dimensions": [
+          500,
+          500
+        ],
+        "thumbnail_dimensions": [
+          128,
+          128
+        ],
+        "normalized_png_sha256": "30a421c54ec63c5fe9d888302a01421c55a2580021b8b78cdecf33dbc18ef925",
+        "thumbnail_scale": 0.256,
+        "thumbnail_scale_status": "Computed width ratio; Count's Crypt source-image display/reopen/restart passed; other packages require testing",
+        "native_preset_defaults": "Copied from supplied image; map placement behavior is unverified"
+      },
+      "serialized_scale": 1.0240000486373901,
+      "placement": {
+        "title": "FB Arrow 180",
+        "target": "MyAssets/Encyclopedia/Notes/ForgeBridgeTokens/9eff0dca2d4fb755dff55c0b.rwmeta",
+        "grid_position": {
+          "x": 8.0,
+          "y": 2.0
+        },
+        "native_map_placement": true,
+        "native_position": {
+          "x": 20.48,
+          "y": -5.12
+        },
+        "native_uid": 92,
+        "existing_marker_preserved": false
+      }
+    },
+    {
+      "source_id": "Scene.d0XKyRuR4GqdOagf.Token.fb-arrow-3",
+      "texture": "modules/lob-counts_manor-pk-v13/assets/forgebridge-arrow.png",
+      "footprint": [
+        0.5,
+        0.5
+      ],
+      "texture_scale": [
+        1.0,
+        1.0
+      ],
+      "native_size_squares": 0.5,
+      "rotation_clockwise": 270.0,
+      "hidden_flag": false,
+      "status": "experimental_native_token",
+      "retained_only_fields": [
+        "flags"
+      ],
+      "approximations": [
+        "Texture scale baked into centered RGBA canvas; pixel rounding/resampling",
+        "Native Size controls square footprint; no independent persistent transform scale"
+      ],
+      "unverified": [
+        "Rotated token orientation",
+        "Actual player visibility of hidden token"
+      ],
+      "image": {
+        "dimensions": [
+          500,
+          500
+        ],
+        "thumbnail_dimensions": [
+          128,
+          128
+        ],
+        "normalized_png_sha256": "30a421c54ec63c5fe9d888302a01421c55a2580021b8b78cdecf33dbc18ef925",
+        "thumbnail_scale": 0.256,
+        "thumbnail_scale_status": "Computed width ratio; Count's Crypt source-image display/reopen/restart passed; other packages require testing",
+        "native_preset_defaults": "Copied from supplied image; map placement behavior is unverified"
+      },
+      "serialized_scale": 0.25600001215934753,
+      "placement": {
+        "title": "FB Arrow 270",
+        "target": "MyAssets/Encyclopedia/Notes/ForgeBridgeTokens/be5fbb72ea167764ab370f7f.rwmeta",
+        "grid_position": {
+          "x": 11.0,
+          "y": 2.0
+        },
+        "native_map_placement": true,
+        "native_position": {
+          "x": 28.16,
+          "y": -5.12
+        },
+        "native_uid": 93,
+        "existing_marker_preserved": false
+      }
+    }
+  ],
+  "unsupported": [
+    {
+      "source_id": "fb-rectangle",
+      "status": "unsupported",
+      "reason": "Only square footprints up to 32 squares are supported"
+    },
+    {
+      "source_id": "fb-arrow-2",
+      "status": "unsupported",
+      "reason": "Missing or duplicate source token identity"
+    },
+    {
+      "source_id": "Scene.d0XKyRuR4GqdOagf.Token.fb-missing",
+      "status": "unsupported",
+      "reason": "path is not a file inside the package: assets/intentionally-missing.png"
+    }
+  ],
+  "native_namespace": "ForgeBridge Multi Scene 2026-10-16",
+  "unique_generated_token_instances": 5,
+  "preflight": {
+    "new": 114,
+    "identical": 80,
+    "CONFLICT": 0
+  },
+  "new_files_installed": 114
+}

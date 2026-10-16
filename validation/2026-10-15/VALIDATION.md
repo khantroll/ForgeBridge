@@ -10,7 +10,7 @@ This log distinguishes **file-level checks** from **observations inside Arkenfor
 
 | Status | Check | Evidence / limit |
 |---|---|---|
-| PASS | Automated checks | Latest full run: 136 tests, 132 passed, four Windows symlink checks skipped. Initial workspace assumptions were fixed in 90b721b. Sandbox temp-directory errors on the first Oct 16 attempt resolved by running the suite with approved access. |
+| PASS | Automated checks | Latest full run: 137 tests, 133 passed, four Windows symlink checks skipped (175.388s); multi-tests-final.txt. Includes standalone deterministic multi-token and combined-scene regression. |
 | DEFERRED | Four symlink safety checks | WinError 1314 skips are not passed symlink protection checks. |
 | PASS | Fresh source export and original separate package, file level | Original ZIP SHA256 c6ea282ae220f9eb7e9bf13905e1689668cd16d11356dae14507c3f9cfd2c3c1. Five markers, 46 notes, 36 attachments including 17 PDF pages. 170 native files parse; 154 metadata reference occurrences close. |
 | PASS | Source/template preservation, file level | Source scene retained, original template media byte-identical; original campaigns/source assets and unrelated local files preserved. Two missing tables and seven media gaps remain explicit. Labels off. |
@@ -18,16 +18,16 @@ This log distinguishes **file-level checks** from **observations inside Arkenfor
 | PASS | Fresh UVTT import and map existence | Fresh manor image/barrier/door/light overlays render; separate map and manual Stoker survive map switch/reopen. Fresh map reopened after the preceding Toolkit restart. These observations do not pass blocking behavior. |
 | PASS | Manual token Size/movement through reopen | Size 1→2 visibly doubles Stoker around fixed center. Numeric X move persists after save→blank→reopen. Details and native comparison hashes in Oct 16 section. |
 | FAIL | Transform-only token scale persistence | Horizontal 1.5 saves but normalizes to 1.024 on reopen while Size remains 2. Causal control confirms Size normalization; this is not a converter defect. |
-| PASS | Bounded token writer and generated Stoker runtime | Source adapter→Token IR→native target. Generated Stoker displays with Size 1, .512 transform, scaled texture and calibrated UI center (12.5,-18.5). Movement to X13.5 survives save, map switch/reopen and Toolkit restart. Rotation/player hidden remain unverified. |
+| PASS | Bounded token writer and generated tokens | Source adapter→Token IR→native target. Prior Stoker Size/placement/movement/restart pass retained. New combined scene: five unique generated tokens; asymmetric rotations and visible→hidden→visible observed in actual player output through save/reopen/restart. Details below. |
 | PASS | Sample current-package notes/image after restart | Conservatory marker, Journal and First Floor navigation; Counts Manor 1st key image visibly displays. Scope is these samples only. |
 | PASS | Fresh combined notes, representative table and PDF pages | All five room links, journal/source index order, Despair rolls (1 and 3), and all 17 PDF page images observed across this follow-up. Ismark enlarged preview readable. Older combined-map exhaustive regression remains separate and incomplete. |
 | PASS | Native whole-map fog and actual player stream | After user firewall approval, browser player output shows black fog-covered output, then visible map/grid after Clear all fog. Earlier covered state persists through map switch/reopen. This does not establish bounded local fog persistence. |
 | DEFERRED | Bounded local fog reveal/hide and restart | Rectangle/brush attempts did not establish a visible local change. Tool drag/input limitation remains possible; not established as a Toolkit defect. Player output is available. |
-| DEFERRED | Wall blocking, door open/close blocking and moved lights | Overlays and a door UI response observed; behavioral isolation still outstanding. Fresh-map Library fireplace on/off illumination passed at night; moved-light alignment remains inconclusive. |
+| PASS | Targeted fresh wall/door blocking and moved lights | Multi Scene: single Library light moved numerically X12→14→16; illumination follows. With temporary white light at (16,-6.5), opaque wall cuts illumination and Secret Room door close/open removes/restores transmitted light. GM observation; no all-door or player blocking claim. Temporary edits discarded. |
 | PASS | Fresh-map combined candidate, scoped runtime | Newly imported saved geometry; 176 native files parse, 161 metadata references close. Map loads, FB Cal A reads (.5,-.5), all five markers activate correct notes, journal index displays source order, and Strahd PDF handout displays. Saved map switches away and reopens. Full behavioral regression remains incomplete. |
 | PASS | Native GIF import, playback, movement and restart | Synthetic GIF visibly changes colors at X-1,Y0; save→switch→reopen and full Toolkit restart retain playback, scale1 and FPS2. No automatic Foundry animation conversion claimed. |
 | FAIL | PNG-sequence test attempts | Both filename-list and visibly selected three-file imports save one frame, not a playable sequence. Cause/workflow unresolved; separate from successful GIF import. |
-| DEFERRED | Full rebuilt package runtime | Door/blocking/moved-light and bounded fog remain unfinished. Fresh combined map loads after Toolkit restart; notes/table/PDF observations are scoped below. Firewall blocker resolved. |
+| PASS | Coherent rebuilt scene, scoped runtime | Production builder combines genuinely fresh UVTT-imported geometry, markers, notes/media and five tokens in one map. Loading, token player output and restart pass; targeted lighting/blocking pass. Local fog remains deferred; prior PDF/GIF checks were not needlessly repeated. |
 | DEFERRED | Labels | Remain off by request; player-facing behavior untested. |
 
 ## Explicit source gaps
@@ -458,3 +458,126 @@ bounded local fog persistence/player output, rotated-token orientation and hidde
 token player output, plus exhaustive older combined-map regression. Labels stay
 off. Native animated-media conversion is unimplemented. Next token implementation
 milestone is a calibrated per-scene token set after rotation/hidden controls.
+
+### Combined multi-token milestone — 2026-10-16, after cf50ebf
+
+Resumed the existing Toolkit window and actual browser player stream; no setup
+restart or older PDF/GIF repetition. Toolkit **0.5.1.18**, launcher **7.0.0.3**.
+Original module/campaigns/notes and unrelated untracked assets preserved. The
+fixture script copies the source to a private directory before adding test tokens.
+
+PASS (implementation/file level) — `forgebridge.package` now composes the existing
+source adapter → Token IR → native writer into the same map as geometry, five
+room markers, 46 notes and 36 image attachments including 17 PDF pages. Separate
+marker/token control exports are supported without replacing the geometry map.
+Production code preserves original map/metadata backlink dependencies, merges
+identical controls, rejects conflicting content, and checks metadata closure.
+No manual ZIP surgery or installed dependency patching is required.
+
+FAIL → FIXED (file-level preflight) — Initial candidate reused the standalone
+Stoker token-note path, conflicting with its previously edited installed note.
+Nothing was overwritten. Generated token paths now include the output-map
+namespace plus source identity. Final preflight: 114 absent files, 80 identical
+dependencies, zero conflicts. Installed only the 114 absent files with Toolkit
+closed. Later Toolkit edits are never silently overwritten by rebuilding.
+
+Final package: `2026-10-16/multi-runtime-private/scene-v2.zip`, SHA256
+**9c9cc84a5a514065e8321a0dcc406dd5aa1fe8281c7abaa9f4ace0253ca5d5f8**.
+Map: **ForgeBridge Multi Scene 2026-10-16**. `multi-runtime-audit.json` records
+194 native files parsed, ZIP CRC success, 195 closed metadata-reference
+occurrences and exactly one active instance for each of five unique token targets
+and UIDs. These are file checks, not runtime PASS evidence.
+
+The geometry is from the genuinely fresh UVTT-imported and calibrated saved map,
+read with its native dependency closure. The older `MyAssets(1).zip` supplies only
+the room-marker control schema. Calibration is explicitly 2.56 native units per
+source square here and 2.56 per native Size square; origin (0,0), source padding
+(800,1000) pixels and 100-pixel grid are applied. Tests also exercise native units
+3 with origin (7,11); 2.56 is not universal. Original Stoker remains Size1 with
+texture .8; its previously passed movement map at X13.5 was not edited.
+
+PASS (multi-token runtime and player output) — Original Stoker plus four instances
+of one original asymmetric arrow texture appear once each. Texture SHA256:
+**66a0b944694d2a7007fb414893b9155de362a9a715e0dea06eb1372920a375d7**.
+The arrow has a red up tip, blue left wing and green lower-right dot. Source
+center positions are (2,2), (5,2), (8,2), (11,2); clockwise rotations 0,90,180,270;
+Sizes 1,1,2,.5. GM renders up/right/down/left with the larger down token hidden.
+Actual player stream renders up/right/left and omits the down token. Selected
+FB Arrow90 alone; native Hidden toggle removes it from actual player output,
+then toggling back restores the same orientation/center. Clicking the down
+token's native eye badge revealed it directly; actual player output showed the
+larger down arrow. Re-hid it and saved the source-hidden state.
+
+PASS (persistence) — Save → Blank → reopen retains the orientations, relative
+sizes and hidden badge; actual player output again shows only up/right/left.
+Exited Toolkit normally, verified its window absent, refreshed the stale launcher,
+started Toolkit, opened Multi Scene and reactivated native player streaming.
+After reconnecting the browser, actual output again shows up/right/left with the
+down token absent. Mirror-DM and simulated-player modes were off. This is actual
+stream observation, not inference from a GM flag. The native hidden→visible→hidden
+round trip leaves source flags restored; the visible token also completed
+visible→hidden→visible before saving.
+
+PASS (targeted content regression on Multi Scene) — After restoring the saved
+baseline and declining the experimental autosave, double-clicked Library marker:
+it opens **2. Manor — Library**, with the Journal backlink and source page text/
+document links visible. Prior all-five room order, table and 17 PDF observations
+remain the broader content evidence; this sample checks composition with tokens.
+
+PASS (supporting file comparison) — `audit_saved_multi.py` compares the generated
+and saved active token records. All five names, UIDs, positions, rotations, scales
+and hidden states are equal; `saved-multi-audit.json` records the values. Saved map
+SHA256 **9f704435b385c3e4bac645bba994fd89554ff01c2d1ec5da47ebe40fb451e6b6**.
+Intermediate visibility edits were observed live, not exported as separate files.
+
+PASS (explicit partial conversion) — Eight source entries yield five supported
+tokens and three rejection records: rectangular footprint, missing texture,
+duplicate source identity. Missing-texture resolution formerly escaped as
+InventoryFatal and aborted the scene; it is now reported per token while valid
+tokens continue. Repeated textures retain distinct token names/identities/native
+references. Full source scene and unsupported actor/vision/behavior fields stay
+in reports. No actor/stat-block conversion, imported script execution or invented
+media/table replacement was added.
+
+PASS (targeted current fresh geometry, GM runtime) — Manually ungrouped the
+82 imported UVTT objects on Multi Scene, cleared group selection and confirmed
+only one Light Source selected (no +81). At native midnight, original Library
+light radius3.56/intensity100 moves X12→14→16 at Y-7.5 through focused numeric
+fields; illumination moves with its icon while walls/background/tokens stay fixed.
+The contribution switches across the opaque Library partition. For an unambiguous
+door comparison moved this same light to (16,-6.5), temporarily changed its dark
+source color #575112 to white, and toggled the Secret Room doorway at screen
+(1276,536) at 100% zoom. Open/green: a light wedge enters Secret Room; closed/red:
+the wedge disappears; reopening restores it. White illumination terminates at the
+adjacent opaque wall. This validates targeted blocking geometry with a manually
+controlled light, not automatic white-color conversion or every door/player
+blocking. Earlier current fresh-map fireplace on/off check remains its separate
+PASS. Switched to Blank and explicitly declined saving these experiments; saved
+Multi Scene baseline retained. Temporary F6/Profile1 removed; Default restored.
+
+DEFERRED (bounded fog) — The previous materially different polygon attempt also
+failed to establish a bounded reveal. No more inconclusive gestures repeated.
+Exact short human control needed on the isolated map: Live Play/VTT → Fog of war,
+manual erase rectangle, press/hold at one corner, drag and release at the opposite
+corner; paint a smaller subsection back. Observe actual player output, then save,
+switch/reopen and restart. The available Windows drag API has no hold-duration
+option, and reliable Toolkit gesture timing is unresolved. Whole-map clear/cover
+and actual player access already work. Foundry fog/token vision conversion remains
+unimplemented regardless of this manual native control result.
+
+PASS (automated) — 137 run, 133 passed, four WinError1314 symlink tests skipped;
+175.388s, `multi-tests-final.txt`. Standalone token ZIP regression now covers three
+tokens sharing a texture, supported sizes, unique references/UIDs, mixed rejection
+and deterministic bytes. Combined regression decodes the same output map to check
+existing objects plus room marker plus tokens, calibration, hidden/rotation fields,
+original dependencies and missing-backlink rejection without partial output.
+Skipped symlink tests do not establish symlink safety PASS. `git diff --check`
+passes. Prior 17-page PDF and GIF restart observations remain scoped evidence.
+
+Remaining manual steps: native UVTT import/export and coordinate calibration,
+reviewed installation without conflicting overwrites, ungroup for individual
+geometry edits, GIF import/FPS setup, and the bounded fog control above. Labels
+stay off. Procedural light animation stays retained separately. Next concrete
+implementation milestone: make the calibrated native-control/dependency workflow
+a reusable scene profile with multi-scene token identity isolation tests; continue
+bounded fog/vision capability research before adding a target mapping.

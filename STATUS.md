@@ -4,14 +4,41 @@
 **Implementation started:** Inventory CLI, importable UVTT, loose scene assets, embedded Adventure scene discovery, ambient color, and deterministic AmbientLight range conversion  
 **General converter:** Bounded scene/content/token slices implemented; complete actor and behavior conversion pending.
 
-Latest milestone (2026-10-16): generated native Stoker import, calibrated placement,
-Size/texture scaling, movement and save/switch/reopen/Toolkit restart now pass.
-Actual player streaming works after firewall approval. Fresh combined-map loading,
-calibration, all five room-note links, representative Despair rolls and all 17 PDF
-page displays/order pass. Native synthetic GIF playback and position survive a
-Toolkit restart. Full geometry regression, local fog and animated-media
-conversion remain incomplete. The sections below retain earlier milestone history;
-the final follow-up and validation log describe the current limits.
+Latest milestone (2026-10-16): one production-built fresh manor scene package now
+contains geometry, five room markers, 46 notes, 36 attachments (17 PDF pages) and
+five generated tokens. Asymmetric rotation and visible/hidden player output pass
+through save/switch/reopen and Toolkit v0.5.1.18 restart. Prior Stoker Size, texture
+scale and movement observations remain valid. Targeted opaque-wall/door blocking
+and moved-light alignment pass on the new combined scene with isolated controls.
+Latest automated suite: 137 run, 133 passed, four Windows symlink checks skipped.
+Local fog persistence remains deferred; GIF migration is manual, procedural light
+animations retained separately, labels off, actors/vision/behavior unsupported.
+The sections below retain earlier milestone history; the final follow-up and
+validation log describe the current limits.
+
+### One scene package with generated tokens — 2026-10-16
+
+The production package builder accepts calibrated token and optional separate
+marker controls, composes them into the geometry map, closes native metadata
+dependencies and rejects conflicts. Existing map objects and original map/metadata
+backlinks are preserved. Generated token notes are isolated by output map name and
+source identity. Missing textures are explicit per-token rejections while other
+supported tokens migrate. Standalone token ZIPs use the same scene compiler.
+
+The fresh manor test package contains Stoker and four asymmetric arrows sharing
+one texture, Sizes .5/1/2, rotations 0/90/180/270 and mixed hidden states. Three
+invalid entries are reported without duplicate output. Actual player rotation and
+visibility pass through restart. Targeted wall/door blocking passes with one
+temporarily white light; movement follows isolated numeric edits. Lighting
+experiments were discarded. Package SHA256:
+`9c9cc84a5a514065e8321a0dcc406dd5aa1fe8281c7abaa9f4ace0253ca5d5f8`.
+
+Manual work remains: native import/export/calibration, conflict-aware installation,
+ungrouping individual geometry objects, GIF import/FPS and bounded fog reveal/hide.
+Foundry fog/vision, actor/stat blocks, combat behavior and procedural light
+animations are retained but unmapped. Labels off; two missing source tables and
+seven media gaps remain explicit. Next implementation: a reusable calibrated
+scene profile/control dependency workflow with multi-scene token isolation tests.
 
 The earlier UVTT milestone below remains supported. Native map/content packages
 and the bounded token writer are later milestones, described at the end of this

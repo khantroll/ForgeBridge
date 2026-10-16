@@ -19,12 +19,90 @@ def map_template(root, extras=None):
         z.writestr('MyAssets/Maps/Original.rwmap', fixture())
         z.writestr('MyAssets/Maps/Original.rwmeta', FixtureWriter({2: 'Assembly-CSharp'}).write(meta))
         z.writestr('MyAssets/Media/background.rwfile', b'unchanged background')
+        cal_meta = node('ArkenNoteUpgradeMeta', {'_name': (1, None, 'Calibration'),
+            '_map': (1, None, 'MyAssets/Maps/Original.rwmeta')})
+        z.writestr('MyAssets/Encyclopedia/Notes/Cal.rwmeta',
+                   FixtureWriter({2: 'Assembly-CSharp'}).write(cal_meta))
         for path, data in (extras or {}).items():
             z.writestr(path, data)
     return p
 
 
 class PackageTests(unittest.TestCase):
+    def test_combined_scene_contains_multiple_tokens_and_explicit_partial_rejections(self):
+        from copy import deepcopy
+        from PIL import Image
+        from test_tokens import control, scene
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            media, companion, _, source = inputs(tmp)
+            package = root / 'package'
+            Image.new('RGBA', (40, 40), 'red').save(package / 'token.png')
+            s = scene()
+            first = s['tokens'][0]
+            s['tokens'] = []
+            for i, size in enumerate((1., 2., .5)):
+                t = deepcopy(first)
+                t.update(_id='t' + str(i), name='Token ' + str(i), width=size, height=size,
+                         x=900 + 200*i, y=1200, rotation=90*i, hidden=i == 2)
+                s['tokens'].append(t)
+            bad = deepcopy(first); bad.update(_id='rect', width=2)
+            missing = deepcopy(first); missing['_id'] = 'missing'; missing['texture']['src'] = 'absent.png'
+            s['tokens'].extend([bad, missing, deepcopy(s['tokens'][0])])
+            source['source_scene'] = s
+            companion.write_text(json.dumps(source))
+            map_data, note, meta = control()
+            with zipfile.ZipFile(media) as z:
+                image_files = {n:z.read(n) for n in z.namelist() if n.startswith('MyAssets/')}
+            from forgebridge.native_images import native_image_pair
+            full, thumb, _ = native_image_pair(image_files['MyAssets/Media/Sample/Image.rwfile'],
+                image_files['MyAssets/Media/Sample/Image.rwmeta'], (package/'token.png').read_bytes())
+            image_files['MyAssets/Media/Sample/Image.rwfile'] = full
+            image_files['MyAssets/Media/Sample/Image.rwmeta'] = thumb
+            control_files = {'MyAssets/Maps/TokenControl.rwmap': map_data,
+                'MyAssets/Maps/TokenControl.rwmeta': FixtureWriter({2:'Assembly-CSharp'}).write(
+                    node('ArkenMapMeta', {'_name': (1,None,'TokenControl')})),
+                'MyAssets/Encyclopedia/Notes/Control.rwnote': note,
+                'MyAssets/Encyclopedia/Notes/Control.rwmeta': meta, **image_files}
+            controls = root / 'controls.zip'
+            with zipfile.ZipFile(controls, 'w') as z:
+                for p,d in control_files.items(): z.writestr(p,d)
+            out = root / 'combined.zip'
+            report = build_package(companion, map_template(tmp), media, out, name='All in one',
+                note_folder='Scene', units_per_grid=3., origin=(7.,11.), package=package,
+                token_control_pack=controls, token_control_name='Control', control_units_per_grid=2.56)
+            self.assertEqual(report['counts']['native_tokens'], 3)
+            self.assertEqual(report['counts']['unsupported_tokens'], 3)
+            with zipfile.ZipFile(out) as z:
+                self.assertEqual(json.loads(z.read('token-report.json'))['source_scene'], s)
+                for p,d in control_files.items(): self.assertEqual(z.read(p),d)
+                r=Reader(z.read('MyAssets/Maps/All in one.rwmap')); r.read()
+                resolve=lambda v:r.objects[v['ref']] if isinstance(v,dict) and 'ref' in v else v
+                root_map=r.objects[r.root_id]['members'] if hasattr(r,'root_id') else r.objects[1]['members']
+                tiles=resolve(root_map['_tiles'])['members']
+                presets=[resolve(resolve(v)['members']['_tileInfo']) for v in
+                         resolve(tiles['_items'])['items'][:tiles['_size']]]
+                self.assertEqual(len(presets),6)  # original wall/calibration + room marker + 3 tokens
+                self.assertEqual(len({p['members']['_uID'] for p in presets}),6)
+                converted=[p['members'] for p in presets if resolve(p['members'].get('_tileName')) in
+                           ('Token 0','Token 1','Token 2')]
+                self.assertEqual(len({resolve(p['_contentBasePath']) for p in converted}),3)
+                for i,p in enumerate(converted):
+                    self.assertEqual(resolve(p['_position'])['members'],
+                        {'x':7+((900+200*i-800)/100+(1.,2.,.5)[i]/2)*3,
+                         'y':11-(2+(1.,2.,.5)[i]/2)*3})
+                    self.assertEqual(p['_rotation'],-90*i)
+                    self.assertEqual(p['_hidden'],i==2)
+            # Refuse a missing original native backlink before writing partial output.
+            broken=root/'broken.zip'
+            with zipfile.ZipFile(map_template(tmp)) as z, zipfile.ZipFile(broken,'w') as b:
+                for n in z.namelist():
+                    if not n.endswith('Cal.rwmeta'): b.writestr(n,z.read(n))
+            with self.assertRaisesRegex(ValueError,'Missing native dependency'):
+                build_package(companion,broken,media,root/'absent.zip',name='Broken',
+                    note_folder='Scene',units_per_grid=3.,package=package)
+            self.assertFalse((root/'absent.zip').exists())
+
     def test_one_package_collects_media_and_closes_map_and_note_links(self):
         with tempfile.TemporaryDirectory() as tmp:
             media, companion, _, source = inputs(tmp)
