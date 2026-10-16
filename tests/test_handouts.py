@@ -77,7 +77,12 @@ class HandoutTests(unittest.TestCase):
             package, source, _, _ = self.write(tmp, [], {})
             secret = Path(tmp) / 'secret.png'
             secret.write_bytes(b'secret')
-            (package / 'link.png').symlink_to(secret)
+            try:
+                (package / 'link.png').symlink_to(secret)
+            except OSError as exc:
+                if getattr(exc, "winerror", None) != 1314:
+                    raise
+                self.skipTest("Windows symlink creation privilege unavailable (WinError 1314)")
             source.write_text(json.dumps(companion(['link.png'])))
             report = write_handouts_zip(package, source, Path(tmp) / 'second.zip')
             self.assertEqual(report['counts'], {'missing_or_unsafe': 1})

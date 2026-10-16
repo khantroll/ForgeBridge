@@ -74,6 +74,7 @@ def _slice() -> dict:
 class UvttSliceTests(unittest.TestCase):
     def setUp(self) -> None:
         _clear_markers()
+        self.existing_uvtt = set(REPO.glob("**/*.uvtt"))
 
     def tearDown(self) -> None:
         _clear_markers()
@@ -174,7 +175,7 @@ class UvttSliceTests(unittest.TestCase):
         self.assertNotIn("Mummy01", uvtt_blob)
         self.assertNotIn("homebrewRule", uvtt_blob)
         self.assertNotIn("notACoreField", uvtt_blob)
-        self.assertEqual(list(REPO.glob("**/*.uvtt")), [])
+        self.assertEqual(set(REPO.glob("**/*.uvtt")), self.existing_uvtt)
 
     def test_extra_uvtt_key_fails_schema(self) -> None:
         uvtt = _slice()["uvtt"]
@@ -356,7 +357,7 @@ class UvttSliceTests(unittest.TestCase):
             self.assertNotIn("software", written)
             self.assertNotIn("creator", written)
             self.assertEqual(base64.b64decode(written["image"]), raw)
-        self.assertEqual(list(REPO.glob("**/*.uvtt")), [])
+        self.assertEqual(set(REPO.glob("**/*.uvtt")), self.existing_uvtt)
         for marker in MARKERS:
             self.assertFalse(Path(marker).exists(), marker)
 
@@ -460,7 +461,7 @@ class UvttSliceTests(unittest.TestCase):
             self.assertNotIn("loss_report", written)
             self.assertEqual(base64.b64decode(written["image"]), raw)
             self.assertIn("VaultToken", envelope["loss_report"]["headline"] + json.dumps(envelope["loss_report"]))
-        self.assertEqual(list(REPO.glob("**/*.uvtt")), [])
+        self.assertEqual(set(REPO.glob("**/*.uvtt")), self.existing_uvtt)
         self.assertFalse((LEVELDB_SCENE / "packs" / "scenes" / "LOCK").exists())
         for marker in MARKERS:
             self.assertFalse(Path(marker).exists(), marker)
@@ -506,7 +507,7 @@ class UvttSliceTests(unittest.TestCase):
             self.assertEqual(written, build_uvtt_slice(LEVELDB_SCENE, "scene-vault")["uvtt"])
             self.assertTrue(envelope["loss_report"]["headline"].startswith("Unsupported "))
             self.assertNotIn("loss_report", written)
-        self.assertEqual(list(REPO.glob("**/*.uvtt")), [])
+        self.assertEqual(set(REPO.glob("**/*.uvtt")), self.existing_uvtt)
         for marker in MARKERS:
             self.assertFalse(Path(marker).exists(), marker)
 
@@ -588,7 +589,7 @@ class UvttSliceTests(unittest.TestCase):
             self.assertIn("../../etc/passwd", joined)
             self.assertIn("not on Arkenforge's documented import list", joined)
             self.assertNotIn("writeFileSync", json.dumps(envelope["uvtt"]))
-        self.assertEqual(list(REPO.glob("**/*.uvtt")), [])
+        self.assertEqual(set(REPO.glob("**/*.uvtt")), self.existing_uvtt)
         for marker in MARKERS:
             self.assertFalse(Path(marker).exists(), marker)
 

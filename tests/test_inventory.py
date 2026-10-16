@@ -194,7 +194,12 @@ class InventoryTests(unittest.TestCase):
                 }),
                 encoding="utf-8",
             )
-            (root / "packs" / "actors.db").symlink_to(outside)
+            try:
+                (root / "packs" / "actors.db").symlink_to(outside)
+            except OSError as exc:
+                if getattr(exc, "winerror", None) != 1314:
+                    raise
+                self.skipTest("Windows symlink creation privilege unavailable (WinError 1314)")
             document = inventory_path(root)
             self.assertNotIn("Leaked secret", json.dumps(document))
             self.assertIn("symlink-skipped", {item["code"] for item in document["diagnostics"]})

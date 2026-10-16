@@ -182,7 +182,12 @@ class NotesTests(unittest.TestCase):
             outside = Path(tmp) / 'outside.json'; outside.write_text('[]')
             for path in ['../outside.json', 'linked.json']:
                 if path == 'linked.json':
-                    (root / path).symlink_to(outside)
+                    try:
+                        (root / path).symlink_to(outside)
+                    except OSError as exc:
+                        if getattr(exc, "winerror", None) != 1314:
+                            raise
+                        self.skipTest("Windows symlink creation privilege unavailable (WinError 1314)")
                 with self.assertRaises(InventoryFatal):
                     _journal_pack_payloads(root, {'source_path': path, 'storage': 'json'})
 
@@ -192,7 +197,12 @@ class NotesTests(unittest.TestCase):
             self.fixture(root)
             dest = Path(tmp) / 'out' / 'scene.uvtt'; dest.parent.mkdir()
             target = Path(tmp) / 'protected.txt'; target.write_text('keep')
-            dest.with_suffix('.notes.txt').symlink_to(target)
+            try:
+                dest.with_suffix('.notes.txt').symlink_to(target)
+            except OSError as exc:
+                if getattr(exc, "winerror", None) != 1314:
+                    raise
+                self.skipTest("Windows symlink creation privilege unavailable (WinError 1314)")
             with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
                 self.assertEqual(main([str(root), '--uvtt-scene', 'scene', '--uvtt-out', str(dest)]), 1)
             self.assertEqual(target.read_text(), 'keep')
