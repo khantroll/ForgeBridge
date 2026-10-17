@@ -640,3 +640,61 @@ preflight/build are repeatable; native import/export/calibration and reviewed
 installation remain manual. Next runtime task is the two-map persistence check;
 next implementation milestone is portable capture/export tooling with reviewed
 native dependencies.
+
+
+## Profile runtime recovery attempt — 2026-10-17, after 39c163f
+
+BLOCKED (desktop control, cause unconfirmed; not a conversion failure). Followed
+installed Computer Use guidance and selected the already-running Toolkit from a
+fresh `sky.list_windows()` result. Enumeration succeeded and returned exactly one
+MastersToolkit window: id 6881588, app
+`process:C:\Program Files (x86)\MastersToolkit\MastersToolkit.exe`.
+`sky.get_window({id:6881588,app:discovered_app})` succeeded. The first capture,
+`sky.get_window_state({window:toolkitWindow,include_screenshot:true,include_text:false})`,
+failed before input with Error: `foreground window did not report a process id`.
+No Toolkit retry, launcher activation, click, key input, rebuild, installation,
+permission change or application elevation was performed.
+
+One comparison used the same enumeration's ordinary File Explorer window, id
+199770, app `process:C:\Windows\explorer.exe`. `get_window` and
+`get_window_state` returned without error. However the returned screenshots showed
+Toolkit and an overlapping Codex window, not a clearly identifiable Explorer
+surface. Therefore the API reported capture success for another target, but
+reliable ordinary-window targeting is unconfirmed. The failure cannot yet be
+attributed solely to Toolkit, permissions, or ForgeBridge. No alternative automation
+mechanism was introduced. Full available Error name/message/stack/properties and
+target metadata are in `../2026-10-16/profile-desktop-diagnostic-2026-10-17.json`.
+No additional diagnostic code/cause was exposed by the error object.
+
+Both new profile runtime checks remain BLOCKED. Prior multi-token player-output
+and restart PASS evidence remains separate; neither file hashes nor the incidental
+blank-map capture proves new profile behavior. Labels remain off and bounded fog
+remains separately deferred. No code change or automated rerun was justified;
+latest totals remain 144 run, 140 passed, four Windows symlink tests skipped.
+
+### Short human checklist (installed profile packages; do not rebuild/reinstall)
+
+1. Open **ForgeBridge Profile Manor 2026-10-16**. Confirm generated **Stoker**,
+   distinct from preserved manual control **Stoker_token_1**. Record its native
+   position (generated baseline X32, Y-47.36), Size and visible/hidden state. Open
+   one room marker and record the correct room-note title/scene. Save the map.
+2. Open **ForgeBridge Profile Crypt 2026-10-16**. Confirm nine generated tokens
+   (one source token was explicitly rejected; preserved control content is separate).
+   Record two representative token names/positions and a correct Crypt room-note
+   target. Save. Use profile-pair-audit.json for baseline names/positions; it is
+   file evidence only, not observed runtime PASS.
+3. Switch Manor → Crypt → Manor and reopen both. Confirm each retains its own
+   generated tokens, recorded positions and room-note targets without cross-scene
+   substitution. Keep labels off; avoid editing original maps/control notes.
+4. Quit Toolkit normally, reopen normally, and repeat representative token and
+   room-link checks on both profile maps. Record Toolkit version and results.
+5. Where a token is hidden/visible, inspect the actual player screen/stream:
+   confirm hidden tokens are absent and visible tokens present in the displayed
+   area. Record GM and player results separately; fog/viewport can obscure tokens
+   and must not be mistaken for hidden-state proof. No bounded-fog test required.
+
+Record PASS/FAIL per map, representative names/coordinates/room titles, and whether
+observations occurred before switching, after reopening and after restart. These
+human observations can close the milestone; file inspection cannot replace them.
+Portable capture/export tooling remains out of scope until this runtime milestone
+is finished.

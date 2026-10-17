@@ -25,8 +25,10 @@ GIF setup and the documented bounded fog gesture. Labels off; Foundry fog/vision
 procedural light animation and actor/stat behavior stay explicit gaps. See
 [scene profiles](docs/SCENE-PROFILES.md) and the validation log. Next validation step:
 open the two separately named Profile maps and save/switch/reopen representative
-tokens and room links after desktop control recovers. Next implementation milestone:
-portable profile capture/export tooling with reviewed dependency packaging.
+tokens and room links after desktop control recovers. Profile runtime validation must finish before expanding into portable capture/export tooling.
+The fresh October 17 Toolkit capture attempt failed before input; one ordinary-window
+comparison returned mismatched screenshots. Cause remains unconfirmed; exact
+diagnostics and a short human checklist are in the validation log.
 
 The sections below retain earlier milestone history.
 
