@@ -72,7 +72,7 @@ def native_image_pair(template_file, template_meta, data):
                  'native_preset_defaults': 'Copied from supplied image; map placement behavior is unverified'})
 
 
-def source_image_files(companion, media_bundle, template_pack, *, pdf_pages=False):
+def source_image_files(companion, media_bundle, template_pack, *, pdf_pages=False, asset_namespace=None):
     occurrences = []
     refs = media_references(companion, occurrence_order=occurrences)
     template, tr = media_smoke_files(template_pack)
@@ -137,7 +137,9 @@ def source_image_files(companion, media_bundle, template_pack, *, pdf_pages=Fals
                         rwfile, rwmeta, details = native_image_pair(template_file, template_meta, image_data)
                         if is_pdf:
                             details['thumbnail_scale_status'] = 'Computed width ratio; PDF page Toolkit validation pending'
-                        folder = ('ForgeBridgePDF-' if is_pdf else 'ForgeBridgeImage-') + digest[:20]
+                        scoped_digest = digest if asset_namespace is None else hashlib.sha256(
+                            (asset_namespace + '\0' + digest).encode()).hexdigest()
+                        folder = ('ForgeBridgePDF-' if is_pdf else 'ForgeBridgeImage-') + scoped_digest[:20]
                         if is_pdf:
                             folder += '-P' + str(pi).zfill(3)
                         media_path = str(parent / folder / basename)
@@ -188,14 +190,15 @@ def source_image_files(companion, media_bundle, template_pack, *, pdf_pages=Fals
     return output, fields, rows
 
 
-def write_source_images_zip(companion_path, media_bundle, template_pack, dest, *, pdf_pages=False, note_folder=None, map_markers=False):
+def write_source_images_zip(companion_path, media_bundle, template_pack, dest, *, pdf_pages=False, note_folder=None, map_markers=False, asset_namespace=None):
     companion_path, dest = Path(companion_path), Path(dest)
     if companion_path.stat().st_size > MAX_FILE:
         raise ValueError('Companion exceeds size limit')
     if dest.exists() or dest.is_symlink():
         raise ValueError('Choose a new output filename')
     companion = json.loads(companion_path.read_text(encoding='utf-8'))
-    media, fields, rows = source_image_files(companion, media_bundle, template_pack, pdf_pages=pdf_pages)
+    media, fields, rows = source_image_files(companion, media_bundle, template_pack,
+                                           pdf_pages=pdf_pages, asset_namespace=asset_namespace)
     notes, report = companion_files(companion, media_fields=fields, note_folder=note_folder,
                                     map_markers=map_markers)
     if set(media) & set(notes):

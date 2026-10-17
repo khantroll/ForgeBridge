@@ -1,20 +1,34 @@
 # Project Status
 
-**Lifecycle:** NATIVE TOKEN SLICE AND RUNTIME VALIDATION
+**Lifecycle:** CALIBRATED SCENE PROFILES
 **Implementation started:** Inventory CLI, importable UVTT, loose scene assets, embedded Adventure scene discovery, ambient color, and deterministic AmbientLight range conversion  
 **General converter:** Bounded scene/content/token slices implemented; complete actor and behavior conversion pending.
 
-Latest milestone (2026-10-16): one production-built fresh manor scene package now
-contains geometry, five room markers, 46 notes, 36 attachments (17 PDF pages) and
-five generated tokens. Asymmetric rotation and visible/hidden player output pass
-through save/switch/reopen and Toolkit v0.5.1.18 restart. Prior Stoker Size, texture
-scale and movement observations remain valid. Targeted opaque-wall/door blocking
-and moved-light alignment pass on the new combined scene with isolated controls.
-Latest automated suite: 137 run, 133 passed, four Windows symlink checks skipped.
-Local fog persistence remains deferred; GIF migration is manual, procedural light
-animations retained separately, labels off, actors/vision/behavior unsupported.
-The sections below retain earlier milestone history; the final follow-up and
-validation log describe the current limits.
+Latest milestone (2026-10-17): version 1 scene profiles bind the original package,
+exact Adventure/scene identity, companion, calibrated primary geometry and reusable
+native controls. Relative paths resolve against the profile. Read-only preflight
+checks identity, hashes, dependencies and token support; explicit CLI builds remain
+available. Calibration cannot silently follow another scene or changed input.
+
+Synthetic isolation tests cover repeated token identities/textures, different grids,
+padding/calibration, rejected and zero tokens, dependency closure, deterministic
+rebuilds and preservation of another scene/user edits. Two real profiles build Manor
+and Crypt packages; file audit passes with 529 closed metadata references, isolated
+token/note/media scopes and no installation conflicts. Separate reviewed installation
+added 438 absent files without overwrites. New runtime map-switch/token/link checks
+are BLOCKED: desktop window recovery twice returned `foreground window did not
+report a process id`. The earlier accepted runtime milestone below remains separate.
+Latest suite: 144 run, 140 passed, four Windows symlink tests skipped (not safety PASS).
+
+Manual steps remain native UVTT import/export/calibration, reviewed installation,
+GIF setup and the documented bounded fog gesture. Labels off; Foundry fog/vision,
+procedural light animation and actor/stat behavior stay explicit gaps. See
+[scene profiles](docs/SCENE-PROFILES.md) and the validation log. Next validation step:
+open the two separately named Profile maps and save/switch/reopen representative
+tokens and room links after desktop control recovers. Next implementation milestone:
+portable profile capture/export tooling with reviewed dependency packaging.
+
+The sections below retain earlier milestone history.
 
 ### One scene package with generated tokens — 2026-10-16
 

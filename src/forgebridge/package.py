@@ -17,7 +17,8 @@ def build_package(companion, map_template, media_template, dest, *, name,
                   note_folder, units_per_grid, origin=(0., 0.), package=None,
                   media_bundle=None, pdf_pages=False, template_name='FB Cal A',
                   regenerate_notes=False, token_control_pack=None, token_control_name=None,
-                  control_units_per_grid=None, marker_template_pack=None):
+                  control_units_per_grid=None, marker_template_pack=None, asset_namespace=None,
+                  token_namespace=None, profile_provenance=None, geometry_map_path=None):
     if (package is None) == (media_bundle is None):
         raise ValueError('Provide exactly one source package or collected media bundle')
     token_options = (token_control_pack, token_control_name, control_units_per_grid)
@@ -38,12 +39,14 @@ def build_package(companion, map_template, media_template, dest, *, name,
         map_zip, notes_zip = root / 'map.zip', root / 'notes.zip'
         map_report = write_map_zip(map_template, companion, map_zip, name=name,
             units_per_grid=units_per_grid, origin=origin, template_name=template_name,
-            marker_labels=False, note_folder=note_folder, marker_template_pack=marker_template_pack)
+            marker_labels=False, note_folder=note_folder, marker_template_pack=marker_template_pack,
+            geometry_map_path=geometry_map_path)
         preserved = map_report['preserved_exported_note_files']
         if preserved and not regenerate_notes:
             raise ValueError('Export contains existing generated notes. Back up manual edits and use --regenerate-notes to replace them')
         report = write_source_images_zip(companion, media_bundle, media_template,
-            notes_zip, pdf_pages=pdf_pages, note_folder=note_folder, map_markers=True)
+            notes_zip, pdf_pages=pdf_pages, note_folder=note_folder, map_markers=True,
+            asset_namespace=asset_namespace)
         if report['native_folder'] != map_report['native_folder']:
             raise ValueError('Map and media note folders do not match')
         with zipfile.ZipFile(map_zip) as archive:
@@ -59,6 +62,7 @@ def build_package(companion, map_template, media_template, dest, *, name,
         report['native_map'] = map_report['native_map']
         report['placements'] = map_report['placements']
         report['regenerated_exported_note_files'] = preserved
+        report['counts'].update(native_tokens=0, unsupported_tokens=0)
         report['status'] = 'Combined native package built; check this scene in Toolkit. See STATUS.md for tested scenes. Player visibility remains unverified.'
         if collection is not None:
             files['handout-report.json'] = json.dumps(collection, indent=2).encode()
@@ -74,13 +78,14 @@ def build_package(companion, map_template, media_template, dest, *, name,
             updated, generated, rows, rejected = compile_scene_tokens(files[map_path], source['source_scene'],
                 package, controls, control_maps[0], name=name, units_per_grid=units_per_grid,
                 origin=origin, control_name=token_control_name, control_units_per_grid=control_units_per_grid,
-                namespace=name)
+                namespace=name if token_namespace is None else token_namespace)
             merge_native(files, controls)
             if set(generated) & set(files):
                 raise ValueError('Generated tokens conflict with existing exported content; use a clean source export')
             merge_native(files, generated)
             files[map_path] = updated
-            token_report = {'tokens': rows, 'unsupported': rejected, 'native_namespace': name,
+            token_report = {'tokens': rows, 'unsupported': rejected,
+                'native_namespace': name if token_namespace is None else token_namespace,
                 'calibration': {'units_per_grid': units_per_grid, 'origin': list(origin),
                                 'control_units_per_grid': control_units_per_grid},
                 'source_scene': source['source_scene'],
@@ -92,6 +97,9 @@ def build_package(companion, map_template, media_template, dest, *, name,
             report['counts']['unsupported_tokens'] = len(rejected)
         from forgebridge.native_dependencies import check_metadata_references
         report['closed_metadata_references'] = check_metadata_references(files)
+        if profile_provenance is not None:
+            report['scene_profile'] = profile_provenance
+            files['profile-provenance.json'] = json.dumps(profile_provenance, indent=2).encode()
         for placement in report['placements']:
             if placement['target'] not in files:
                 raise ValueError('Room marker target is missing')
@@ -122,32 +130,60 @@ def build_package(companion, map_template, media_template, dest, *, name,
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    source = parser.add_mutually_exclusive_group(required=True)
+    parser.add_argument('--profile', help='Pinned version-1 scene profile; paths relative to its location')
+    parser.add_argument('--preflight', action='store_true', help='Read-only profile/input/dependency checks; no output written')
+    source = parser.add_mutually_exclusive_group()
     source.add_argument('--package', help='Original Foundry package ZIP or directory')
     source.add_argument('--media-bundle', help='Previously collected bundle for this companion')
-    parser.add_argument('--companion', required=True)
-    parser.add_argument('--map-template', required=True, help='Native saved-map export with calibration marker')
-    parser.add_argument('--media-template', required=True, help='Native image note export')
-    parser.add_argument('--name', required=True, help='Separate output map name')
-    parser.add_argument('--note-folder', required=True, help='Readable folder unique to this scene/package')
-    parser.add_argument('--units-per-grid', required=True, type=float)
-    parser.add_argument('--origin', nargs=2, type=float, default=(0., 0.))
-    parser.add_argument('--template-name', default='FB Cal A')
-    parser.add_argument('--pdf-pages', action='store_true')
+    parser.add_argument('--companion')
+    parser.add_argument('--map-template', help='Native saved-map export with calibration marker')
+    parser.add_argument('--geometry-map-path', help='Primary MyAssets map path when export contains backlink maps')
+    parser.add_argument('--media-template', help='Native image note export')
+    parser.add_argument('--name', help='Separate output map name')
+    parser.add_argument('--note-folder', help='Readable folder unique to this scene/package')
+    parser.add_argument('--units-per-grid', type=float)
+    parser.add_argument('--origin', nargs=2, type=float)
+    parser.add_argument('--template-name')
+    parser.add_argument('--pdf-pages', action=argparse.BooleanOptionalAction, default=None)
     parser.add_argument('--regenerate-notes', action='store_true')
     parser.add_argument('--marker-template-pack', help='Separate native marker control export when absent from geometry map')
     parser.add_argument('--token-control-pack', help='Native export with sized control token and closed dependencies')
     parser.add_argument('--token-control-name')
     parser.add_argument('--control-units-per-grid', type=float)
-    parser.add_argument('--out', required=True)
+    parser.add_argument('--out')
     args = parser.parse_args(argv)
     try:
+        if args.profile:
+            from forgebridge.scene_profile import preflight_profile, MANUAL_STEPS
+            locked = ('package', 'media_bundle', 'companion', 'map_template', 'media_template',
+                      'units_per_grid', 'origin', 'template_name', 'marker_template_pack', 'geometry_map_path',
+                      'token_control_pack', 'token_control_name', 'control_units_per_grid', 'regenerate_notes')
+            if any(getattr(args, key) is not None and getattr(args, key) is not False for key in locked):
+                raise ValueError('With --profile only --out, --name, --note-folder and --[no-]pdf-pages may override it; update/capture the profile for input or calibration changes')
+            overrides = {k: getattr(args, k) for k in ('name', 'note_folder', 'pdf_pages') if getattr(args, k) is not None}
+            preflight, settings = preflight_profile(args.profile, overrides)
+            if args.preflight:
+                print(json.dumps(preflight, indent=2))
+                return 0
+            if args.out is None:
+                raise ValueError('Provide --out NEW.zip (profiles never choose or overwrite an output file)')
+            if Path(args.out).resolve().is_relative_to(Path(settings['package']).resolve()):
+                raise ValueError('Write output outside the pinned original package directory')
+            report = build_package(**settings, dest=args.out, profile_provenance=preflight['provenance'])
+            print(f"Built {args.out}; inputs preflighted, runtime validation remains separate.")
+            print('\n'.join(MANUAL_STEPS))
+            return 0
+        if args.preflight:
+            raise ValueError('--preflight requires --profile; explicit legacy CLI remains available for builds')
+        if any(getattr(args, key) is None for key in ('companion', 'map_template', 'media_template', 'name', 'note_folder', 'units_per_grid', 'out')):
+            raise ValueError('Explicit builds require companion, map/media templates, name, note-folder, units-per-grid and out')
         report = build_package(args.companion, args.map_template, args.media_template,
             args.out, name=args.name, note_folder=args.note_folder,
-            units_per_grid=args.units_per_grid, origin=args.origin, package=args.package,
-            media_bundle=args.media_bundle, pdf_pages=args.pdf_pages,
-            template_name=args.template_name, regenerate_notes=args.regenerate_notes,
+            units_per_grid=args.units_per_grid, origin=args.origin or (0., 0.), package=args.package,
+            media_bundle=args.media_bundle, pdf_pages=bool(args.pdf_pages),
+            template_name=args.template_name or 'FB Cal A', regenerate_notes=args.regenerate_notes,
             marker_template_pack=args.marker_template_pack, token_control_pack=args.token_control_pack,
+            geometry_map_path=args.geometry_map_path,
             token_control_name=args.token_control_name, control_units_per_grid=args.control_units_per_grid)
     except (OSError, ValueError, zipfile.BadZipFile) as exc:
         print(str(exc), file=sys.stderr)

@@ -296,7 +296,7 @@ def insert_markers(data, placements, *, name, units_per_grid, origin=(0., 0.),
 def write_map_zip(template_pack, companion, dest, *, name, units_per_grid,
                   origin=(0., 0.), template_name='FB Cal A', remove_names=(), marker_labels=False,
                   text_template="Igor's Room", label_offset=(1.25, 0.), note_folder=None,
-                  marker_template_pack=None):
+                  marker_template_pack=None, geometry_map_path=None):
     """Build a separate native test package from a single saved-map export."""
     from forgebridge.native_export import companion_files
     dest, companion = Path(dest), Path(companion)
@@ -314,6 +314,10 @@ def write_map_zip(template_pack, companion, dest, *, name, units_per_grid,
         if len(set(paths)) != len(paths) or any(not p.startswith('MyAssets/') or '..' in PurePosixPath(p).parts or '\\' in p for p in paths):
             raise ValueError('Invalid template archive paths')
         maps = [p for p in paths if p.endswith('.rwmap')]
+        if geometry_map_path is not None:
+            if geometry_map_path not in maps:
+                raise ValueError('Selected geometry map is absent from native export')
+            maps = [geometry_map_path]
         if len(maps) != 1 or maps[0][:-6] + '.rwmeta' not in paths:
             raise ValueError('Export must contain one saved map and its metadata')
         files = {p: archive.read(p) for p in paths}

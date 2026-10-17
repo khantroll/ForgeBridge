@@ -1,0 +1,222 @@
+{
+  "scope": "file-only pair audit; runtime observations are separate",
+  "packages": [
+    {
+      "scene": "manor",
+      "map": "ForgeBridge Profile Manor 2026-10-16",
+      "sha256": "14943c23d112c6bc25fd5a09a1e545b310d89d7d2a957372a7d1d04f32ecdf1c",
+      "native_files": 144,
+      "closed_metadata_references": 150,
+      "counts": {
+        "notes": 46,
+        "journal_pages": 41,
+        "documents": 4,
+        "native_tables": 1,
+        "rewritten_uuid_occurrences": 20,
+        "unresolved_uuid_occurrences": 2,
+        "map_note_references": 5,
+        "native_image_attachments": 19,
+        "native_image_assets": 19,
+        "native_pdf_documents": 0,
+        "native_pdf_pages": 0,
+        "native_pdf_attachments": 0,
+        "native_tokens": 1,
+        "unsupported_tokens": 0
+      },
+      "source": {
+        "package_id": "lob-counts_manor-pk-v13",
+        "scene_id": "d0XKyRuR4GqdOagf",
+        "selector": {
+          "source_path": "packs/adventure-5e",
+          "parent_adventure_id": "N63YevXMYeDZPCMh"
+        },
+        "scene_sha256": "c4d62e2b537026466c36771374bb67a2cc9615de373f0b71e292413254b5a582"
+      },
+      "primary_geometry_map": "MyAssets/Maps/ForgeBridge Runtime 2026-10-15 Fresh Manor 2nd.rwmap",
+      "calibration": {
+        "package_id": "lob-counts_manor-pk-v13",
+        "scene_id": "d0XKyRuR4GqdOagf",
+        "scene_sha256": "c4d62e2b537026466c36771374bb67a2cc9615de373f0b71e292413254b5a582",
+        "geometry_sha256": "80aa1df507dd9b3f77bbe047a1fc776f5d712df4f01a6182a80de566170fba5c",
+        "origin": [
+          0.0,
+          0.0
+        ],
+        "units_per_grid": 2.56,
+        "evidence": "VALIDATION.md fresh map calibration: 3000x4000, native center (38.4,-51.2), scale2.56; FB Cal A UI (.5,-.5). Origin0; grid100.",
+        "selector": {
+          "source_path": "packs/adventure-5e",
+          "parent_adventure_id": "N63YevXMYeDZPCMh"
+        },
+        "map_path": "MyAssets/Maps/ForgeBridge Runtime 2026-10-15 Fresh Manor 2nd.rwmap"
+      },
+      "profile_file_sha256": "406a42e27faf335b05ec300deffceb3ad71f89a8ae4aefc7fdb5d23ca501def2",
+      "scope": "7deff54d2fa3d5113aa1",
+      "note_folder": "MyAssets/Encyclopedia/Notes/ForgeBridge Profile Manor 2026-10-16-7deff54d2fa3d5113aa1",
+      "tokens": [
+        {
+          "name": "Stoker",
+          "source_id": "Scene.d0XKyRuR4GqdOagf.Token.1udgfiUDjLf6jWUS",
+          "position": {
+            "x": 32.0,
+            "y": -47.36
+          },
+          "target": "MyAssets/Encyclopedia/Notes/ForgeBridgeTokens/ea767c5a78fee284b794ed44.rwmeta"
+        }
+      ],
+      "rejected_tokens": []
+    },
+    {
+      "scene": "crypt",
+      "map": "ForgeBridge Profile Crypt 2026-10-16",
+      "sha256": "3fdc4ba06e4d7469f9e8f51178e4e53e832c29663efd7b9df212263354b68b5c",
+      "native_files": 322,
+      "closed_metadata_references": 385,
+      "counts": {
+        "notes": 84,
+        "journal_pages": 76,
+        "documents": 7,
+        "native_tables": 2,
+        "rewritten_uuid_occurrences": 54,
+        "unresolved_uuid_occurrences": 1,
+        "map_note_references": 19,
+        "native_image_attachments": 55,
+        "native_image_assets": 48,
+        "native_pdf_documents": 0,
+        "native_pdf_pages": 0,
+        "native_pdf_attachments": 0,
+        "native_tokens": 9,
+        "unsupported_tokens": 1
+      },
+      "source": {
+        "package_id": "lob-counts_manor-pk-v13",
+        "scene_id": "fP7VKkP46gQPED6X",
+        "selector": {
+          "source_path": "packs/adventure-5e",
+          "parent_adventure_id": "N63YevXMYeDZPCMh"
+        },
+        "scene_sha256": "93e0eef8da392ee4343e4b9c3dae49b598d3609e3e47842a7d800683fd7f28b8"
+      },
+      "primary_geometry_map": "MyAssets/Maps/Counts_with_markers.rwmap",
+      "calibration": {
+        "package_id": "lob-counts_manor-pk-v13",
+        "scene_id": "fP7VKkP46gQPED6X",
+        "scene_sha256": "93e0eef8da392ee4343e4b9c3dae49b598d3609e3e47842a7d800683fd7f28b8",
+        "geometry_sha256": "b20604584b1f075881e2642aad775eb269ca9277d005c5d0ff74b1654297eeea",
+        "origin": [
+          0.0,
+          0.0
+        ],
+        "units_per_grid": 2.56,
+        "evidence": "Existing Counts_with_markers Crypt export: 4000x4200 background, native center (51.2,-53.76), scale2.56. Source grid100; upper-left origin0. Existing room-marker correlation inspected separately; runtime check remains separate.",
+        "selector": {
+          "source_path": "packs/adventure-5e",
+          "parent_adventure_id": "N63YevXMYeDZPCMh"
+        },
+        "map_path": "MyAssets/Maps/Counts_with_markers.rwmap"
+      },
+      "profile_file_sha256": "fc0079f604cd56d06c8ec27f94421f246a3a178d32f34bcc7fa42f0f291c8445",
+      "scope": "fe817a487cdd6298be90",
+      "note_folder": "MyAssets/Encyclopedia/Notes/ForgeBridge Profile Crypt 2026-10-16-fe817a487cdd6298be90",
+      "tokens": [
+        {
+          "name": "Swarm of Rats",
+          "source_id": "Scene.fP7VKkP46gQPED6X.Token.tzGbEQQla5Vs5Em9",
+          "position": {
+            "x": 90.88,
+            "y": -19.2
+          },
+          "target": "MyAssets/Encyclopedia/Notes/ForgeBridgeTokens/048ee0087e040006b0ec6c12.rwmeta"
+        },
+        {
+          "name": "Wight",
+          "source_id": "Scene.fP7VKkP46gQPED6X.Token.Zecrqik0xNvJh1yz",
+          "position": {
+            "x": 90.88,
+            "y": -29.44
+          },
+          "target": "MyAssets/Encyclopedia/Notes/ForgeBridgeTokens/31db6a4956b0cd53f79b68f0.rwmeta"
+        },
+        {
+          "name": "Giant Spider",
+          "source_id": "Scene.fP7VKkP46gQPED6X.Token.Vwl1bHvR5b5GYVPa",
+          "position": {
+            "x": 89.60000000000001,
+            "y": -40.96
+          },
+          "target": "MyAssets/Encyclopedia/Notes/ForgeBridgeTokens/4fb4363f8b1668d33b97a025.rwmeta"
+        },
+        {
+          "name": "Igor",
+          "source_id": "Scene.fP7VKkP46gQPED6X.Token.3kBhlVzB1JXgk6O8",
+          "position": {
+            "x": 39.68,
+            "y": -37.12
+          },
+          "target": "MyAssets/Encyclopedia/Notes/ForgeBridgeTokens/acee80cc60794a566b66ec02.rwmeta"
+        },
+        {
+          "name": "Zombie",
+          "source_id": "Scene.fP7VKkP46gQPED6X.Token.qp92YYMPTWNlG2UP",
+          "position": {
+            "x": 24.32,
+            "y": -37.12
+          },
+          "target": "MyAssets/Encyclopedia/Notes/ForgeBridgeTokens/940b2a9c3ed21493243281f0.rwmeta"
+        },
+        {
+          "name": "Cursed Cannibal",
+          "source_id": "Scene.fP7VKkP46gQPED6X.Token.nI2bxoKZaiFoJei3",
+          "position": {
+            "x": 14.08,
+            "y": -21.76
+          },
+          "target": "MyAssets/Encyclopedia/Notes/ForgeBridgeTokens/3db7dffc880ffd0041b80675.rwmeta"
+        },
+        {
+          "name": "Cursed Cannibal",
+          "source_id": "Scene.fP7VKkP46gQPED6X.Token.h1e8d6l1YLyxvDbz",
+          "position": {
+            "x": 8.96,
+            "y": -42.24
+          },
+          "target": "MyAssets/Encyclopedia/Notes/ForgeBridgeTokens/826be86431620dd03c5ddd5e.rwmeta"
+        },
+        {
+          "name": "Cursed Cannibal",
+          "source_id": "Scene.fP7VKkP46gQPED6X.Token.qJfHIU1LJjiZL3tP",
+          "position": {
+            "x": 26.88,
+            "y": -60.160000000000004
+          },
+          "target": "MyAssets/Encyclopedia/Notes/ForgeBridgeTokens/bbfb634025a5edc4128273a8.rwmeta"
+        },
+        {
+          "name": "Elizabeth",
+          "source_id": "Scene.fP7VKkP46gQPED6X.Token.ecoRbs6cKunS9lJA",
+          "position": {
+            "x": 49.92,
+            "y": -85.76
+          },
+          "target": "MyAssets/Encyclopedia/Notes/ForgeBridgeTokens/fb28eaaefd514fd0f0fe2bcf.rwmeta"
+        }
+      ],
+      "rejected_tokens": [
+        {
+          "source_id": "neqTff1YhZWEl8JP",
+          "status": "unsupported",
+          "reason": "Texture scale must be positive and at most one; no clipping or mirroring guesses"
+        }
+      ]
+    }
+  ],
+  "combined_metadata_references": 529,
+  "distinct_token_note_and_media_scopes": true,
+  "shared_native_files_identical": 8,
+  "installation_review": {
+    "new": 438,
+    "identical": 20,
+    "CONFLICT": 0
+  },
+  "new_files_installed": 438
+}

@@ -1,8 +1,13 @@
 # ForgeBridge
 
-> **Status: NATIVE TOKEN SLICE AND RUNTIME VALIDATION**
+> **Status: CALIBRATED SCENE PROFILES**
 >
-> ForgeBridge builds one calibrated native scene package containing geometry, room markers, linked notes, tables, image/PDF attachments and generated tokens. A fresh manor package with five tokens passes asymmetric rotation and hidden-state checks in actual player output through save/reopen/Toolkit restart (v0.5.1.18). Targeted opaque-wall/door blocking and moved-light alignment also pass. Latest suite: 137 run, 133 passed, four Windows symlink tests skipped. Native export/calibration and installation remain manual; bounded fog, GIF migration, actors and behavior conversion remain incomplete. Labels stay off. See [STATUS.md](STATUS.md) and the [validation log](validation/2026-10-15/VALIDATION.md) for precise scopes.
+> ForgeBridge builds calibrated native scene packages with geometry, room markers, linked notes, tables, attachments and supported tokens. Version 1 scene profiles bind exact source identity, input hashes and scene-specific native calibration; read-only preflight rejects stale inputs. Two real scene packages build with isolated references and closed dependencies. Their new runtime map-switch/link checks remain BLOCKED by desktop-control recovery; the previously accepted multi-token runtime milestone remains separate evidence. Latest suite: 144 run, 140 passed, four Windows symlink tests skipped. Native calibration and reviewed installation remain manual. GIF migration, bounded fog, actor/vision/behavior conversion remain incomplete; labels stay off. See [scene profiles](docs/SCENE-PROFILES.md), [STATUS.md](STATUS.md) and the [validation log](validation/2026-10-15/VALIDATION.md).
+
+```powershell
+py -m forgebridge.package --profile profiles/manor.json --preflight
+py -m forgebridge.package --profile profiles/manor.json --out builds/manor-v1.zip
+```
 
 ForgeBridge is a proposed migration/transpilation tool for converting **Foundry Virtual Tabletop** content into the closest practical **Arkenforge** equivalent.
 

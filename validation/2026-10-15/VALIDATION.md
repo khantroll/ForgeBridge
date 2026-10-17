@@ -4,13 +4,13 @@
 
 Branch: `cursor/dynamic-lighting-c6b0`. Tracked working tree was clean on arrival. Existing untracked manor module, images, token assets, companions, UVTT files, templates and prior ZIPs were preserved. No AGENTS.md was found in the workspace or its checked ancestors. Read README.md, STATUS.md, architecture, fixture notes, Arkenforge research and UVTT compatibility notes; inspected CLI, package/map/media code and tests before edits.
 
-This log distinguishes **file-level checks** from **observations inside Arkenforge**. Current-build Arkenforge observations began after desktop and launcher permissions were repaired, as recorded below. The summary includes the 2026-10-16 follow-up. Earlier user confirmations remain regression cases, not current PASS evidence.
+This log distinguishes **file-level checks** from **observations inside Arkenforge**. Current-build Arkenforge observations began after desktop and launcher permissions were repaired, as recorded below. The summary includes the 2026-10-17 profile follow-up; new profile runtime checks are blocked by a desktop recovery failure. Earlier user confirmations remain regression cases, not current PASS evidence.
 
 ## Results
 
 | Status | Check | Evidence / limit |
 |---|---|---|
-| PASS | Automated checks | Latest full run: 137 tests, 133 passed, four Windows symlink checks skipped (175.388s); multi-tests-final.txt. Includes standalone deterministic multi-token and combined-scene regression. |
+| PASS | Automated checks | Latest full run: 144 tests, 140 passed, four Windows symlink checks skipped (168.925s); profile-full-tests.txt. Includes scene identity/calibration and isolation regression. |
 | DEFERRED | Four symlink safety checks | WinError 1314 skips are not passed symlink protection checks. |
 | PASS | Fresh source export and original separate package, file level | Original ZIP SHA256 c6ea282ae220f9eb7e9bf13905e1689668cd16d11356dae14507c3f9cfd2c3c1. Five markers, 46 notes, 36 attachments including 17 PDF pages. 170 native files parse; 154 metadata reference occurrences close. |
 | PASS | Source/template preservation, file level | Source scene retained, original template media byte-identical; original campaigns/source assets and unrelated local files preserved. Two missing tables and seven media gaps remain explicit. Labels off. |
@@ -28,6 +28,8 @@ This log distinguishes **file-level checks** from **observations inside Arkenfor
 | PASS | Native GIF import, playback, movement and restart | Synthetic GIF visibly changes colors at X-1,Y0; save→switch→reopen and full Toolkit restart retain playback, scale1 and FPS2. No automatic Foundry animation conversion claimed. |
 | FAIL | PNG-sequence test attempts | Both filename-list and visibly selected three-file imports save one frame, not a playable sequence. Cause/workflow unresolved; separate from successful GIF import. |
 | PASS | Coherent rebuilt scene, scoped runtime | Production builder combines genuinely fresh UVTT-imported geometry, markers, notes/media and five tokens in one map. Loading, token player output and restart pass; targeted lighting/blocking pass. Local fog remains deferred; prior PDF/GIF checks were not needlessly repeated. |
+| PASS | Two real scene profiles, file-only | Manor 1 token and Crypt 9 tokens/1 rejection; 529 metadata references close; isolated scopes, no install conflicts. See Oct 17 section. |
+| BLOCKED | New profile runtime switching/persistence | Launcher activation/capture recovery twice failed: foreground window did not report a process id. Neither new output observed open. |
 | DEFERRED | Labels | Remain off by request; player-facing behavior untested. |
 
 ## Explicit source gaps
@@ -581,3 +583,60 @@ stay off. Procedural light animation stays retained separately. Next concrete
 implementation milestone: make the calibrated native-control/dependency workflow
 a reusable scene profile with multi-scene token identity isolation tests; continue
 bounded fog/vision capability research before adding a target mapping.
+
+
+## Calibrated scene profiles — 2026-10-17
+
+PASS (automated): 144 run, 140 passed, four Windows symlink tests skipped;
+168.925s, `../2026-10-16/profile-full-tests.txt`. Skips do not establish safety PASS.
+Seven new profile cases cover two isolated scenes with repeated token IDs/names
+and shared textures, distinct padding/grid/origin/units, mixed rejections, zero
+source tokens, closed dependencies, stable rebuilds, existing-output rejection and
+preservation of a second package/user edits. Exact Adventure selectors resolve
+ambiguous source IDs. Explicit primary geometry selection preserves backlink maps;
+changing it requires matching calibration binding. Input/identity/hash mismatches
+fail actionably. Legacy explicit CLI remains available; only output name, note
+namespace, PDF choice and destination may override a profile.
+
+PASS (file-only): real Manor and Crypt profile preflights/builds and pair audit.
+Profiles pin source package `lob-counts_manor-pk-v13`, `packs/adventure-5e`, parent
+Adventure `N63YevXMYeDZPCMh`, plus each matching companion and existing calibrated
+native export. Origin (0,0), units/source grid 2.56 are bound to these specific
+exports, not a universal constant. Native Size calibration is separately recorded.
+Both preserve existing map content and dependency backlinks; controls do not supply
+another scene's primary geometry. Profile/input hashes establish provenance only.
+PDF page generation is disabled for this focused demonstration; existing completed
+17-page PDF/GIF/blocking checks were not repeated. Source gaps stay in reports.
+
+- manor: `ForgeBridge Profile Manor 2026-10-16`, scene `d0XKyRuR4GqdOagf`; 1 generated tokens, 0 rejected. Package SHA256 `14943c23d112c6bc25fd5a09a1e545b310d89d7d2a957372a7d1d04f32ecdf1c`.
+
+- crypt: `ForgeBridge Profile Crypt 2026-10-16`, scene `fP7VKkP46gQPED6X`; 9 generated tokens, 1 rejected. Package SHA256 `3fdc4ba06e4d7469f9e8f51178e4e53e832c29663efd7b9df212263354b68b5c`.
+
+PASS (file-only coexistence): 529 metadata references close across both packages;
+token, note and media scopes differ. Eight shared native control/dependency files
+are byte-identical. Installation review found 438 new files, 20 identical, zero
+conflicts. A separate explicit runtime-install operation, while Toolkit was closed,
+added only absent files with exclusive creation; no existing files were overwritten.
+Build/preflight never installs content or changes settings. See pair audit JSON.
+Crypt rejects one token whose texture scale is unsupported; no replacement invented.
+
+BLOCKED (new runtime outputs): Toolkit v0.5.1.18 is the installed/tested baseline;
+launcher v7.0.0.3. Enumerated current windows before acting; Toolkit was closed.
+After reviewed installation, refreshed official launcher, but desktop activation/
+capture recovery twice failed with `foreground window did not report a process id`.
+No claim that either new profile map opened or persisted inside Toolkit. Short next
+step after helper recovery: open `ForgeBridge Profile Manor 2026-10-16`, inspect
+Stoker and a room link, save; switch to `ForgeBridge Profile Crypt 2026-10-16`, inspect
+a generated token and room link, save; switch/reopen both and confirm persistence.
+Accepted prior multi-token rotation/visibility/restart results remain historical
+current-converter evidence, not a runtime PASS for these new outputs.
+
+DEFERRED: bounded native fog human erase-rectangle press/hold/drag/release, paint
+smaller subsection back, observe player output and persistence. Foundry fog/vision
+conversion remains unsupported separately. GIF import/FPS is manual; procedural
+light animation retained separately; actors/stat/combat behavior unmapped; labels off.
+Original campaigns/assets and manually edited notes preserved. Profile capture and
+preflight/build are repeatable; native import/export/calibration and reviewed
+installation remain manual. Next runtime task is the two-map persistence check;
+next implementation milestone is portable capture/export tooling with reviewed
+native dependencies.
