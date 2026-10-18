@@ -16,8 +16,9 @@ rebuilds and preservation of another scene/user edits. Two real profiles build M
 and Crypt packages; file audit passes with 529 closed metadata references, isolated
 token/note/media scopes and no installation conflicts. Separate reviewed installation
 added 438 absent files without overwrites. New runtime map-switch/token/link checks
-are BLOCKED: desktop window recovery twice returned `foreground window did not
-report a process id`. The earlier accepted runtime milestone below remains separate.
+remain BLOCKED: after the October 18 reboot Toolkit capture succeeds, but
+observed map-browser/Maps clicks have not produced a visible response. Earlier
+foreground-process capture errors are historical; cause remains unconfirmed. The earlier accepted runtime milestone below remains separate.
 Latest suite: 144 run, 140 passed, four Windows symlink tests skipped (not safety PASS).
 
 Manual steps remain native UVTT import/export/calibration, reviewed installation,

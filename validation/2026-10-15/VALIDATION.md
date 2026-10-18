@@ -698,3 +698,24 @@ observations occurred before switching, after reopening and after restart. These
 human observations can close the milestone; file inspection cannot replace them.
 Portable capture/export tooling remains out of scope until this runtime milestone
 is finished.
+
+
+## Post-reboot desktop attempt — 2026-10-18
+
+PASS (capture capability only): fresh Windows Computer Use enumeration returned
+Toolkit id 524980 and launcher id 852790. Selected Toolkit with its discovered app
+identifier; initial `get_window_state` returned a Toolkit v0.5.1.18 screenshot of
+blank `New Map`, no modal. The prior foreground-process capture exception did not
+recur. This is not a package/runtime PASS and does not establish the old cause.
+
+BLOCKED (input effect unverified): clicked the observed open-map folder at
+(1863,23), refreshed, activated the same Toolkit window and refreshed, then clicked
+observed Maps at (53,401). Calls returned without error, but fresh screenshots
+continued to show the blank map with no map browser/menu change. A later capture
+showed the clock advance from 09:09 to 09:10, but no requested UI transition.
+Accessibility reports focused `0 pane MastersToolkit`; no child controls exposed.
+Asked the user whether a manual Maps click responds and matches this blank-map
+capture. No additional speculative clicks, restart, rebuild or reinstall performed.
+Two-map token/link/switch/restart/player checks remain unobserved, pending verified
+input response. Cause unconfirmed; not a ForgeBridge conversion failure. Original
+content and test maps preserved; labels off and bounded fog separately deferred.
