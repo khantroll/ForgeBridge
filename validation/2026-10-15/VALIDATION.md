@@ -29,7 +29,8 @@ This log distinguishes **file-level checks** from **observations inside Arkenfor
 | FAIL | PNG-sequence test attempts | Both filename-list and visibly selected three-file imports save one frame, not a playable sequence. Cause/workflow unresolved; separate from successful GIF import. |
 | PASS | Coherent rebuilt scene, scoped runtime | Production builder combines genuinely fresh UVTT-imported geometry, markers, notes/media and five tokens in one map. Loading, token player output and restart pass; targeted lighting/blocking pass. Local fog remains deferred; prior PDF/GIF checks were not needlessly repeated. |
 | PASS | Two real scene profiles, file-only | Manor 1 token and Crypt 9 tokens/1 rejection; 529 metadata references close; isolated scopes, no install conflicts. See Oct 17 section. |
-| BLOCKED | New profile runtime switching/persistence | Launcher activation/capture recovery twice failed: foreground window did not report a process id. Neither new output observed open. |
+| PASS | New profile GM switching/persistence, representative | Oct 18: both maps load/save/reopen through full Toolkit restart; Manor Stoker/Upper Hall and Crypt Swarm/Wight/Storage Area checked. Scope below. |
+| BLOCKED | New profile actual player visibility | Reconnected local player stream stays black with watermark; no token visibility inference. Prior player evidence remains separate. |
 | DEFERRED | Labels | Remain off by request; player-facing behavior untested. |
 
 ## Explicit source gaps
@@ -749,3 +750,70 @@ Toolkit. If UAC demands elevation, stop and report it. Recheck elevation before
 one capture/Maps click. Do not elevate Codex/helper or bypass UIPI as a workaround.
 The profile runtime milestone remains pending until actual two-map checks finish;
 no rebuild/reinstall or converter change justified. Prior results remain separate.
+
+
+## Profile runtime resumed with matched privileges — 2026-10-18
+
+PASS (desktop control diagnosis/recovery): human closed and relaunched Toolkit and
+launcher normally. Read-only TokenElevation recheck: launcher PID14304=0, Toolkit
+PID8656=0, helper PID15328=0, all session1. Fresh Toolkit window id1376794 captures;
+a Maps click immediately opens its menu. This controlled retest supports the prior
+high-target/standard-helper UIPI mismatch as the cause of ignored input. No
+Windows security setting or helper elevation changed. Earlier foreground-process
+capture error remains a separately unproven cause. Toolkit v0.5.1.18, launcher7.0.0.3.
+
+PASS (observed GM runtime, scoped): opened the already-installed **ForgeBridge
+Profile Manor 2026-10-16** and **ForgeBridge Profile Crypt 2026-10-16**, with no
+package rebuild/reinstall. Manor Stoker selects the generated note/texture and
+Transforms reads UI X12.500,Y-18.500, rotation0, scales .512/.512 (native generated
+position32,-47.36). Preserved manual Stoker_token_1 is separate, outside the manor.
+Upper Hall marker's Customize → Content Link → Activate content link opens
+**2. Manor — Upper Hall**, with Journal link **2. Manor**. Saved Manor normally.
+Crypt has its distinct background/layout and generated token targets. Wight reads
+UI35.500,-11.500; Swarm of Rats35.500,-7.500, rotations0, scales.512/.512, matching
+native90.88,-29.44 and90.88,-19.2. Storage Area activates **3. Crypt — Storage Area**
+with Journal **3. Crypt**. Saved Crypt; switched back to Manor and reselected Stoker
+at unchanged coordinates. No cross-scene replacement observed in these samples.
+
+PASS (observed full restart, scoped): exited Toolkit via normal exit dialog,
+verified Toolkit absent from window enumeration, closed/reopened the official
+launcher because it retained stale Running state, then launched Toolkit normally.
+New Toolkit window id1181284. Reopened Crypt: representative Swarm/Wight identities
+and placements remain, and Storage Area still opens its Crypt note. Reopened Manor:
+Stoker still reads12.500,-18.500, scales.512/.512, rotation0; Upper Hall still opens
+the Manor note. Other older maps, PDF/GIF/blocking tests were not repeated.
+
+Native interaction correction: clicking a hidden token's cyan eye badge reveals
+it as well as exposing/selecting the token. Swarm and Wight were manually revealed
+during first inspection and saved/reopened that way. This is a manual visibility
+change, not a converter failure. Restored both with the explicit **Toggle hidden**
+action and saved Crypt again. No token coordinate/Size edits were made. File audit
+then confirms all ten generated token identities/positions/hidden flags across
+both maps match their generated baselines, with no duplicates, and all five Manor
+and19 Crypt room-note targets remain equal. This is supporting file evidence,
+not proof of actual player visibility. See
+`../2026-10-18/profile-runtime-file-audit.json` and `audit_saved_profiles.py`.
+Saved map hashes: Manor
+`7fed48c9544b78a56e451e4552026386d0b14b83b1c457f160e7d66edc18b5c6`;
+Crypt `d08058217fd719936d6a84ce88bbb7a61f331cacd67b9a80759fd2823217f87e`.
+Original package hashes remain those in profile-pair-audit.json; no regeneration.
+
+BLOCKED (new actual player visibility): used the existing browser player page
+http://192.168.1.201/ and its Start Streaming action. After Toolkit restart, enabled
+local-network **Player Screen** through native UI, reloaded browser and restarted
+stream. It connects but renders black with the Toolkit watermark, no identifiable
+map/tokens. One wider numeric projection width120 and one temporary native fog-off
+check did not establish a visible scene. Restored width27.51, native fog on,
+projection-box display hidden, and stopped temporary projection. No bounded-fog
+gesture, firewall change or player-visibility PASS inferred. Remaining short human
+step: frame a known visible profile token in a working actual player output, compare
+hidden/visible state there on both maps, then confirm after restart. Prior accepted
+multi-token actual-player rotation/visibility remains distinct evidence.
+
+Profile GM import/coexistence/switch/restart samples now PASS; the full profile
+runtime milestone remains incomplete only for new actual player observations.
+Labels stay off, bounded fog separately deferred, native calibration/reviewed
+installation/GIF setup manual. Foundry fog/vision, procedural animation and actor
+behavior remain conversion gaps. No production code change or automated rerun was
+justified; latest suite remains144 run,140 passed, four Windows symlink skips.
+Portable capture/export expansion remains deferred until profile runtime closes.

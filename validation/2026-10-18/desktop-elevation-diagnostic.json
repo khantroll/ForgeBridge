@@ -39,5 +39,17 @@
   "interpretation": "Confirmed elevation mismatch is a strong explanation for current ignored SendInput under Windows UIPI. Controlled non-elevated relaunch still pending. Does not retrospectively prove cause of prior foreground-process capture error.",
   "reference": "https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-sendinput",
   "changes": "No Windows permission/security changes, app elevation, package rebuild or installation. Fresh helper session reset only.",
-  "next": "Human normal close/reopen without Run as administrator; read elevation again, then test capture and one Maps click."
+  "next": "Human normal close/reopen without Run as administrator; read elevation again, then test capture and one Maps click.",
+  "controlled_retest": {
+    "human_normal_relaunch": true,
+    "launcher_pid": 14304,
+    "toolkit_pid": 8656,
+    "helper_pid": 15328,
+    "all_elevated": false,
+    "same_session": 1,
+    "toolkit_window_id": 1376794,
+    "capture": "PASS",
+    "maps_click": "PASS: native Maps menu visibly opens",
+    "interpretation": "Matching privilege levels restore current input; prior elevation mismatch explains ignored clicks. Earlier foreground-process capture failure remains separately unconfirmed."
+  }
 }

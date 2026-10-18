@@ -1,0 +1,114 @@
+[
+  {
+    "scene": "manor",
+    "scope": "file-only support; does not establish observed runtime behavior",
+    "package_sha256": "14943c23d112c6bc25fd5a09a1e545b310d89d7d2a957372a7d1d04f32ecdf1c",
+    "saved_map_sha256": "7fed48c9544b78a56e451e4552026386d0b14b83b1c457f160e7d66edc18b5c6",
+    "token_identity_hidden_position_equal_to_generated": true,
+    "room_targets_equal_to_generated": true,
+    "room_target_count": 5,
+    "generated_tokens": [
+      {
+        "name": "Stoker",
+        "target": "MyAssets/Encyclopedia/Notes/ForgeBridgeTokens/ea767c5a78fee284b794ed44.rwmeta",
+        "hidden": false,
+        "position": {
+          "x": 32.0,
+          "y": -47.36000061035156
+        }
+      }
+    ]
+  },
+  {
+    "scene": "crypt",
+    "scope": "file-only support; does not establish observed runtime behavior",
+    "package_sha256": "3fdc4ba06e4d7469f9e8f51178e4e53e832c29663efd7b9df212263354b68b5c",
+    "saved_map_sha256": "d08058217fd719936d6a84ce88bbb7a61f331cacd67b9a80759fd2823217f87e",
+    "token_identity_hidden_position_equal_to_generated": true,
+    "room_targets_equal_to_generated": true,
+    "room_target_count": 19,
+    "generated_tokens": [
+      {
+        "name": "Swarm of Rats",
+        "target": "MyAssets/Encyclopedia/Notes/ForgeBridgeTokens/048ee0087e040006b0ec6c12.rwmeta",
+        "hidden": true,
+        "position": {
+          "x": 90.87999725341797,
+          "y": -19.200000762939453
+        }
+      },
+      {
+        "name": "Wight",
+        "target": "MyAssets/Encyclopedia/Notes/ForgeBridgeTokens/31db6a4956b0cd53f79b68f0.rwmeta",
+        "hidden": true,
+        "position": {
+          "x": 90.87999725341797,
+          "y": -29.440000534057617
+        }
+      },
+      {
+        "name": "Giant Spider",
+        "target": "MyAssets/Encyclopedia/Notes/ForgeBridgeTokens/4fb4363f8b1668d33b97a025.rwmeta",
+        "hidden": true,
+        "position": {
+          "x": 89.5999984741211,
+          "y": -40.959999084472656
+        }
+      },
+      {
+        "name": "Igor",
+        "target": "MyAssets/Encyclopedia/Notes/ForgeBridgeTokens/acee80cc60794a566b66ec02.rwmeta",
+        "hidden": false,
+        "position": {
+          "x": 39.68000030517578,
+          "y": -37.119998931884766
+        }
+      },
+      {
+        "name": "Zombie",
+        "target": "MyAssets/Encyclopedia/Notes/ForgeBridgeTokens/940b2a9c3ed21493243281f0.rwmeta",
+        "hidden": true,
+        "position": {
+          "x": 24.31999969482422,
+          "y": -37.119998931884766
+        }
+      },
+      {
+        "name": "Cursed Cannibal",
+        "target": "MyAssets/Encyclopedia/Notes/ForgeBridgeTokens/3db7dffc880ffd0041b80675.rwmeta",
+        "hidden": false,
+        "position": {
+          "x": 14.079999923706055,
+          "y": -21.760000228881836
+        }
+      },
+      {
+        "name": "Cursed Cannibal",
+        "target": "MyAssets/Encyclopedia/Notes/ForgeBridgeTokens/826be86431620dd03c5ddd5e.rwmeta",
+        "hidden": false,
+        "position": {
+          "x": 8.960000038146973,
+          "y": -42.2400016784668
+        }
+      },
+      {
+        "name": "Cursed Cannibal",
+        "target": "MyAssets/Encyclopedia/Notes/ForgeBridgeTokens/bbfb634025a5edc4128273a8.rwmeta",
+        "hidden": false,
+        "position": {
+          "x": 26.8799991607666,
+          "y": -60.15999984741211
+        }
+      },
+      {
+        "name": "Elizabeth",
+        "target": "MyAssets/Encyclopedia/Notes/ForgeBridgeTokens/fb28eaaefd514fd0f0fe2bcf.rwmeta",
+        "hidden": false,
+        "position": {
+          "x": 49.91999816894531,
+          "y": -85.76000213623047
+        }
+      }
+    ]
+  }
+]

@@ -15,23 +15,24 @@ padding/calibration, rejected and zero tokens, dependency closure, deterministic
 rebuilds and preservation of another scene/user edits. Two real profiles build Manor
 and Crypt packages; file audit passes with 529 closed metadata references, isolated
 token/note/media scopes and no installation conflicts. Separate reviewed installation
-added 438 absent files without overwrites. New runtime map-switch/token/link checks
-remain BLOCKED: after the October 18 reboot Toolkit capture succeeds, but
-observed map-browser/Maps clicks have not produced a visible response. Read-only diagnostics confirm Toolkit/launcher are elevated and the input helper
-is not; this strongly explains ignored input under Windows UIPI. A normal
-non-elevated relaunch/retest is pending. Earlier foreground-process capture errors
-remain unconfirmed separately. The earlier accepted runtime milestone below remains separate.
+added 438 absent files without overwrites. October 18 runtime samples now PASS:
+both real profile maps load/save/switch/reopen through Toolkit0.5.1.18 restart;
+Manor Stoker/Upper Hall and Crypt Swarm/Wight/Storage Area retain their positions
+and correct note targets. Saved-file audit confirms all token positions/hidden
+flags and room targets match generated baselines. Input control recovered after
+normal non-elevated relaunch; prior Toolkit/launcher elevation blocked the standard
+helper. Actual player visibility of these new outputs remains BLOCKED: the local
+stream connects but stays black. Prior accepted player evidence remains separate.
 Latest suite: 144 run, 140 passed, four Windows symlink tests skipped (not safety PASS).
 
 Manual steps remain native UVTT import/export/calibration, reviewed installation,
 GIF setup and the documented bounded fog gesture. Labels off; Foundry fog/vision,
 procedural light animation and actor/stat behavior stay explicit gaps. See
 [scene profiles](docs/SCENE-PROFILES.md) and the validation log. Next validation step:
-open the two separately named Profile maps and save/switch/reopen representative
-tokens and room links after desktop control recovers. Profile runtime validation must finish before expanding into portable capture/export tooling.
-The fresh October 17 Toolkit capture attempt failed before input; one ordinary-window
-comparison returned mismatched screenshots. Cause remains unconfirmed; exact
-diagnostics and a short human checklist are in the validation log.
+establish a visible actual player viewport for representative visible/hidden tokens
+on both profile maps, then verify after restart. Profile runtime validation must
+finish before expanding portable capture/export tooling. Exact diagnostic and
+runtime scopes are recorded in the validation log.
 
 The sections below retain earlier milestone history.
 

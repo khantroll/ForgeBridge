@@ -138,5 +138,6 @@ installation conflicts read-only by default. Its explicit `--install` is a local
 validation operation, never part of a production build/preflight.
 
 The pair's file audit passes (Manor one token, Crypt nine and one explicit
-rejection). New runtime switching/link persistence remains BLOCKED by desktop
-window activation/capture recovery on October 17; no runtime PASS is inferred.
+rejection). Representative runtime token/link switching and restart checks pass on October18.
+Actual player visibility of these new outputs remains BLOCKED by a black stream.
+The validation log separates observations from file checks and prior player evidence.
