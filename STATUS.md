@@ -59,6 +59,13 @@ human restoration requested. Saved-map audit still matches both original generat
 baselines. Visible restoration, Crypt and restart checks remain BLOCKED. Do not
 assume live state was restored from the unchanged saved-file hash.
 
+Subsequent recovery supersedes that temporary-state warning: actual Waterfox
+output now shows generated inside-Manor Stoker restored visible, distinct from
+outside manual control. Saved Manor normally. Crypt opened without rebuilding;
+no Crypt token edits/save. Capture timeouts recur during projection framing, so
+Crypt player and both-profile restart remain BLOCKED. See appended restoration
+evidence; Stoker is no longer left hidden.
+
 The sections below retain earlier milestone history.
 
 ### One scene package with generated tokens — 2026-10-16

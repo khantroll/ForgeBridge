@@ -15,10 +15,10 @@ the GM UI at Size1 and its calibrated position; this does not close the remainin
 profile player-output checks. The validation log includes the exact human framing
 and bounded-fog steps still needed.
 
-Latest player follow-up observes generated Manor Stoker visible then hidden in
-the working browser stream. Capture then timed out before restoration; temporary
-hidden state is unsaved and human restoration was requested. Crypt/restored-token
-and restart checks remain blocked; see the validation log before resuming.
+Latest player follow-up observes generated Manor Stoker visible, hidden, then
+restored visible in the working browser stream. Restoration is saved. Intermittent
+capture timeouts still block Crypt player and both-profile restart checks; see
+the validation log before resuming.
 
 ForgeBridge is a proposed migration/transpilation tool for converting **Foundry Virtual Tabletop** content into the closest practical **Arkenforge** equivalent.
 

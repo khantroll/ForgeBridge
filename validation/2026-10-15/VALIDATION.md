@@ -1004,3 +1004,37 @@ suite remains144 run/140 passed/four symlink skips. Next action: human restores
 Stoker and confirms Toolkit responds, then one fresh enumeration/capture before
 continuing Crypt and both-profile restart checks. No new runtime PASS inferred
 from package hashes or GM hidden flags.
+
+## Manor restoration observed — 2026-10-18, after ab6b339
+
+After user state update, fresh enumeration/capture succeeds. Selected outside
+manual Stoker_token_1 initially; explicitly selected the small inside **Stoker**
+without toggling its state. No edit-history increment from selection. Fresh,
+activated Waterfox capture shows generated Stoker visible again inside the room,
+manual control still visible outside. **PASS restored actual-player visibility**,
+closing the initial visible→hidden→visible observation across the preceding test
+and this recovery. The exact intervening human action is not inferred. Evidence:
+`../2026-10-18/profile-manor-player-restored.jpg`. Saved Manor normally, preserving
+the current human-adjusted projection/fog setup and other existing edits. This
+supersedes the prior warning that Stoker remains temporarily hidden/unsaved.
+No token coordinate, Size or rotation changed by the agent.
+
+Crypt selected through Map Browser and explicit Open map; success toast observed.
+Zoomed GM out80→25 to inspect geometry, selected generated Cursed Cannibal without
+changing its state. Inspected native linked-projection controls: Select an object
+to link then clicking its location selected the existing UVTT group (+288 items),
+not a validated token binding. No transform/group/content edit or Crypt save.
+Escape issued to leave that selection; refresh then times out, so its selection
+outcome is unknown. Temporary projection/framing state may remain in memory.
+No Crypt token visibility/placement/Size/rotation changes performed.
+
+Capture intermittently reports `window capture timed out: timed out waiting on
+channel`. One fresh-enumeration recovery succeeded earlier in this follow-up,
+but the failure recurred. Stop UI work; no reliable current capture for further
+input. Crypt actual-player and both-profile restart checks remain BLOCKED; this
+is not a conversion failure. No rebuild/reinstall/elevation/settings bypass.
+Next human step is to leave the actual **Profile Crypt** room visibly framed in
+the working browser (the working setup at start was Manor), then continue from
+fresh capture. Manor token is restored and saved; do not hide it as a recovery
+step. Labels off and bounded fog separately deferred. No automated rerun for
+this evidence-only update;144 run/140 passed/four symlink skips remains latest.
