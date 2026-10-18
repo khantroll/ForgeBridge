@@ -10,7 +10,7 @@ This log distinguishes **file-level checks** from **observations inside Arkenfor
 
 | Status | Check | Evidence / limit |
 |---|---|---|
-| PASS | Automated checks | Latest full run: 144 tests, 140 passed, four Windows symlink checks skipped (168.925s); profile-full-tests.txt. Includes scene identity/calibration and isolation regression. |
+| PASS | Automated checks | Latest full run: 144 tests, 140 passed, four Windows symlink checks skipped (66.104s); ../2026-10-18/resume-full-tests.txt. Includes scene identity/calibration and isolation regression. |
 | DEFERRED | Four symlink safety checks | WinError 1314 skips are not passed symlink protection checks. |
 | PASS | Fresh source export and original separate package, file level | Original ZIP SHA256 c6ea282ae220f9eb7e9bf13905e1689668cd16d11356dae14507c3f9cfd2c3c1. Five markers, 46 notes, 36 attachments including 17 PDF pages. 170 native files parse; 154 metadata reference occurrences close. |
 | PASS | Source/template preservation, file level | Source scene retained, original template media byte-identical; original campaigns/source assets and unrelated local files preserved. Two missing tables and seven media gaps remain explicit. Labels off. |
@@ -30,6 +30,7 @@ This log distinguishes **file-level checks** from **observations inside Arkenfor
 | PASS | Coherent rebuilt scene, scoped runtime | Production builder combines genuinely fresh UVTT-imported geometry, markers, notes/media and five tokens in one map. Loading, token player output and restart pass; targeted lighting/blocking pass. Local fog remains deferred; prior PDF/GIF checks were not needlessly repeated. |
 | PASS | Two real scene profiles, file-only | Manor 1 token and Crypt 9 tokens/1 rejection; 529 metadata references close; isolated scopes, no install conflicts. See Oct 17 section. |
 | PASS | New profile GM switching/persistence, representative | Oct 18: both maps load/save/reopen through full Toolkit restart; Manor Stoker/Upper Hall and Crypt Swarm/Wight/Storage Area checked. Scope below. |
+| PASS | Resume generated-token identity/Size, GM only | Correct inside-Manor Stoker explicitly selected: Size1, UI12.500/-18.500, rotation0, scales.512/.512. No edits; separate screenshots below. Both profile preflights and saved-file audit pass again. |
 | PASS | Controlled native player baseline, scoped | Oct 18 native control (two yellow tiles and Bobbie), Multi Scene and Manor render through the same local browser output. Not a generated-token visibility pass. |
 | BLOCKED | New profile actual generated-token player visibility/restart | Crypt remains black after bounded fog-off/camera-follow comparisons. Manor visibility experiment selected preserved manual Stoker, excluded from generated-token evidence. Prior player evidence remains separate. |
 | DEFERRED | Labels | Remain off by request; player-facing behavior untested. |
@@ -885,3 +886,69 @@ Native control SHA256 `91589bf6df3314a929e33416e23fa4730434dba46da982e60e60a1ab0
 Original generated package hashes unchanged. No automated suite rerun justified
 by evidence/docs-only changes: latest144 run,140 passed,four symlink skips (not
 passed safety checks). Labels off; bounded fog/PDF/GIF tests not repeated.
+
+## Resume verification — 2026-10-18, after 982f23d
+
+Read the entire validation history, latest STATUS milestones, README, token
+source/IR/target code, profile/build interface and regression fixtures. The bounded
+writer, fresh combined multi-token package, Size/movement semantics, all-five room
+links/17 PDF pages, GIF restart and targeted wall/door/light checks are already
+implemented or observed as scoped above. Do not restart that completed work.
+Tracked tree clean on arrival; existing unrelated untracked assets preserved.
+
+PASS (GM-only correction): fresh enumeration finds Toolkit1181284 and launcher722400.
+Capture shows Toolkit0.5.1.18 on installed Profile Manor, projection disabled,
+width27.51, fog on. Used Selection to choose **Stoker inside the manor**, not the
+preserved outside manual **Stoker_token_1**. Transforms: X12.500,Y-18.500,
+rotation0, horizontal/vertical.512. Customize → Content Link names Stoker; Activate
+opens its native note with **Size1** and correct dog image. No field, hidden flag,
+Size, coordinate or rotation changed. Closed note without editing; no map save,
+rebuild, reinstall or restart needed for this identity correction. Evidence:
+`../2026-10-18/resume-generated-stoker-transforms.jpg` and
+`../2026-10-18/resume-generated-stoker-size.jpg`. This is not actual-player evidence.
+
+PASS (automated regression):144 run,140 passed,four Windows symlink skips,
+66.104s; `resume-full-tests.txt`. Existing tests cover deterministic token output,
+padding/grid/calibration/Size, inherited fields, mixed rejection, shared textures,
+unique references, preservation, dependency closure and two-scene isolation.
+No conversion implementation changed, so no redundant tests were added. Skipped
+Windows symlink tests remain DEFERRED safety coverage, never counted as passes.
+
+PASS (read-only files): both existing real profiles pass input identity/hash,
+control and dependency preflight again. `resume-manor-preflight.json` and
+`resume-crypt-preflight.json` explicitly scope their result as preflight only.
+Initial default-temp attempts hit sandbox WinError5 before completing input reads;
+reran with TEMP/TMP pointing at workspace `.test-tmp`, as for the passing full
+suite. No permission change or application elevation. This was an environment
+access failure, not a conversion failure. Both preflights are read-only and build
+no packages. Existing package hashes unchanged: Manor
+`14943c23d112c6bc25fd5a09a1e545b310d89d7d2a957372a7d1d04f32ecdf1c`;
+Crypt `3fdc4ba06e4d7469f9e8f51178e4e53e832c29663efd7b9df212263354b68b5c`.
+Reran saved-map audit: all ten generated token identity/position/hidden states and
+all24 room targets match; saved hashes remain Manor
+`c8ab18087c35cd35ca70e341472e3fbb716be5918032e94c156fa466927003e2` and
+Crypt `d08058217fd719936d6a84ce88bbb7a61f331cacd67b9a80759fd2823217f87e`.
+`resume-verification.json` records compact scopes/hashes. File evidence does not
+replace runtime behavior.
+
+BLOCKED remains new profile generated-token actual-player visibility/restart.
+The previous controlled pass explicitly ended diagnostic retries pending human
+Crypt projection framing; no new human observation has been supplied. Preserved
+that boundary instead of repeating black-output attempts. DEFERRED remains bounded
+native fog: human erase-rectangle press/hold/drag/release, paint a smaller region,
+then save/switch/reopen/restart and observe actual player output. These are separate
+manual native controls; Foundry fog/vision conversion remains unsupported. Exact
+handoffs above remain current. No PDF/GIF/blocking or inconclusive fog gestures
+repeated. Accepted GM/profile and earlier Multi Scene player results retained.
+
+Automatic scope now: source adapter → Token IR → target writer packages supported
+static square tokens (identity/name/texture/calibrated center/footprint/rotation/
+hidden; reported raster texture-scale approximation) with calibrated geometry,
+room markers, linked notes/tables and supported image/PDF attachments. Native
+import/export/calibration and reviewed installation are manual; GIF import/FPS,
+ungrouping individual geometry and bounded native fog are manual too. Unsupported
+actor/stat/vision/behavior and procedural animation stay retained/reported, source
+table/media gaps explicit, labels off. UVTT is an interchange path, not a capability
+ceiling. Next concrete gate is the two-profile visible/hidden player/restart check;
+after that, portable native-control/dependency capture is the next implementation
+milestone. No new converter defect was reproduced in this resume.

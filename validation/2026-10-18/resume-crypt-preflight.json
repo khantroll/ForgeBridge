@@ -1,0 +1,131 @@
+{
+  "status": "PASS",
+  "scope": "read-only input/dependency/control preflight; no package or runtime validation",
+  "provenance": {
+    "format": "forgebridge.scene-profile",
+    "version": 1,
+    "profile_sha256": "1e4074410dbed02626824f49db8d77545851b3b5b13bdaca72ab274e4bbf7880",
+    "source": {
+      "package_id": "lob-counts_manor-pk-v13",
+      "scene_id": "fP7VKkP46gQPED6X",
+      "package": {
+        "path": "../../../lob-counts_manor-pk-v13",
+        "sha256": "e48a9b2035a2460dc413b02290e1f9fd2fde1cb228e4ba391b7e38ddd33a4420"
+      },
+      "companion": {
+        "path": "../../../counts_crypt_links.forgebridge.json",
+        "sha256": "a3c57b51c85d4bacef971795374108eb61607a71e2c3bb3c86b42ed3f8d6d06a"
+      },
+      "scene_sha256": "93e0eef8da392ee4343e4b9c3dae49b598d3609e3e47842a7d800683fd7f28b8",
+      "selector": {
+        "source_path": "packs/adventure-5e",
+        "parent_adventure_id": "N63YevXMYeDZPCMh"
+      }
+    },
+    "geometry": {
+      "export": {
+        "path": "crypt-native.zip",
+        "sha256": "b20604584b1f075881e2642aad775eb269ca9277d005c5d0ff74b1654297eeea"
+      },
+      "map_path": "MyAssets/Maps/Counts_with_markers.rwmap",
+      "calibration": {
+        "package_id": "lob-counts_manor-pk-v13",
+        "scene_id": "fP7VKkP46gQPED6X",
+        "scene_sha256": "93e0eef8da392ee4343e4b9c3dae49b598d3609e3e47842a7d800683fd7f28b8",
+        "geometry_sha256": "b20604584b1f075881e2642aad775eb269ca9277d005c5d0ff74b1654297eeea",
+        "origin": [
+          0.0,
+          0.0
+        ],
+        "units_per_grid": 2.56,
+        "evidence": "Existing Counts_with_markers Crypt export: 4000x4200 background, native center (51.2,-53.76), scale2.56. Source grid100; upper-left origin0. Existing room-marker correlation inspected separately; runtime check remains separate.",
+        "selector": {
+          "source_path": "packs/adventure-5e",
+          "parent_adventure_id": "N63YevXMYeDZPCMh"
+        },
+        "map_path": "MyAssets/Maps/Counts_with_markers.rwmap"
+      }
+    },
+    "controls": {
+      "marker": {
+        "input": {
+          "path": "../../../MyAssets(1).zip",
+          "sha256": "1adf7e29dc7a89ce77234169c6bcb86264ee9bd21f1bfdaff942b5363735bbc0"
+        },
+        "name": "FB Cal A"
+      },
+      "media": {
+        "input": {
+          "path": "../../../FB_Media_notes.zip",
+          "sha256": "90403ba571bc61d09cab64539f1cf3642196c98b5f1eb289760d58fd9736cd83"
+        }
+      },
+      "token": {
+        "input": {
+          "path": "manor-native.zip",
+          "sha256": "80aa1df507dd9b3f77bbe047a1fc776f5d712df4f01a6182a80de566170fba5c"
+        },
+        "name": "Stoker_token_1",
+        "units_per_size_square": 2.56
+      }
+    },
+    "output": {
+      "map_name": "ForgeBridge Profile Crypt 2026-10-16",
+      "note_namespace": "ForgeBridge Profile Crypt 2026-10-16"
+    },
+    "effective_note_folder": "ForgeBridge Profile Crypt 2026-10-16-fe817a487cdd6298be90",
+    "scope": "fe817a487cdd6298be90",
+    "options": {
+      "pdf_pages": false
+    },
+    "runtime_validation": "not established by profile or input hashes",
+    "profile_file_sha256": "fc0079f604cd56d06c8ec27f94421f246a3a178d32f34bcc7fa42f0f291c8445",
+    "profile_hash_method": "profile_sha256 is canonical effective JSON, including allowed overrides"
+  },
+  "closed_input_metadata_references": 13,
+  "supported_tokens": 9,
+  "rejected_tokens": [
+    {
+      "source_id": "neqTff1YhZWEl8JP",
+      "status": "unsupported",
+      "reason": "Texture scale must be positive and at most one; no clipping or mirroring guesses"
+    }
+  ],
+  "source_media_gaps": [
+    {
+      "ref": "modules/lob-1-gates_of_barovia-pk-v13/assets/images/Fear-icon.webp",
+      "status": "other_package_reference"
+    },
+    {
+      "ref": "modules/lob-1-gates_of_barovia-pk-v13/assets/images/Despair-icon.webp",
+      "status": "other_package_reference"
+    },
+    {
+      "ref": "modules/lob-1-gates_of_barovia-pk-v13/assets/images/Nightmare-icon.webp",
+      "status": "other_package_reference"
+    },
+    {
+      "ref": "modules/lob-1-gates_of_barovia-pk-v13/assets/images/Lingering_Injury.webp",
+      "status": "other_package_reference"
+    },
+    {
+      "ref": "icons/svg/d20-black.svg",
+      "status": "unsupported_type"
+    },
+    {
+      "ref": "modules/legends-of-barovia-pk/assets/actors/Animated_Armor_token.webp",
+      "status": "other_package_reference"
+    },
+    {
+      "ref": "modules/legends-of-barovia-pk/assets/actors/Margret_token.webp",
+      "status": "other_package_reference"
+    }
+  ],
+  "manual_steps": [
+    "Native UVTT import, save/export and scene-specific origin/grid calibration",
+    "Reviewed installation: back up user content; copy only absent/identical files; stop on conflicts",
+    "Manual GIF import and FPS setup; procedural light animation is not converted",
+    "Bounded native fog reveal/hide human gesture and persistence/player check remain deferred",
+    "Labels off; Foundry vision/fog, actor/stat/combat behavior remain unmapped"
+  ]
+}

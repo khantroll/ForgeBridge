@@ -9,6 +9,12 @@ py -m forgebridge.package --profile profiles/manor.json --preflight
 py -m forgebridge.package --profile profiles/manor.json --out builds/manor-v1.zip
 ```
 
+October 18 resume: both real profile preflights and the full 144-test suite pass
+(140 passed, four symlink skips). Correct generated Manor Stoker is confirmed in
+the GM UI at Size1 and its calibrated position; this does not close the remaining
+profile player-output checks. The validation log includes the exact human framing
+and bounded-fog steps still needed.
+
 ForgeBridge is a proposed migration/transpilation tool for converting **Foundry Virtual Tabletop** content into the closest practical **Arkenforge** equivalent.
 
 The goal is deliberately more ambitious than extracting images or flattening maps. ForgeBridge should preserve as much *meaning and behavior* as practical: scenes, walls, doors, lights, tokens, audio, journals, actors, items, roll tables, and—where possible—Foundry-specific automation.

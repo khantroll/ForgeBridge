@@ -30,6 +30,16 @@ from generated-token validation. Its original visibility was restored and saved.
 Prior accepted player evidence remains separate. No converter change was made.
 Latest suite: 144 run, 140 passed, four Windows symlink tests skipped (not safety PASS).
 
+Resume verification (2026-10-18, after 982f23d): full suite rerun passes in66.104s
+(144 run/140 passed/four symlink skips). Both real profile read-only preflights pass.
+Toolkit0.5.1.18 capture/input work; explicitly selected generated Manor Stoker
+inside the map, distinct from outside manual Stoker_token_1. UI Size1,
+X12.500/Y-18.500, rotation0 and scales.512/.512 agree with the generated baseline.
+No fields changed. Saved-map audit still matches all ten generated token states
+and24 room targets, with unchanged saved-map hashes. New evidence does not pass
+player visibility. The prior bounded diagnostic/human handoff remains pending;
+no repeat of Crypt/fog gestures, rebuild, install or production change justified.
+
 Manual steps remain native UVTT import/export/calibration, reviewed installation,
 GIF setup and the documented bounded fog gesture. Labels off; Foundry fog/vision,
 procedural light animation and actor/stat behavior stay explicit gaps. See
