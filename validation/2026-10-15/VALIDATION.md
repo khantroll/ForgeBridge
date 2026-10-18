@@ -32,6 +32,7 @@ This log distinguishes **file-level checks** from **observations inside Arkenfor
 | PASS | New profile GM switching/persistence, representative | Oct 18: both maps load/save/reopen through full Toolkit restart; Manor Stoker/Upper Hall and Crypt Swarm/Wight/Storage Area checked. Scope below. |
 | PASS | Resume generated-token identity/Size, GM only | Correct inside-Manor Stoker explicitly selected: Size1, UI12.500/-18.500, rotation0, scales.512/.512. No edits; separate screenshots below. Both profile preflights and saved-file audit pass again. |
 | PASS | Controlled native player baseline, scoped | Oct 18 native control (two yellow tiles and Bobbie), Multi Scene and Manor render through the same local browser output. Not a generated-token visibility pass. |
+| PASS | Profile Manor generated-token initial visible→hidden | Working Waterfox stream: small inside Stoker visible then absent after explicit Toggle hidden; outside manual control remains visible. No restoration/restart PASS; subsequent capture blocker below. |
 | BLOCKED | New profile actual generated-token player visibility/restart | Crypt remains black after bounded fog-off/camera-follow comparisons. Manor visibility experiment selected preserved manual Stoker, excluded from generated-token evidence. Prior player evidence remains separate. |
 | DEFERRED | Labels | Remain off by request; player-facing behavior untested. |
 
@@ -952,3 +953,54 @@ table/media gaps explicit, labels off. UVTT is an interchange path, not a capabi
 ceiling. Next concrete gate is the two-profile visible/hidden player/restart check;
 after that, portable native-control/dependency capture is the next implementation
 milestone. No new converter defect was reproduced in this resume.
+
+## Working player setup; generated Manor visibility — 2026-10-18, after a305efc
+
+User supplied the follow-up instruction to inspect the working setup and finish
+both profile player/restart checks. Enumerated Toolkit1181284, Waterfox68092,
+launcher722400; Toolkit v0.5.1.18. Initial Toolkit capture succeeds: current map
+is Profile Manor (not Crypt), generated Stoker already selected inside the lit
+room, zoom80%, native fog off, projection active and displayed, width27.51,
+blackout/freeze/overlay/link/filters/Mirror DM/Simulate off. The human-positioned
+projection now encloses the room and both Stoker objects. No settings changed.
+
+PASS (initial actual-player observation only): Waterfox was minimized; activated
+its discovered window and captured it. Browser192.168.1.201 displays the Manor
+room, small generated Stoker at its inside southwest corner, and larger manual
+Stoker outside east. Explicitly activated Toolkit and used selected generated
+Stoker's toolbar **Toggle hidden**. GM shows cyan eye on the small token. Activated
+Waterfox for an unobstructed fresh capture: small generated Stoker is absent,
+while larger manual Stoker and room remain visible. These identify the correct
+scene and distinguish the generated token from the previous wrong manual control.
+Evidence: `../2026-10-18/profile-manor-player-visible.jpg` and
+`../2026-10-18/profile-manor-player-hidden.jpg`.
+
+BLOCKED (capture, not conversion): while returning to Toolkit to restore the
+selected token, activate/capture reports **FrameArrived timed out: timed out waiting
+on channel**. One fresh `sky.list_windows()` succeeds with same Toolkit1181284,
+Waterfox68092 and launcher722400. Reacquired Toolkit through discovered app/id;
+`get_window_state` fails **window capture timed out: timed out waiting on channel**.
+No additional diagnostic detail supplied. Stopped UI input under skill recovery
+rules. An earlier occluded browser capture showed Toolkit, so only the explicitly
+activated unobstructed browser captures are used as actual-player evidence.
+No claim that another app currently captures after the second timeout.
+
+**Live state requiring restoration:** generated Stoker inside Profile Manor is
+now temporarily hidden, **not saved**. Human asked to use selected-token Toggle
+hidden or deliberately click that token's cyan eye badge to restore visibility;
+do not change outside manual Stoker. No automatic file-based restoration or stale
+coordinate click attempted. Saved-file audit still passes original ten generated
+token positions/hidden states and24 room targets; Manor hash remains c8ab1808...
+(full hash above), Crypt d0805821... unchanged. This proves saved baseline only,
+not restored live UI state. Human restoration was pending when this entry was
+written. Do not save the temporary hidden state.
+
+BLOCKED: visible→hidden→visible completion, Crypt generated-token checks and normal
+Toolkit restart/player checks. User-provided working setup supersedes the earlier
+human-framing wait, but capture recovery now blocks continuation. Leave Toolkit,
+launcher and player browser running; no elevation, permission change, rebuild,
+installation, bounded-fog gesture, PDF/GIF repeat or converter edit. Latest full
+suite remains144 run/140 passed/four symlink skips. Next action: human restores
+Stoker and confirms Toolkit responds, then one fresh enumeration/capture before
+continuing Crypt and both-profile restart checks. No new runtime PASS inferred
+from package hashes or GM hidden flags.

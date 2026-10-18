@@ -49,6 +49,16 @@ on both profile maps, then verify after restart. Profile runtime validation must
 finish before expanding portable capture/export tooling. Exact diagnostic and
 runtime scopes are recorded in the validation log.
 
+Player follow-up after human setup (2026-10-18): working Waterfox player stream
+shows Profile Manor. The correctly selected generated Stoker inside the room is
+visible, then disappears after explicit Toggle hidden; the outside manual control
+stays visible. This passes only the initial visible→hidden observation. Toolkit
+capture then times out twice, including one fresh-enumeration recovery. Input
+stopped. Generated Stoker remains temporarily hidden in memory, **unsaved**, with
+human restoration requested. Saved-map audit still matches both original generated
+baselines. Visible restoration, Crypt and restart checks remain BLOCKED. Do not
+assume live state was restored from the unchanged saved-file hash.
+
 The sections below retain earlier milestone history.
 
 ### One scene package with generated tokens — 2026-10-16
