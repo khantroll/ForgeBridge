@@ -1038,3 +1038,69 @@ the working browser (the working setup at start was Manor), then continue from
 fresh capture. Manor token is restored and saved; do not hide it as a recovery
 step. Labels off and bounded fog separately deferred. No automated rerun for
 this evidence-only update;144 run/140 passed/four symlink skips remains latest.
+
+## CPU-aware validation workflow — 2026-10-18, after 65c8c4c
+
+UI phase separated from compute work as requested. No tests, package builds, PDF
+rendering, compression or dependency scans ran while the helper/browser UI was
+being queried. No native app input or screenshot request was issued this phase.
+The CPU sampler finishes before UI requests; recovery sampling follows the failed
+request. One request outstanding at a time, no rapid capture polling.
+
+PASS (resource measurement, not runtime feature): host process-counter deltas
+normalized over two logical CPUs show Toolkit70.8%,76.5%,75.4% before the UI attempt.
+Toolkit is the dominant consumer. Earlier diagnostic measured roughly97% and total
+host load100%; current lower load does not demonstrate any applied workaround.
+`contention-baseline.json` records the pilot samples.
+
+BLOCKED (native settings/control): one fresh native session setup/enumeration cell
+returns `js execution timed out; kernel reset, rerun your request` at the30-second
+execution deadline. No inventory returned; exact internal setup/enumeration stage
+not isolated. Count **1 timeout/1 setup-enumeration attempt**, **0 screenshot
+attempts**, not100% screenshot failures. No immediate native capture retry or stale
+input. Original application cap/stream encoding settings cannot be read. Requested
+30-FPS app cap and1280x720/15-FPS native stream remain **unapplied**; no guessed
+settings-file edits. There is **no after-load-reduction reliability result**.
+
+PASS (recovery measurement only): three separate samples show Toolkit73.66%,74.83%,
+75.76%; browser processes7.56%,6.12%,4.09%. A counted confirmation sample shows
+Toolkit72.28%, browsers6.22%, capture helper0.00% with one measured helper process;
+zero matching compute-candidate processes (reported null rather than pretending
+absence is a measured0%). Sampling names cannot prove arbitrary node processes
+are/are not build workers; the agent ran no such compute work in the UI phase.
+`contention-recovery.json` records the pilot, `contention-recovery-counted.json`
+adds explicit category coverage. Toolkit is busy but these data alone neither prove
+CPU starvation causes the helper failure nor rule out a separate capture stall.
+
+PASS (browser state only): after recovery sampling finished, purpose-built browser
+API inspects the existing in-app player tab. It displays **Start Streaming**, so
+that page is stopped and not a duplicate active stream. Waterfox is the previously
+observed active player browser; no complete current Waterfox tab inventory or
+native Stop projecting action could be verified. No browser screenshot needed.
+Do not claim all streams stopped or the native rendering load reduced.
+
+Independent implementation completed while desktop validation stayed pending:
+`validation/measure-desktop-load.ps1` provides bounded read-only CPU deltas,
+Toolkit/browser/helper/launcher/client/possible-compute categories and measured
+process counts. Absent categories are null, not measured zero. Reports refuse
+overwrite, including exclusive creation against races. Protected/exited processes
+may be omitted; no UI, process priority, global power/security, network or content
+changes. `docs/DESKTOP-VALIDATION.md` defines sequential phases, original/changed
+settings records, one active player tab, timeout recovery and count denominators.
+
+PASS (targeted tooling checks): PowerShell syntax parser, existing-report overwrite
+refusal, real host sampler runs and report structure/Toolkit coverage assertion.
+No full conversion suite rerun: production converter unchanged; latest144 run,
+140 passed,four Windows symlink skips retained, skips not safety passes. No native
+package rebuild/install. Source assets, original content and saved token states
+untouched. `contention-comparison.json` summarizes before/recovery/blocked-after
+scopes. Capture diagnosis is in `CAPTURE-TIMEOUT-DIAGNOSIS.md`.
+
+Current milestone remains generated-token Crypt player output and both-profile
+player restart validation. Manor restoration already observed and saved; no new
+visibility edits. Bounded fog deferred and labels off. Next UI opportunity: sample
+load, obtain fresh reliable native capture, record existing FPS/stream settings,
+apply one supported reduction at a time (30-FPS app,720p/15-FPS stream), stop stream
+for GM-only checks, then compare the same bounded sequential capture sequence.
+If access/load still fails, preserve pending checks and continue independent work;
+no repeated human intervention request for this unchanged condition.

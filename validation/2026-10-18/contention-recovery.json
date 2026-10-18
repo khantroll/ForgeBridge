@@ -1,0 +1,304 @@
+{
+  "format": "forgebridge.desktop-load",
+  "version": 1,
+  "phase": "timeout-recovery",
+  "logical_processors": 2,
+  "interval_seconds": 3,
+  "scope": "Approximate CPU deltas normalized across logical processors; not proof of timeout causation. Protected/exited processes may be omitted; browser totals include unrelated tabs. Compute candidates are names, not confirmed builds.",
+  "samples": [
+    {
+      "utc": "2026-10-18T23:24:55.0675245Z",
+      "category_cpu_percent": {
+        "toolkit": 73.66,
+        "launcher": 1.5,
+        "browser": 7.56,
+        "capture_helper": 0.0,
+        "compute_candidate": 0.0,
+        "client_or_runtime": 6.04,
+        "other": 4.14
+      },
+      "top_processes": [
+        {
+          "name": "MastersToolkit",
+          "pid": 1856,
+          "category": "toolkit",
+          "cpu_percent": 73.66,
+          "working_mb": 4186.1
+        },
+        {
+          "name": "Taskmgr",
+          "pid": 7088,
+          "category": "other",
+          "cpu_percent": 2.25,
+          "working_mb": 181.2
+        },
+        {
+          "name": "ChatGPT",
+          "pid": 13912,
+          "category": "client_or_runtime",
+          "cpu_percent": 2.25,
+          "working_mb": 862.9
+        },
+        {
+          "name": "waterfox",
+          "pid": 15672,
+          "category": "browser",
+          "cpu_percent": 2.23,
+          "working_mb": 109.9
+        },
+        {
+          "name": "waterfox",
+          "pid": 16056,
+          "category": "browser",
+          "cpu_percent": 1.83,
+          "working_mb": 54.3
+        },
+        {
+          "name": "waterfox",
+          "pid": 14408,
+          "category": "browser",
+          "cpu_percent": 1.68,
+          "working_mb": 92.6
+        },
+        {
+          "name": "ArkenforgeLauncher",
+          "pid": 5644,
+          "category": "launcher",
+          "cpu_percent": 1.5,
+          "working_mb": 329.0
+        },
+        {
+          "name": "pwsh",
+          "pid": 18408,
+          "category": "other",
+          "cpu_percent": 1.21,
+          "working_mb": 87.1
+        },
+        {
+          "name": "ChatGPT",
+          "pid": 7408,
+          "category": "client_or_runtime",
+          "cpu_percent": 1.0,
+          "working_mb": 117.8
+        },
+        {
+          "name": "waterfox",
+          "pid": 15740,
+          "category": "browser",
+          "cpu_percent": 0.98,
+          "working_mb": 23.1
+        },
+        {
+          "name": "ChatGPT",
+          "pid": 13484,
+          "category": "client_or_runtime",
+          "cpu_percent": 0.88,
+          "working_mb": 220.0
+        },
+        {
+          "name": "waterfox",
+          "pid": 15432,
+          "category": "browser",
+          "cpu_percent": 0.84,
+          "working_mb": 375.3
+        }
+      ]
+    },
+    {
+      "utc": "2026-10-18T23:25:05.4353030Z",
+      "category_cpu_percent": {
+        "toolkit": 74.83,
+        "launcher": 1.48,
+        "browser": 6.12,
+        "capture_helper": 0.0,
+        "compute_candidate": 0.0,
+        "client_or_runtime": 5.7,
+        "other": 4.48
+      },
+      "top_processes": [
+        {
+          "name": "MastersToolkit",
+          "pid": 1856,
+          "category": "toolkit",
+          "cpu_percent": 74.83,
+          "working_mb": 4191.1
+        },
+        {
+          "name": "pwsh",
+          "pid": 7516,
+          "category": "other",
+          "cpu_percent": 1.91,
+          "working_mb": 47.2
+        },
+        {
+          "name": "waterfox",
+          "pid": 16056,
+          "category": "browser",
+          "cpu_percent": 1.73,
+          "working_mb": 51.2
+        },
+        {
+          "name": "waterfox",
+          "pid": 14408,
+          "category": "browser",
+          "cpu_percent": 1.73,
+          "working_mb": 92.6
+        },
+        {
+          "name": "ChatGPT",
+          "pid": 13484,
+          "category": "client_or_runtime",
+          "cpu_percent": 1.69,
+          "working_mb": 219.7
+        },
+        {
+          "name": "codex",
+          "pid": 13352,
+          "category": "client_or_runtime",
+          "cpu_percent": 1.48,
+          "working_mb": 425.5
+        },
+        {
+          "name": "ArkenforgeLauncher",
+          "pid": 5644,
+          "category": "launcher",
+          "cpu_percent": 1.48,
+          "working_mb": 329.0
+        },
+        {
+          "name": "ChatGPT",
+          "pid": 13912,
+          "category": "client_or_runtime",
+          "cpu_percent": 1.27,
+          "working_mb": 849.2
+        },
+        {
+          "name": "waterfox",
+          "pid": 15672,
+          "category": "browser",
+          "cpu_percent": 1.25,
+          "working_mb": 100.8
+        },
+        {
+          "name": "waterfox",
+          "pid": 15740,
+          "category": "browser",
+          "cpu_percent": 0.78,
+          "working_mb": 23.1
+        },
+        {
+          "name": "waterfox",
+          "pid": 15432,
+          "category": "browser",
+          "cpu_percent": 0.63,
+          "working_mb": 375.5
+        },
+        {
+          "name": "ChatGPT",
+          "pid": 7408,
+          "category": "client_or_runtime",
+          "cpu_percent": 0.63,
+          "working_mb": 117.8
+        }
+      ]
+    },
+    {
+      "utc": "2026-10-18T23:25:13.9378620Z",
+      "category_cpu_percent": {
+        "toolkit": 75.76,
+        "launcher": 0.6,
+        "browser": 4.09,
+        "capture_helper": 0.0,
+        "compute_candidate": 0.0,
+        "client_or_runtime": 6.93,
+        "other": 3.48
+      },
+      "top_processes": [
+        {
+          "name": "MastersToolkit",
+          "pid": 1856,
+          "category": "toolkit",
+          "cpu_percent": 75.76,
+          "working_mb": 4191.1
+        },
+        {
+          "name": "waterfox",
+          "pid": 16056,
+          "category": "browser",
+          "cpu_percent": 2.31,
+          "working_mb": 72.5
+        },
+        {
+          "name": "ChatGPT",
+          "pid": 13912,
+          "category": "client_or_runtime",
+          "cpu_percent": 2.26,
+          "working_mb": 849.1
+        },
+        {
+          "name": "ChatGPT",
+          "pid": 13484,
+          "category": "client_or_runtime",
+          "cpu_percent": 1.66,
+          "working_mb": 219.7
+        },
+        {
+          "name": "codex",
+          "pid": 13352,
+          "category": "client_or_runtime",
+          "cpu_percent": 1.51,
+          "working_mb": 434.8
+        },
+        {
+          "name": "pwsh",
+          "pid": 18408,
+          "category": "other",
+          "cpu_percent": 1.29,
+          "working_mb": 98.8
+        },
+        {
+          "name": "pwsh",
+          "pid": 7516,
+          "category": "other",
+          "cpu_percent": 1.1,
+          "working_mb": 60.5
+        },
+        {
+          "name": "ChatGPT",
+          "pid": 4904,
+          "category": "client_or_runtime",
+          "cpu_percent": 0.75,
+          "working_mb": 451.0
+        },
+        {
+          "name": "ArkenforgeLauncher",
+          "pid": 5644,
+          "category": "launcher",
+          "cpu_percent": 0.6,
+          "working_mb": 329.0
+        },
+        {
+          "name": "ChatGPT",
+          "pid": 7408,
+          "category": "client_or_runtime",
+          "cpu_percent": 0.6,
+          "working_mb": 118.3
+        },
+        {
+          "name": "parsecd",
+          "pid": 7960,
+          "category": "other",
+          "cpu_percent": 0.55,
+          "working_mb": 131.9
+        },
+        {
+          "name": "waterfox",
+          "pid": 15432,
+          "category": "browser",
+          "cpu_percent": 0.53,
+          "working_mb": 374.9
+        }
+      ]
+    }
+  ]
+}

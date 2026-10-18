@@ -20,6 +20,11 @@ restored visible in the working browser stream. Restoration is saved. Intermitte
 capture timeouts still block Crypt player and both-profile restart checks; see
 the validation log before resuming.
 
+Desktop validation now follows a [CPU-aware runbook](docs/DESKTOP-VALIDATION.md)
+with a read-only load sampler, separate compute/UI phases and sequential captures.
+Native FPS/stream load-reduction targets remain pending access to supported UI;
+current measurements do not establish CPU contention as the sole timeout cause.
+
 ForgeBridge is a proposed migration/transpilation tool for converting **Foundry Virtual Tabletop** content into the closest practical **Arkenforge** equivalent.
 
 The goal is deliberately more ambitious than extracting images or flattening maps. ForgeBridge should preserve as much *meaning and behavior* as practical: scenes, walls, doors, lights, tokens, audio, journals, actors, items, roll tables, and—where possible—Foundry-specific automation.

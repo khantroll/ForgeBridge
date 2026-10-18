@@ -4,6 +4,19 @@
 **Implementation started:** Inventory CLI, importable UVTT, loose scene assets, embedded Adventure scene discovery, ambient color, and deterministic AmbientLight range conversion  
 **General converter:** Bounded scene/content/token slices implemented; complete actor and behavior conversion pending.
 
+CPU-contention investigation (2026-10-18): desktop testing now runs separately
+from tests/builds/PDF/compression/dependency scans. New read-only sampler and
+[desktop runbook](docs/DESKTOP-VALIDATION.md) record process CPU and distinct helper/
+capture outcomes. Baseline Toolkit70.8–76.5% of two-thread capacity; recovery
+Toolkit72.3–75.8%, browsers4.1–7.6%, measured helper0%, no named compute workers.
+One helper setup/enumeration attempt timed out at30s; no screenshot/input followed.
+Native30-FPS cap and720p/15-FPS stream controls remain uninspected/unapplied because
+native control is unavailable. The in-app player tab is confirmed stopped.
+No after-reduction result or causal claim; prior97% load and current failures at
+lower load suggest contention alone may not explain the helper failure. Desktop
+checks remain pending; independent tooling work continued without another human
+recovery request. No process priorities, power/security or original content changed.
+
 Latest milestone (2026-10-17): version 1 scene profiles bind the original package,
 exact Adventure/scene identity, companion, calibrated primary geometry and reusable
 native controls. Relative paths resolve against the profile. Read-only preflight
