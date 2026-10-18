@@ -3,7 +3,7 @@
     "scene": "manor",
     "scope": "file-only support; does not establish observed runtime behavior",
     "package_sha256": "14943c23d112c6bc25fd5a09a1e545b310d89d7d2a957372a7d1d04f32ecdf1c",
-    "saved_map_sha256": "7fed48c9544b78a56e451e4552026386d0b14b83b1c457f160e7d66edc18b5c6",
+    "saved_map_sha256": "c8ab18087c35cd35ca70e341472e3fbb716be5918032e94c156fa466927003e2",
     "token_identity_hidden_position_equal_to_generated": true,
     "room_targets_equal_to_generated": true,
     "room_target_count": 5,

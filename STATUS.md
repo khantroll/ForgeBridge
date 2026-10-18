@@ -21,8 +21,13 @@ Manor Stoker/Upper Hall and Crypt Swarm/Wight/Storage Area retain their position
 and correct note targets. Saved-file audit confirms all token positions/hidden
 flags and room targets match generated baselines. Input control recovered after
 normal non-elevated relaunch; prior Toolkit/launcher elevation blocked the standard
-helper. Actual player visibility of these new outputs remains BLOCKED: the local
-stream connects but stays black. Prior accepted player evidence remains separate.
+helper. October 18 controlled player comparison displays a new native control,
+Multi Scene and Manor through the same browser output. Crypt remains black after
+fog-off and camera-follow comparisons; cause remains unconfirmed. New profile
+generated-token player visibility/restart checks remain BLOCKED. The Manor token
+visibility experiment selected the preserved manual Stoker, so it is excluded
+from generated-token validation. Its original visibility was restored and saved.
+Prior accepted player evidence remains separate. No converter change was made.
 Latest suite: 144 run, 140 passed, four Windows symlink tests skipped (not safety PASS).
 
 Manual steps remain native UVTT import/export/calibration, reviewed installation,

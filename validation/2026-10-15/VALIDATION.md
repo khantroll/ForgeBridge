@@ -4,7 +4,7 @@
 
 Branch: `cursor/dynamic-lighting-c6b0`. Tracked working tree was clean on arrival. Existing untracked manor module, images, token assets, companions, UVTT files, templates and prior ZIPs were preserved. No AGENTS.md was found in the workspace or its checked ancestors. Read README.md, STATUS.md, architecture, fixture notes, Arkenforge research and UVTT compatibility notes; inspected CLI, package/map/media code and tests before edits.
 
-This log distinguishes **file-level checks** from **observations inside Arkenforge**. Current-build Arkenforge observations began after desktop and launcher permissions were repaired, as recorded below. The summary includes the 2026-10-17 profile follow-up; new profile runtime checks are blocked by a desktop recovery failure. Earlier user confirmations remain regression cases, not current PASS evidence.
+This log distinguishes **file-level checks** from **observations inside Arkenforge**. Current-build Arkenforge observations began after desktop and launcher permissions were repaired, as recorded below. The summary includes October 18: profile GM persistence is accepted, desktop input works without elevation, and the controlled player-output comparison below remains incomplete for generated-token visibility. Earlier user confirmations remain regression cases, not current PASS evidence.
 
 ## Results
 
@@ -30,7 +30,8 @@ This log distinguishes **file-level checks** from **observations inside Arkenfor
 | PASS | Coherent rebuilt scene, scoped runtime | Production builder combines genuinely fresh UVTT-imported geometry, markers, notes/media and five tokens in one map. Loading, token player output and restart pass; targeted lighting/blocking pass. Local fog remains deferred; prior PDF/GIF checks were not needlessly repeated. |
 | PASS | Two real scene profiles, file-only | Manor 1 token and Crypt 9 tokens/1 rejection; 529 metadata references close; isolated scopes, no install conflicts. See Oct 17 section. |
 | PASS | New profile GM switching/persistence, representative | Oct 18: both maps load/save/reopen through full Toolkit restart; Manor Stoker/Upper Hall and Crypt Swarm/Wight/Storage Area checked. Scope below. |
-| BLOCKED | New profile actual player visibility | Reconnected local player stream stays black with watermark; no token visibility inference. Prior player evidence remains separate. |
+| PASS | Controlled native player baseline, scoped | Oct 18 native control (two yellow tiles and Bobbie), Multi Scene and Manor render through the same local browser output. Not a generated-token visibility pass. |
+| BLOCKED | New profile actual generated-token player visibility/restart | Crypt remains black after bounded fog-off/camera-follow comparisons. Manor visibility experiment selected preserved manual Stoker, excluded from generated-token evidence. Prior player evidence remains separate. |
 | DEFERRED | Labels | Remain off by request; player-facing behavior untested. |
 
 ## Explicit source gaps
@@ -817,3 +818,70 @@ installation/GIF setup manual. Foundry fog/vision, procedural animation and acto
 behavior remain conversion gaps. No production code change or automated rerun was
 justified; latest suite remains144 run,140 passed, four Windows symlink skips.
 Portable capture/export expansion remains deferred until profile runtime closes.
+
+## Controlled player-output comparison — 2026-10-18 (after 7d701c5)
+
+One bounded diagnostic pass; Toolkit v0.5.1.18, launcher7.0.0.3. Fresh window
+inventory finds Toolkit1181284, launcher722400 and Codex66932. Capture and input
+work. Read-only TokenElevation: Toolkit1856=0, launcher5644=0, helper15328=0,
+all session1. No elevation, permissions change, package rebuild or installation.
+
+Native UI created and saved **ForgeBridge Player Control 2026-10-18**: two bright
+yellow Flat Colour tiles (RGB255,220,28), one visible built-in NPC Bobbie. Default
+midday lighting and native fog disabled. Local network streaming → **Player Screen**
+(selected explicitly, not GM Extension), physical dimensions69.8×39.3cm. Projection
+width27.51 squares; box centered at native origin visibly encloses both tiles and
+Bobbie. Blackout, freeze, overlay, linked object, filters, Mirror DM view and
+Simulate player view all off. Browser192.168.1.201 reload → Start Streaming shows
+both yellow tiles, green background/grid and Bobbie: **PASS native player baseline**.
+Only monitor1 and local-network output are offered; no independent physical player
+monitor was available. **DEFERRED physical-display observation**; browser evidence
+must not be described as physical-display evidence.
+
+| Observation / controlled change | Result and scope |
+|---|---|
+| Open saved Multi Scene using same stream, same27.51-square projection | PASS scoped rendering: northwest map/image and asymmetric arrows visible. New observation; prior full rotation/hidden/restart acceptance remains separate. Declined newer autosave to use saved baseline; no overwrite/deletion. |
+| Open saved Profile Manor, same output and width | PASS scoped rendering: northwest image visible; much of manor lies outside the box. |
+| Manor projection width27.51→80, then blur field | Larger viewport reaches manor and outside manual Stoker. Browser shows map and portrait. Only projection width changed. |
+| Select outside portrait, explicit toolbar Toggle hidden | Portrait disappears in actual player output. **Selection error:** selected `Stoker_token_1`, the preserved manual control, not generated Stoker. This experiment is excluded from generated-token PASS. Images below document only manual-control behavior. |
+| Save temporary manual-hidden state; open Crypt | GM Crypt loads; browser initially retains stale Manor frame. A stale frame is not Crypt rendering evidence. |
+| Reload browser, Start Streaming on Crypt | FAIL to establish visible scene: black with Toolkit watermark. Width field120, blackout/freeze/overlay/link/filters off; fog on; Mirror DM/Simulate off. |
+| Crypt native fog toggle off, no reveal gesture | GM brightens; browser still black. Does not establish local reveal/hide behavior or Foundry fog conversion. |
+| Crypt Mirror DM view on, separately | Box follows current GM framing; width subsequently reads87.18. Browser still black. No claim that this tests independent player visibility semantics. |
+| Inspect Crypt lighting | Time12.00; custom ambient unchecked, white swatch. No lighting value changed. Saved root data also records time.5 and white ambient. |
+| Restore diagnostic state | Crypt fog on, Mirror DM off, numeric width120 restored; no Crypt save. Reopen Manor; intentionally click manual control's eye badge to restore visibility, save. Restore width27.51, hide projection box, stop projection, save Manor. No token placement/Size/rotation edits. |
+
+**BLOCKED:** new profile generated-token visible/hidden observations and their
+Toolkit restart check. No new restart attempted after the unresolved Crypt output;
+accepted profile GM restart and prior Multi Scene player restart remain PASS.
+The pass rules out an entirely black session at its start, but does not establish
+why Crypt is black or why the earlier session was black. No production converter
+change is justified by this result. In particular, native fog-off did not establish
+a fix, and the stale browser frame makes map-switch output unreliable without
+identifying the newly loaded scene. Stop diagnostic retries here.
+
+Smallest human handoff: open **ForgeBridge Profile Crypt 2026-10-16**, enable local
+network **Player Screen**, show its projection box, and manually position that box
+over a lit Crypt room. With native fog temporarily off and blackout/freeze off,
+reload the player page and press Start Streaming. Confirm the Crypt room itself
+appears; report if it remains black. This is an uncompleted framing check, not a
+guaranteed fix. If a separate physical player display can be connected, compare it
+and the browser independently. Once visible, select generated Igor and Wight via
+explicit selection controls (an eye-badge click reveals a hidden token), check
+visible/hidden output, restore source states, and repeat on generated Manor Stoker
+(UI12.500,-18.500, inside the manor; **not outside Stoker_token_1**) and after normal
+Toolkit restart. Do not rebuild or reinstall to perform these checks.
+
+Evidence: `../2026-10-18/player-crypt-black.jpg`,
+`player-crypt-settings.jpg`, `player-manor-manual-control-visible.jpg` and
+`player-manor-manual-control-hidden.jpg`. The latter two show a manual token only.
+`player-saved-settings.json` is an **intermediate saved-file snapshot** (Manor
+width80 before final restoration), not runtime proof. Final read-only audit
+`profile-runtime-file-audit.json` passes all ten generated token identities,
+positions and hidden flags plus five Manor/19 Crypt room targets. Final Manor
+SHA256 `c8ab18087c35cd35ca70e341472e3fbb716be5918032e94c156fa466927003e2`;
+Crypt unchanged `d08058217fd719936d6a84ce88bbb7a61f331cacd67b9a80759fd2823217f87e`.
+Native control SHA256 `91589bf6df3314a929e33416e23fa4730434dba46da982e60e60a1ab0034009a`.
+Original generated package hashes unchanged. No automated suite rerun justified
+by evidence/docs-only changes: latest144 run,140 passed,four symlink skips (not
+passed safety checks). Labels off; bounded fog/PDF/GIF tests not repeated.
