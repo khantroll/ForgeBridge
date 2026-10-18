@@ -719,3 +719,33 @@ capture. No additional speculative clicks, restart, rebuild or reinstall perform
 Two-map token/link/switch/restart/player checks remain unobserved, pending verified
 input response. Cause unconfirmed; not a ForgeBridge conversion failure. Original
 content and test maps preserved; labels off and bounded fog separately deferred.
+
+
+## Input privilege investigation — 2026-10-18
+
+PASS (diagnostic): read Windows process TokenElevation flags without changing
+processes/settings. ArkenforgeLauncher PID14300 and MastersToolkit PID5932 are
+elevated; Codex processes and codex-computer-use-swift PID15328 are not. All are
+in session1. Toolkit's parent is the elevated launcher; launcher parent is Explorer.
+Both executable embedded manifests request `asInvoker`, uiAccess=false. No matching
+HKCU/HKLM AppCompatFlags/Layers entries were returned; the discovered Start Menu
+shortcut has flags0x8b with run-as-user bit unset. The original elevation trigger
+is not established. Sandbox process enumeration omitted desktop apps; read-only
+host process inspection supplied the actual data, without elevating any app.
+
+Reset the supported Node REPL session and reinitialized @oai/sky. Capture still
+works, but one Maps click has no visible effect. Confirmed app/helper elevation
+mismatch strongly explains current ignored SendInput: Windows UIPI permits input
+injection only toward equal/lower integrity targets. Microsoft reference:
+https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-sendinput
+This does not prove the earlier foreground-process capture exception had the same
+cause. No application was elevated, no Windows security setting changed, and no
+alternative UI mechanism introduced. Exact recorded measurements are in
+`../2026-10-18/desktop-elevation-diagnostic.json`.
+
+BLOCKED pending controlled retest: asked human to save wanted work, close Toolkit
+and launcher normally, reopen launcher without Run as administrator, then launch
+Toolkit. If UAC demands elevation, stop and report it. Recheck elevation before
+one capture/Maps click. Do not elevate Codex/helper or bypass UIPI as a workaround.
+The profile runtime milestone remains pending until actual two-map checks finish;
+no rebuild/reinstall or converter change justified. Prior results remain separate.

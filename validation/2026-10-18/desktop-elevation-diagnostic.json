@@ -1,0 +1,43 @@
+{
+  "date": "2026-10-18",
+  "scope": "read-only desktop control diagnostics, not converter/runtime validation",
+  "confirmed": {
+    "same_windows_session": 1,
+    "process_elevation": [
+      {
+        "name": "ArkenforgeLauncher",
+        "pid": 14300,
+        "elevated": true,
+        "parent_pid": 4148
+      },
+      {
+        "name": "MastersToolkit",
+        "pid": 5932,
+        "elevated": true,
+        "parent_pid": 14300
+      },
+      {
+        "name": "codex-computer-use-swift",
+        "pid": 15328,
+        "elevated": false
+      },
+      {
+        "name": "codex",
+        "elevated": false
+      }
+    ],
+    "executable_manifest": {
+      "ArkenforgeLauncher": "asInvoker; uiAccess=false",
+      "MastersToolkit": "asInvoker; uiAccess=false"
+    },
+    "helper_session_reset": "completed; Maps click still no visible response",
+    "capture": "Toolkit blank New Map, v0.5.1.18",
+    "input": "Maps click returned without exception; no visible transition",
+    "compatibility_flags": "No matching entries returned from queried HKCU/HKLM AppCompatFlags/Layers",
+    "launcher_shortcut": "Start Menu shortcut link flags 0x8b; run-as-user bit not set"
+  },
+  "interpretation": "Confirmed elevation mismatch is a strong explanation for current ignored SendInput under Windows UIPI. Controlled non-elevated relaunch still pending. Does not retrospectively prove cause of prior foreground-process capture error.",
+  "reference": "https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-sendinput",
+  "changes": "No Windows permission/security changes, app elevation, package rebuild or installation. Fresh helper session reset only.",
+  "next": "Human normal close/reopen without Run as administrator; read elevation again, then test capture and one Maps click."
+}

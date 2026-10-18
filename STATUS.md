@@ -17,8 +17,10 @@ and Crypt packages; file audit passes with 529 closed metadata references, isola
 token/note/media scopes and no installation conflicts. Separate reviewed installation
 added 438 absent files without overwrites. New runtime map-switch/token/link checks
 remain BLOCKED: after the October 18 reboot Toolkit capture succeeds, but
-observed map-browser/Maps clicks have not produced a visible response. Earlier
-foreground-process capture errors are historical; cause remains unconfirmed. The earlier accepted runtime milestone below remains separate.
+observed map-browser/Maps clicks have not produced a visible response. Read-only diagnostics confirm Toolkit/launcher are elevated and the input helper
+is not; this strongly explains ignored input under Windows UIPI. A normal
+non-elevated relaunch/retest is pending. Earlier foreground-process capture errors
+remain unconfirmed separately. The earlier accepted runtime milestone below remains separate.
 Latest suite: 144 run, 140 passed, four Windows symlink tests skipped (not safety PASS).
 
 Manual steps remain native UVTT import/export/calibration, reviewed installation,
