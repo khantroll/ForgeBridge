@@ -10,7 +10,7 @@ This log distinguishes **file-level checks** from **observations inside Arkenfor
 
 | Status | Check | Evidence / limit |
 |---|---|---|
-| PASS | Automated checks | Latest full run: 144 tests, 140 passed, four Windows symlink checks skipped (66.104s); ../2026-10-18/resume-full-tests.txt. Includes scene identity/calibration and isolation regression. |
+| FAIL | Latest automated full run | Oct 19 follow-up: 149 run, 143 passed, four Windows symlink skips, two intermittent LevelDB errors; diagnostic run retained Windows `.dbtmp` replacement errors. Prior cf46fe7 clean run: 148 run, 144 passed, four skips. Five capture tests pass; see ../2026-10-19-PROFILE-PLAYER.md. |
 | DEFERRED | Four symlink safety checks | WinError 1314 skips are not passed symlink protection checks. |
 | PASS | Fresh source export and original separate package, file level | Original ZIP SHA256 c6ea282ae220f9eb7e9bf13905e1689668cd16d11356dae14507c3f9cfd2c3c1. Five markers, 46 notes, 36 attachments including 17 PDF pages. 170 native files parse; 154 metadata reference occurrences close. |
 | PASS | Source/template preservation, file level | Source scene retained, original template media byte-identical; original campaigns/source assets and unrelated local files preserved. Two missing tables and seven media gaps remain explicit. Labels off. |
@@ -32,8 +32,8 @@ This log distinguishes **file-level checks** from **observations inside Arkenfor
 | PASS | New profile GM switching/persistence, representative | Oct 18: both maps load/save/reopen through full Toolkit restart; Manor Stoker/Upper Hall and Crypt Swarm/Wight/Storage Area checked. Scope below. |
 | PASS | Resume generated-token identity/Size, GM only | Correct inside-Manor Stoker explicitly selected: Size1, UI12.500/-18.500, rotation0, scales.512/.512. No edits; separate screenshots below. Both profile preflights and saved-file audit pass again. |
 | PASS | Controlled native player baseline, scoped | Oct 18 native control (two yellow tiles and Bobbie), Multi Scene and Manor render through the same local browser output. Not a generated-token visibility pass. |
-| PASS | Profile Manor generated-token initial visible→hidden | Working Waterfox stream: small inside Stoker visible then absent after explicit Toggle hidden; outside manual control remains visible. No restoration/restart PASS; subsequent capture blocker below. |
-| BLOCKED | New profile actual generated-token player visibility/restart | Crypt remains black after bounded fog-off/camera-follow comparisons. Manor visibility experiment selected preserved manual Stoker, excluded from generated-token evidence. Prior player evidence remains separate. |
+| PASS | Profile Manor generated-token initial visible→hidden→visible | Correct small inside generated Stoker identified, absent after Toggle hidden, then restored visible and saved (Oct 18 appended results). Outside manual control excluded. Player restart remains pending. |
+| BLOCKED | Profile Crypt player visibility and both-profile player restart | Oct 19: responsive desktop at reduced load, but connecting the existing Waterfox tab caused Toolkit native WebRTC ICE-candidate ArgumentException/unstable-state modal. Room display was not established; no token states changed. Normal recovery restart succeeded; no player PASS. See ../2026-10-19-PROFILE-PLAYER.md. |
 | DEFERRED | Labels | Remain off by request; player-facing behavior untested. |
 
 ## Explicit source gaps

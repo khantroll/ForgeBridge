@@ -17,6 +17,12 @@ deterministic member timestamps; the manifest records input and member hashes,
 dependency edges, primary map and the declared control/scene-geometry role.
 NRBF parsing is inert; imported scripts are never executed.
 
+Native paths in the reachable graph must use the supported `.rwmap`, `.rwmeta`,
+`.rwnote` or `.rwfile` formats. An unfamiliar native path now stops capture with
+its originating file and exact reference instead of silently omitting it. Supply
+a supported native export or extend the parser after inspecting the new schema;
+capture does not guess how unknown assets should be migrated.
+
 `--profile` validates the existing pinned profile, copies every original input
 (including source package and original control ZIPs), rebases paths and validates
 again. Move the entire output folder together. Its `scene-profile.json` consumes

@@ -21,6 +21,32 @@ def record(ref=''):
 
 
 class NativeCaptureTests(unittest.TestCase):
+    def test_unknown_native_reference_is_not_silently_omitted(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            reference = 'MyAssets/Media/unsupported.png'
+            files = {'MyAssets/Maps/A.rwmap': record(reference),
+                     'MyAssets/Maps/A.rwmeta': record()}
+            archive(root/'in.zip', files)
+            original = (root/'in.zip').read_bytes()
+            with self.assertRaisesRegex(ValueError, 'Unsupported native dependency in MyAssets/Maps/A.rwmap'):
+                capture([root/'in.zip'], root/'out')
+            self.assertFalse((root/'out').exists())
+            self.assertEqual((root/'in.zip').read_bytes(), original)
+            assets = root/'MyAssets'
+            (assets/'Maps').mkdir(parents=True)
+            for name, data in files.items():
+                (root/name).write_bytes(data)
+            with patch('forgebridge.native_capture._toolkit_closed'):
+                with self.assertRaisesRegex(ValueError, 'unsupported.png'):
+                    capture_saved(assets, 'MyAssets/Maps/A.rwmap', root/'saved', True)
+            self.assertFalse((root/'saved').exists())
+            unsafe = 'MyAssets/../escape.png'
+            files['MyAssets/Maps/A.rwmap'] = record(unsafe)
+            archive(root/'unsafe.zip', files)
+            with self.assertRaisesRegex(ValueError, 'Unsafe native path'):
+                capture([root/'unsafe.zip'], root/'unsafe-out')
+
     def test_saved_snapshot_requires_closed_and_preserves_bytes(self):
         probe = SimpleNamespace(Error=RuntimeError)
         with patch('forgebridge.native_capture.os.name', 'nt'), patch.dict(sys.modules, {'psutil': probe}):

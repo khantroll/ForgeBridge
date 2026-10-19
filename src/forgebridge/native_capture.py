@@ -38,6 +38,21 @@ def checked_export(path):
     return files
 
 
+def native_references(data, origin):
+    """Fail closed on native paths outside the dependency formats we can parse."""
+    reader = Reader(data, max_items=64000000)
+    reader.read()
+    references = set()
+    for value in reader.objects.values():
+        if isinstance(value, str) and value.casefold().startswith(('myassets/', 'myassets\\')):
+            safe_name(value)
+            if not value.endswith(('.rwmeta', '.rwmap', '.rwnote', '.rwfile')):
+                raise ValueError('Unsupported native dependency in ' + origin + ': ' + value
+                                 + '; export a supported native control or extend the dependency parser')
+            references.add(value)
+    return sorted(references)
+
+
 def dependency_closure(files, primary=None):
     maps = sorted(n for n in files if n.endswith('.rwmap'))
     if primary is None:
@@ -58,14 +73,9 @@ def dependency_closure(files, primary=None):
             missing.add(name)
             continue
         data = found[name] = files[name]
-        reader = Reader(data, max_items=64000000)
-        reader.read()
-        for value in reader.objects.values():
-            if isinstance(value, str) and value.casefold().startswith(('myassets/', 'myassets\\')):
-                safe_name(value)
-                if value.endswith(('.rwmeta', '.rwmap', '.rwnote', '.rwfile')):
-                    edges.append({'from': name, 'to': value})
-                    pending.append(value)
+        for value in native_references(data, name):
+            edges.append({'from': name, 'to': value})
+            pending.append(value)
         if name.endswith('.rwmeta'):
             siblings = [name[:-7] + suffix for suffix in ('.rwmap', '.rwnote', '.rwfile')]
             pending.extend(n for n in siblings if n in files)
@@ -239,10 +249,7 @@ def capture_saved(asset_root, primary, destination, closed=False, role='scene-ge
         data = files[name] = path.read_bytes()
         if sum(map(len, files.values())) > 256 * 1024 * 1024:
             raise ValueError('Saved snapshot exceeds byte limit')
-        reader = Reader(data, max_items=64000000); reader.read()
-        pending.extend(v for v in reader.objects.values() if isinstance(v, str)
-                       and v.casefold().startswith(('myassets/', 'myassets\\'))
-                       and v.endswith(('.rwmeta', '.rwmap', '.rwnote', '.rwfile')))
+        pending.extend(native_references(data, name))
         if name.endswith('.rwmeta'):
             pending.extend(name[:-7] + ext for ext in ('.rwmap', '.rwnote', '.rwfile')
                            if source(name[:-7] + ext).is_file())

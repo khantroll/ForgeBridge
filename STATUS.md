@@ -463,3 +463,22 @@ PASS: clean full suite 148 run, 144 passed, four Windows symlink skips, 48.387s.
 Crypt player visibility / both profile player restart checks remain PENDING;
 bounded fog DEFERRED. No package/content edits or installations in this pass.
 See [measured recovery](validation/2026-10-19-CPU-RECOVERY.md) for precise scope.
+## Profile player follow-up and reference audit (2026-10-19)
+
+BLOCKED: browser connection caused native Toolkit Unity WebRTC empty ICE-candidate
+ArgumentException; lit Crypt room was not established. No token source states or
+saved profiles changed. Toolkit closed/restarted normally; active-window captures
+worked. 30-FPS application setting retained; stream explicitly configured 720p/15
+before activation, then stopped by shutdown before compute. Accepted Manor initial
+player visibility and profile GM persistence stand; profile player restart and Crypt
+visibility remain pending. Bounded fog deferred. No rebuild/reinstall.
+
+PASS: portable capture now rejects unfamiliar native dependency paths with exact
+origin/reference rather than silently omitting them. Five capture tests pass;
+Manor/Crypt file recaptures retain original hashes. Latest full/diagnostic runs each
+149 run, 143 passed, four skipped, two LevelDB errors. Retained diagnostics show
+Windows .dbtmp replacement failures during both new test-DB creation and copied
+snapshot opening; root cause unresolved. No retries or LevelDB logic changed.
+Next independent task: controlled Windows LevelDB temporary-file replacement
+reproduction and diagnosis; native reference schema coverage can proceed separately.
+See [follow-up evidence](validation/2026-10-19-PROFILE-PLAYER.md).
