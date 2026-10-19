@@ -1125,3 +1125,16 @@ pending independently of development. Accepted GM/earlier player evidence remain
 accepted. Labels off. Manual import/export/calibration, reviewed installation,
 GIF setup and conversion gaps remain explicit. No original assets, campaigns,
 manually edited notes or installation changed.
+
+
+## CPU recovery and clean regression run (2026-10-19)
+
+PASS: desktop enumeration/capture/input recovered; Toolkit maximum FPS changed
+from 60 to 30 through supported UI. Active stream verified at 1280x720 / 15 FPS,
+then stopped before compute. Crypt loaded; Toolkit CPU 15.21-17.22% with stream.
+The final bounded capture sequence completed 5/5 with no timeouts. Historical
+contention is correlated; the cap's isolated causal effect is not established.
+PASS: clean full suite 148 run, 144 passed, four Windows symlink skips, 48.387s.
+Crypt player visibility / both profile player restart checks remain PENDING;
+bounded fog DEFERRED. No package/content edits or installations in this pass.
+See [measured recovery](../2026-10-19-CPU-RECOVERY.md) for precise scope.
