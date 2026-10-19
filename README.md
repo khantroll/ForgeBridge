@@ -1,8 +1,12 @@
 # ForgeBridge
 
+Portable native dependency capture and relocatable pinned profiles are available
+through `python -m forgebridge.native_capture`; see [the capture workflow](docs/NATIVE-CAPTURE.md).
+Pending profile player/fog checks remain separate from independent development.
+
 > **Status: CALIBRATED SCENE PROFILES**
 >
-> ForgeBridge builds calibrated native scene packages with geometry, room markers, linked notes, tables, attachments and supported tokens. Version 1 scene profiles bind exact source identity, input hashes and scene-specific native calibration; read-only preflight rejects stale inputs. Two real scene packages build with isolated references and closed dependencies. Representative token/link and map-switch/restart checks now pass in Toolkit v0.5.1.18 for both profiles. A controlled player-output comparison displays a native control, Multi Scene and Manor; Crypt remains black. New profile generated-token player visibility/restart checks remain blocked; prior multi-token player evidence remains separate. Latest suite: 144 run, 140 passed, four Windows symlink tests skipped. Native calibration and reviewed installation remain manual. GIF migration, bounded fog, actor/vision/behavior conversion remain incomplete; labels stay off. See [scene profiles](docs/SCENE-PROFILES.md), [STATUS.md](STATUS.md) and the [validation log](validation/2026-10-15/VALIDATION.md).
+> ForgeBridge builds calibrated native scene packages with geometry, room markers, linked notes, attachments and supported tokens. Version 1 profiles bind source identity, hashes and scene-specific calibration. Portable capture preserves dependency bytes and relocatable inputs; Manor/Crypt file demonstrations pass. Accepted GM and earlier Multi Scene player results remain separate from pending Crypt player visibility, profile player restart and bounded fog. Latest full run: 148 total, 142 passed, 4 skipped and 2 initial issues; the corrected targeted run passes 6 checks. See [execution evidence](validation/2026-10-18/PORTABLE-CAPTURE.md) for scope. Native calibration, reviewed installation and GIF setup remain manual; actor/vision/behavior gaps remain explicit. Labels off.
 
 ```powershell
 py -m forgebridge.package --profile profiles/manor.json --preflight

@@ -1104,3 +1104,24 @@ apply one supported reduction at a time (30-FPS app,720p/15-FPS stream), stop st
 for GM-only checks, then compare the same bounded sequential capture sequence.
 If access/load still fails, preserve pending checks and continue independent work;
 no repeated human intervention request for this unchanged condition.
+
+
+## Portable capture execution results (2026-10-18)
+
+PASS (file-level): Manor/Crypt native bundles and relocated profiles, with original
+bytes, source identity, hashes, calibration and namespaces retained. Controls stay
+separate from geometry. Native bundles contain 8/12 files. Final targeted run: 6
+passed. Initial full run: 148 total, 142 passed, 4 skipped,1 corrected safety failure
+and1 inventory error subsequently passed. No clean full rerun claimed.
+An initial Crypt source-reader failure passed controlled comparisons/retry;
+cause unconfirmed. No conversion math changed.
+See [execution details](../2026-10-18/PORTABLE-CAPTURE.md) and
+[hashes](../2026-10-18/portable-capture-results.json).
+
+BLOCKED/PENDING: desktop helper setup/enumeration after bounded recovery.
+Full support diagnostic stays local; no new activation/capture/input/runtime pass.
+Crypt actual-player visibility, profile player restart and bounded fog remain
+pending independently of development. Accepted GM/earlier player evidence remains
+accepted. Labels off. Manual import/export/calibration, reviewed installation,
+GIF setup and conversion gaps remain explicit. No original assets, campaigns,
+manually edited notes or installation changed.

@@ -431,8 +431,10 @@ def _load_leveldb_scene(package: Path, row: dict, scene_id: str) -> dict:
     except LevelDBUnavailable as exc:
         raise InventoryFatal(str(exc)) from exc
     if not result.opened:
+        diagnostics = '; '.join(f'{code}: {message}' for _, code, message in result.diagnostics[:3])
         raise InventoryFatal(
-            f"scene pack {safe} is LevelDB and was not opened. It was not read as text."
+            f"scene pack {safe} is LevelDB and was not opened. It was not read as text. "
+            f"Reader diagnostics: {diagnostics or 'none supplied'}"
         )
     parent_id = _parent_adventure_id(row)
     for declared, payload in result.documents:

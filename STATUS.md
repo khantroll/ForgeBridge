@@ -4,6 +4,17 @@
 **Implementation started:** Inventory CLI, importable UVTT, loose scene assets, embedded Adventure scene discovery, ambient color, and deterministic AmbientLight range conversion  
 **General converter:** Bounded scene/content/token slices implemented; complete actor and behavior conversion pending.
 
+Portable capture milestone (2026-10-18): `forgebridge.native_capture` captures
+dependency-closed native ZIPs with original member bytes and a provenance manifest.
+Pinned profiles can be copied with all inputs and rebased for relocation; reusable
+control exports remain separate from scene geometry and calibration. Saved-asset
+reads require a closed-Toolkit snapshot; no capture installs or edits campaigns.
+See [portable capture](docs/NATIVE-CAPTURE.md) and
+[execution evidence](validation/2026-10-18/PORTABLE-CAPTURE.md).
+Pending Crypt actual-player visibility, profile player restart and bounded fog
+do not block development. Next independent task: investigate intermittent read-only LevelDB snapshots
+with retained diagnostics and controlled fixtures, then extend native-reference audits.
+
 CPU-contention investigation (2026-10-18): desktop testing now runs separately
 from tests/builds/PDF/compression/dependency scans. New read-only sampler and
 [desktop runbook](docs/DESKTOP-VALIDATION.md) record process CPU and distinct helper/
@@ -58,8 +69,8 @@ GIF setup and the documented bounded fog gesture. Labels off; Foundry fog/vision
 procedural light animation and actor/stat behavior stay explicit gaps. See
 [scene profiles](docs/SCENE-PROFILES.md) and the validation log. Next validation step:
 establish a visible actual player viewport for representative visible/hidden tokens
-on both profile maps, then verify after restart. Profile runtime validation must
-finish before expanding portable capture/export tooling. Exact diagnostic and
+on both profile maps, then verify after restart. These pending runtime checks do
+not block independent portable capture/export development. Exact diagnostic and
 runtime scopes are recorded in the validation log.
 
 Player follow-up after human setup (2026-10-18): working Waterfox player stream
@@ -418,3 +429,24 @@ to Blank without saving the fresh combined map. No native fog defect established
 Next implementation milestone: validate rotated and hidden generated tokens
 against actual player output, then extend the bounded writer to a per-scene token
 set. Keep actor/stat-block conversion separate and retain unsupported behavior.
+
+
+## Portable capture execution results (2026-10-18)
+
+PASS (file-level): Manor/Crypt native bundles and relocated profiles, with original
+bytes, source identity, hashes, calibration and namespaces retained. Controls stay
+separate from geometry. Native bundles contain 8/12 files. Final targeted run: 6
+passed. Initial full run: 148 total, 142 passed, 4 skipped,1 corrected safety failure
+and1 inventory error subsequently passed. No clean full rerun claimed.
+An initial Crypt source-reader failure passed controlled comparisons/retry;
+cause unconfirmed. No conversion math changed.
+See [execution details](validation/2026-10-18/PORTABLE-CAPTURE.md) and
+[hashes](validation/2026-10-18/portable-capture-results.json).
+
+BLOCKED/PENDING: desktop helper setup/enumeration after bounded recovery.
+Full support diagnostic stays local; no new activation/capture/input/runtime pass.
+Crypt actual-player visibility, profile player restart and bounded fog remain
+pending independently of development. Accepted GM/earlier player evidence remains
+accepted. Labels off. Manual import/export/calibration, reviewed installation,
+GIF setup and conversion gaps remain explicit. No original assets, campaigns,
+manually edited notes or installation changed.

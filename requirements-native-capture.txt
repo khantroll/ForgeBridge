@@ -1,0 +1,2 @@
+# Optional read-only process verification for --asset-root; ZIP/profile capture needs no extra dependency.
+psutil>=5.9,<8
