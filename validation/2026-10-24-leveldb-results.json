@@ -1,0 +1,224 @@
+{
+  "format": "forgebridge.leveldb-diagnostic",
+  "version": 1,
+  "python": "3.14.2",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "binding": "2.1.2",
+  "logical_processors": 2,
+  "trials_per_case": 10,
+  "source_hashes": {
+    "000004.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "000005.ldb": "b311efa371adcf3ec7ab4da804f31ecdf68e5975aced7c8df44d996b0edaf55b",
+    "CURRENT": "1005a525006f148c86efcbfb36c6eac091b311532448010f70f7de9a68007167",
+    "LOG": "5dd19bfef25665dad51491d86614dacb7999977ec6a2ea6e9320ef0acff0a4c9",
+    "MANIFEST-000002": "efde137a90febcd167083880d3be7ab361b070995f4e2601d14bdc3c4052c0dc"
+  },
+  "operations": [
+    {
+      "case": "create",
+      "trial": 1,
+      "status": "PASS",
+      "seconds": 0.0328
+    },
+    {
+      "case": "create",
+      "trial": 2,
+      "status": "PASS",
+      "seconds": 0.0182
+    },
+    {
+      "case": "create",
+      "trial": 3,
+      "status": "PASS",
+      "seconds": 0.0185
+    },
+    {
+      "case": "create",
+      "trial": 4,
+      "status": "PASS",
+      "seconds": 0.0179
+    },
+    {
+      "case": "create",
+      "trial": 5,
+      "status": "PASS",
+      "seconds": 0.0177
+    },
+    {
+      "case": "create",
+      "trial": 6,
+      "status": "PASS",
+      "seconds": 0.0186
+    },
+    {
+      "case": "create",
+      "trial": 7,
+      "status": "PASS",
+      "seconds": 0.0184
+    },
+    {
+      "case": "create",
+      "trial": 8,
+      "status": "PASS",
+      "seconds": 0.0179
+    },
+    {
+      "case": "create",
+      "trial": 9,
+      "status": "PASS",
+      "seconds": 0.0206
+    },
+    {
+      "case": "create",
+      "trial": 10,
+      "status": "PASS",
+      "seconds": 0.0178
+    },
+    {
+      "case": "copied-open",
+      "trial": 1,
+      "status": "PASS",
+      "entries": 12,
+      "seconds": 0.0328
+    },
+    {
+      "case": "copied-open",
+      "trial": 2,
+      "status": "PASS",
+      "entries": 12,
+      "seconds": 0.0275
+    },
+    {
+      "case": "copied-open",
+      "trial": 3,
+      "status": "PASS",
+      "entries": 12,
+      "seconds": 0.0272
+    },
+    {
+      "case": "copied-open",
+      "trial": 4,
+      "status": "PASS",
+      "entries": 12,
+      "seconds": 0.026
+    },
+    {
+      "case": "copied-open",
+      "trial": 5,
+      "status": "PASS",
+      "entries": 12,
+      "seconds": 0.0275
+    },
+    {
+      "case": "copied-open",
+      "trial": 6,
+      "status": "PASS",
+      "entries": 12,
+      "seconds": 0.0263
+    },
+    {
+      "case": "copied-open",
+      "trial": 7,
+      "status": "PASS",
+      "entries": 12,
+      "seconds": 0.0262
+    },
+    {
+      "case": "copied-open",
+      "trial": 8,
+      "status": "PASS",
+      "entries": 12,
+      "seconds": 0.0263
+    },
+    {
+      "case": "copied-open",
+      "trial": 9,
+      "status": "PASS",
+      "entries": 12,
+      "seconds": 0.0267
+    },
+    {
+      "case": "copied-open",
+      "trial": 10,
+      "status": "PASS",
+      "entries": 12,
+      "seconds": 0.0275
+    },
+    {
+      "case": "replace-control",
+      "trial": 1,
+      "status": "PASS",
+      "seconds": 0.002
+    },
+    {
+      "case": "replace-control",
+      "trial": 2,
+      "status": "PASS",
+      "seconds": 0.0021
+    },
+    {
+      "case": "replace-control",
+      "trial": 3,
+      "status": "PASS",
+      "seconds": 0.002
+    },
+    {
+      "case": "replace-control",
+      "trial": 4,
+      "status": "PASS",
+      "seconds": 0.002
+    },
+    {
+      "case": "replace-control",
+      "trial": 5,
+      "status": "PASS",
+      "seconds": 0.0031
+    },
+    {
+      "case": "replace-control",
+      "trial": 6,
+      "status": "PASS",
+      "seconds": 0.0019
+    },
+    {
+      "case": "replace-control",
+      "trial": 7,
+      "status": "PASS",
+      "seconds": 0.0021
+    },
+    {
+      "case": "replace-control",
+      "trial": 8,
+      "status": "PASS",
+      "seconds": 0.0019
+    },
+    {
+      "case": "replace-control",
+      "trial": 9,
+      "status": "PASS",
+      "seconds": 0.0022
+    },
+    {
+      "case": "replace-control",
+      "trial": 10,
+      "status": "PASS",
+      "seconds": 0.0019
+    }
+  ],
+  "scope": "Isolated experiments, no production retry or runtime-validation claim",
+  "source_unchanged": true,
+  "totals": {
+    "create": {
+      "PASS": 10,
+      "FAIL": 0
+    },
+    "copied-open": {
+      "PASS": 10,
+      "FAIL": 0
+    },
+    "replace-control": {
+      "PASS": 10,
+      "FAIL": 0
+    }
+  }
+}

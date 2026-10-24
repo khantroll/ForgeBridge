@@ -482,3 +482,17 @@ snapshot opening; root cause unresolved. No retries or LevelDB logic changed.
 Next independent task: controlled Windows LevelDB temporary-file replacement
 reproduction and diagnosis; native reference schema coverage can proceed separately.
 See [follow-up evidence](validation/2026-10-19-PROFILE-PLAYER.md).
+## Resume checkpoint (2026-10-24)
+
+PASS: full diagnostic regression 149 run, 145 passed, four Windows symlink skips,
+41.137s. New bounded LevelDB diagnostic: 10 create, 10 copied-open, 10 ordinary
+replace controls pass, fixture unchanged. Earlier .dbtmp failures remain unresolved;
+no retry/suppression or reader change. See scripts/diagnose_leveldb.py.
+
+BLOCKED: existing Toolkit activation timed out at low measured CPU; fresh target
+capture showed foreground Resolve/terminal while metadata claimed Toolkit. Ordinary
+Explorer capture also showed the wrong foreground surface. No input on unreliable
+views, no unrelated windows minimized/closed, no settings/content/save/install edits.
+Crypt player and profile player restart stay pending; accepted results stand; fog
+separately deferred. Next independent work: controlled LevelDB failure attribution
+and observed native-reference schemas. See validation/2026-10-24-RESUME.md.

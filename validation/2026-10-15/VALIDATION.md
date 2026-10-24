@@ -10,7 +10,7 @@ This log distinguishes **file-level checks** from **observations inside Arkenfor
 
 | Status | Check | Evidence / limit |
 |---|---|---|
-| FAIL | Latest automated full run | Oct 19 follow-up: 149 run, 143 passed, four Windows symlink skips, two intermittent LevelDB errors; diagnostic run retained Windows `.dbtmp` replacement errors. Prior cf46fe7 clean run: 148 run, 144 passed, four skips. Five capture tests pass; see ../2026-10-19-PROFILE-PLAYER.md. |
+| PASS | Latest automated full run | Oct 24: 149 run, 145 passed, four Windows symlink skips, 41.137s. Thirty isolated LevelDB diagnostic operations pass; previous .dbtmp replacement errors remain unresolved. See ../2026-10-24-RESUME.md. |
 | DEFERRED | Four symlink safety checks | WinError 1314 skips are not passed symlink protection checks. |
 | PASS | Fresh source export and original separate package, file level | Original ZIP SHA256 c6ea282ae220f9eb7e9bf13905e1689668cd16d11356dae14507c3f9cfd2c3c1. Five markers, 46 notes, 36 attachments including 17 PDF pages. 170 native files parse; 154 metadata reference occurrences close. |
 | PASS | Source/template preservation, file level | Source scene retained, original template media byte-identical; original campaigns/source assets and unrelated local files preserved. Two missing tables and seven media gaps remain explicit. Labels off. |
@@ -1138,3 +1138,12 @@ PASS: clean full suite 148 run, 144 passed, four Windows symlink skips, 48.387s.
 Crypt player visibility / both profile player restart checks remain PENDING;
 bounded fog DEFERRED. No package/content edits or installations in this pass.
 See [measured recovery](../2026-10-19-CPU-RECOVERY.md) for precise scope.
+
+## October 24 resume
+
+Desktop target capture remains BLOCKED after bounded recovery: Toolkit activation
+timed out at low load, Toolkit and ordinary Explorer captures returned the wrong
+foreground surface. No unreliable-view input or content changes. Full regression
+149 run, 145 passed, four skipped; thirty isolated LevelDB operations pass without
+source changes. Previous intermittent failure is not declared fixed. See
+[resume evidence](../2026-10-24-RESUME.md).

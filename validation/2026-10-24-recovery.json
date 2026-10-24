@@ -1,0 +1,224 @@
+{
+  "format": "forgebridge.desktop-load",
+  "version": 1,
+  "phase": "timeout-recovery",
+  "logical_processors": 2,
+  "interval_seconds": 3,
+  "scope": "Approximate CPU deltas normalized across logical processors; not proof of timeout causation. Protected/exited processes may be omitted; browser totals include unrelated tabs. Compute candidates are names, not confirmed builds.",
+  "samples": [
+    {
+      "utc": "2026-10-24T14:13:03.0507081Z",
+      "category_cpu_percent": {
+        "toolkit": 0.77,
+        "launcher": 0.0,
+        "browser": 0.0,
+        "capture_helper": 0.0,
+        "compute_candidate": 0.0,
+        "client_or_runtime": 0.52,
+        "other": 8.24
+      },
+      "category_measured_process_count": {
+        "toolkit": 1,
+        "launcher": 1,
+        "browser": 13,
+        "capture_helper": 1,
+        "compute_candidate": 6,
+        "client_or_runtime": 36,
+        "other": 277
+      },
+      "top_processes": [
+        {
+          "name": "Taskmgr",
+          "pid": 7088,
+          "category": "other",
+          "cpu_percent": 4.11,
+          "working_mb": 402.6
+        },
+        {
+          "name": "Resolve",
+          "pid": 14596,
+          "category": "other",
+          "cpu_percent": 1.29,
+          "working_mb": 1796.3
+        },
+        {
+          "name": "parsecd",
+          "pid": 11984,
+          "category": "other",
+          "cpu_percent": 1.29,
+          "working_mb": 130.1
+        },
+        {
+          "name": "MastersToolkit",
+          "pid": 3564,
+          "category": "toolkit",
+          "cpu_percent": 0.77,
+          "working_mb": 129.9
+        },
+        {
+          "name": "ChatGPT",
+          "pid": 13484,
+          "category": "client_or_runtime",
+          "cpu_percent": 0.52,
+          "working_mb": 97.5
+        },
+        {
+          "name": "pwsh",
+          "pid": 4704,
+          "category": "other",
+          "cpu_percent": 0.52,
+          "working_mb": 93.1
+        },
+        {
+          "name": "WindowsTerminal",
+          "pid": 14968,
+          "category": "other",
+          "cpu_percent": 0.51,
+          "working_mb": 95.0
+        },
+        {
+          "name": "explorer",
+          "pid": 4148,
+          "category": "other",
+          "cpu_percent": 0.26,
+          "working_mb": 515.9
+        },
+        {
+          "name": "bambu-studio",
+          "pid": 22160,
+          "category": "other",
+          "cpu_percent": 0.26,
+          "working_mb": 555.2
+        },
+        {
+          "name": "powershell_ise",
+          "pid": 6960,
+          "category": "other",
+          "cpu_percent": 0.0,
+          "working_mb": 166.2
+        },
+        {
+          "name": "dwm",
+          "pid": 30624,
+          "category": "other",
+          "cpu_percent": 0.0,
+          "working_mb": 113.6
+        },
+        {
+          "name": "chrome",
+          "pid": 21432,
+          "category": "browser",
+          "cpu_percent": 0.0,
+          "working_mb": 41.0
+        }
+      ]
+    },
+    {
+      "utc": "2026-10-24T14:13:06.2144749Z",
+      "category_cpu_percent": {
+        "toolkit": 0.26,
+        "launcher": 0.0,
+        "browser": 0.52,
+        "capture_helper": 0.0,
+        "compute_candidate": 0.0,
+        "client_or_runtime": 1.8,
+        "other": 25.0
+      },
+      "category_measured_process_count": {
+        "toolkit": 1,
+        "launcher": 1,
+        "browser": 13,
+        "capture_helper": 1,
+        "compute_candidate": 6,
+        "client_or_runtime": 36,
+        "other": 277
+      },
+      "top_processes": [
+        {
+          "name": "pwsh",
+          "pid": 4704,
+          "category": "other",
+          "cpu_percent": 16.49,
+          "working_mb": 110.9
+        },
+        {
+          "name": "Taskmgr",
+          "pid": 7088,
+          "category": "other",
+          "cpu_percent": 3.87,
+          "working_mb": 402.6
+        },
+        {
+          "name": "Resolve",
+          "pid": 14596,
+          "category": "other",
+          "cpu_percent": 1.8,
+          "working_mb": 1796.3
+        },
+        {
+          "name": "audiodg",
+          "pid": 12984,
+          "category": "other",
+          "cpu_percent": 1.54,
+          "working_mb": 16.6
+        },
+        {
+          "name": "codex",
+          "pid": 26988,
+          "category": "client_or_runtime",
+          "cpu_percent": 0.77,
+          "working_mb": 40.6
+        },
+        {
+          "name": "FileJuggler",
+          "pid": 8720,
+          "category": "other",
+          "cpu_percent": 0.52,
+          "working_mb": 55.0
+        },
+        {
+          "name": "ChatGPT",
+          "pid": 13484,
+          "category": "client_or_runtime",
+          "cpu_percent": 0.51,
+          "working_mb": 97.5
+        },
+        {
+          "name": "claude",
+          "pid": 12188,
+          "category": "other",
+          "cpu_percent": 0.26,
+          "working_mb": 204.3
+        },
+        {
+          "name": "ChatGPT",
+          "pid": 23304,
+          "category": "client_or_runtime",
+          "cpu_percent": 0.26,
+          "working_mb": 493.9
+        },
+        {
+          "name": "MastersToolkit",
+          "pid": 3564,
+          "category": "toolkit",
+          "cpu_percent": 0.26,
+          "working_mb": 129.9
+        },
+        {
+          "name": "chrome",
+          "pid": 13196,
+          "category": "browser",
+          "cpu_percent": 0.26,
+          "working_mb": 43.6
+        },
+        {
+          "name": "fuscript",
+          "pid": 12280,
+          "category": "other",
+          "cpu_percent": 0.26,
+          "working_mb": 29.9
+        }
+      ]
+    }
+  ]
+}
