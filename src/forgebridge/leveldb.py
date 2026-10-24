@@ -105,7 +105,10 @@ def read_leveldb_bytes(files: dict[str, bytes], *, max_entries: int, max_value_b
         dest = Path(tmp) / "db"
         dest.mkdir()
         for name, data in files.items():
-            if "/" in name or name in {"", ".", ".."}:
+            # Archive-derived names must remain single portable filenames even
+            # when this reader runs on Windows. Path on a POSIX host would not
+            # recognize backslashes or drive-qualified paths as escapes.
+            if any(char in name for char in ("/", "\\", ":", "\x00")) or name in {"", ".", ".."}:
                 result.warn("warning", "leveldb-skipped-name", "Skipped a LevelDB entry whose name leaves the pack directory.")
                 continue
             if len(data) > max_value_bytes:

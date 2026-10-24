@@ -8,6 +8,7 @@ import tempfile
 import unittest
 import zipfile
 from pathlib import Path
+from unittest.mock import patch
 
 REPO = Path(__file__).resolve().parents[1]
 SRC = REPO / "src"
@@ -19,6 +20,7 @@ sys.path.insert(0, str(REPO / "scripts"))
 import build_synthetic_leveldb as leveldb_fixture  # noqa: E402
 
 from forgebridge.inventory import inventory_path  # noqa: E402
+from forgebridge.leveldb import read_leveldb_bytes  # noqa: E402
 from forgebridge.validate import load_schema, validate  # noqa: E402
 
 MARKER = Path("/tmp/forgebridge-leveldb-executed")
@@ -108,6 +110,27 @@ class LevelDBInventoryTests(unittest.TestCase):
         self.assertNotIn("should-not-import", json.dumps(document))
         self.assertIn("leveldb-not-decoded", {item["code"] for item in document["diagnostics"]})
         self.assertFalse(MARKER.exists())
+
+    def test_snapshot_rejects_cross_platform_path_escapes_before_writing(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            outside = Path(tmp) / "must-not-be-written"
+            unsafe = ["../escape", "..\\escape", str(outside),
+                      "C:\\escape", "C:escape", "CURRENT:stream",
+                      "\\\\server\\share\\escape", "bad\x00name", "", ".", ".."]
+            seen = []
+
+            def inspect_snapshot(dest, result, **kwargs):
+                seen.extend((path.name, path.read_bytes()) for path in dest.iterdir())
+
+            with patch("forgebridge.leveldb._open_and_decode", side_effect=inspect_snapshot):
+                result = read_leveldb_bytes(
+                    {**dict.fromkeys(unsafe, b"untrusted"), "CURRENT": b"MANIFEST-000001\n"},
+                    max_entries=10, max_value_bytes=100,
+                )
+            self.assertFalse(outside.exists())
+        self.assertEqual(seen, [("CURRENT", b"MANIFEST-000001\n")])
+        self.assertEqual(len(result.diagnostics), len(unsafe))
+        self.assertEqual({code for _, code, _ in result.diagnostics}, {"leveldb-skipped-name"})
 
 
 if __name__ == "__main__":

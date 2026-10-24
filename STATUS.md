@@ -15,6 +15,14 @@ Pending Crypt actual-player visibility, profile player restart and bounded fog
 do not block development. Next independent task: investigate intermittent read-only LevelDB snapshots
 with retained diagnostics and controlled fixtures, then extend native-reference audits.
 
+Independent reader hardening (2026-10-24): in-memory LevelDB snapshots now reject
+Windows separators, drive-qualified names, alternate data streams and NUL names
+before writing. A cross-platform regression checks rejected entries cannot write
+outside the snapshot and that accepted CURRENT bytes remain unchanged. No retry,
+conversion-semantic or runtime-validation change. See
+[reader evidence](validation/2026-10-24-READER-HARDENING.md).
+Latest full suite: **150 run, 146 passed, four Windows symlink skips**, 31.173s.
+
 Historical CPU-contention investigation (2026-10-18; superseded by October 19 recovery below): desktop testing now runs separately
 from tests/builds/PDF/compression/dependency scans. New read-only sampler and
 [desktop runbook](docs/DESKTOP-VALIDATION.md) record process CPU and distinct helper/

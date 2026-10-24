@@ -26,8 +26,10 @@ the validation log before resuming.
 
 Desktop validation now follows a [CPU-aware runbook](docs/DESKTOP-VALIDATION.md)
 with a read-only load sampler, separate compute/UI phases and sequential captures.
-Native FPS/stream load-reduction targets remain pending access to supported UI;
-current measurements do not establish CPU contention as the sole timeout cause.
+Verified operating settings are Toolkit 30 FPS and player streaming 1280×720 at
+15 FPS. Later low-load failures show CPU contention is not the sole explanation
+for desktop timeouts. Pending runtime checks do not block reader, profile or
+dependency-tooling development.
 
 ForgeBridge is a proposed migration/transpilation tool for converting **Foundry Virtual Tabletop** content into the closest practical **Arkenforge** equivalent.
 
