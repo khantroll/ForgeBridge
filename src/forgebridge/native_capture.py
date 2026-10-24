@@ -8,34 +8,13 @@ import shutil
 import tempfile
 import zipfile
 
-from forgebridge.native_dependencies import read_export, merge_native
+from forgebridge.native_dependencies import read_export, merge_native, safe_name
 from forgebridge.nrbf import Reader
 from forgebridge.scene_profile import load_profile, fingerprint, _inputs
 
 
-def safe_name(name):
-    parts = name.split('/')
-    reserved = {'CON', 'PRN', 'AUX', 'NUL'} | {f'{p}{n}' for p in ('COM', 'LPT') for n in range(1, 10)}
-    if (not name.startswith('MyAssets/') or '\\' in name or ':' in name
-            or any(not p or p in ('.', '..') or p.endswith((' ', '.'))
-                   or any(ord(c) < 32 or c in '<>"|?*' for c in p)
-                   or p.split('.')[0].upper() in reserved for p in parts)):
-        raise ValueError('Unsafe native path: ' + name)
-    return name
-
-
 def checked_export(path):
-    with zipfile.ZipFile(path) as z:
-        if any((i.external_attr >> 16) & 0o170000 == 0o120000 for i in z.infolist()):
-            raise ValueError('Native export contains a symbolic link')
-    files = read_export(path)
-    seen = set()
-    for name in files:
-        safe_name(name)
-        if name.casefold() in seen:
-            raise ValueError('Case-conflicting native paths: ' + name)
-        seen.add(name.casefold())
-    return files
+    return read_export(path)
 
 
 def native_references(data, origin):
@@ -128,16 +107,12 @@ def capture(exports, destination, primary=None, role='control', *, snapshot_prov
     exports = list(exports)
     if not exports or len(exports) > 32:
         raise ValueError('Select between 1 and 32 native export inputs')
-    files, provenance, folded = {}, [], {}
+    files, provenance = {}, []
     for export in exports:
         digest = fingerprint(export)
         entries = checked_export(export)
         if fingerprint(export) != digest:
             raise ValueError('Export changed during capture: ' + str(export))
-        for name in entries:
-            prior = folded.setdefault(name.casefold(), name)
-            if prior != name:
-                raise ValueError('Case-conflicting native paths: ' + prior + ' / ' + name)
         merge_native(files, entries)
         if len(files) > 2048 or sum(map(len, files.values())) > 256 * 1024 * 1024:
             raise ValueError('Merged native dependencies exceed export limits')

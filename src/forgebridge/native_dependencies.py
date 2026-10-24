@@ -1,8 +1,29 @@
 """Bounded native-export loading and dependency closure; never CLR execution."""
-from pathlib import PurePosixPath
 import zipfile
 
 from forgebridge.nrbf import Reader
+
+
+def safe_name(name):
+    """Require a portable native asset path without Windows aliases."""
+    parts = name.split('/')
+    reserved = {'CON', 'PRN', 'AUX', 'NUL'} | {f'{p}{n}' for p in ('COM', 'LPT') for n in range(1, 10)}
+    if (not name.startswith('MyAssets/') or '\\' in name or ':' in name
+            or any(not p or p in ('.', '..') or p.endswith((' ', '.'))
+                   or any(ord(c) < 32 or c in '<>"|?*' for c in p)
+                   or p.split('.')[0].upper() in reserved for p in parts)):
+        raise ValueError('Unsafe native path: ' + name)
+    return name
+
+
+def _check_paths(names, *, native_only=True):
+    folded = {}
+    for name in names:
+        # Combined packages also contain inert reports outside MyAssets.
+        safe_name(name if native_only or name.startswith('MyAssets/') else 'MyAssets/' + name)
+        prior = folded.setdefault(name.casefold(), name)
+        if prior != name:
+            raise ValueError('Case-conflicting native paths: ' + prior + ' / ' + name)
 
 
 def read_export(path):
@@ -11,22 +32,26 @@ def read_export(path):
         names = [e.filename for e in entries]
         if (len(entries) > 2048 or len(names) != len(set(names))
                 or sum(e.file_size for e in entries) > 256 * 1024 * 1024
-                or any(e.file_size > 64 * 1024 * 1024 for e in entries)
-                or any(not n.startswith('MyAssets/') or '..' in PurePosixPath(n).parts
-                       or '\\' in n or ':' in n for n in names)):
+                or any(e.file_size > 64 * 1024 * 1024 for e in entries)):
             raise ValueError('Invalid or oversized native export')
+        if any((e.external_attr >> 16) & 0o170000 == 0o120000 for e in archive.infolist()):
+            raise ValueError('Native export contains a symbolic link')
+        _check_paths(names)
         return {n: archive.read(n) for n in names}
 
 
 def merge_native(files, dependencies):
+    """Validate the entire merge before mutating; identical paths deduplicate."""
+    _check_paths((*files, *dependencies), native_only=False)
     for path, data in dependencies.items():
         if path in files and files[path] != data:
             raise ValueError('Native dependency conflicts with exported content: ' + path)
-        files[path] = data
+    files.update(dependencies)
 
 
 def check_metadata_references(files):
     """Check native map/note/metadata links; preserved media bytes stay opaque."""
+    _check_paths(files, native_only=False)
     count = 0
     for path, data in files.items():
         if not path.endswith(('.rwmap', '.rwnote', '.rwmeta')):

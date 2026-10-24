@@ -23,6 +23,13 @@ conversion-semantic or runtime-validation change. See
 [reader evidence](validation/2026-10-24-READER-HARDENING.md).
 Latest full suite: **150 run, 146 passed, four Windows symlink skips**, 31.173s.
 
+Dependency isolation hardening (2026-10-24): capture and production assembly now
+share portable native-path checks. Case aliases and ZIP symlinks fail; dependency
+merges validate every entry before mutation. Exact identical dependencies still
+deduplicate. Final package audits reject ambiguous paths even without tokens.
+Latest full suite: **156 run, 152 passed, four Windows symlink skips**, 37.037s.
+See [dependency evidence](validation/2026-10-24-DEPENDENCIES.md).
+
 Historical CPU-contention investigation (2026-10-18; superseded by October 19 recovery below): desktop testing now runs separately
 from tests/builds/PDF/compression/dependency scans. New read-only sampler and
 [desktop runbook](docs/DESKTOP-VALIDATION.md) record process CPU and distinct helper/

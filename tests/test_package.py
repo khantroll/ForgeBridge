@@ -29,6 +29,19 @@ def map_template(root, extras=None):
 
 
 class PackageTests(unittest.TestCase):
+    def test_case_aliased_export_fails_before_package_publication(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            media, companion, _, _ = inputs(tmp)
+            template = map_template(tmp, {'MyAssets/Media/Background.rwfile': b'unchanged background'})
+            original = template.read_bytes()
+            out = root / 'must-not-exist.zip'
+            with self.assertRaisesRegex(ValueError, 'Case-conflicting'):
+                build_package(companion, template, media, out, name='Alias test',
+                    note_folder='Notes', units_per_grid=2.56, package=root/'package')
+            self.assertFalse(out.exists())
+            self.assertEqual(template.read_bytes(), original)
+
     def test_combined_scene_contains_multiple_tokens_and_explicit_partial_rejections(self):
         from copy import deepcopy
         from PIL import Image

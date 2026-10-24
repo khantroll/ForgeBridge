@@ -21,6 +21,31 @@ def record(ref=''):
 
 
 class NativeCaptureTests(unittest.TestCase):
+    def test_split_exports_deduplicate_cycles_and_record_provenance(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            primary = 'MyAssets/Maps/A.rwmap'
+            shared = 'MyAssets/Notes/Shared.rwmeta'
+            note = 'MyAssets/Notes/Shared.rwnote'
+            common = {shared: record(note), note: record(primary)}
+            first = {primary: record(shared), 'MyAssets/Maps/A.rwmeta': record(), **common}
+            second = {**common, 'MyAssets/Notes/Unrelated.rwnote': record()}
+            archive(root/'map.zip', first)
+            archive(root/'dependencies.zip', second)
+            originals = {p: p.read_bytes() for p in (root/'map.zip', root/'dependencies.zip')}
+            report = capture(originals, root/'out')
+            self.assertEqual(contents(root/'out/native.zip'), first)
+            self.assertEqual(len(report['files']), len(first))
+            self.assertEqual(len(report['inputs']), 2)
+            self.assertIn({'from': note, 'to': primary}, report['dependencies'])
+            self.assertEqual({p: p.read_bytes() for p in originals}, originals)
+            alias = {'MyAssets/Notes/shared.rwmeta': common[shared]}
+            archive(root/'alias.zip', alias)
+            with self.assertRaisesRegex(ValueError, 'Case-conflicting'):
+                capture([root/'map.zip', root/'alias.zip'], root/'rejected')
+            self.assertFalse((root/'rejected').exists())
+            self.assertEqual(contents(root/'out/native.zip'), first)
+
     def test_unknown_native_reference_is_not_silently_omitted(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

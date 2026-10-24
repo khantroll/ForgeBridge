@@ -17,6 +17,14 @@ deterministic member timestamps; the manifest records input and member hashes,
 dependency edges, primary map and the declared control/scene-geometry role.
 NRBF parsing is inert; imported scripts are never executed.
 
+Path and conflict checks are shared with production package assembly. Repeated
+exact paths with identical bytes deduplicate; differing bytes or case aliases
+(even with identical bytes) fail with the conflicting paths. A failed dependency
+merge leaves the original file dictionary unchanged. Reserved Windows names,
+trailing dots/spaces and ZIP symlinks are rejected by the shared export loader.
+The final package reference audit also checks path aliases, including builds
+without tokens. Inert reports outside MyAssets remain supported in combined packages.
+
 Native paths in the reachable graph must use the supported `.rwmap`, `.rwmeta`,
 `.rwnote` or `.rwfile` formats. An unfamiliar native path now stops capture with
 its originating file and exact reference instead of silently omitting it. Supply

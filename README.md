@@ -4,9 +4,14 @@ Portable native dependency capture and relocatable pinned profiles are available
 through `python -m forgebridge.native_capture`; see [the capture workflow](docs/NATIVE-CAPTURE.md).
 Pending profile player/fog checks remain separate from independent development.
 
+Latest automated validation (October 24): **156 run, 152 passed, four Windows
+symlink skips**. Shared capture/package dependency checks reject case aliases and
+merge conflicts before mutation. Manor/Crypt preflights pass and recaptured bundle
+hashes match prior outputs; see [dependency evidence](validation/2026-10-24-DEPENDENCIES.md).
+
 > **Status: CALIBRATED SCENE PROFILES**
 >
-> ForgeBridge builds calibrated native scene packages with geometry, room markers, linked notes, attachments and supported tokens. Version 1 profiles bind source identity, hashes and scene-specific calibration. Portable capture preserves dependency bytes and relocatable inputs; Manor/Crypt file demonstrations pass. Accepted GM and earlier Multi Scene player results remain separate from pending Crypt player visibility, profile player restart and bounded fog. Prior clean run: 148 run, 144 passed, four Windows symlink skips. Latest full run (October 24): 149 run, 145 passed, four Windows symlink skips. Thirty isolated LevelDB diagnostic operations pass; earlier intermittent Windows file-replacement errors remain unresolved. Latest desktop attempt has an activation timeout and capture-target mismatch at low load; prior native WebRTC failure remains separate. Profile player checks stay pending. See [resume evidence](validation/2026-10-24-RESUME.md). See [execution evidence](validation/2026-10-18/PORTABLE-CAPTURE.md) for scope. Native calibration, reviewed installation and GIF setup remain manual; actor/vision/behavior gaps remain explicit. Labels off.
+> ForgeBridge builds calibrated native scene packages with geometry, room markers, linked notes, attachments and supported tokens. Version 1 profiles bind source identity, hashes and scene-specific calibration. Portable capture preserves dependency bytes and relocatable inputs; Manor/Crypt file demonstrations pass. Accepted GM and earlier Multi Scene player results remain separate from pending Crypt player visibility, profile player restart and bounded fog. Thirty isolated LevelDB diagnostic operations pass; earlier intermittent Windows file-replacement errors remain unresolved. Latest desktop attempt has an activation timeout and capture-target mismatch at low load; prior native WebRTC failure remains separate. See [resume evidence](validation/2026-10-24-RESUME.md). Native calibration, reviewed installation and GIF setup remain manual; actor/vision/behavior gaps remain explicit. Labels off.
 
 ```powershell
 py -m forgebridge.package --profile profiles/manor.json --preflight
