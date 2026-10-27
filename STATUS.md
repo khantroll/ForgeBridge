@@ -30,6 +30,7 @@ Public docs were re-read on 2026-10-03 and written up with citations:
 
 - [docs/research/FOUNDRY.md](docs/research/FOUNDRY.md) — Version 14 document lists, package layout, and the LevelDB key layout used here.
 - [docs/research/ARKENFORGE.md](docs/research/ARKENFORGE.md) — import extensions, UVTT fields, v0.5.0.0 / v0.5.1 UI features, and the automation surface that was not found.
+- [docs/research/FANTASY-GROUNDS.md](docs/research/FANTASY-GROUNDS.md) — 2026-10-27 search: no Fantasy Grounds → Arkenforge converter exists; FG XML → UVTT noted as a possible second input. Research only.
 - [docs/compatibility/INVENTORY-SPIKE.md](docs/compatibility/INVENTORY-SPIKE.md) — synthetic inventory results, including the LevelDB actor pack.
 - [docs/compatibility/UVTT-SLICE.md](docs/compatibility/UVTT-SLICE.md) — the importable UVTT file, the four grades, the LevelDB scene, and the loose image and audio files.
 
