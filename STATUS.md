@@ -4,6 +4,23 @@
 **Implementation started:** Inventory CLI, importable UVTT, loose scene assets, embedded Adventure scene discovery, ambient color, and deterministic AmbientLight range conversion  
 **General converter:** Bounded scene/content/token slices implemented; complete actor and behavior conversion pending.
 
+Installation review and blocker (2026-10-31): added read-only
+`forgebridge.install_review` against a caller-selected static MyAssets copy.
+Reports new/identical/conflicting/blocked files, hashes and supplemental reports;
+rejects aliases/links/unsafe packages and detects snapshot changes. Never installs,
+writes or infers that the copy came from a closed Toolkit. Operator rehearsal now
+covers 20 CLI steps, including identical and user-edited target review.
+
+Full Windows/Python 3.14.2 suite: **173 run, 168 passed, four symlink skips, one
+error**, 71.266s. All five new review tests and the extended rehearsal pass.
+Existing UVTT rebuilt-LevelDB test reproduces historical `000006.dbtmp: Unable
+to remove the file to be replaced` during copied snapshot open. This is an active
+release blocker; no full-suite green claim or blind repeat. One bounded comparison
+of three create, three copied-open and three replace controls passes (source
+unchanged); that does not resolve or erase the failure. Only Python 3.14 variants
+are installed locally; a Python 3.13 comparison cannot be done without another
+environment. See [evidence](validation/2026-10-31-INSTALL-REVIEW.md).
+
 Operator rehearsal (2026-10-31): new developer script exercises 18 public CLI
 steps across three relocated synthetic profiles, with original input paths offline.
 Supported/rejected/zero-token counts reconcile; combined packages close 74 native

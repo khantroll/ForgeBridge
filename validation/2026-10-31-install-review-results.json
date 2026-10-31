@@ -1,0 +1,33 @@
+{
+  "scope": "real package bytes against synthetic empty/identical/edited copies; no live installation read",
+  "inputs": [
+    {
+      "filename": "manor-profile.zip",
+      "sha256": "14943c23d112c6bc25fd5a09a1e545b310d89d7d2a957372a7d1d04f32ecdf1c"
+    },
+    {
+      "filename": "crypt-profile.zip",
+      "sha256": "3fdc4ba06e4d7469f9e8f51178e4e53e832c29663efd7b9df212263354b68b5c"
+    }
+  ],
+  "new": {
+    "new": 458,
+    "identical": 0,
+    "conflict": 0,
+    "blocked": 0
+  },
+  "identical": {
+    "new": 0,
+    "identical": 458,
+    "conflict": 0,
+    "blocked": 0
+  },
+  "edited": {
+    "new": 0,
+    "identical": 457,
+    "conflict": 1,
+    "blocked": 0
+  },
+  "closed_metadata_references": 529,
+  "runtime_validation": "not performed"
+}

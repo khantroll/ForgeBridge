@@ -48,6 +48,23 @@ for an intentional parallel import, rather than replacing manually edited notes.
 
 ## Reviewed installation and rollback
 
+For a repeatable read-only comparison, prepare a **static copy** of the destination
+MyAssets with Toolkit closed, then run:
+
+```powershell
+py -m forgebridge.install_review --package builds/my-scene-v1.zip --snapshot-root snapshots/MyAssets --static-snapshot
+```
+
+Repeat `--package` to review multiple packages together. Exit 0 means no conflicts
+were observed; exit 1 reports conflicting/blocked target paths; exit 2 rejects
+invalid inputs or a changing snapshot. JSON includes input/member hashes, new and
+identical files, conflicting user edits, blocked aliases/links and supplemental
+files that must stay outside MyAssets. Nothing is written by the review command.
+It checks package metadata references, not native runtime behavior. The flag is
+your assertion that the copy is static; the tool cannot establish its origin.
+The report is a point-in-time comparison, not authorization to install later:
+recheck the actual destination with Toolkit closed before copying anything.
+
 1. Close Toolkit normally. Extract the ZIP into a staging folder outside its data
    directory. Keep reports and source attachments outside the installed MyAssets.
 2. Compare every staged MyAssets relative path against the actual MyAssets root:
@@ -114,7 +131,9 @@ builders, not private Manor/Crypt assets. It invokes the public capture/audit an
 package preflight/build CLIs from an unrelated working directory, relocates all
 three profiles and makes the original fixture paths unavailable. It verifies
 dependency coexistence, a zero-token scene, supported/rejected tokens, unchanged
-source bytes, overwrite refusal and changed-input rejection. Each command's
+source bytes, overwrite refusal and changed-input rejection. It also reviews a
+simulated identical destination and detects a retained manual note edit (20 CLI
+commands total). Each command's
 stdout/stderr and exit code are retained. Existing rehearsal directories are
 refused; failed runs retain evidence instead of silently retrying.
 

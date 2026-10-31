@@ -6,9 +6,13 @@ Profile generated-token player visibility/restart checks passed on October 31;
 bounded fog remains separately deferred. See the [roadmap](docs/ROADMAP.md) and
 [scene-import operator/release checklist](docs/SCENE-IMPORT-RELEASE.md).
 
-Latest local Windows validation (October 31, Python 3.14.2): **168 run, 164 passed,
-four symlink skips**. A [synthetic CLI rehearsal](docs/SCENE-IMPORT-RELEASE.md#synthetic-operator-rehearsal)
+Latest local Windows validation (October 31, Python 3.14.2): **173 run, 168 passed,
+four symlink skips, one LevelDB error**. The historical `.dbtmp` replacement
+failure recurred; this is not a clean full-suite PASS. New install-review/rehearsal
+checks passed. A [synthetic CLI rehearsal](docs/SCENE-IMPORT-RELEASE.md#synthetic-operator-rehearsal)
 builds relocated profiles without their original paths and tests rejected updates.
+`forgebridge.install_review` compares generated packages to an explicitly selected
+static MyAssets copy without installing or changing anything; see the operator guide.
 Shared capture/package checks reject case aliases and merge
 conflicts before mutation. The CI diagnostic gate now propagates failed phases
 after retaining evidence; its updated GitHub run must be checked separately.

@@ -27,16 +27,25 @@ def _check_paths(names, *, native_only=True):
 
 
 def read_export(path):
+    return _read_archive(path, native_only=True, max_entries=2048)
+
+
+def read_package(path):
+    """Bounded combined-package loading, including inert supplemental reports."""
+    return _read_archive(path, native_only=False, max_entries=8192)
+
+
+def _read_archive(path, *, native_only, max_entries):
     with zipfile.ZipFile(path) as archive:
         entries = [e for e in archive.infolist() if not e.is_dir()]
         names = [e.filename for e in entries]
-        if (len(entries) > 2048 or len(names) != len(set(names))
+        if (len(entries) > max_entries or len(names) != len(set(names))
                 or sum(e.file_size for e in entries) > 256 * 1024 * 1024
                 or any(e.file_size > 64 * 1024 * 1024 for e in entries)):
             raise ValueError('Invalid or oversized native export')
         if any((e.external_attr >> 16) & 0o170000 == 0o120000 for e in archive.infolist()):
             raise ValueError('Native export contains a symbolic link')
-        _check_paths(names)
+        _check_paths(names, native_only=native_only)
         return {n: archive.read(n) for n in names}
 
 

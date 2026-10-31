@@ -106,11 +106,34 @@ def rehearse(destination):
                          for n, d in sorted(files.items()) if n.startswith('MyAssets/'))).hexdigest()})
     if fingerprint(offline) != source_hash:
         raise ValueError('Original synthetic inputs changed')
+    snapshot = root / 'static snapshot' / 'MyAssets'
+    snapshot.mkdir(parents=True)
+    for name, data in combined.items():
+        path = snapshot.parent / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(data)
+    review_args = ['--snapshot-root', snapshot, '--static-snapshot']
+    for sid in ('A', 'B', 'Zero'):
+        review_args.extend(['--package', root / (sid + '-scene.zip')])
+    identical_review = json.loads(cli('forgebridge.install_review', *review_args).stdout)
+    if identical_review['counts']['identical'] != len(combined) or not identical_review['ok']:
+        raise ValueError('Snapshot review did not reconcile identical package contents')
+    edited = next(snapshot.parent / name for name in sorted(combined) if name.endswith('.rwnote'))
+    original = edited.read_bytes()
+    try:
+        edited.write_bytes(b'manual user edits')
+        conflict_review = json.loads(cli('forgebridge.install_review', *review_args, expected=1).stdout)
+        if conflict_review['counts']['conflict'] != 1 or edited.read_bytes() != b'manual user edits':
+            raise ValueError('Read-only conflict review did not preserve user edits')
+    finally:
+        edited.write_bytes(original)
     result = {'format': 'forgebridge.operator-rehearsal', 'version': 1, 'status': 'PASS',
               'scope': 'synthetic public CLI/file checks; no install or native runtime validation',
               'source_unchanged': True, 'commands': len(commands), 'scenes': rows,
               'combined_closed_references': check_metadata_references(combined),
               'original_paths_unavailable_during_build': True,
+              'install_review': {'identical': identical_review['counts'],
+                                 'manual_edit': conflict_review['counts'], 'writes': 'none'},
               'runtime_validation': 'not performed'}
     (root / 'results.json').write_text(json.dumps(result, indent=2)+'\n', encoding='utf-8')
     return result

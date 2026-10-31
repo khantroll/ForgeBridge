@@ -19,7 +19,8 @@ class OperatorRehearsalTests(unittest.TestCase):
             self.assertEqual([s['native_tokens'] for s in result['scenes']], [1, 1, 0])
             self.assertEqual([s['rejected_tokens'] for s in result['scenes']], [2, 2, 0])
             self.assertGreater(result['combined_closed_references'], 0)
-            self.assertEqual(result['commands'], 18)
+            self.assertEqual(result['commands'], 20)
+            self.assertEqual(result['install_review']['manual_edit']['conflict'], 1)
             before = (root/'results.json').read_bytes()
             with self.assertRaisesRegex(ValueError, 'nothing is overwritten'):
                 rehearse(root)
