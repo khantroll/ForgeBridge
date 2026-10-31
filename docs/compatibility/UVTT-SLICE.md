@@ -91,3 +91,14 @@ RollTable source formulas, results, ranges, weights, replacement/drawn state, pe
 Verification includes JSON/NeDB/LevelDB Adventure journal-to-table chains, cycles, exact pages, relative links, same-ID variant isolation, compendium namespaces, legacy table-result pointers, missing/ambiguous targets, bounded traversal, and inert formulas. The uploaded Crypt journal's 11 relative links all resolve. References to other journals/tables require a fresh original-package export; the previous companion only contained the directly linked Crypt journal.
 
 Sources: [Foundry UUID parser and relative context](https://foundryvtt.com/api/functions/foundry.utils.parseUuid.html), [Foundry TableResult data](https://foundryvtt.com/api/v12/interfaces/foundry.types.TableResultData.html). Source links and scripts are preserved as data; no Foundry runtime is invoked.
+
+## Fog and vision (2026-10-31)
+
+Foundry `tokenVision`, `fog.exploration` (v10: `fogExploration`) and
+`environment.globalLight.enabled` (v10: `globalLight`) now produce one `manual`
+`fog-vision` line instead of generic unknown-scene-field lines. ForgeBridge does
+not write Toolkit fog state, explored-fog history or per-token vision. Arkenforge
+manual fog starts fully covered, so a converted map's player screen shows only fog
+until areas are revealed or fog is disabled (observed 2026-10-31 on both profile
+maps). With `tokenVision=false` the line tells the GM to disable or clear Toolkit
+fog to match Foundry. All 17 Count's Manor scenes store `tokenVision=true`.

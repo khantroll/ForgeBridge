@@ -117,6 +117,10 @@ SCENE_FIELDS_EXPLAINED = {
     "environment",
     "ambient_light",
     "ambientLight",
+    "tokenVision",
+    "fog",
+    "fogExploration",
+    "globalLight",
 }
 
 RETAINED_SKIP = {
@@ -842,6 +846,7 @@ def _grade_scene_fields(scene: dict, image_ref: str, lines: list[dict]) -> None:
                 name=level_name,
             )
         )
+    _grade_fog_vision(scene, lines)
     _grade_placeables(scene, lines)
     flags = scene.get("flags")
     if isinstance(flags, dict):
@@ -874,6 +879,56 @@ def _grade_scene_fields(scene: dict, image_ref: str, lines: list[dict]) -> None:
                 path=key,
             )
         )
+
+
+def _fog_vision_settings(scene: dict) -> dict:
+    """Read Foundry fog/vision switches across v10 (flat) and v11+ (nested) shapes."""
+    fog = scene.get("fog") if isinstance(scene.get("fog"), dict) else {}
+    environment = scene.get("environment") if isinstance(scene.get("environment"), dict) else {}
+    global_light = environment.get("globalLight")
+    settings = {}
+    if isinstance(scene.get("tokenVision"), bool):
+        settings["tokenVision"] = scene["tokenVision"]
+    if isinstance(fog.get("exploration"), bool):
+        settings["fog.exploration"] = fog["exploration"]
+    elif isinstance(scene.get("fogExploration"), bool):
+        settings["fogExploration"] = scene["fogExploration"]
+    if isinstance(global_light, dict) and isinstance(global_light.get("enabled"), bool):
+        settings["environment.globalLight.enabled"] = global_light["enabled"]
+    elif isinstance(scene.get("globalLight"), bool):
+        settings["globalLight"] = scene["globalLight"]
+    return settings
+
+
+def _grade_fog_vision(scene: dict, lines: list[dict]) -> None:
+    """Explain source fog/vision so a fogged Toolkit player view is expected, not a defect.
+
+    ForgeBridge does not write Toolkit fog state, explored areas or per-token
+    vision. Arkenforge manual fog starts with nothing revealed for players.
+    """
+    settings = _fog_vision_settings(scene)
+    has_fog_data = any(k in scene for k in ("tokenVision", "fog", "fogExploration", "globalLight"))
+    if not settings and not has_fog_data:
+        return
+    vision = settings.get("tokenVision")
+    exploration = settings.get("fog.exploration", settings.get("fogExploration"))
+    observed = ", ".join(f"{k}={str(v).lower()}" for k, v in settings.items()) or "no readable switches"
+    if vision is False:
+        intent = ("In Foundry players were not limited by token vision, so the whole lit scene was visible. "
+                  "To match, disable Arkenforge fog of war for this map (Live Play/VTT -> Fog of War) "
+                  "or clear all fog; otherwise players see only fog.")
+    elif vision is True:
+        intent = ("In Foundry players saw only what their tokens could see"
+                  + (", and explored areas stayed revealed" if exploration else "")
+                  + ". Arkenforge manual fog starts fully covered: reveal areas as the party explores, "
+                  "or enable dynamic fog if the map's tokens are set up for it.")
+    else:
+        intent = ("Foundry vision settings could not be read. Check Arkenforge fog of war before showing "
+                  "the player screen; covered manual fog shows players only fog.")
+    lines.append(_line(MANUAL, "fog-vision",
+        f"scene fog/vision settings ({observed}). {intent} Foundry explored-fog history "
+        "(FogExploration documents) and per-token vision are not converted.",
+        document_type="Scene", id=_text_id(scene), name=_text_name(scene), path="fog"))
 
 
 def _grade_placeables(scene: dict, lines: list[dict]) -> None:

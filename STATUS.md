@@ -21,8 +21,9 @@ capture destination is chosen, reusing capture checks and writing nothing. See
 [portable capture](docs/NATIVE-CAPTURE.md#read-only-audit-before-capture).
 Latest Linux suite: **158 passed, three symlink skips**. Next independent task:
 the intermittent Windows LevelDB `.dbtmp` replacement error (Windows-only;
-needs a Windows test run), then map Foundry scene fog/vision settings into the
-loss report so converted maps explain why players may see only fog.
+needs a Windows test run). Foundry fog/vision settings now produce a manual
+`fog-vision` loss-report line explaining why converted maps show players only
+fog (164 passed on Linux; checked against all 17 Count's Manor scenes).
 
 Portable capture milestone (2026-10-18): `forgebridge.native_capture` captures
 dependency-closed native ZIPs with original member bytes and a provenance manifest.
