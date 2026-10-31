@@ -13,6 +13,10 @@ checks passed. A [synthetic CLI rehearsal](docs/SCENE-IMPORT-RELEASE.md#syntheti
 builds relocated profiles without their original paths and tests rejected updates.
 `forgebridge.install_review` compares generated packages to an explicitly selected
 static MyAssets copy without installing or changing anything; see the operator guide.
+The [replacement diagnostic](validation/2026-10-31-NATIVE-REPLACE.md) now reproduces
+error1175 in a direct native API comparison and a copied open outside AppContainer;
+root cause remains unresolved. Seven targeted reader/probe checks pass; no full
+rerun erases the recorded failure.
 Shared capture/package checks reject case aliases and merge
 conflicts before mutation. The CI diagnostic gate now propagates failed phases
 after retaining evidence; its updated GitHub run must be checked separately.

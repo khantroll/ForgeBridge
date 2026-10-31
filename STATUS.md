@@ -4,6 +4,16 @@
 **Implementation started:** Inventory CLI, importable UVTT, loose scene assets, embedded Adventure scene discovery, ambient color, and deterministic AmbientLight range conversion  
 **General converter:** Bounded scene/content/token slices implemented; complete actor and behavior conversion pending.
 
+Native replacement attribution (2026-10-31): upstream-style Windows file API probe
+reproduces error1175 in one of ten free replacements; all ten Python os.replace
+controls pass. Outside AppContainer, a separate copied-LevelDB open also fails
+(1/10), so sandbox containment alone is not the cause. Deliberate non-delete-shared
+handles produce error32, not1175. Standalone no-LevelDB process: 20 free operations
+pass/20 held controls block as expected. Failed trial files now retained. Source
+hashes unchanged; no retry, elevation or security changes. Reader errors now retain
+their cause after long paths; seven targeted tests pass. Latest full suite remains
+the failed 173-test run below. See [diagnosis](validation/2026-10-31-NATIVE-REPLACE.md).
+
 Installation review and blocker (2026-10-31): added read-only
 `forgebridge.install_review` against a caller-selected static MyAssets copy.
 Reports new/identical/conflicting/blocked files, hashes and supplemental reports;

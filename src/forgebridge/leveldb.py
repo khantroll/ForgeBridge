@@ -157,7 +157,8 @@ def _open_and_decode(dest: Path, result: LevelDBResult, *, max_entries: int, max
             "warning",
             "leveldb-not-decoded",
             "LevelDB directory could not be opened. It was not read as text and was not executed. "
-            + _safe_exc(exc),
+            + _safe_exc(exc)
+            + " Opening was attempted only on a temporary copy; the source was not opened by LevelDB. No retry was performed.",
         )
         return
     result.opened = True
@@ -327,7 +328,9 @@ def _safe_exc(exc: BaseException) -> str:
     text = f"{type(exc).__name__}: {exc}".splitlines()[0]
     for banned in ("writeFileSync", "/tmp/forgebridge"):
         text = text.replace(banned, "[redacted]")
-    return text[:180]
+    # Long Windows snapshot paths can otherwise consume the entire budget and
+    # hide the native failure reason at the end of the message.
+    return text if len(text) <= 180 else text[:60] + " ... " + text[-115:]
 
 
 class LevelDBUnavailable(Exception):

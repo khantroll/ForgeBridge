@@ -27,6 +27,21 @@ MARKER = Path("/tmp/forgebridge-leveldb-executed")
 
 
 class LevelDBInventoryTests(unittest.TestCase):
+    def test_open_failure_preserves_native_cause_after_long_snapshot_path(self):
+        import plyvel_next as plyvel
+        cause = 'Unable to remove the file to be replaced.'
+        error = plyvel.IOError('IO error: ' + 'long-temporary-path/' * 30 + '000006.dbtmp: ' + cause)
+        original = {'CURRENT': b'MANIFEST-000002\n'}
+        with patch('plyvel_next.DB', side_effect=error) as opening:
+            result = read_leveldb_bytes(original, max_entries=10, max_value_bytes=100)
+        self.assertFalse(result.opened)
+        self.assertEqual(opening.call_count, 1)
+        self.assertEqual(original, {'CURRENT': b'MANIFEST-000002\n'})
+        detail = result.diagnostics[0][2]
+        self.assertIn(cause, detail)
+        self.assertIn('temporary copy', detail)
+        self.assertIn('No retry was performed', detail)
+
     def setUp(self) -> None:
         if MARKER.exists():
             MARKER.unlink()
