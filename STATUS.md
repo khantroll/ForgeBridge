@@ -1,8 +1,28 @@
 # Project Status
 
-**Lifecycle:** CALIBRATED SCENE PROFILES
+**Lifecycle:** CALIBRATED SCENE PROFILES — PLAYER RUNTIME VALIDATED
 **Implementation started:** Inventory CLI, importable UVTT, loose scene assets, embedded Adventure scene discovery, ambient color, and deterministic AmbientLight range conversion  
 **General converter:** Bounded scene/content/token slices implemented; complete actor and behavior conversion pending.
+
+Profile player runtime checks (2026-10-31): **PASS**. Crypt generated Cursed
+Cannibal is visible in actual player output, absent when hidden and visible again
+when restored. After a normal full Toolkit restart (no save), both Crypt Cursed
+Cannibal tokens and Manor generated Stoker appear in player output at their
+original positions; the pre-existing hidden Crypt token stays hidden from players.
+Two stream sessions at 1280×720/15 connected without the 10-19 WebRTC exception.
+The earlier black player output is explained by saved manual fog with no revealed
+area ("Fog of war is active!"); fog was disabled for the session only, so bounded
+fog remains DEFERRED. The 10-24 capture mismatch cleared after a Windows restart.
+No map saved. See [player evidence](validation/2026-10-31-PROFILE-PLAYER.md).
+
+Read-only native audit (2026-10-31): `native_capture --audit` reports selected-map
+closure, per-file input source, unselected files and every conflict/gap before a
+capture destination is chosen, reusing capture checks and writing nothing. See
+[portable capture](docs/NATIVE-CAPTURE.md#read-only-audit-before-capture).
+Latest Linux suite: **158 passed, three symlink skips**. Next independent task:
+the intermittent Windows LevelDB `.dbtmp` replacement error (Windows-only;
+needs a Windows test run), then map Foundry scene fog/vision settings into the
+loss report so converted maps explain why players may see only fog.
 
 Portable capture milestone (2026-10-18): `forgebridge.native_capture` captures
 dependency-closed native ZIPs with original member bytes and a provenance manifest.
