@@ -4,6 +4,22 @@
 **Implementation started:** Inventory CLI, importable UVTT, loose scene assets, embedded Adventure scene discovery, ambient color, and deterministic AmbientLight range conversion  
 **General converter:** Bounded scene/content/token slices implemented; complete actor and behavior conversion pending.
 
+Operator rehearsal (2026-10-31): new developer script exercises 18 public CLI
+steps across three relocated synthetic profiles, with original input paths offline.
+Supported/rejected/zero-token counts reconcile; combined packages close 74 native
+metadata references. Overwrites and changed inputs are refused; original bytes
+remain unchanged. This is file-level CLI acceptance, not native calibration,
+installation, fresh-operator or Toolkit runtime acceptance. Full Windows/Python
+3.14.2 suite: **168 run, 164 passed, four symlink skips**, 64.140s. See
+[evidence](validation/2026-10-31-OPERATOR-REHEARSAL.md).
+
+The subsequent explicit user-requested window switch restored actual Toolkit
+capture (bound Shift-only input, focused Toolkit, edit counter 0/0). This
+supersedes the immediate capture-access blocker described below; bounded fog was
+not edited or passed. No UI work overlapped the rehearsal/tests. Next independent
+work: inspect the remaining release gates and make install conflict review easier
+without automatic installation; pending CI outcomes still need authenticated review.
+
 Resume (2026-10-31): fast-forwarded five upstream commits to edf4d7c; preserved
 local assets. Imported the two GitHub roadmap documents without merging their
 historical-base branches. Local Windows 11/Python 3.14.2 suite: **167 run, 163

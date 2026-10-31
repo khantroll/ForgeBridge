@@ -6,8 +6,10 @@ Profile generated-token player visibility/restart checks passed on October 31;
 bounded fog remains separately deferred. See the [roadmap](docs/ROADMAP.md) and
 [scene-import operator/release checklist](docs/SCENE-IMPORT-RELEASE.md).
 
-Latest local Windows validation (October 31, Python 3.14.2): **167 run, 163 passed,
-four symlink skips**. Shared capture/package checks reject case aliases and merge
+Latest local Windows validation (October 31, Python 3.14.2): **168 run, 164 passed,
+four symlink skips**. A [synthetic CLI rehearsal](docs/SCENE-IMPORT-RELEASE.md#synthetic-operator-rehearsal)
+builds relocated profiles without their original paths and tests rejected updates.
+Shared capture/package checks reject case aliases and merge
 conflicts before mutation. The CI diagnostic gate now propagates failed phases
 after retaining evidence; its updated GitHub run must be checked separately.
 
@@ -22,8 +24,9 @@ py -m forgebridge.package --profile profiles/manor.json --out builds/manor-v1.zi
 
 See [October 31 player evidence](validation/2026-10-31-PROFILE-PLAYER.md) for the
 accepted Crypt token hide/restore and both-profile player restart checks. No map
-was saved in that pass. A later Codex capture-target mismatch blocks new desktop
-work without invalidating those observations; see [resume evidence](validation/2026-10-31-RESUME.md).
+was saved in that pass. A later capture-target mismatch cleared after an explicit
+switch to Toolkit, with no map edits. Bounded fog remains deferred; see
+[resume evidence](validation/2026-10-31-RESUME.md).
 
 Desktop validation now follows a [CPU-aware runbook](docs/DESKTOP-VALIDATION.md)
 with a read-only load sampler, separate compute/UI phases and sequential captures.

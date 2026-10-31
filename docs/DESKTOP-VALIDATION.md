@@ -54,3 +54,13 @@ Resuming after recovery requires fresh enumeration and capture. Verify token
 identity before visibility changes; an eye badge itself reveals a hidden token.
 Restore source states, save only the intended validation maps and distinguish
 saved-file audit evidence from observed player output. Keep labels off.
+
+October 31 window-switch recovery: the documented Windows CUA bound-input API
+activates its selected window, while capture alone did not bring Toolkit forward.
+After the user explicitly requested switching windows, binding the fresh Toolkit
+ID and pressing only Shift brought Toolkit forward; the following screenshot
+showed Toolkit and edit counter 0/0. This was window activation, not a map-edit
+gesture. Never send content-changing keys or clicks through a mismatched image,
+and never automate Codex's own UI to minimize it. Re-observe the actual Toolkit
+surface before any map action. This observation does not establish why occluded
+capture showed the foreground app or prove that future capture failures are fixed.

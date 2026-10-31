@@ -101,6 +101,25 @@ See the [desktop runbook](DESKTOP-VALIDATION.md).
 - [ ] Review provenance, loss reports, compatibility scope and release artifacts.
 - [ ] Obtain deliberate review/release approval before merging or tagging.
 
-Next work can proceed without desktop access: exercise these instructions against
-a clean synthetic portable profile, audit package contents and preserve failure
-evidence. That rehearsal supports file-level reproducibility, not native acceptance.
+## Synthetic operator rehearsal
+
+From a complete repository checkout with requirements.txt installed:
+
+```powershell
+py scripts/rehearse_scene_import.py --out rehearsal-output-NEW
+```
+
+This developer tool intentionally uses the repository's synthetic test-fixture
+builders, not private Manor/Crypt assets. It invokes the public capture/audit and
+package preflight/build CLIs from an unrelated working directory, relocates all
+three profiles and makes the original fixture paths unavailable. It verifies
+dependency coexistence, a zero-token scene, supported/rejected tokens, unchanged
+source bytes, overwrite refusal and changed-input rejection. Each command's
+stdout/stderr and exit code are retained. Existing rehearsal directories are
+refused; failed runs retain evidence instead of silently retrying.
+
+Only the freshly created synthetic fixture directory is renamed. No installed
+assets are read or written. Inputs already include synthetic native geometry and
+controls: this does not automate native import/export/calibration, test a fresh
+human operator, or establish Toolkit acceptance. Follow the manual steps above
+for a real source. See [rehearsal evidence](../validation/2026-10-31-OPERATOR-REHEARSAL.md).
