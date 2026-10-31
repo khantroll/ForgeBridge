@@ -4,6 +4,17 @@
 **Implementation started:** Inventory CLI, importable UVTT, loose scene assets, embedded Adventure scene discovery, ambient color, and deterministic AmbientLight range conversion  
 **General converter:** Bounded scene/content/token slices implemented; complete actor and behavior conversion pending.
 
+CI (2026-10-31, commit 271d7dd): GitHub Actions `tests` workflow. Linux and
+Windows (windows-latest, Python 3.13): **167 run, OK, 3 symlink skips** each.
+Windows LevelDB job: bounded diagnostic 30/30 create, copied-open and
+replace-control PASS, source unchanged; LevelDB-heavy tests 10/10 OK; full suite
+3/3 OK; zero `.dbtmp` mentions. The intermittent `.dbtmp` error did **not**
+reproduce on a clean Windows runner, which points at the local host (antivirus,
+indexer or sync on the working folder) rather than the code, but the root cause
+is still unconfirmed. Bounded fog test started on a disposable copy
+(`ForgeBridge Fog Test 2026-10-31`, saved as new; originals untouched) and is
+paused before any fog edit.
+
 Profile player runtime checks (2026-10-31): **PASS**. Crypt generated Cursed
 Cannibal is visible in actual player output, absent when hidden and visible again
 when restored. After a normal full Toolkit restart (no save), both Crypt Cursed
