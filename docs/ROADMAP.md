@@ -1,6 +1,6 @@
 # ForgeBridge Roadmap
 
-**Updated:** 2026-10-31  
+**Updated:** 2026-10-31
 **Primary direction:** Import foreign VTT/map and campaign structures **into Arkenforge**. Foundry VTT is the first source. Fantasy Grounds Unity is a planned additional **inbound** source. Bidirectional export is a possible future decision, **not current scope**.
 
 This is a prioritized plan, not a declaration that every capability is released. See `STATUS.md`, PR #8 and its validation evidence for the implementation record. The advanced native scene work resides in **open PR #8**; the main-branch README reflects an earlier UVTT milestone. PR #9 is Fantasy Grounds research only.
