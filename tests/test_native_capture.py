@@ -181,3 +181,99 @@ class NativeCaptureTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class NativeAuditTests(unittest.TestCase):
+    def snapshot(self, root):
+        return {p.relative_to(root).as_posix(): p.read_bytes() for p in sorted(root.rglob('*')) if p.is_file()}
+
+    def test_clean_audit_matches_capture_selection_and_writes_nothing(self):
+        from forgebridge.native_capture import audit
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            files = {'MyAssets/Maps/A.rwmap': record('MyAssets/Media/B.rwmeta'),
+                     'MyAssets/Maps/A.rwmeta': record(),
+                     'MyAssets/Media/B.rwmeta': record(),
+                     'MyAssets/Media/B.rwfile': record(),
+                     'MyAssets/Maps/Unrelated.rwmap': record()}
+            archive(root/'in.zip', files)
+            before = self.snapshot(root)
+            report = audit([root/'in.zip'], 'MyAssets/Maps/A.rwmap', root/'planned')
+            self.assertEqual(self.snapshot(root), before)
+            self.assertFalse((root/'planned').exists())
+            self.assertTrue(report['ok'], report['findings'])
+            self.assertTrue(report['destination']['available'])
+            self.assertEqual(report['unselected'], ['MyAssets/Maps/Unrelated.rwmap'])
+            captured = capture([root/'in.zip'], root/'planned', 'MyAssets/Maps/A.rwmap')
+            self.assertEqual([f['path'] for f in report['files']], [f['path'] for f in captured['files']])
+            self.assertEqual([f['sha256'] for f in report['files']], [f['sha256'] for f in captured['files']])
+            self.assertEqual(report['dependencies'], captured['dependencies'])
+            again = audit([root/'in.zip'], 'MyAssets/Maps/A.rwmap', root/'planned')
+            self.assertFalse(again['ok'])
+            self.assertEqual([f['check'] for f in again['findings']], ['destination-exists'])
+
+    def test_audit_lists_every_gap_instead_of_stopping(self):
+        from forgebridge.native_capture import audit
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            primary = 'MyAssets/Maps/A.rwmap'
+            archive(root/'a.zip', {primary: record('MyAssets/Missing.rwmeta'),
+                                   'MyAssets/Maps/A.rwmeta': record('MyAssets/Media/x.png'),
+                                   'MyAssets/Notes/N.rwmeta': record()})
+            archive(root/'b.zip', {'MyAssets/Notes/N.rwmeta': record('different'),
+                                   'MyAssets/Notes/n.rwnote': record()})
+            (root/'broken.zip').write_bytes(b'not a zip')
+            before = self.snapshot(root)
+            report = audit([root/'a.zip', root/'b.zip', root/'broken.zip'], primary)
+            self.assertEqual(self.snapshot(root), before)
+            checks = sorted(f['check'] for f in report['findings'])
+            self.assertEqual(checks, ['conflicting-bytes', 'missing-dependency',
+                                      'unreadable-export', 'unsupported-reference'])
+            self.assertFalse(report['ok'])
+            self.assertEqual(report['inputs'][2]['readable'], False)
+
+    def test_ambiguous_exports_summarise_each_candidate(self):
+        from forgebridge.native_capture import audit
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            archive(root/'in.zip', {'MyAssets/Maps/A.rwmap': record(), 'MyAssets/Maps/A.rwmeta': record(),
+                                    'MyAssets/Maps/B.rwmap': record('MyAssets/Gone.rwmeta')})
+            report = audit([root/'in.zip'])
+            self.assertEqual(report['findings'][0]['check'], 'map-selection')
+            candidates = {c['map']: c for c in report['candidates']}
+            self.assertTrue(candidates['MyAssets/Maps/A.rwmap']['complete'])
+            self.assertFalse(candidates['MyAssets/Maps/B.rwmap']['complete'])
+            self.assertIsNone(report['primary_map'])
+
+    def test_case_alias_across_exports_and_unsafe_reference(self):
+        from forgebridge.native_capture import audit
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            unsafe = 'MyAssets' + chr(92) + '..' + chr(92) + 'outside.rwmeta'
+            archive(root/'a.zip', {'MyAssets/Maps/A.rwmap': record(unsafe), 'MyAssets/Maps/A.rwmeta': record()})
+            archive(root/'b.zip', {'MyAssets/Maps/a.rwmeta': record()})
+            report = audit([root/'a.zip', root/'b.zip'], 'MyAssets/Maps/A.rwmap')
+            checks = sorted(f['check'] for f in report['findings'])
+            self.assertEqual(checks, ['case-conflict', 'unsafe-path'])
+
+    def test_cli_audit_exit_codes_and_no_output(self):
+        import io, json, contextlib
+        from forgebridge.native_capture import main
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            archive(root/'in.zip', {'MyAssets/Maps/A.rwmap': record(), 'MyAssets/Maps/A.rwmeta': record()})
+            out = io.StringIO()
+            with contextlib.redirect_stdout(out), self.assertRaises(SystemExit) as done:
+                main(['--audit', '--export', str(root/'in.zip')])
+            self.assertEqual(done.exception.code, 0)
+            self.assertTrue(json.loads(out.getvalue())['ok'])
+            archive(root/'bad.zip', {'MyAssets/Maps/A.rwmap': record('MyAssets/Gone.rwmeta'),
+                                     'MyAssets/Maps/A.rwmeta': record()})
+            out = io.StringIO()
+            with contextlib.redirect_stdout(out), self.assertRaises(SystemExit) as done:
+                main(['--audit', '--export', str(root/'bad.zip')])
+            self.assertEqual(done.exception.code, 1)
+            self.assertEqual(sorted(p.name for p in root.iterdir()), ['bad.zip', 'in.zip'])
+            with contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit) as done:
+                main(['--export', str(root/'in.zip')])
+            self.assertEqual(done.exception.code, 2)

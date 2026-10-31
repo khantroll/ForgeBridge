@@ -17,6 +17,27 @@ deterministic member timestamps; the manifest records input and member hashes,
 dependency edges, primary map and the declared control/scene-geometry role.
 NRBF parsing is inert; imported scripts are never executed.
 
+## Read-only audit before capture
+
+Check exports before choosing where to capture them. The audit writes nothing,
+reuses the same limits and path/conflict/reference checks, and lists every
+finding instead of stopping at the first:
+
+```powershell
+py -m forgebridge.native_capture --audit --export control.zip --export deps.zip --map "MyAssets/Maps/Control.rwmap" --out planned-capture
+```
+
+The JSON report gives input hashes, all maps found, the selected closure (paths,
+hashes, which input supplied each file, dependency edges), files that capture
+would leave out, and findings by `check`: `unreadable-export`, `case-conflict`,
+`conflicting-bytes`, `limits`, `map-selection`, `selected-map-missing`,
+`unsafe-path`, `unsupported-reference`, `missing-dependency`,
+`destination-exists`, `destination-name`. With several maps and no `--map`, each
+candidate map gets a completeness summary. `--out` is optional and only checked
+for availability. Exit code 0 means capture would accept these inputs; 1 means
+findings; 2 means a usage error. Saved-map (`--asset-root`) audits are not yet
+supported; export the map first or capture directly with `--toolkit-closed`.
+
 Path and conflict checks are shared with production package assembly. Repeated
 exact paths with identical bytes deduplicate; differing bytes or case aliases
 (even with identical bytes) fail with the conflicting paths. A failed dependency

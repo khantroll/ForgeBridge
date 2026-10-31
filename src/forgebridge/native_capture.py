@@ -65,6 +65,128 @@ def dependency_closure(files, primary=None):
     return primary, found, sorted(edges, key=lambda e: (e['from'], e['to']))
 
 
+def _closure_report(files, primary):
+    """Walk one map's closure without raising, so an audit can list every gap."""
+    pending = [primary, primary[:-6] + '.rwmeta']
+    found, edges, missing, errors = {}, [], set(), []
+    while pending:
+        name = pending.pop()
+        if name in found:
+            continue
+        try:
+            safe_name(name)
+        except ValueError as exc:
+            errors.append({'check': 'unsafe-path', 'detail': str(exc)})
+            continue
+        if name not in files:
+            missing.add(name)
+            continue
+        data = found[name] = files[name]
+        try:
+            references = native_references(data, name)
+        except ValueError as exc:
+            check = 'unsafe-path' if 'Unsafe native path' in str(exc) else 'unsupported-reference'
+            errors.append({'check': check, 'detail': str(exc)})
+            references = []
+        for value in references:
+            edges.append({'from': name, 'to': value})
+            pending.append(value)
+        if name.endswith('.rwmeta'):
+            siblings = [name[:-7] + suffix for suffix in ('.rwmap', '.rwnote', '.rwfile')]
+            pending.extend(n for n in siblings if n in files)
+            if not any(n in files for n in siblings):
+                missing.add(name[:-7] + '.[rwmap|rwnote|rwfile]')
+    errors.extend({'check': 'missing-dependency', 'detail': name} for name in sorted(missing))
+    return found, sorted(edges, key=lambda e: (e['from'], e['to'])), errors
+
+
+def audit(exports, primary=None, destination=None):
+    """Read-only closure/conflict audit of native exports. Never writes any file.
+
+    Reuses the capture checks (export limits, portable paths, case aliases,
+    conflicting bytes, unsupported references, missing dependencies) but reports
+    every finding instead of stopping at the first, so a user can fix inputs
+    before choosing a capture destination.
+    """
+    exports = list(exports)
+    findings, inputs, files, owners = [], [], {}, {}
+    if not exports or len(exports) > 32:
+        findings.append({'check': 'input-count', 'detail': 'Select between 1 and 32 native export inputs'})
+    for export in exports[:32]:
+        row = {'filename': Path(export).name}
+        inputs.append(row)
+        try:
+            row['sha256'] = fingerprint(export)
+            entries = checked_export(export)
+            if fingerprint(export) != row['sha256']:
+                raise ValueError('Export changed during audit: ' + str(export))
+        except (ValueError, OSError, zipfile.BadZipFile) as exc:
+            row['readable'] = False
+            findings.append({'check': 'unreadable-export', 'detail': Path(export).name + ': ' + str(exc)})
+            continue
+        row['readable'], row['entries'] = True, len(entries)
+        for path, data in sorted(entries.items()):
+            folded = path.casefold()
+            prior = next((p for p in files if p.casefold() == folded and p != path), None)
+            if prior is not None:
+                findings.append({'check': 'case-conflict',
+                                 'detail': prior + ' (' + owners[prior] + ') / ' + path + ' (' + row['filename'] + ')'})
+            elif path in files and files[path] != data:
+                findings.append({'check': 'conflicting-bytes',
+                                 'detail': path + ': ' + owners[path] + ' differs from ' + row['filename']})
+            elif path not in files:
+                files[path], owners[path] = data, row['filename']
+    if len(files) > 2048 or sum(map(len, files.values())) > 256 * 1024 * 1024:
+        findings.append({'check': 'limits', 'detail': 'Merged native dependencies exceed export limits'})
+    maps = sorted(n for n in files if n.endswith('.rwmap'))
+    report = {'format': 'forgebridge.native-audit', 'version': 1, 'inputs': inputs,
+              'maps': maps, 'primary_map': None, 'dependencies': [], 'files': [],
+              'writes': 'none; audit is read-only'}
+    if primary is not None:
+        try:
+            safe_name(primary)
+        except ValueError as exc:
+            findings.append({'check': 'unsafe-path', 'detail': str(exc)})
+            primary = None
+        else:
+            if primary not in maps:
+                findings.append({'check': 'selected-map-missing', 'detail': primary})
+                primary = None
+    elif len(maps) == 1:
+        primary = maps[0]
+    else:
+        findings.append({'check': 'map-selection',
+                         'detail': 'Select --map explicitly; exports contain ' + str(len(maps)) + ' maps'})
+        summaries = []
+        for candidate in maps:
+            found, _, errors = _closure_report(files, candidate)
+            summaries.append({'map': candidate, 'files': len(found), 'complete': not errors,
+                              'findings': errors})
+        report['candidates'] = summaries
+    if primary is not None:
+        found, edges, errors = _closure_report(files, primary)
+        findings.extend(errors)
+        report.update(primary_map=primary, dependencies=edges,
+                      files=[{'path': n, 'sha256': hashlib.sha256(d).hexdigest(), 'bytes': len(d),
+                              'source': owners[n]} for n, d in sorted(found.items())],
+                      unselected=sorted(set(files) - set(found)))
+    if destination is not None:
+        target = Path(destination).absolute()
+        available = not (target.exists() or target.is_symlink())
+        report['destination'] = {'path': str(target), 'available': available}
+        if not available:
+            findings.append({'check': 'destination-exists', 'detail': 'Capture refuses to overwrite ' + str(target)})
+        else:
+            try:
+                safe_name('MyAssets/' + target.name)
+            except ValueError as exc:
+                report['destination']['available'] = False
+                findings.append({'check': 'destination-name', 'detail': str(exc)})
+    report['findings'] = findings
+    report['ok'] = not findings
+    return report
+
+
 def _remove_owned(path, parent):
     if path.is_symlink() or path.resolve() != parent.resolve() / path.name:
         raise ValueError('Refusing cleanup outside the selected output parent: ' + str(path))
@@ -252,8 +374,21 @@ def main(argv=None):
     parser.add_argument('--toolkit-closed', action='store_true', help='Acknowledge Toolkit is closed for snapshot reads')
     parser.add_argument('--map', help='Exact MyAssets map path; required for ambiguous exports')
     parser.add_argument('--role', choices=('control', 'scene-geometry'), default='control')
-    parser.add_argument('--out', required=True, help='New output directory; never overwritten')
+    parser.add_argument('--out', help='New output directory; never overwritten (optional with --audit)')
+    parser.add_argument('--audit', action='store_true',
+                        help='Read-only: report closure, conflicts and gaps for --export inputs; writes nothing')
     args = parser.parse_args(argv)
+    if args.audit:
+        if not args.export:
+            parser.error('--audit currently supports --export inputs only')
+        try:
+            result = audit(args.export, args.map, args.out)
+        except (ValueError, OSError) as exc:
+            parser.exit(2, str(exc) + '\n')
+        print(json.dumps(result, indent=2))
+        parser.exit(0 if result['ok'] else 1)
+    if not args.out:
+        parser.error('--out is required unless --audit is used')
     if args.profile and args.map:
         parser.error('--map is only valid with --export')
     if args.asset_root and not args.map:
