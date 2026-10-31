@@ -4,6 +4,22 @@
 **Implementation started:** Inventory CLI, importable UVTT, loose scene assets, embedded Adventure scene discovery, ambient color, and deterministic AmbientLight range conversion  
 **General converter:** Bounded scene/content/token slices implemented; complete actor and behavior conversion pending.
 
+Package acceptance reporting (2026-10-31): conversion-report.json now includes
+manual_steps/runtime_acceptance for explicit and profile builds. INSTALL.txt
+explicitly excludes deferred bounded native fog and states Foundry fog/vision is
+not converted. Six package regressions pass,4.634s. No native payload/schema or
+runtime acceptance claim changed. No full suite rerun; prior failed result stands.
+
+Binding provenance (2026-10-31): installed plyvel-next2.1.2 extension and all bundled
+DLLs match the SHA256-verified PyPI wheel. Loaded LevelDB C API reports1.23; exact
+source commit/build patches remain unproven. WPR/WPA already installed; WPR is not
+recording. User approved the bounded system-wide FileIO trace, but non-elevated
+WPR start returned0x80070005 Access is denied (FileIO.Verbose.Memory). Follow-up
+status says not recording; no ETL or traced diagnostic created. No privilege
+change or application elevation attempted. Windows tracing rights are a separate
+blocker. See [provenance](validation/2026-10-31-BINDING-PROVENANCE.md)
+and [capture plan](docs/LEVELDB-TRACE.md). Latest failed full result is unchanged.
+
 Native replacement attribution (2026-10-31): upstream-style Windows file API probe
 reproduces error1175 in one of ten free replacements; all ten Python os.replace
 controls pass. Outside AppContainer, a separate copied-LevelDB open also fails

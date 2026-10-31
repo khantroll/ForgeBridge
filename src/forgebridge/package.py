@@ -64,6 +64,13 @@ def build_package(companion, map_template, media_template, dest, *, name,
         report['regenerated_exported_note_files'] = preserved
         report['counts'].update(native_tokens=0, unsupported_tokens=0)
         report['status'] = 'Combined native package built; check this scene in Toolkit. See STATUS.md for tested scenes. Player visibility remains unverified.'
+        from forgebridge.scene_profile import MANUAL_STEPS
+        report['manual_steps'] = list(MANUAL_STEPS)
+        report['runtime_acceptance'] = {
+            'this_build': 'not established by generating files or matching input hashes',
+            'bounded_native_fog': 'DEFERRED; excluded from current scene-import acceptance',
+            'foundry_fog_vision': 'not converted; manual native controls are a separate capability',
+        }
         if collection is not None:
             files['handout-report.json'] = json.dumps(collection, indent=2).encode()
         if token_control_pack is not None:
@@ -118,6 +125,8 @@ def build_package(companion, map_template, media_template, dest, *, name,
             'PDF originals and reports stay outside MyAssets. PDFs are page images\n'
             'when --pdf-pages is enabled; otherwise they remain references.\n'
             'Labels are off. Native marker icons are retained. Player visibility is unverified.\n'
+            'Bounded native fog reveal/hide/persistence remains DEFERRED and excluded from current acceptance.\n'
+            'Foundry fog/token vision is not converted. GIF setup and native calibration remain manual.\n'
             'If UVTT automatic opening fails, open the saved map from the map browser.\n').encode()
         if len(files) > 8192 or sum(map(len, files.values())) > MAX_TOTAL:
             raise ValueError('Combined native package exceeds size limits')

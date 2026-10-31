@@ -20,7 +20,7 @@ A release may be labeled **scene importer**, not full adventure/campaign convert
 - [ ] PR #8 reviewed for integrity, regression safety and evidence; either merged or clearly split with no loss of accepted functionality.
 - [ ] Run complete automated suite on Windows and Linux; record exact versions, counts, skips, failures and known platform limitations.
 - [ ] Reproduce or bound the Windows LevelDB `.dbtmp` problem; document cause or a safe, tested mitigation. Do not introduce blind retries, suppressed errors or mutation of source databases.
-- [ ] Complete a bounded fog reveal/hide/restart validation or explicitly exclude bounded fog from the release contract with a visible loss-report warning.
+- [x] Explicitly exclude bounded native fog from current scene-import acceptance, with a visible warning in every package's conversion-report.json and INSTALL.txt. Native reveal/hide/restart testing remains DEFERRED; this is exclusion, not runtime PASS.
 - [ ] Repeat end-to-end imports of representative real Foundry scenes into Arkenforge and verify geometry, walls/doors, lighting, supported tokens, notes/links and assets after Toolkit restart; compare generated/saved provenance and hashes.
 - [ ] Verify source contents and user edits remain untouched, including rejected and missing dependencies, path escapes, conflicts, duplicate identities and repeated builds.
 - [ ] Produce repeatable installation, import, validation and rollback instructions for a non-developer operator.
@@ -28,6 +28,14 @@ A release may be labeled **scene importer**, not full adventure/campaign convert
 - [ ] Tag and document the scope of the stable release. No percentage-complete claim without a defined feature denominator.
 
 ## Milestone 1 — Stabilize the Foundry scene importer (P0)
+
+October31 execution update: portable CLI rehearsal and static installation review
+are implemented. The latest full Windows run has one LevelDB error (173 run,
+168 passed, four skipped), so stabilization is not complete. Native API controls
+reproduce replacement error1175; installed binary hashes match the pinned wheel
+and loaded LevelDB reports1.23. User-approved WPR recording was denied0x80070005;
+no trace started. Broader privileged tracing is a separate pending prerequisite.
+See STATUS.md and the binding-provenance/trace-plan documents for exact evidence.
 
 **Goal:** Turn the proven Manor/Crypt implementation into a repeatable, safe release candidate.
 

@@ -65,6 +65,11 @@ your assertion that the copy is static; the tool cannot establish its origin.
 The report is a point-in-time comparison, not authorization to install later:
 recheck the actual destination with Toolkit closed before copying anything.
 
+Every newly built package also carries `manual_steps` and `runtime_acceptance` in
+conversion-report.json. Bounded native fog is explicitly deferred/excluded in
+both that report and INSTALL.txt, independently of Foundry fog/vision conversion.
+These are scope disclosures, not runtime test results or permission to overwrite.
+
 1. Close Toolkit normally. Extract the ZIP into a staging folder outside its data
    directory. Keep reports and source attachments outside the installed MyAssets.
 2. Compare every staged MyAssets relative path against the actual MyAssets root:

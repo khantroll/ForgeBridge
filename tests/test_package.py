@@ -130,6 +130,11 @@ class PackageTests(unittest.TestCase):
                 self.assertIsNone(z.testzip())
                 self.assertEqual(z.read('MyAssets/Media/background.rwfile'), b'unchanged background')
                 self.assertEqual(json.loads(z.read('source-companion.json')), source)
+                serialized = json.loads(z.read('conversion-report.json'))
+                self.assertEqual(serialized['manual_steps'], report['manual_steps'])
+                self.assertIn('DEFERRED', serialized['runtime_acceptance']['bounded_native_fog'])
+                self.assertIn('not converted', serialized['runtime_acceptance']['foundry_fog_vision'])
+                self.assertIn(b'Bounded native fog', z.read('INSTALL.txt'))
                 self.assertIn('handout-report.json', z.namelist())
                 note_strings = recovered({p: z.read(p) for p in z.namelist()
                                           if p.endswith('.rwnote')})[0]
