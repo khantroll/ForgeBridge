@@ -2,32 +2,28 @@
 
 Portable native dependency capture and relocatable pinned profiles are available
 through `python -m forgebridge.native_capture`; see [the capture workflow](docs/NATIVE-CAPTURE.md).
-Pending profile player/fog checks remain separate from independent development.
+Profile generated-token player visibility/restart checks passed on October 31;
+bounded fog remains separately deferred. See the [roadmap](docs/ROADMAP.md) and
+[scene-import operator/release checklist](docs/SCENE-IMPORT-RELEASE.md).
 
-Latest automated validation (October 24): **156 run, 152 passed, four Windows
-symlink skips**. Shared capture/package dependency checks reject case aliases and
-merge conflicts before mutation. Manor/Crypt preflights pass and recaptured bundle
-hashes match prior outputs; see [dependency evidence](validation/2026-10-24-DEPENDENCIES.md).
+Latest local Windows validation (October 31, Python 3.14.2): **167 run, 163 passed,
+four symlink skips**. Shared capture/package checks reject case aliases and merge
+conflicts before mutation. The CI diagnostic gate now propagates failed phases
+after retaining evidence; its updated GitHub run must be checked separately.
 
 > **Status: CALIBRATED SCENE PROFILES**
 >
-> ForgeBridge builds calibrated native scene packages with geometry, room markers, linked notes, attachments and supported tokens. Version 1 profiles bind source identity, hashes and scene-specific calibration. Portable capture preserves dependency bytes and relocatable inputs; Manor/Crypt file demonstrations pass. Accepted GM and earlier Multi Scene player results remain separate from pending Crypt player visibility, profile player restart and bounded fog. Thirty isolated LevelDB diagnostic operations pass; earlier intermittent Windows file-replacement errors remain unresolved. Latest desktop attempt has an activation timeout and capture-target mismatch at low load; prior native WebRTC failure remains separate. See [resume evidence](validation/2026-10-24-RESUME.md). Native calibration, reviewed installation and GIF setup remain manual; actor/vision/behavior gaps remain explicit. Labels off.
+> ForgeBridge builds calibrated native scene packages with geometry, room markers, linked notes, attachments and supported tokens. Version 1 profiles pin source identity, hashes and scene-specific calibration. Portable capture includes a read-only audit. Manor/Crypt GM persistence and October 31 player visibility/restart observations pass. Bounded fog is deferred; Foundry fog/vision is reported as manual, not converted. Historical Windows LevelDB replacement failures remain unrooted despite later clean runs. Native calibration, reviewed installation and GIF setup remain manual; actor/stat/behavior and procedural animation gaps stay explicit. Labels off.
 
 ```powershell
 py -m forgebridge.package --profile profiles/manor.json --preflight
 py -m forgebridge.package --profile profiles/manor.json --out builds/manor-v1.zip
 ```
 
-October 18 resume: both real profile preflights and the full 144-test suite pass
-(140 passed, four symlink skips). Correct generated Manor Stoker is confirmed in
-the GM UI at Size1 and its calibrated position; this does not close the remaining
-profile player-output checks. The validation log includes the exact human framing
-and bounded-fog steps still needed.
-
-Latest player follow-up observes generated Manor Stoker visible, hidden, then
-restored visible in the working browser stream. Restoration is saved. Intermittent
-capture timeouts still block Crypt player and both-profile restart checks; see
-the validation log before resuming.
+See [October 31 player evidence](validation/2026-10-31-PROFILE-PLAYER.md) for the
+accepted Crypt token hide/restore and both-profile player restart checks. No map
+was saved in that pass. A later Codex capture-target mismatch blocks new desktop
+work without invalidating those observations; see [resume evidence](validation/2026-10-31-RESUME.md).
 
 Desktop validation now follows a [CPU-aware runbook](docs/DESKTOP-VALIDATION.md)
 with a read-only load sampler, separate compute/UI phases and sequential captures.

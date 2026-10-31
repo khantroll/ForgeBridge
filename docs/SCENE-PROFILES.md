@@ -139,5 +139,7 @@ validation operation, never part of a production build/preflight.
 
 The pair's file audit passes (Manor one token, Crypt nine and one explicit
 rejection). Representative runtime token/link switching and restart checks pass on October18.
-Actual player visibility of these new outputs remains BLOCKED by a black stream.
-The validation log separates observations from file checks and prior player evidence.
+Actual player visibility/restart samples passed October 31; see
+[runtime evidence](../validation/2026-10-31-PROFILE-PLAYER.md). Fog was disabled
+for those observations; bounded fog is still deferred. The validation log separates
+runtime observations from file-only provenance and earlier player evidence.

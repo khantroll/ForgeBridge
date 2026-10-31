@@ -1,0 +1,224 @@
+{
+  "format": "forgebridge.desktop-load",
+  "version": 1,
+  "phase": "before",
+  "logical_processors": 2,
+  "interval_seconds": 2,
+  "scope": "Approximate CPU deltas normalized across logical processors; not proof of timeout causation. Protected/exited processes may be omitted; browser totals include unrelated tabs. Compute candidates are names, not confirmed builds.",
+  "samples": [
+    {
+      "utc": "2026-10-31T22:52:04.4862662Z",
+      "category_cpu_percent": {
+        "toolkit": 6.41,
+        "launcher": 5.49,
+        "browser": 0.31,
+        "capture_helper": 0.0,
+        "compute_candidate": 0.0,
+        "client_or_runtime": 4.65,
+        "other": 2.57
+      },
+      "category_measured_process_count": {
+        "toolkit": 1,
+        "launcher": 1,
+        "browser": 40,
+        "capture_helper": 1,
+        "compute_candidate": 4,
+        "client_or_runtime": 35,
+        "other": 232
+      },
+      "top_processes": [
+        {
+          "name": "MastersToolkit",
+          "pid": 5324,
+          "category": "toolkit",
+          "cpu_percent": 6.41,
+          "working_mb": 877.5
+        },
+        {
+          "name": "ArkenforgeLauncher",
+          "pid": 20240,
+          "category": "launcher",
+          "cpu_percent": 5.49,
+          "working_mb": 126.0
+        },
+        {
+          "name": "ChatGPT",
+          "pid": 14412,
+          "category": "client_or_runtime",
+          "cpu_percent": 1.82,
+          "working_mb": 428.9
+        },
+        {
+          "name": "ChatGPT",
+          "pid": 10316,
+          "category": "client_or_runtime",
+          "cpu_percent": 0.73,
+          "working_mb": 438.4
+        },
+        {
+          "name": "ChatGPT",
+          "pid": 12920,
+          "category": "client_or_runtime",
+          "cpu_percent": 0.73,
+          "working_mb": 391.4
+        },
+        {
+          "name": "codex",
+          "pid": 5424,
+          "category": "client_or_runtime",
+          "cpu_percent": 0.69,
+          "working_mb": 57.1
+        },
+        {
+          "name": "parsecd",
+          "pid": 11984,
+          "category": "other",
+          "cpu_percent": 0.63,
+          "working_mb": 52.1
+        },
+        {
+          "name": "Resolve",
+          "pid": 26152,
+          "category": "other",
+          "cpu_percent": 0.63,
+          "working_mb": 984.1
+        },
+        {
+          "name": "claude",
+          "pid": 12188,
+          "category": "other",
+          "cpu_percent": 0.35,
+          "working_mb": 271.9
+        },
+        {
+          "name": "codex",
+          "pid": 18692,
+          "category": "client_or_runtime",
+          "cpu_percent": 0.34,
+          "working_mb": 230.3
+        },
+        {
+          "name": "codex",
+          "pid": 16220,
+          "category": "client_or_runtime",
+          "cpu_percent": 0.34,
+          "working_mb": 152.9
+        },
+        {
+          "name": "conhost",
+          "pid": 12720,
+          "category": "other",
+          "cpu_percent": 0.33,
+          "working_mb": 12.5
+        }
+      ]
+    },
+    {
+      "utc": "2026-10-31T22:52:06.9092581Z",
+      "category_cpu_percent": {
+        "toolkit": 12.4,
+        "launcher": 1.85,
+        "browser": 0.75,
+        "capture_helper": 0.0,
+        "compute_candidate": 0.0,
+        "client_or_runtime": 1.12,
+        "other": 16.54
+      },
+      "category_measured_process_count": {
+        "toolkit": 1,
+        "launcher": 1,
+        "browser": 40,
+        "capture_helper": 1,
+        "compute_candidate": 4,
+        "client_or_runtime": 35,
+        "other": 232
+      },
+      "top_processes": [
+        {
+          "name": "pwsh",
+          "pid": 16676,
+          "category": "other",
+          "cpu_percent": 14.27,
+          "working_mb": 104.3
+        },
+        {
+          "name": "MastersToolkit",
+          "pid": 5324,
+          "category": "toolkit",
+          "cpu_percent": 12.4,
+          "working_mb": 877.5
+        },
+        {
+          "name": "ArkenforgeLauncher",
+          "pid": 20240,
+          "category": "launcher",
+          "cpu_percent": 1.85,
+          "working_mb": 126.0
+        },
+        {
+          "name": "waterfox",
+          "pid": 26668,
+          "category": "browser",
+          "cpu_percent": 0.75,
+          "working_mb": 327.2
+        },
+        {
+          "name": "RuntimeBroker",
+          "pid": 4780,
+          "category": "other",
+          "cpu_percent": 0.38,
+          "working_mb": 29.7
+        },
+        {
+          "name": "codex",
+          "pid": 16220,
+          "category": "client_or_runtime",
+          "cpu_percent": 0.38,
+          "working_mb": 160.4
+        },
+        {
+          "name": "Resolve",
+          "pid": 26152,
+          "category": "other",
+          "cpu_percent": 0.38,
+          "working_mb": 984.1
+        },
+        {
+          "name": "parsecd",
+          "pid": 11984,
+          "category": "other",
+          "cpu_percent": 0.38,
+          "working_mb": 52.1
+        },
+        {
+          "name": "claude",
+          "pid": 21792,
+          "category": "other",
+          "cpu_percent": 0.38,
+          "working_mb": 233.6
+        },
+        {
+          "name": "OneDrive.Sync.Service",
+          "pid": 24500,
+          "category": "other",
+          "cpu_percent": 0.38,
+          "working_mb": 30.1
+        },
+        {
+          "name": "backgroundTaskHost",
+          "pid": 19364,
+          "category": "other",
+          "cpu_percent": 0.37,
+          "working_mb": 69.2
+        },
+        {
+          "name": "ChatGPT",
+          "pid": 15796,
+          "category": "client_or_runtime",
+          "cpu_percent": 0.37,
+          "working_mb": 187.4
+        }
+      ]
+    }
+  ]
+}

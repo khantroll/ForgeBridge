@@ -65,11 +65,16 @@ jobs:
       - name: Install
         run: python -m pip install -r requirements.txt -r requirements-native-capture.txt
       - name: Bounded LevelDB diagnostic (30 trials)
+        id: diagnostic
+        continue-on-error: true
         run: |
           status=0
           python scripts/diagnose_leveldb.py --out .test-tmp/leveldb-ci --trials 30 > diag.json 2> diag.err || status=$?
           echo "::notice title=leveldb diagnostic::exit=$status $(python -c "import json;r=json.load(open('diag.json'));print(json.dumps(r.get('totals'),separators=(',',':')),'source_unchanged=',r.get('source_unchanged'))" 2>&1 | tr -d '\r')"
+          exit "$status"
       - name: Repeat LevelDB-heavy tests 10x
+        id: leveldb_tests
+        continue-on-error: true
         run: |
           fails=0
           for i in $(seq 1 10); do
@@ -78,15 +83,20 @@ jobs:
             echo "::notice title=leveldb repeat $i::$r $(grep -E '^Ran ' run-$i.log) dbtmp_mentions=$dbtmp"
           done
           echo "::notice title=leveldb repeat total::$fails of 10 runs failed"
+          exit "$fails"
         working-directory: .
         env:
           PYTHONPATH: src;tests
       - name: Full suite 3x
+        id: full_suites
+        continue-on-error: true
         run: |
+          fails=0
           for i in 1 2 3; do
-            python -m unittest discover -s tests > full-$i.log 2>&1 && r=OK || r=FAIL
+            if python -m unittest discover -s tests > full-$i.log 2>&1; then r=OK; else r=FAIL; fails=$((fails+1)); fi
             echo "::notice title=windows full $i::$r $(grep -E '^(Ran |OK|FAILED)' full-$i.log | tr '\n' ' ') dbtmp_mentions=$(grep -c dbtmp full-$i.log || true)"
           done
+          exit "$fails"
       - name: Upload evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -98,3 +108,14 @@ jobs:
             run-*.log
             full-*.log
             .test-tmp/leveldb-ci/**
+      - name: Enforce diagnostic outcomes after evidence upload
+        if: always()
+        env:
+          DIAGNOSTIC: ${{ steps.diagnostic.outcome }}
+          LEVELDB_TESTS: ${{ steps.leveldb_tests.outcome }}
+          FULL_SUITES: ${{ steps.full_suites.outcome }}
+        run: |
+          if [[ "$DIAGNOSTIC" != success || "$LEVELDB_TESTS" != success || "$FULL_SUITES" != success ]]; then
+            echo '::error::A Windows diagnostic phase failed or did not complete; inspect the retained evidence.'
+            exit 1
+          fi

@@ -4,6 +4,22 @@
 **Implementation started:** Inventory CLI, importable UVTT, loose scene assets, embedded Adventure scene discovery, ambient color, and deterministic AmbientLight range conversion  
 **General converter:** Bounded scene/content/token slices implemented; complete actor and behavior conversion pending.
 
+Resume (2026-10-31): fast-forwarded five upstream commits to edf4d7c; preserved
+local assets. Imported the two GitHub roadmap documents without merging their
+historical-base branches. Local Windows 11/Python 3.14.2 suite: **167 run, 163
+passed, four symlink skips**, 56.348s. Found a CI diagnostic reporting flaw: failed
+repeat phases could leave their job green. Phase exit codes and an aggregate gate
+now enforce failure after evidence upload; local Bash syntax and five gate cases
+pass, updated GitHub execution remains to be verified. Added the scene-import
+operator/release checklist. No merge/tag/install performed.
+
+Desktop enumeration and binding work, but two fresh Toolkit captures showed the
+foreground Codex surface. No input was sent; bounded recovery exhausted. This new
+control blocker does not undo accepted October 31 player results. The disposable
+fog map remains untouched; bounded fog stays deferred. See
+[resume evidence](validation/2026-10-31-RESUME.md) and
+[release procedure](docs/SCENE-IMPORT-RELEASE.md).
+
 CI (2026-10-31, commit 271d7dd): GitHub Actions `tests` workflow. Linux and
 Windows (windows-latest, Python 3.13): **167 run, OK, 3 symlink skips** each.
 Windows LevelDB job: bounded diagnostic 30/30 create, copied-open and
@@ -43,9 +59,8 @@ control exports remain separate from scene geometry and calibration. Saved-asset
 reads require a closed-Toolkit snapshot; no capture installs or edits campaigns.
 See [portable capture](docs/NATIVE-CAPTURE.md) and
 [execution evidence](validation/2026-10-18/PORTABLE-CAPTURE.md).
-Pending Crypt actual-player visibility, profile player restart and bounded fog
-do not block development. Next independent task: investigate intermittent read-only LevelDB snapshots
-with retained diagnostics and controlled fixtures, then extend native-reference audits.
+The historical Crypt/player restart blocker below is superseded by October 31's
+accepted observations. Bounded fog remains pending independently of development.
 
 Independent reader hardening (2026-10-24): in-memory LevelDB snapshots now reject
 Windows separators, drive-qualified names, alternate data streams and NUL names
