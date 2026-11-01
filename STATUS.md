@@ -1,5 +1,7 @@
 # Project Status
 
+See [next steps](docs/NEXT-STEPS.md) for the current plan and owners.
+
 **Lifecycle:** CALIBRATED SCENE PROFILES — PLAYER RUNTIME VALIDATED
 **Implementation started:** Inventory CLI, importable UVTT, loose scene assets, embedded Adventure scene discovery, ambient color, and deterministic AmbientLight range conversion
 **General converter:** Bounded scene/content/token slices implemented; complete actor and behavior conversion pending.
