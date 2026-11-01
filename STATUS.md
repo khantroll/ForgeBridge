@@ -626,3 +626,15 @@ The consolidated browser/address ledger is in
 Two error-free Claude loopback sessions remain accepted; Waterfox LAN/loopback
 ICE failures and user-reported Chrome ICE are an observed pattern, not a cause.
 No desktop testing or further LevelDB investigation in the current development session.
+
+## Scene batch implementation (2026-10-31)
+
+`forgebridge.scene_batch` preflights 2–32 existing profiles together and builds
+separate scene packages in a new output tree after staging/conflict/closure and
+input-hash checks. Reports shared/conflicting dependencies, repeated source IDs
+and combined losses. No install or calibration inference. See
+[workflow](docs/SCENE-BATCH.md), [evidence](validation/2026-10-31-SCENE-BATCH.md)
+and [M0–M2 matrix](docs/ACCEPTANCE-MATRIX.md).
+Initial full Windows suite: 184 run, 180 passed, four skipped; final batch tests:
+10/10 pass. Final CI and real package results are recorded in the evidence log.
+Runtime work waits for Claude; further LevelDB attribution is frozen.

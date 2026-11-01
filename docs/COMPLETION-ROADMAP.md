@@ -66,9 +66,9 @@ Deliver feature-by-feature, with capability tests and grades:
 **Future exports:** consider Arkenforge → other VTTs or bidirectional flows only by separate architecture decision, not by stealth scope expansion.
 
 ## Suggested order of work
-1. Windows LevelDB diagnostic run + PR #8 review/CI.
-2. Bounded fog and real-import manual validation; acceptance matrix.
-3. Complete user-facing deterministic packaging and documentation; release scene-import candidate.
+1. PR #8 review/CI; preserve LevelDB evidence and the unresolved release decision. Further LevelDB investigation is frozen by user instruction.
+2. Use [the acceptance matrix](ACCEPTANCE-MATRIX.md) for M0–M2 gates. Bounded fog is BLOCKED waiting for Claude's built-in-browser run; no desktop work in the current session.
+3. Validate the minimal [multi-profile batch workflow](SCENE-BATCH.md) at file level. Native acceptance is separate; do not install automatically or tag a candidate while gates remain open.
 4. Structured campaign content, then safe behavior translation.
 5. Decide full 1.0 criteria from evidence; Fantasy Grounds input adapter separately.
    

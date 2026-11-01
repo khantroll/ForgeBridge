@@ -547,3 +547,18 @@ files and stop on conflicts with existing content. GIF import/playback remains a
 manual Arkenforge operation; procedural Foundry light animations have no proven
 mapping. Neither native fog operation nor token hidden state implements Foundry
 vision/fog conversion.
+
+## Multiple calibrated scenes
+
+Preflight existing profiles together, then build separate non-overwriting scene
+packages with one combined dependency/identity/loss report:
+
+```powershell
+py -m forgebridge.scene_batch --profile profiles/manor.json --profile profiles/crypt.json --preflight
+py -m forgebridge.scene_batch --profile profiles/manor.json --profile profiles/crypt.json --out builds/two-scenes-v1
+```
+
+See [batch workflow](docs/SCENE-BATCH.md) and the
+[M0–M2 acceptance matrix](docs/ACCEPTANCE-MATRIX.md). These commands are file-only;
+no installation or runtime acceptance is implied. Bounded fog is **BLOCKED**,
+waiting for a Claude built-in-browser run.

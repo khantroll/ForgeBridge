@@ -8,7 +8,7 @@ from copy import deepcopy
 import hashlib
 import json
 import math
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import re
 
 from forgebridge.inventory import inventory_path
@@ -269,7 +269,7 @@ def profile_settings(p, paths, overrides=None):
     return settings, provenance
 
 
-def preflight_profile(path, overrides=None):
+def preflight_profile(path, overrides=None, *, plan=None):
     """Read inputs/compile control probes in memory; no files or settings changed."""
     from forgebridge.native_export import companion_files
     from forgebridge.native_map import insert_markers
@@ -329,6 +329,15 @@ def preflight_profile(path, overrides=None):
                 if (row := media.read(ref)[0]).get('status') != 'copied']
     finally:
         media.close()
+    if plan is not None:
+        # In-memory batch planning only: no archive, rendering or output writes.
+        # Schema-only marker/media controls are deliberately excluded. The builder
+        # preserves the original geometry and adds a separately named output map.
+        plan.update(profile=p, paths=paths, source=source, note_report=report,
+                    native={n: data for n, data in native.items()
+                            if n.startswith('MyAssets/')},
+                    output_map=str(PurePosixPath(map_name).parent) + '/' + settings['name'])
+        plan['native'][map_name] = exports['geometry.export'][map_name]
     return {'status': 'PASS', 'scope': 'read-only input/dependency/control preflight; no package or runtime validation',
         'provenance': provenance, 'closed_input_metadata_references': references,
         'supported_tokens': len(rows), 'rejected_tokens': rejected, 'source_media_gaps': gaps,
