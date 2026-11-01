@@ -71,7 +71,7 @@ Deliver feature-by-feature, with capability tests and grades:
 3. Validate the minimal [multi-profile batch workflow](SCENE-BATCH.md) at file level. Native acceptance is separate; do not install automatically or tag a candidate while gates remain open.
 4. Structured campaign content, then safe behavior translation.
 5. Decide full 1.0 criteria from evidence; Fantasy Grounds input adapter separately.
-   
+
 ## Release gates (always)
 - No imported JS/macro execution; reject traversal/unsafe archive paths and ambiguous dependencies.
 - No write to existing campaign/Toolkit data without deliberate user-reviewed action, no silent overwrites.

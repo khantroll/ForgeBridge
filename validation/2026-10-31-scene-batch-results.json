@@ -1,0 +1,87 @@
+{
+  "status": "PASS",
+  "scope": "file-only; no installation or runtime validation",
+  "inputs_revalidated_before_publication": true,
+  "combined_closed_metadata_references": 529,
+  "shared_dependencies": 8,
+  "duplicate_token_ids": 0,
+  "duplicate_note_ids": 4,
+  "scenes": [
+    {
+      "scene": "scene-01",
+      "name": "ForgeBridge Profile Manor 2026-10-16",
+      "sha256": "e60afa64dadbcc78083aea662949eae53d4540dac6b1bd7bf826decc60b09bbe",
+      "counts": {
+        "notes": 46,
+        "journal_pages": 41,
+        "documents": 4,
+        "native_tables": 1,
+        "rewritten_uuid_occurrences": 20,
+        "unresolved_uuid_occurrences": 2,
+        "map_note_references": 5,
+        "native_image_attachments": 19,
+        "native_image_assets": 19,
+        "native_pdf_documents": 0,
+        "native_pdf_pages": 0,
+        "native_pdf_attachments": 0,
+        "native_tokens": 1,
+        "unsupported_tokens": 0
+      },
+      "scope": "7deff54d2fa3d5113aa1",
+      "native_map": {
+        "name": "ForgeBridge Profile Manor 2026-10-16",
+        "units_per_grid": 2.56,
+        "origin": [
+          0.0,
+          0.0
+        ],
+        "markers": 5,
+        "marker_labels": "off",
+        "labels": 0,
+        "label_offset_grid": [
+          1.25,
+          0.0
+        ],
+        "runtime_validation": "pending"
+      }
+    },
+    {
+      "scene": "scene-02",
+      "name": "ForgeBridge Profile Crypt 2026-10-16",
+      "sha256": "0c7770f858a40587dc9bd1707c00f92e51b0dc4c3cb7715f0a674f2ae91d1d28",
+      "counts": {
+        "notes": 84,
+        "journal_pages": 76,
+        "documents": 7,
+        "native_tables": 2,
+        "rewritten_uuid_occurrences": 54,
+        "unresolved_uuid_occurrences": 1,
+        "map_note_references": 19,
+        "native_image_attachments": 55,
+        "native_image_assets": 48,
+        "native_pdf_documents": 0,
+        "native_pdf_pages": 0,
+        "native_pdf_attachments": 0,
+        "native_tokens": 9,
+        "unsupported_tokens": 1
+      },
+      "scope": "fe817a487cdd6298be90",
+      "native_map": {
+        "name": "ForgeBridge Profile Crypt 2026-10-16",
+        "units_per_grid": 2.56,
+        "origin": [
+          0.0,
+          0.0
+        ],
+        "markers": 19,
+        "marker_labels": "off",
+        "labels": 0,
+        "label_offset_grid": [
+          1.25,
+          0.0
+        ],
+        "runtime_validation": "pending"
+      }
+    }
+  ]
+}

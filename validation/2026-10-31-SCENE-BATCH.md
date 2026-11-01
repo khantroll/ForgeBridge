@@ -58,3 +58,47 @@ No calibration invented, input repinned or original asset edited.
    preflight binding; changed bytes fail. This is a batch correctness/performance
    change, not a LevelDB fix, blind retry, error suppression or investigation.
    The revised real demonstration uses a new destination; outcome recorded below.
+
+## CI on implementation commit 9a86c63
+
+GitHub Actions run 41257170986, Python 3.13:
+- Linux full suite: **185 run, 181 passed, four skipped**, 15.011s.
+- Windows full suite: **185 run, 182 passed, three skipped**, 29.003s.
+- CI skips optional PDF coverage (both OS) and the Windows-only probe (Linux);
+  exact reasons are recorded below. Local Windows symlink skips are separate.
+The existing repeat job is checked separately; no workflow probes were added or
+changed for this feature. Previous step commits 3409bd9 (run 41256109150) and
+3c3feab (run 41256207129) also completed successfully.
+
+## Revised real build result — PASS (file level only)
+
+The hash-guard implementation at 9a86c63 completed with exit 0. Output:
+`.test-tmp/manor-crypt-batch-hash-guard-2026-10-31/` with scene-01/scene.zip,
+scene-02/scene.zip and one batch-report.json. Raw stdout/error are
+.test-tmp/batch-real-hash-guard.json/.err. Summary and full package SHA256 values:
+[2026-10-31-scene-batch-results.json](2026-10-31-scene-batch-results.json).
+
+- Manor: 1 supported token, 0 rejected; 5 room markers, 46 notes, 19 image attachments.
+- Crypt: 9 supported tokens, 1 explicit rejection; 19 room markers, 84 notes,
+  55 image attachments. Existing profiles have PDF rendering disabled; no PDF
+  or GIF/runtime tests repeated by this demonstration.
+- 529 native metadata references close together; 8 shared byte-identical native
+  dependencies; 4 repeated source note/document IDs, isolated target scopes.
+- Distinct map names/scopes retained, labels off. Original pinned inputs and
+  profiles revalidated unchanged before publication. No original saved maps,
+  assets, installations or previous batch folders modified.
+- One combined loss report retains source reports, 3 unresolved UUID occurrences
+  across these packages, token rejection/media gaps and manual/unsupported fields.
+- The failed initial real build remains a failed run. This success follows a
+  substantive guard correction and a new destination, not a blind retry.
+
+GitHub run 41257170986 at 9a86c63 completed **success**, including the existing
+Windows repeat job. Exact skip reasons from full-suite logs: Linux skips 3 optional
+PDF tests (renderer absent) and 1 Windows-only native API test; Windows CI skips
+3 optional PDF tests. Local 184-test run skips 4 Windows symlink-privilege tests;
+its PDF checks run. These are different coverage sets and none is a passed test.
+No new LevelDB investigation or workflow diagnostics were added.
+
+Runtime validation of these newly generated ZIPs is **not performed**. Accepted
+older profile GM/player observations stay separate. Bounded fog is BLOCKED,
+waiting for Claude's built-in browser. Stop here after the minimal batch slice.

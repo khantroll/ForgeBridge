@@ -1,7 +1,7 @@
 # Project Status
 
 **Lifecycle:** CALIBRATED SCENE PROFILES — PLAYER RUNTIME VALIDATED
-**Implementation started:** Inventory CLI, importable UVTT, loose scene assets, embedded Adventure scene discovery, ambient color, and deterministic AmbientLight range conversion  
+**Implementation started:** Inventory CLI, importable UVTT, loose scene assets, embedded Adventure scene discovery, ambient color, and deterministic AmbientLight range conversion
 **General converter:** Bounded scene/content/token slices implemented; complete actor and behavior conversion pending.
 
 Package acceptance reporting (2026-10-31): conversion-report.json now includes
@@ -638,3 +638,12 @@ and [M0–M2 matrix](docs/ACCEPTANCE-MATRIX.md).
 Initial full Windows suite: 184 run, 180 passed, four skipped; final batch tests:
 10/10 pass. Final CI and real package results are recorded in the evidence log.
 Runtime work waits for Claude; further LevelDB attribution is frozen.
+
+Batch completion: real Manor/Crypt file-only builds PASS at 9a86c63, with 1 and
+9 supported tokens (Crypt 1 rejection), 529 closed combined metadata references,
+8 identical shared dependencies and 4 repeated source note IDs in isolated scopes.
+No install. CI run 41257170986 is green on all jobs: Linux 185/181 passed/4 skipped,
+Windows 185/182 passed/3 skipped. CI skips optional PDF tests (both OS) and the
+Windows-only native probe (Linux); local Windows 184/180/4 skips are symlink cases.
+See the batch evidence/results JSON for package hashes and the retained failed
+first run. No new runtime acceptance. Stop after this batch slice as requested.

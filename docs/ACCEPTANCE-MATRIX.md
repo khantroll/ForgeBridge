@@ -10,7 +10,7 @@ File-only checks have Toolkit **N/A**. No desktop testing occurred for this matr
 | Item | Status | Evidence file and evidence commit | OS / Toolkit | Still needed |
 | --- | --- | --- | --- | --- |
 | M0.1 PR integrity, safety, determinism, provenance, overwrite refusal, profile pinning review | OPEN | tests/test_scene_profile.py; docs/SCENE-IMPORT-RELEASE.md; validation/2026-10-31-INSTALL-REVIEW.md (1907fc0); native merge safety (0919cf6) | Windows/Linux file checks / N/A | Complete independent PR review and resolve feedback; tests alone are not review acceptance. |
-| M0.2 Complete clean Linux and Windows suites with exact provenance | OPEN | STATUS.md CI record (edf4d7c reports workflow at 271d7dd): 167 run, 164 passed, 3 skipped on each OS; validation/2026-10-31-INSTALL-REVIEW.md (1907fc0): local 173 run, 168 passed, 4 skips, 1 error | GitHub Linux/Windows Python 3.13; local Windows 11 Python 3.14.2 / N/A | Verify current head CI and artifacts on both OS; preserve historical local failure, do not substitute earlier green results. |
+| M0.2 Complete clean Linux and Windows suites with exact provenance | PASS | validation/2026-10-31-SCENE-BATCH.md, implementation 9a86c63, GitHub run 41257170986: Linux 185 run/181 passed/4 skipped; Windows 185 run/182 passed/3 skipped; logs and suite artifacts retained by workflow | GitHub ubuntu-latest/windows-latest, Python 3.13 / N/A | Scoped to this tested implementation. Repeat release candidate checks; older local failures remain M0.3 evidence, not erased by CI. |
 | M0.3 Bounded LevelDB diagnosis and justified release exception/containment | BLOCKED | validation/2026-10-31-NATIVE-REPLACE.md (d85e6f5); validation/2026-10-31-BINDING-PROVENANCE.md (69def77) | Windows 11 / N/A | Host replacement intermittency unresolved; explicit release exception or demonstrated containment required. Investigation frozen by user; no more probes/retries/tracing. |
 | M0.4 Relocation, closure, pinned inputs, audit and unsafe-input refusals | PASS | tests/test_scene_profile.py; tests/test_native_capture.py; validation/2026-10-24-DEPENDENCIES.md (107fe2b); validation/2026-10-31-OPERATOR-REHEARSAL.md (dd824b9); merge safety (0919cf6) | Windows and historical Linux/Windows CI / N/A | Preserve regressions; Windows symlink tests skipped locally are not passed safety tests. PASS is file-level behavior, not runtime. |
 | M0.5 Resolve review and merge | NOT STARTED | PR #8 remains open; docs/COMPLETION-ROADMAP.md (2603fee baseline) | N/A / N/A | Review/sign-off and gates; user explicitly prohibits merging in this work. |
@@ -30,3 +30,13 @@ All evidence commits are historical anchors, not claims that each file was first
 introduced there. Accepted runtime checks remain distinct from later session ICE
 failures. Labels stay off; GIF migration remains manual; actor/stat/behavior,
 Foundry fog/vision and procedural animation mapping remain conversion gaps.
+
+## Batch/CI follow-up
+
+Implementation and regression evidence: [scene batch](../validation/2026-10-31-SCENE-BATCH.md)
+at 9a86c63. Its full CI suites pass on Python 3.13: Linux 185 run/181 passed/4
+skips; Windows 185 run/182 passed/3 skips. This supersedes the pending current-head
+CI verification in the baseline evidence and supports M0.2 PASS for 9a86c63.
+It does not erase the older local host failure or resolve M0.3's release decision.
+Release candidate checks must still be repeated at the eventual release head. M1 runtime statuses are unchanged. Batch package generation and
+combined closure are file checks, never native runtime acceptance.

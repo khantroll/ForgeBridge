@@ -6,17 +6,15 @@ Profile generated-token player visibility/restart checks passed on October 31;
 bounded fog remains separately deferred. See the [roadmap](docs/ROADMAP.md) and
 [scene-import operator/release checklist](docs/SCENE-IMPORT-RELEASE.md).
 
-Latest local Windows validation (October 31, Python 3.14.2): **173 run, 168 passed,
-four symlink skips, one LevelDB error**. The historical `.dbtmp` replacement
-failure recurred; this is not a clean full-suite PASS. New install-review/rehearsal
-checks passed. A [synthetic CLI rehearsal](docs/SCENE-IMPORT-RELEASE.md#synthetic-operator-rehearsal)
-builds relocated profiles without their original paths and tests rejected updates.
-`forgebridge.install_review` compares generated packages to an explicitly selected
-static MyAssets copy without installing or changing anything; see the operator guide.
-The [replacement diagnostic](validation/2026-10-31-NATIVE-REPLACE.md) now reproduces
-error1175 in a direct native API comparison and a copied open outside AppContainer;
-root cause remains unresolved. Seven targeted reader/probe checks pass; no full
-rerun erases the recorded failure.
+Latest batch validation (October 31): local Windows/Python 3.14.2 full suite
+**184 run, 180 passed, four skipped**; final batch tests **10/10 pass**.
+Implementation commit 9a86c63 CI on Python 3.13: Linux **185 run, 181 passed,
+four skipped**; Windows **185 run, 182 passed, three skipped**. Skips are not
+safety passes. See [batch evidence](validation/2026-10-31-SCENE-BATCH.md).
+The earlier 173-test local Windows run had one LevelDB replacement error;
+that historical host limitation remains unresolved and investigation is frozen.
+No retries or suppressed errors were added. Bounded fog is BLOCKED waiting for
+Claude's built-in browser. No desktop work is part of this batch milestone.
 Shared capture/package checks reject case aliases and merge
 conflicts before mutation. The CI diagnostic gate now propagates failed phases
 after retaining evidence; its updated GitHub run must be checked separately.
