@@ -226,10 +226,11 @@ def background_asset(template_file, template_meta, image, asset_name):
     import io
     from PIL import Image, ImageOps
     from forgebridge.native_images import replace_image_payload
-    Image.MAX_IMAGE_PIXELS = 64_000_000
     with Image.open(io.BytesIO(image)) as source:
         if source.format not in {'PNG', 'JPEG', 'WEBP'} or getattr(source, 'n_frames', 1) != 1:
             raise ValueError('Map background must be a still PNG, JPEG or WEBP')
+        if source.width * source.height > 64_000_000:
+            raise ValueError('Map background exceeds 64 megapixel limit')
         picture = ImageOps.exif_transpose(source).convert('RGBA')
     full = io.BytesIO(); picture.save(full, 'PNG')
     thumb = picture.copy(); thumb.thumbnail((128, 128), Image.Resampling.LANCZOS)
@@ -240,6 +241,25 @@ def background_asset(template_file, template_meta, image, asset_name):
     return rwfile, rwmeta, {'dimensions': list(picture.size), 'thumbnail_scale': scale}
 
 
-def map_metadata(template_meta, name):
+def map_metadata(template_meta, name, image=None):
     from forgebridge.native_map import rename_metadata
-    return rename_metadata(template_meta, name)
+    data = rename_metadata(template_meta, name)
+    if image is None:
+        return data
+    import io
+    from PIL import Image, ImageOps
+    from forgebridge.native import Node
+    from forgebridge.native_scene_schema import CLASSES
+    with Image.open(io.BytesIO(image)) as source:
+        if source.width * source.height > 64_000_000 or getattr(source, 'n_frames', 1) != 1:
+            raise ValueError('Map thumbnail needs a bounded static background')
+        preview = ImageOps.exif_transpose(source).convert('RGBA')
+    preview.thumbnail((256, 256), Image.Resampling.LANCZOS)
+    output = io.BytesIO(); preview.save(output, 'PNG')
+    thumbnail = Node(CLASSES['ArkenImage'], {'_packImgX': -1, '_packImgY': -1,
+        '_packImgChannels': 4, '_packImageRAW': Array(list(output.getvalue()), 0, 2)})
+    reader = Reader(data); graph = reader.read(); root = graph['root_id']
+    writer = AppendWriter(reader)
+    span = reader.member_spans[root].get('_thumbnail')
+    if span is None: raise ValueError('Map metadata lacks thumbnail field')
+    return patch_stream(reader, [(*span, writer.encoded(thumbnail))], writer)

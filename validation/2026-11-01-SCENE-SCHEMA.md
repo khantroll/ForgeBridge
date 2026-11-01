@@ -23,3 +23,18 @@ Primitive arrays now use the existing primitive serializer when building fresh
 records; the synthetic round-trip tests exercise this branch. Fresh defaults
 contain no saved fog/bookmarks or user creator identity. Their Toolkit acceptance
 remains Claude's task; this is not runtime evidence and no M1 row is changed.
+
+## Synthetic integration and thumbnail (steps 2–3)
+
+Added a synthetic container and four template records written by the test
+FixtureWriter. synthesize_map now runs end-to-end in CI without MyAssets or
+reference files; its decoded result matches the schema-factory output. Generated
+PNG backgrounds exercise background_asset fully, including 128-pixel asset
+previews. map_metadata accepts background bytes and emits a 256-pixel PNG map
+preview preserving aspect ratio. Tests decode thumbnail pixels/dimensions and
+verify no Pillow global pixel-limit change. Backgrounds enforce their own 64 MP
+bound. No geometry formula changed.
+
+Synthetic/schema suite: **9 run, 9 passed**, 0.333s. Map-browser display itself
+is not observed here; Claude owns Toolkit checks. Existing two-scene native
+runtime evidence is in Claude's DIRECT-MAP note and is not edited by this work.
