@@ -213,7 +213,7 @@ class TokenTests(unittest.TestCase):
             archive = Path(tmp) / 'bad.zip'
             with zipfile.ZipFile(archive, 'w') as z: z.writestr('MyAssets/../escape', b'no')
             dest = Path(tmp) / 'new.zip'
-            with self.assertRaisesRegex(ValueError, 'native export'):
+            with self.assertRaisesRegex(ValueError, 'Unsafe native path'):
                 write_token_zip(archive, companion, tmp, dest, name='Test', units_per_grid=1,
                     control_units_per_grid=1, control_name='Control')
             self.assertFalse(dest.exists())

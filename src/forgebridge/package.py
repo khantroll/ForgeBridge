@@ -9,6 +9,7 @@ import zipfile
 from forgebridge.handouts import write_handouts_zip
 from forgebridge.native_images import write_source_images_zip
 from forgebridge.native_map import write_map_zip
+from forgebridge.native_dependencies import write_member
 
 MAX_TOTAL = 256 * 1024 * 1024
 
@@ -133,17 +134,8 @@ def build_package(companion, map_template, media_template, dest, *, name,
             'If UVTT automatic opening fails, open the saved map from the map browser.\n').encode()
         if len(files) > 8192 or sum(map(len, files.values())) > MAX_TOTAL:
             raise ValueError('Combined native package exceeds size limits')
-        dest.parent.mkdir(parents=True, exist_ok=True)
-        # 'x' never replaces an existing file; remove only the file this call created
-        # if writing fails, so a truncated package is never left for installation.
-        archive_file = open(dest, 'xb')
-        try:
-            with archive_file, zipfile.ZipFile(archive_file, 'w', compression=zipfile.ZIP_DEFLATED) as archive:
-                for n, data in files.items():
-                    archive.writestr(n, data)
-        except BaseException:
-            dest.unlink(missing_ok=True)
-            raise
+        from forgebridge.native_dependencies import write_archive
+        write_archive(dest, files)
     return report
 
 

@@ -84,8 +84,16 @@ def _uvtt(package: Path, scene_id: str, compact: bool, uvtt_out: str | None) -> 
     if uvtt_out:
         try:
             dest = Path(uvtt_out)
+            loose = scene_loose_files(package, scene_id)
+            targets = [dest, dest.with_suffix('.forgebridge.json'), dest.with_suffix('.notes.txt')]
+            targets += [dest.parent / name for name, _ in loose]
+            if len({str(p.absolute()).casefold() for p in targets}) != len(targets):
+                raise OSError('Output names collide; select a distinct UVTT filename')
+            for target in targets:
+                if target.exists() or any(p.is_symlink() or p.is_junction() for p in (target, *target.absolute().parents)):
+                    raise OSError(f'refusing existing or linked output: {target}')
             _write_uvtt_file(dest, document["uvtt"])
-            _write_loose_files(dest.parent, scene_loose_files(package, scene_id))
+            _write_loose_files(dest.parent, loose)
             _write_uvtt_file(dest.with_suffix(".forgebridge.json"), {
                 "schema_version": "1.0",
                 "scene_id": scene_id,
@@ -96,7 +104,8 @@ def _uvtt(package: Path, scene_id: str, compact: bool, uvtt_out: str | None) -> 
             notes_dest = dest.with_suffix('.notes.txt')
             if notes_dest.is_symlink() or notes_dest.is_dir():
                 raise OSError(f'refusing to write notes reference to {notes_dest}')
-            notes_dest.write_text(render_notes_text(document['scene_notes']), encoding='utf-8')
+            with notes_dest.open('x', encoding='utf-8') as stream:
+                stream.write(render_notes_text(document['scene_notes']))
         except (OSError, InventoryFatal) as exc:
             print(f"UVTT file was not written: {exc}", file=sys.stderr)
             return 1
@@ -117,7 +126,8 @@ def _write_loose_files(directory: Path, files: list[tuple[str, bytes]]) -> None:
             raise InventoryFatal(f"loose asset path leaves the output directory: {name}") from exc
         if target.is_symlink():
             raise InventoryFatal(f"refusing to write through a symlink: {name}")
-        target.write_bytes(data)
+        with target.open('xb') as stream:
+            stream.write(data)
 
 
 def _write_uvtt_file(path: Path, uvtt: dict) -> None:
@@ -127,7 +137,8 @@ def _write_uvtt_file(path: Path, uvtt: dict) -> None:
         raise OSError(f"{path} is a directory")
     path.parent.mkdir(parents=True, exist_ok=True)
     text = json.dumps(uvtt, indent=2, ensure_ascii=False, sort_keys=True) + "\n"
-    path.write_text(text, encoding="utf-8")
+    with path.open('x', encoding='utf-8') as stream:
+        stream.write(text)
 
 
 def _emit(document: dict, checks: list, compact: bool) -> int:

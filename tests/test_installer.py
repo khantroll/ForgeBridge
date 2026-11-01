@@ -96,6 +96,15 @@ class InstallerTests(unittest.TestCase):
             self.assertFalse((target / 'Maps/New.rwmap').exists())
             self.assertFalse((root / '.forgebridge-install.lock').exists())
 
+    def test_uvtt_only_or_unknown_asset_package_is_not_installed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp); target, backups, package = self.inputs(root)
+            for files in ({'scene.uvtt': b'{}'}, {'MyAssets/script.js': b'do not run'}):
+                archive(package, files)
+                with self.assertRaisesRegex(ValueError, 'native scene package'):
+                    install([package], target, backups)
+            self.assertEqual(list(backups.iterdir()), [])
+
     def test_process_detection_and_failure_are_fail_closed(self):
         self.closed.stop()
         # Match both spellings; Linux and Windows response parsing are exercised.

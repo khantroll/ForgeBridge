@@ -1,5 +1,7 @@
 """Bounded native-export loading and dependency closure; never CLR execution."""
 import zipfile
+import os
+from pathlib import Path
 
 from forgebridge.nrbf import Reader
 
@@ -11,6 +13,27 @@ def write_member(archive, name, data):
     info.create_system = 3
     info.external_attr = 0o600 << 16
     archive.writestr(info, data)
+
+
+def write_archive(destination, files):
+    """Exclusive, deterministic publication; never leave our truncated archive."""
+    destination = Path(destination)
+    if any(p.is_symlink() or p.is_junction() for p in (destination, *destination.absolute().parents)):
+        raise ValueError('Archive output must not contain links/junctions')
+    _check_paths(files, native_only=False)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    output = destination.open('xb')
+    identity = os.fstat(output.fileno())
+    try:
+        with output, zipfile.ZipFile(output, 'w', compression=zipfile.ZIP_DEFLATED) as archive:
+            for name, data in sorted(files.items()): write_member(archive, name, data)
+    except BaseException:
+        # Preserve a file another writer replaced while this operation failed.
+        if not destination.is_symlink() and destination.exists():
+            current = destination.stat()
+            if (current.st_dev, current.st_ino) == (identity.st_dev, identity.st_ino):
+                destination.unlink()
+        raise
 
 
 def safe_name(name):

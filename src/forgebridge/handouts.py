@@ -14,6 +14,7 @@ import zipfile
 from forgebridge.inventory import _safe_zip_name
 from forgebridge.uvtt import _package_file
 from forgebridge.validate import InventoryFatal
+from forgebridge.native_dependencies import write_member
 
 EXTENSIONS = {'.png', '.jpg', '.jpeg', '.webp', '.gif', '.pdf', '.mp3', '.ogg',
               '.wav', '.mp4', '.m4v', '.webm'}
@@ -228,19 +229,8 @@ def write_handouts_zip(package, companion_path, dest):
         "Open an image/PDF to verify it matches the linked journal page.\n"
         "Existing Arkenforge note links are unchanged. Native media linking needs a separate test.\n"
         "Private source content: do not publish this bundle.\n").encode()
-    dest.parent.mkdir(parents=True, exist_ok=True)
-    created = False
-    try:
-        with dest.open('xb') as stream:
-            created = True
-            with zipfile.ZipFile(stream, 'w', compression=zipfile.ZIP_DEFLATED) as archive:
-                for name, data in files.items():
-                    archive.writestr(name, data)
-    except Exception:
-        # Do not leave a partial collection presented as a finished bundle.
-        if created and dest.exists():
-            dest.unlink()
-        raise
+    from forgebridge.native_dependencies import write_archive
+    write_archive(dest, files)
     return report
 
 

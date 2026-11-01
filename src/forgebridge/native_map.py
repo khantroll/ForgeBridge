@@ -13,6 +13,7 @@ import zipfile
 
 from forgebridge.native import Array, Node, Writer
 from forgebridge.nrbf import Reader
+from forgebridge.native_dependencies import read_export, safe_name, write_member
 
 
 @dataclass
@@ -76,24 +77,26 @@ class AppendWriter(Writer):
         return bytes(self.out)
 
 
-def clone(reader, oid, memo=None):
+def clone(reader, oid, memo=None, *, _depth=0):
     """Clone a small marker graph, retaining shared references inside the clone."""
     memo = {} if memo is None else memo
     if oid in memo:
         return memo[oid]
+    if _depth >= 128:
+        raise ValueError('Native control reference graph exceeds clone depth limit')
     obj = reader.objects[oid]
     if isinstance(obj, str):
         return obj
     if 'members' in obj:
         result = Node(reader.object_metadata[oid], {}, inline=oid < 0)
         memo[oid] = result
-        result.members.update({k: clone(reader, v['ref'], memo) if isinstance(v, dict) and 'ref' in v else v
+        result.members.update({k: clone(reader, v['ref'], memo, _depth=_depth + 1) if isinstance(v, dict) and 'ref' in v else v
                                for k, v in obj['members'].items()})
     elif 'items' in obj and len(obj['lengths']) == 1 and obj['lower_bounds'] is None:
         kind, info = reader.array_metadata[oid]
         result = Array([], kind, info)
         memo[oid] = result
-        result.items.extend(clone(reader, v['ref'], memo) if isinstance(v, dict) and 'ref' in v else v
+        result.items.extend(clone(reader, v['ref'], memo, _depth=_depth + 1) if isinstance(v, dict) and 'ref' in v else v
                             for v in obj['items'])
     else:
         raise ValueError('Unsupported marker graph object')
@@ -232,6 +235,7 @@ def insert_markers(data, placements, *, name, units_per_grid, origin=(0., 0.),
         target, position = placement.get('target'), placement.get('grid_position')
         if not isinstance(target, str) or not target.startswith('MyAssets/Encyclopedia/Notes/') or not target.endswith('.rwmeta') or '\\' in target or '..' in target.split('/'):
             raise ValueError('Marker target must be a native note metadata path')
+        safe_name(target)
         if not isinstance(position, dict) or not all(type(position.get(k)) in (int, float) and math.isfinite(position[k]) for k in ('x', 'y')):
             raise ValueError('Marker has no finite grid position')
         title = str(placement.get('title') or 'Map note')
@@ -304,29 +308,23 @@ def write_map_zip(template_pack, companion, dest, *, name, units_per_grid,
         raise ValueError('Choose a new output filename')
     if not name or PurePosixPath(name).name != name or '\\' in name or name in ('.', '..'):
         raise ValueError('Map name must be a plain filename')
+    safe_name('MyAssets/Maps/' + name + '.rwmap')
     if companion.stat().st_size > 64 * 1024 * 1024:
         raise ValueError('Companion exceeds size limit')
-    with zipfile.ZipFile(template_pack) as archive:
-        entries = [e for e in archive.infolist() if not e.is_dir()]
-        if len(entries) > 2048 or sum(e.file_size for e in entries) > 256 * 1024 * 1024 or any(e.file_size > 64 * 1024 * 1024 for e in entries):
-            raise ValueError('Template archive exceeds limits')
-        paths = [e.filename for e in entries]
-        if len(set(paths)) != len(paths) or any(not p.startswith('MyAssets/') or '..' in PurePosixPath(p).parts or '\\' in p for p in paths):
-            raise ValueError('Invalid template archive paths')
-        maps = [p for p in paths if p.endswith('.rwmap')]
-        if geometry_map_path is not None:
-            if geometry_map_path not in maps:
-                raise ValueError('Selected geometry map is absent from native export')
-            maps = [geometry_map_path]
-        if len(maps) != 1 or maps[0][:-6] + '.rwmeta' not in paths:
-            raise ValueError('Export must contain one saved map and its metadata')
-        files = {p: archive.read(p) for p in paths}
+    files = read_export(template_pack)
+    paths = list(files)
+    maps = [p for p in paths if p.endswith('.rwmap')]
+    if geometry_map_path is not None:
+        if geometry_map_path not in maps:
+            raise ValueError('Selected geometry map is absent from native export')
+        maps = [geometry_map_path]
+    if len(maps) != 1 or maps[0][:-6] + '.rwmeta' not in paths:
+        raise ValueError('Export must contain one saved map and its metadata')
     generated, report = companion_files(json.loads(companion.read_text(encoding='utf-8')), map_markers=True, note_folder=note_folder)
     map_path = maps[0]
     metadata_path = map_path[:-6] + '.rwmeta'
     marker_data = None
     if marker_template_pack is not None:
-        from forgebridge.native_dependencies import read_export
         marker_files = read_export(marker_template_pack)
         marker_maps = [p for p in marker_files if p.endswith('.rwmap')]
         if len(marker_maps) != 1:
@@ -375,10 +373,8 @@ def write_map_zip(template_pack, companion, dest, *, name, units_per_grid,
     files['conversion-report.json'] = json.dumps(report, ensure_ascii=True, indent=2).encode()
     if sum(len(data) for data in files.values()) > 256 * 1024 * 1024:
         raise ValueError('Output archive exceeds limit')
-    dest.parent.mkdir(parents=True, exist_ok=True)
-    with zipfile.ZipFile(dest, 'x', compression=zipfile.ZIP_DEFLATED) as archive:
-        for path, data in files.items():
-            archive.writestr(path, data)
+    from forgebridge.native_dependencies import write_archive
+    write_archive(dest, files)
     return report
 
 

@@ -233,8 +233,6 @@ def write_source_images_zip(companion_path, media_bundle, template_pack, dest, *
         "Player visibility remains unverified. This package contains private content.\n").encode()
     if sum(map(len, files.values())) > MAX_TOTAL:
         raise ValueError('Native note/media package exceeds 256 MiB limit')
-    dest.parent.mkdir(parents=True, exist_ok=True)
-    with zipfile.ZipFile(dest, 'x', compression=zipfile.ZIP_DEFLATED) as archive:
-        for path, data in files.items():
-            archive.writestr(path, data)
+    from forgebridge.native_dependencies import write_archive
+    write_archive(dest, files)
     return report

@@ -97,3 +97,8 @@ outputs until A0. See SCENE-IMPORT-RELEASE.md and validation/2026-11-01-PART-B.m
 B4: add-only installer and fake-MyAssets tests implemented. Full backup, conflict
 refusal, process guard and hash-checked uninstall receipts; no real installation.
 See SCENE-IMPORT-RELEASE.md. Convert installation remains gated on A0.
+
+B1: remaining module review completed with bounded-path/read/graph fixes,
+deterministic archive publication, overwrite refusal and synthetic regressions.
+See validation/2026-11-01-PART-B.md. Claude's diff review remains a merge gate;
+no A-step evidence or M1 row changed.

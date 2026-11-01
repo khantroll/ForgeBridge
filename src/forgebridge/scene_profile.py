@@ -18,6 +18,7 @@ from forgebridge.uvtt import _load_scene_payload
 from forgebridge.validate import InventoryFatal
 
 FORMAT = 'forgebridge.scene-profile'
+MAX_PROFILE_FILE_BYTES = 256 * 1024 * 1024
 MANUAL_STEPS = [
     'Native UVTT import, save/export and scene-specific origin/grid calibration',
     'Reviewed installation: back up user content; copy only absent/identical files; stop on conflicts',
@@ -35,14 +36,19 @@ def canonical_hash(value):
 def fingerprint(path):
     """Hash file bytes or a sorted directory manifest; reject links and bound IO."""
     path = Path(path)
-    if path.is_symlink():
-        raise ValueError('Profile inputs must not be symlinks: ' + str(path))
+    for part in (path, *path.absolute().parents):
+        if part.is_symlink() or part.is_junction():
+            raise ValueError('Profile inputs must not contain links/junctions: ' + str(part))
     if path.is_file():
-        if path.stat().st_size > 256 * 1024 * 1024:
+        if path.stat().st_size > MAX_PROFILE_FILE_BYTES:
             raise ValueError('Profile input exceeds 256 MiB: ' + str(path))
         digest = hashlib.sha256()
+        total = 0
         with path.open('rb') as stream:
             for chunk in iter(lambda: stream.read(1024 * 1024), b''):
+                total += len(chunk)
+                if total > MAX_PROFILE_FILE_BYTES:
+                    raise ValueError('Profile input grew beyond byte limit: ' + str(path))
                 digest.update(chunk)
         return digest.hexdigest()
     if not path.is_dir():
@@ -55,7 +61,7 @@ def fingerprint(path):
     while pending:
         for child in sorted(pending.pop().iterdir()):
             entries += 1
-            if entries > 50000 or child.is_symlink() or not child.resolve().is_relative_to(base):
+            if entries > 50000 or child.is_symlink() or child.is_junction() or not child.resolve().is_relative_to(base):
                 raise ValueError('Linked, escaping or oversized package tree: ' + str(child))
             if child.is_dir():
                 pending.append(child)

@@ -155,10 +155,13 @@ def convert(package, destination, *, scene_ids=(), profiles=()):
         _new_destination(dest, package)
         dest.mkdir()
         for path in sorted(stage.rglob('*')):
+            if path == stage / 'conversion-report.json': continue
             target = dest / path.relative_to(stage)
             if path.is_dir(): target.mkdir()
             else:
                 with path.open('rb') as source, target.open('xb') as output: shutil.copyfileobj(source, output)
+        with (stage / 'conversion-report.json').open('rb') as source, (dest / 'conversion-report.json').open('xb') as output:
+            shutil.copyfileobj(source, output)
     return report
 
 

@@ -15,6 +15,8 @@ def correlate_notes(scene, candidates, origin, size, read_errors=()):
     result = {'schema_version': '1.0', 'scene_id': _id(scene),
               'scene_name': scene.get('name'), 'notes': [], 'journals': [],
               'read_errors': list(read_errors)}
+    if not isinstance(scene.get('notes', []), list) or len(scene.get('notes', [])) > 2048:
+        raise ValueError('Scene notes must be a list of at most 2048 placements')
     retained = {}
     for index, source_note in enumerate(scene.get('notes', [])):
         if not isinstance(source_note, dict):

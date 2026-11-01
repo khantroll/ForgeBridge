@@ -25,11 +25,12 @@ def require_toolkit_closed():
     try:
         if os.name == 'nt':
             result = subprocess.run(['tasklist', '/FO', 'CSV', '/NH'], capture_output=True,
-                                    text=True, check=True, timeout=15)
+                                    text=True, check=True, timeout=15,
+                                    executable=str(Path(os.environ.get('SystemRoot', 'C:/Windows')) / 'System32/tasklist.exe'))
             names = [row[0] for row in csv.reader(io.StringIO(result.stdout)) if row]
         else:
             result = subprocess.run(['ps', '-A', '-o', 'comm='], capture_output=True,
-                                    text=True, check=True, timeout=15)
+                                    text=True, check=True, timeout=15, executable='/bin/ps')
             names = result.stdout.splitlines()
     except (OSError, subprocess.SubprocessError) as exc:
         raise ValueError('Cannot verify Toolkit is closed; installation refused') from exc
@@ -93,6 +94,8 @@ def install(packages, myassets, backup_root):
     for package, pinned in zip(packages, audit['inputs']):
         if fingerprint(package) != pinned['sha256']: raise ValueError('Package changed after review')
         merge_native(native, {n: d for n, d in read_package(package).items() if n.startswith('MyAssets/')})
+    if not native or any(Path(name).suffix not in {'.rwmap', '.rwmeta', '.rwnote', '.rwfile'} for name in native):
+        raise ValueError('Install requires a native scene package, not UVTT/source files or unknown asset types')
     lock = root.parent / '.forgebridge-install.lock'
     token = uuid.uuid4().hex
     with lock.open('x', encoding='ascii') as stream: stream.write(token)

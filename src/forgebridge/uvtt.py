@@ -38,6 +38,7 @@ import base64
 import json
 import io
 import math
+import stat
 import tempfile
 import zipfile
 from pathlib import Path
@@ -310,12 +311,19 @@ def _safe_extract_zip(archive: Path, dest: Path) -> tuple[Path, list[str]]:
         raise InventoryFatal(f"not a zip archive: {archive}") from exc
     total = 0
     with zf:
+        seen = set()
         infos = [info for info in zf.infolist() if not info.is_dir() and not info.filename.endswith("/")]
         if len(infos) > MAX_ENTRIES:
             raise InventoryFatal("zip archive has too many entries and was not extracted")
         for info in infos:
             rel, _reason = _safe_zip_name(info.filename)
             if rel is None:
+                rejected.append(info.filename)
+                continue
+            if rel.casefold() in seen:
+                raise InventoryFatal('Duplicate/case-aliased ZIP path: ' + rel)
+            seen.add(rel.casefold())
+            if stat.S_ISLNK(info.external_attr >> 16):
                 rejected.append(info.filename)
                 continue
             target = root / rel
@@ -677,9 +685,9 @@ def _read_image(package: Path, ref: str) -> tuple[str, bytes]:
         raise InventoryFatal(f"UVTT image is not a WEBP: {ref}")
     try:
         with Image.open(io.BytesIO(data)) as image:
-            image.load()
             if image.width > 16000 or image.height > 16000:
                 raise InventoryFatal(f"UVTT background exceeds Arkenforge's 16000 pixel limit: {ref}")
+            image.load()
             # Preserve already compatible PNGs; convert WEBP and palette/grayscale images.
             if image.format != "PNG" or image.mode not in {"RGB", "RGBA"}:
                 output = io.BytesIO()

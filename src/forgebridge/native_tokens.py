@@ -19,6 +19,7 @@ from forgebridge.native_images import native_image_pair
 from forgebridge.native_map import AppendWriter, insert_markers, patch_stream
 from forgebridge.nrbf import Reader
 from forgebridge.token_ir import Token
+from forgebridge.native_dependencies import read_export, write_member
 
 
 def patch_note(data, token, image_path, *, metadata=False, native_size=None):
@@ -115,7 +116,7 @@ def token_files(map_data, tokens, textures, *, name, units_per_grid, origin,
     controls = [o['members'] for o in mr.objects.values() if isinstance(o, dict)
                 and o.get('class') == 'ArkenTilePresetContentLink'
                 and resolve(o['members'].get('_tileName')) == control_name]
-    if len(sizes) != 1 or sizes[0] <= 0 or len(controls) != 1:
+    if len(sizes) != 1 or not math.isfinite(sizes[0]) or sizes[0] <= 0 or len(controls) != 1:
         raise ValueError('Expected one sized native control token')
     placement_type = resolve(controls[0].get('_defaultPlacementType'))
     if not isinstance(placement_type, dict) or placement_type.get('members', {}).get('value__') != 2:
@@ -217,7 +218,10 @@ def compile_scene_tokens(map_data, source_scene, package, control_files, control
             if problem or not safe: raise ValueError('Unsafe source texture path')
             path = _package_file(Path(package), safe)
             if path.stat().st_size > 32 * 1024 * 1024: raise ValueError('Source texture exceeds bound')
-            data = path.read_bytes()
+            with path.open('rb') as stream:
+                data = stream.read(32 * 1024 * 1024 + 1)
+            if len(data) > 32 * 1024 * 1024:
+                raise ValueError('Source texture exceeds bound')
             token_canvas(data, token.texture_scale, edge)  # refuse unsupported media before any output
             textures[token.texture] = data
             ready.append(token)
@@ -249,16 +253,8 @@ def write_token_zip(template_pack, companion, package, dest, *, name,
     if Path(companion).stat().st_size > 64 * 1024 * 1024:
         raise ValueError('Companion exceeds bound')
     source = json.loads(Path(companion).read_text(encoding='utf8'))
-    with zipfile.ZipFile(template_pack) as archive:
-        entries = [e for e in archive.infolist() if not e.is_dir()]
-        paths = [e.filename for e in entries]
-        if (len(entries) > 2048 or len(paths) != len(set(paths))
-                or sum(e.file_size for e in entries) > 256 * 1024 * 1024
-                or any(e.file_size > 64 * 1024 * 1024 for e in entries)
-                or any(not p.startswith('MyAssets/') or '..' in PurePosixPath(p).parts
-                       or '\\' in p or ':' in p for p in paths)):
-            raise ValueError('Invalid or oversized native export')
-        files = {p: archive.read(p) for p in paths}
+    files = read_export(template_pack)
+    paths = list(files)
     maps = [p for p in paths if p.endswith('.rwmap')]
     if len(maps) != 1: raise ValueError('Expected one native map')
     map_path = maps[0]; meta_path = map_path[:-6] + '.rwmeta'
@@ -291,12 +287,8 @@ def write_token_zip(template_pack, companion, package, dest, *, name,
         'Preserve MyAssets; copy only absent files or byte-identical dependencies. Abort on conflicts.\n'
         'Do not overwrite manually edited notes. Keep token-report.json outside MyAssets.\n').encode()
     if sum(map(len, files.values())) > 256 * 1024 * 1024: raise ValueError('Output exceeds bound')
-    dest.parent.mkdir(parents=True, exist_ok=True)
-    with zipfile.ZipFile(dest, 'x', compression=zipfile.ZIP_DEFLATED) as archive:
-        for path, data in sorted(files.items()):
-            info = zipfile.ZipInfo(path, date_time=(2026, 1, 1, 0, 0, 0))
-            info.compress_type = zipfile.ZIP_DEFLATED
-            archive.writestr(info, data)
+    from forgebridge.native_dependencies import write_archive
+    write_archive(dest, files)
     return {k: v for k, v in report.items() if k != 'source_scene'}
 
 

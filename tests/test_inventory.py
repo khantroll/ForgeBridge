@@ -297,9 +297,22 @@ class InventoryTests(unittest.TestCase):
         for path in (SRC / "forgebridge").glob("*.py"):
             text = path.read_text(encoding="utf-8")
             for token in banned:
+                if path.name == 'installer.py' and token == 'subprocess':
+                    continue  # Only fixed read-only host process inspection below.
                 self.assertNotIn(token, text, f"{path.name} contains {token}")
             # Pure URL parsing is permitted; network-capable imports are not.
             for node in ast.walk(ast.parse(text)):
+                if (isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute)
+                        and isinstance(node.func.value, ast.Name) and node.func.value.id == 'subprocess'):
+                    self.assertEqual(path.name, 'installer.py')
+                    self.assertEqual(node.func.attr, 'run')
+                    self.assertIn(ast.literal_eval(node.args[0]),
+                                  (['tasklist', '/FO', 'CSV', '/NH'], ['ps', '-A', '-o', 'comm=']))
+                    keywords = {k.arg: k.value for k in node.keywords}
+                    self.assertNotIn('shell', keywords)
+                    self.assertEqual(ast.literal_eval(keywords['timeout']), 15)
+                    self.assertTrue(ast.literal_eval(keywords['check']))
+                    self.assertIn('executable', keywords)
                 if isinstance(node, ast.Import):
                     self.assertFalse(any(a.name.startswith('urllib') for a in node.names))
                 elif isinstance(node, ast.ImportFrom) and (node.module or '').startswith('urllib'):
