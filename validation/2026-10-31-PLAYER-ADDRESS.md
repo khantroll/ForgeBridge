@@ -49,3 +49,35 @@ browsers 2.65/3.34%, capture helper 0/0%, identified compute candidates 0/0%.
 These two samples precede activation and do not establish load at the error.
 No capture timeout occurred during this loopback attempt. UI captures are retained
 in the conversation tool evidence; no standalone screenshot files were created.
+
+## Consolidated player-stream attempt ledger (file-only review, 2026-10-31)
+
+Rows cover every attempt distinguishable in retained validation notes; where a
+session contains reloads without individual timestamps those are grouped explicitly.
+An unspecified browser/address is not inferred from a later session.
+
+| Date/session | Browser | Address | Result and evidence |
+| --- | --- | --- | --- |
+| Oct 15–16 initial firewall-approved native fog/player run | In-app browser, implementation not recorded | Not recorded | Covered black output then map/grid after Clear all fog; VALIDATION.md native fog section. Whole-map only. |
+| Oct 16 combined/multi-token session and post-restart reconnect | Browser not recorded | Not recorded | Asymmetric rotations and hidden-token omission observed, including restart; VALIDATION.md multi-token sections. |
+| Oct 18 native control, Multi Scene and Manor comparison | Local browser, implementation not recorded | 192.168.1.201 | Native control and generated maps rendered; VALIDATION.md controlled player baseline. |
+| Oct 18 profile Crypt reloads/reconnects (grouped) | Local browser, implementation not recorded | 192.168.1.201 | Black or stale frame; no Crypt visibility acceptance; VALIDATION.md profile player diagnostic. |
+| Oct 18 generated Manor Stoker initial hide and restored-visible observations | Waterfox | 192.168.1.201 | Player hide/restore observed; VALIDATION.md Oct 18 follow-up and restoration. Historical success retained. |
+| Oct 19 profile Crypt Play | Waterfox | Existing player tab; address not restated in that log | Black then ICE InvalidParameter; 2026-10-19-PROFILE-PLAYER.md. |
+| Oct 31 Claude initial address attempt | Claude app built-in browser | http://192.168.1.201/ | Page did not load; 2026-10-31-PROFILE-PLAYER.md. |
+| Oct 31 Claude stream session 1 | Claude app built-in browser | http://127.0.0.1/ | PASS generated Crypt visible → hidden → restored; no ICE error. Same evidence. |
+| Oct 31 Claude stream session 2, after Toolkit restart | Claude app built-in browser | http://127.0.0.1/ | PASS Crypt and generated Manor Stoker representative player output; no ICE error. Same evidence. |
+| Oct 31 Codex fog attempt A | Waterfox | http://192.168.1.201/ | Black then ICE exception; attempt A above. |
+| Oct 31 Codex attempt B | Chrome | http://192.168.1.201/ | Page loaded; control policy stopped before Play. Playback unknown in retained operator record; attempt B above. |
+| Date/address not supplied, user-reported Chrome playback attempt | Chrome | Not independently recorded | User reports ICE exception (current instruction). Separate from incomplete attempt B; no invented timestamp or address. |
+| Oct 31 Codex attempt C | Waterfox | http://127.0.0.1/ | Received native fog overlay, then ICE exception; attempt C above. |
+
+**Observed recent pattern:** Claude's built-in browser at loopback worked twice
+without ICE; Waterfox at LAN and loopback produced ICE, and the user reports Chrome
+also produced ICE. This is a browser/session pattern, not a root-cause finding.
+Historical Waterfox successes above prevent claiming it has never worked.
+
+**BLOCKED — bounded fog:** waiting for a Claude built-in-browser run on the disposable
+fog map. Reveal → player observation → cover → reveal → save → normal restart →
+persistence remains unaccepted. No desktop/Computer Use testing is authorized this
+session. No more LevelDB attribution probes; existing evidence is retained.

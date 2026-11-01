@@ -617,3 +617,12 @@ views, no unrelated windows minimized/closed, no settings/content/save/install e
 Crypt player and profile player restart stay pending; accepted results stand; fog
 separately deferred. Next independent work: controlled LevelDB failure attribution
 and observed native-reference schemas. See validation/2026-10-24-RESUME.md.
+
+## Current runtime scheduling (2026-10-31)
+
+Bounded fog is **BLOCKED**, waiting for Claude app built-in-browser testing.
+The consolidated browser/address ledger is in
+[the player-address evidence](validation/2026-10-31-PLAYER-ADDRESS.md).
+Two error-free Claude loopback sessions remain accepted; Waterfox LAN/loopback
+ICE failures and user-reported Chrome ICE are an observed pattern, not a cause.
+No desktop testing or further LevelDB investigation in the current development session.
