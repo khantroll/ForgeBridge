@@ -132,9 +132,10 @@ class PackageTests(unittest.TestCase):
                 self.assertEqual(json.loads(z.read('source-companion.json')), source)
                 serialized = json.loads(z.read('conversion-report.json'))
                 self.assertEqual(serialized['manual_steps'], report['manual_steps'])
-                self.assertIn('DEFERRED', serialized['runtime_acceptance']['bounded_native_fog'])
+                self.assertIn('do not write fog state', serialized['runtime_acceptance']['bounded_native_fog'])
+                self.assertIn('install_review', z.read('INSTALL.txt').decode())
                 self.assertIn('not converted', serialized['runtime_acceptance']['foundry_fog_vision'])
-                self.assertIn(b'Bounded native fog', z.read('INSTALL.txt'))
+                self.assertIn(b'manual fog starts fully covered', z.read('INSTALL.txt'))
                 self.assertIn('handout-report.json', z.namelist())
                 note_strings = recovered({p: z.read(p) for p in z.namelist()
                                           if p.endswith('.rwnote')})[0]
@@ -154,6 +155,29 @@ class PackageTests(unittest.TestCase):
                 build_package(companion, template, media, out, name='Readable map',
                     note_folder='Readable notes', units_per_grid=2.56, package=Path(tmp) / 'package')
             self.assertEqual(out.read_bytes(), before)
+
+    def test_failed_write_leaves_no_partial_package(self):
+        from unittest.mock import patch
+        with tempfile.TemporaryDirectory() as tmp:
+            media, companion, _, _ = inputs(tmp)
+            template = map_template(tmp)
+            out = Path(tmp) / 'interrupted.zip'
+            real = zipfile.ZipFile.writestr
+            calls = []
+            def flaky(self, name, data, *a, **k):
+                calls.append(name)
+                if len(calls) == 3:
+                    raise OSError('disk full')
+                return real(self, name, data, *a, **k)
+            with patch.object(zipfile.ZipFile, 'writestr', flaky), self.assertRaisesRegex(OSError, 'disk full'):
+                build_package(companion, template, media, out, name='Readable map',
+                    note_folder='Readable notes', units_per_grid=2.56, package=Path(tmp) / 'package')
+            self.assertFalse(out.exists())
+            out.write_bytes(b'user file')
+            with self.assertRaisesRegex(ValueError, 'new output'):
+                build_package(companion, template, media, out, name='Readable map',
+                    note_folder='Readable notes', units_per_grid=2.56, package=Path(tmp) / 'package')
+            self.assertEqual(out.read_bytes(), b'user file')
 
     def test_existing_exported_notes_need_explicit_regeneration(self):
         with tempfile.TemporaryDirectory() as tmp:

@@ -68,7 +68,7 @@ def build_package(companion, map_template, media_template, dest, *, name,
         report['manual_steps'] = list(MANUAL_STEPS)
         report['runtime_acceptance'] = {
             'this_build': 'not established by generating files or matching input hashes',
-            'bounded_native_fog': 'DEFERRED; excluded from current scene-import acceptance',
+            'bounded_native_fog': 'native Toolkit capability validated 2026-11-01 on a disposable reference copy (validation/2026-11-01-BOUNDED-FOG.md); packages do not write fog state, and manual fog starts covered for players',
             'foundry_fog_vision': 'not converted; manual native controls are a separate capability',
         }
         if collection is not None:
@@ -116,6 +116,8 @@ def build_package(companion, map_template, media_template, dest, *, name,
         files['conversion-report.json'] = json.dumps(report, indent=2).encode()
         files['INSTALL.txt'] = (f'ForgeBridge complete native package: {name}\n\n'
             'Close Arkenforge and back up MyAssets, including manually edited notes.\n'
+            'Before merging, run: py -m forgebridge.install_review --package THIS.zip\n'
+            '  --snapshot-root COPY/MyAssets --static-snapshot  (expect no conflict/blocked).\n'
             'Extract outside Arkenforge; merge MyAssets into the EXISTING MyAssets.\n'
             f'Open map: {name}\nNotes folder: {note_folder}\n'
             'The output reflects the supplied map export, not later edits in Toolkit.\n'
@@ -124,16 +126,24 @@ def build_package(companion, map_template, media_template, dest, *, name,
             'door blocking, note/map reopening and Toolkit restart.\n'
             'PDF originals and reports stay outside MyAssets. PDFs are page images\n'
             'when --pdf-pages is enabled; otherwise they remain references.\n'
-            'Labels are off. Native marker icons are retained. Player visibility is unverified.\n'
-            'Bounded native fog reveal/hide/persistence remains DEFERRED and excluded from current acceptance.\n'
+            'Labels are off. Native marker icons are retained. Check token visibility on the\n'
+            'player screen for this map (validated for the reference profiles, not every output).\n'
+            'Native manual fog starts fully covered for players: reveal areas or disable fog.\n'
             'Foundry fog/token vision is not converted. GIF setup and native calibration remain manual.\n'
             'If UVTT automatic opening fails, open the saved map from the map browser.\n').encode()
         if len(files) > 8192 or sum(map(len, files.values())) > MAX_TOTAL:
             raise ValueError('Combined native package exceeds size limits')
         dest.parent.mkdir(parents=True, exist_ok=True)
-        with zipfile.ZipFile(dest, 'x', compression=zipfile.ZIP_DEFLATED) as archive:
-            for n, data in files.items():
-                archive.writestr(n, data)
+        # 'x' never replaces an existing file; remove only the file this call created
+        # if writing fails, so a truncated package is never left for installation.
+        archive_file = open(dest, 'xb')
+        try:
+            with archive_file, zipfile.ZipFile(archive_file, 'w', compression=zipfile.ZIP_DEFLATED) as archive:
+                for n, data in files.items():
+                    archive.writestr(n, data)
+        except BaseException:
+            dest.unlink(missing_ok=True)
+            raise
     return report
 
 
