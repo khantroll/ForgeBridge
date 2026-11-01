@@ -57,6 +57,20 @@ class InstallerTests(unittest.TestCase):
             self.assertEqual((target / 'Maps/New.rwmap').read_bytes(), b'user-edited')
             self.assertEqual(list(backups.iterdir()), [])
 
+    def test_missing_backup_folder_is_created_only_under_existing_parent(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp); target, backups, package = self.inputs(root)
+            backups.rmdir()
+            result = install([package], target, backups)
+            self.assertTrue(backups.is_dir())
+            self.assertTrue(Path(result['backup']).is_relative_to(backups))
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp); target, backups, package = self.inputs(root)
+            deep = root / 'missing-parent' / 'Backups'
+            with self.assertRaisesRegex(ValueError, 'parent folder exists'):
+                install([package], target, deep)
+            self.assertFalse((root / 'missing-parent').exists())
+
     def test_modified_added_file_blocks_uninstall_before_any_deletion(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp); target, backups, package = self.inputs(root)

@@ -108,8 +108,12 @@ def install(packages, myassets, backup_root):
     packages = list(packages)
     audit = review(packages, root)
     if not audit['ok']: raise ValueError('Install conflicts/blocked paths; nothing installed: ' + json.dumps(audit['counts']))
+    if (not backups.exists() and not backups.is_symlink() and backups.parent.is_dir()
+            and not any(_linked(p) for p in backups.parents)):
+        # Create only the final folder under an existing parent; never a chain.
+        backups.mkdir()
     if not backups.is_dir() or any(_linked(p) for p in (backups, *backups.parents)):
-        raise ValueError('Choose an existing unlinked backup directory')
+        raise ValueError('Choose an unlinked backup directory whose parent folder exists')
     if backups.resolve().is_relative_to(root.resolve()) or root.resolve().is_relative_to(backups.resolve()):
         raise ValueError('Backup directory and MyAssets must be separate trees')
     native = {}
