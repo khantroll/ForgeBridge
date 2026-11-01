@@ -183,3 +183,40 @@ manual steps and explicit rejections. Unsupported scenes produce PARTIAL/exit 1;
 a total input/output error exits 2. Read all outcomes, not just the presence of a
 ZIP. Existing output, source-contained output and linked paths are refused;
 source/profile hashes are rechecked before publication. No scripts are executed.
+
+## Add-only installation (B4)
+
+Native packages may be installed explicitly with Toolkit closed. UVTT intermediate
+ZIPs are not native install inputs; `convert --install` stays gated on A0.
+Review the generated loss report and use only native-package.zip or an existing
+reviewed scene ZIP. This session exercises only fake MyAssets test fixtures.
+
+```powershell
+python -m forgebridge install --package converted/scene-001/native-package.zip --myassets C:/ArkenforgeData/MyAssets --backup-root D:/ForgeBridgeBackups
+```
+
+Select the actual MyAssets directory and an existing backup folder in a separate
+tree. The installer checks for MastersToolkit.exe (and the alternate MasterToolkit
+spelling), fails closed if process inspection fails, reuses install_review, and
+refuses any conflict/case alias/link. It backs up the complete MyAssets tree,
+including empty folders, into a unique backup run before adding anything. Backup
+is bounded to 16 GiB/100,000 entries; exceeding that limit refuses installation.
+Close Toolkit throughout; do not let another app modify the destination during
+backup/install. Checks are not an OS-wide lock against unrelated programs.
+
+Only absent files are created, exclusively. Identical files are untouched; no
+reports are installed into MyAssets. A lock prevents simultaneous ForgeBridge
+installs. Retained backup-manifest.json and uninstall.json record hashes and exactly
+which files were added. An interrupted install retains an INCOMPLETE receipt for
+manual review; it is not silently rolled back or retried.
+
+```powershell
+python -m forgebridge install --uninstall D:/ForgeBridgeBackups/forgebridge-RUN_ID/uninstall.json
+```
+
+Uninstall first checks all added files against the complete receipt, refuses if
+any were edited/missing or the list includes a pre-existing file, then removes
+only recorded unchanged additions. Existing/identical files, later user files,
+directories and backups remain. It cannot detect every new cross-map reference to
+an added file: review those relationships before uninstalling. Restore full backup
+content only after preserving any later edits separately; never use Replace All.

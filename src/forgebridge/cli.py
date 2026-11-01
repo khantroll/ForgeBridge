@@ -18,6 +18,9 @@ def main(argv: list[str] | None = None) -> int:
     if argv and argv[0] == 'convert':
         from forgebridge.convert import main as convert_main
         return convert_main(argv[1:])
+    if argv and argv[0] == 'install':
+        from forgebridge.installer import main as install_main
+        return install_main(argv[1:])
     parser = argparse.ArgumentParser(
         prog="forgebridge",
         description=(
