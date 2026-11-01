@@ -21,11 +21,41 @@ time); stream 1280×720 / 15 FPS; use disposable "Save as new" copies for any
 edit; never save Profile Crypt / Profile Manor; one agent drives the screen at a
 time.
 
+## Product goal (set by Jeffrey 2026-11-01)
+
+A new user runs **one command or a small GUI**, selects a Foundry package, and
+either (a) has the scenes **auto-installed into Arkenforge** (Toolkit closed,
+MyAssets backed up, conflict review, add-only copy, refuse on conflict) or
+(b) gets **a ready folder set** to copy into MyAssets. **No manual UVTT import,
+export or calibration.**
+
+What stands in the way, and the plan:
+
+1. **Calibration — computable.** Both hand-calibrated maps follow one rule:
+   2.56 Toolkit units per grid square, origin at the image top-left, y down
+   (Manor 3000×4000 → centre (38.4, −51.2); Crypt 4000×4200 → (51.2, −53.76),
+   both 100 px grid). ForgeBridge writes the UVTT, so it can derive calibration.
+   Confirm on at least one more map size/grid before relying on it.
+2. **Native map without Toolkit import — unproven; trial-critical.** Today the
+   geometry map comes from a Toolkit UVTT import + export used as a template.
+   ForgeBridge must write the `.rwmap` itself (background, walls, doors, lights),
+   using record shapes read from maps already in the user's MyAssets (no
+   Arkenforge files shipped in the repo). Only the Toolkit can confirm it opens
+   correctly, so the spike must finish before the trial ends.
+3. **Installer** — add-only copy into MyAssets reusing `install_review`, with
+   automatic backup and refusal on any conflict or running Toolkit.
+4. **Front end** — `forgebridge convert PACKAGE [--install | --out DIR]`, then a
+   minimal local GUI (folder picker, scene list, install/export button, loss
+   report view) over the same command.
+5. **Fallback if (2) fails by 11-05:** same command/GUI, but each map needs one
+   Toolkit "import UVTT" click; everything else stays automatic.
+
 ## Part A — needs the Toolkit (before 11-06)
 
 | # | Step | Owner | Done when |
 |---|---|---|---|
-| A1 | **M1.2 per-output runtime check on both profile maps.** On disposable copies of Profile Crypt and Profile Manor: walls block light/vision; each door toggles and blocks when closed; lights sit where the loss report says; every generated token present with correct size/rotation/hidden state; every room marker opens the right note; note attachments/images open; scene music reported as manual. Check the player view where it matters (door and light blocking). | Claude | A results table per map in `validation/`, matrix row M1.2 updated to PASS or with each failure listed. |
+| A0 | **Native map synthesis spike (top priority).** (1) Read record shapes from an existing saved map in MyAssets (Toolkit closed). (2) Generate a `.rwmap` for one Count's Manor scene directly from the Foundry source with computed calibration: background, walls, doors, lights. (3) Install it as a new disposable map and open it in the Toolkit: alignment, wall/door blocking, lights, player view. (4) Repeat for a second scene with a different size. | Claude (file work may be shared with Codex) | Both generated maps open and match the UVTT-imported versions, or the exact failing records are documented and the fallback is chosen by 11-05. |
+| A1 | **M1.2 per-output runtime check** (after A0; on generated maps if A0 passes, otherwise profile maps). On disposable copies of Profile Crypt and Profile Manor: walls block light/vision; each door toggles and blocks when closed; lights sit where the loss report says; every generated token present with correct size/rotation/hidden state; every room marker opens the right note; note attachments/images open; scene music reported as manual. Check the player view where it matters (door and light blocking). | Claude | A results table per map in `validation/`, matrix row M1.2 updated to PASS or with each failure listed. |
 | A2 | **Decide whether to install a batch output.** Codex's `scene_batch` builds Manor+Crypt packages file-only. Validating one in the Toolkit means merging it into the real MyAssets. | Jeffrey | Yes/no recorded here. If yes: back up MyAssets, run `install_review` (expect 0 conflict/0 blocked), install, then Claude repeats a short A1 on the installed map. |
 | A3 | **Capture final evidence before the trial ends.** Screenshots/notes of anything still unverified; list any check that cannot be done after the trial. | Claude | Matrix has no Toolkit-dependent row left at OPEN without a written reason. |
 
@@ -34,7 +64,9 @@ time.
 | # | Step | Owner | Done when |
 |---|---|---|---|
 | B1 | **Finish the M0.1 code review**: native_map, native_tokens, nrbf, notes/handouts, scene_profile, scene_batch, uvtt geometry. Look for unsafe paths, unbounded reads, silent data loss, non-determinism. Fix with tests. | Codex (Claude reviews the diff) | `validation/` review note covers every module; matrix M0.1 PASS. |
-| B2 | **M2.1 one documented invocation**: from a Foundry module/Adventure source plus an existing calibrated profile to a reviewable package and graded loss report, using only public commands. Raw-source calibration stays a documented manual step; say so plainly. | Codex | `docs/SCENE-IMPORT-RELEASE.md` has a copy-paste walkthrough that works from a fresh clone (CI runs it on the synthetic fixture). |
+| B2 | **Single entry point** `forgebridge convert PACKAGE --out DIR` (scene discovery, computed calibration, package per scene, combined loss report); `--install` added once A0 and the installer land. Until A0 passes, document the one remaining Toolkit step plainly. | Codex | `docs/SCENE-IMPORT-RELEASE.md` has a copy-paste walkthrough that works from a fresh clone (CI runs it on the synthetic fixture). |
+| B4 | **Add-only installer** reusing `install_review`: refuse if MasterToolkit.exe is running, back up MyAssets, copy new files only, refuse on any conflict, write an uninstall list. Tests with a fake MyAssets. | Codex | Installer passes tests; never overwrites; uninstall list removes exactly what it added. |
+| B5 | **Minimal GUI** (local, stdlib Tkinter or a local web page) over `convert`: pick package, list scenes, choose install or folder output, show loss report. | Codex, after B2 | A non-technical user can convert the Count's Manor package without the terminal. |
 | B3 | **M2.4 user docs**: prerequisites (Python, Toolkit 0.5.1.18, Foundry v13 tested), supported/unsupported list, backup and rollback, troubleshooting (ICE exception → use built-in browser/loopback; relaunch timing; fog starts covered; LevelDB note). | Codex | README points to it; Jeffrey can follow it without asking. |
 
 ## Part C — decisions (Jeffrey)
