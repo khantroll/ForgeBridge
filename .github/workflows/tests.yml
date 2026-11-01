@@ -41,6 +41,15 @@ jobs:
           exit $status
       - name: Documented convert walkthrough (synthetic source)
         run: python -m forgebridge convert fixtures/synthetic-module --out converted-example
+      - name: Installed package smoke test (no PYTHONPATH)
+        run: |
+          python -m venv "$RUNNER_TEMP/fbwheel"
+          if [ -x "$RUNNER_TEMP/fbwheel/bin/python" ]; then PY="$RUNNER_TEMP/fbwheel/bin/python"; FB="$RUNNER_TEMP/fbwheel/bin/forgebridge"; else PY="$RUNNER_TEMP/fbwheel/Scripts/python.exe"; FB="$RUNNER_TEMP/fbwheel/Scripts/forgebridge.exe"; fi
+          "$PY" -m pip install -q .
+          cd "$RUNNER_TEMP"
+          env -u PYTHONPATH "$FB" convert "$GITHUB_WORKSPACE/fixtures/synthetic-module" --out "$RUNNER_TEMP/wheel-convert"
+          test -f "$RUNNER_TEMP/wheel-convert/conversion-report.json"
+          echo "::notice title=installed package ${{ matrix.os }}::forgebridge convert OK without PYTHONPATH"
       - name: Upload log
         if: always()
         uses: actions/upload-artifact@v4

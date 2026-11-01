@@ -11,12 +11,11 @@ code. Existing pinned profiles remain explicit optional overrides.
 From the repository root, using Python 3.13:
 
 ```powershell
-python -m pip install -r requirements.txt -r requirements-native-capture.txt
-$env:PYTHONPATH = "$PWD\src"
-python -m forgebridge convert fixtures/synthetic-module --out converted-example
+python -m pip install .
+forgebridge convert fixtures/synthetic-module --out converted-example
 ```
 
-CI runs the last command on synthetic data without Arkenforge installed. Replace
+`pip install .` adds the `forgebridge` command and the `forgebridge-gui` window; no `PYTHONPATH` is needed. CI installs the package and runs this on synthetic data without Arkenforge installed. Developers can still use `$env:PYTHONPATH = "$PWD\src"` with `python -m forgebridge`. Replace
 the fixture with your module/world/Adventure directory or ZIP. Choose a new output
 folder under an existing parent. Use `--list-scenes`, repeat `--scene ID`, or use
 `--scene-key KEY` for exact selection when IDs repeat across Adventures.
@@ -50,8 +49,8 @@ A missing report means incomplete publication. No imported scripts execute.
 ## Review and optional advanced profiles
 
 ```powershell
-python -m forgebridge convert "C:/Sources/MyModule.zip" --out "C:/Conversions/MyModule-01"
-python -m forgebridge install_review --package "C:/Conversions/MyModule-01/scene-001/native-package.zip" --snapshot-root "C:/Backups/MyAssets" --static-snapshot
+forgebridge convert "C:/Sources/MyModule.zip" --out "C:/Conversions/MyModule-01"
+forgebridge install_review --package "C:/Conversions/MyModule-01/scene-001/native-package.zip" --snapshot-root "C:/Backups/MyAssets" --static-snapshot
 ```
 
 The review uses a static copy prepared with Toolkit closed and writes nothing.
@@ -65,13 +64,13 @@ merely to clear a mismatch. See SCENE-PROFILES.md and NATIVE-CAPTURE.md.
 Build and review first, then install explicitly:
 
 ```powershell
-python -m forgebridge install --package "C:/Conversions/MyModule-01/scene-001/native-package.zip" --myassets "C:/ArkenforgeData/MyAssets" --backup-root "D:/ForgeBridgeBackups"
+forgebridge install --package "C:/Conversions/MyModule-01/scene-001/native-package.zip" --myassets "C:/ArkenforgeData/MyAssets" --backup-root "D:/ForgeBridgeBackups"
 ```
 
 Or intentionally authorize build plus installation in one invocation:
 
 ```powershell
-python -m forgebridge convert "C:/Sources/MyModule.zip" --out "C:/Conversions/MyModule-02" --install --myassets "C:/ArkenforgeData/MyAssets" --backup-root "D:/ForgeBridgeBackups"
+forgebridge convert "C:/Sources/MyModule.zip" --out "C:/Conversions/MyModule-02" --install --myassets "C:/ArkenforgeData/MyAssets" --backup-root "D:/ForgeBridgeBackups"
 ```
 
 `--install` is an explicit write request, not a preview or interactive prompt.
@@ -89,7 +88,7 @@ Backup limit: 16 GiB/100,000 entries. Combined installation-review limit:
 Reports and original PDFs stay outside installed MyAssets.
 
 ```powershell
-python -m forgebridge install --uninstall "D:/ForgeBridgeBackups/forgebridge-RUN_ID/uninstall.json"
+forgebridge install --uninstall "D:/ForgeBridgeBackups/forgebridge-RUN_ID/uninstall.json"
 ```
 
 Check later references to imported content first. Uninstall removes only recorded
