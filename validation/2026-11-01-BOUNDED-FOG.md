@@ -5,8 +5,7 @@
 PASS: bounded manual fog reveal → cover → reveal, observed in actual player output.
 PASS (save step): the disposable map saved; a later Toolkit exit raised no
 unsaved-changes prompt.
-PENDING: persistence after a normal restart. The relaunch failed inside Toolkit
-(see below) before the map could be reopened.
+PASS: persistence after a normal restart (see "Restart persistence" below).
 
 Toolkit 0.5.1.18 / launcher 7.0.0.3, launched normally. Desktop control: Claude
 computer use. Player output: Claude desktop app built-in browser at
@@ -58,7 +57,18 @@ previous instance had fully exited. Neither "Close the Arkenforge Toolkit" nor
 "Exit Toolkit" responded; the process needs to be ended by the user. No map
 was open in that instance.
 
-## Next
+## Restart persistence (05:44, after the user ended the hung instance)
+
+Normal Toolkit launch; healthy New Map. Map Browser shows the Fog Test copy
+last modified **11/1/2026 4:57:17 AM** (this run's save); the preview thumbnail
+already shows one revealed area. Opened it (edit counter 0/0), started a new
+1280×720/15 stream and connected the built-in browser at 127.0.0.1 (fourth clean
+session, no ICE exception). Player output: **only the north room is visible, with
+Cursed Cannibal; the rest of the map remains fogged** — identical to the
+pre-restart reveal. Stopped projecting; Quit raised no save prompt (no edits).
+Profile Crypt and Profile Manor were never opened.
+
+## Superseded next step
 
 End the hung Toolkit, launch normally once the launcher no longer says
 "Running", open the Fog Test copy, start the stream, connect the built-in
