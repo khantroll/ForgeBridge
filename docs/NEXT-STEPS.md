@@ -106,3 +106,8 @@ no A-step evidence or M1 row changed.
 B3: operator guide added and linked from README; tested version scope, public
 convert workflow, limitations, backup/install/rollback and troubleshooting covered.
 Jeffrey's fresh-operator run remains a release decision, not inferred from docs.
+
+B5: local Tkinter front end and .pyw launcher implemented over convert/install,
+with scoped selection, export, loss review and guarded native install. Headless
+controller tests only; no GUI launch/desktop observation in this session. A0
+native backend and fresh human GUI acceptance remain separate requirements.

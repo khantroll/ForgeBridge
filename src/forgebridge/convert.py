@@ -1,5 +1,6 @@
 """Discover Foundry scenes and export reviewable packages through existing adapters."""
 import argparse
+import hashlib
 from contextlib import contextmanager
 import json
 from pathlib import Path
@@ -36,12 +37,16 @@ def _identity(row):
     return (row.get('id'), row.get('source_path'), _parent_adventure_id(row))
 
 
+def scene_key(row):
+    return hashlib.sha256(json.dumps(_identity(row)).encode()).hexdigest()[:24]
+
+
 def discover(package):
     """Read-only discovery used by CLI and GUI; no native calibration inference."""
     with source_root(package) as (root, _):
         inventory = inventory_path(root)
         return {'package_id': inventory['provenance']['package_id'],
-                'scenes': [{'id': row.get('id'), 'name': row.get('name'),
+                'scenes': [{'key': scene_key(row), 'id': row.get('id'), 'name': row.get('name'),
                             'source_path': row.get('source_path'),
                             'parent_adventure_id': _parent_adventure_id(row)}
                            for row in inventory['documents'] if row.get('document_type') == 'Scene']}
@@ -59,7 +64,7 @@ def _new_destination(destination, package):
     return dest
 
 
-def convert(package, destination, *, scene_ids=(), profiles=()):
+def convert(package, destination, *, scene_ids=(), scene_keys=(), profiles=()):
     package = Path(package).absolute()
     dest = _new_destination(destination, package)
     before = fingerprint(package)
@@ -76,6 +81,12 @@ def convert(package, destination, *, scene_ids=(), profiles=()):
         report['package_id'] = inventory['provenance']['package_id']
         rows = [r for r in inventory['documents'] if r.get('document_type') == 'Scene']
         rows.sort(key=lambda r: tuple(str(x or '') for x in _identity(r)))
+        if len({_identity(r) for r in rows}) != len(rows):
+            raise ValueError('Duplicate source scene identity in one pack/Adventure; resolve before converting')
+        if scene_ids and scene_keys: raise ValueError('Select by scene IDs or scoped keys, not both')
+        if scene_keys:
+            if set(scene_keys) - {scene_key(r) for r in rows}: raise ValueError('Scoped scene key not found')
+            rows = [r for r in rows if scene_key(r) in scene_keys]
         if scene_ids:
             missing = set(scene_ids) - {r.get('id') for r in rows}
             if missing:
@@ -171,6 +182,7 @@ def main(argv=None):
     parser.add_argument('--out')
     parser.add_argument('--list-scenes', action='store_true')
     parser.add_argument('--scene', action='append', default=[])
+    parser.add_argument('--scene-key', action='append', default=[])
     parser.add_argument('--profile', action='append', default=[])
     args = parser.parse_args(argv)
     try:
@@ -178,7 +190,7 @@ def main(argv=None):
             report = discover(args.package)
         else:
             if not args.out: raise ValueError('Provide --out NEW_DIRECTORY or --list-scenes')
-            report = convert(args.package, args.out, scene_ids=args.scene, profiles=args.profile)
+            report = convert(args.package, args.out, scene_ids=args.scene, scene_keys=args.scene_key, profiles=args.profile)
         print(json.dumps(report, indent=2))
         return 0 if report.get('status', 'PASS') == 'PASS' else 1
     except (OSError, ValueError, InventoryFatal, zipfile.BadZipFile) as exc:

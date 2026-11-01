@@ -152,3 +152,30 @@ blindly replace MyAssets or delete files from an old import manifest.
 For commands and detailed review/rollback rules see
 [SCENE-IMPORT-RELEASE.md](SCENE-IMPORT-RELEASE.md). Native results/gates belong to
 [ACCEPTANCE-MATRIX.md](ACCEPTANCE-MATRIX.md); this guide adds no runtime evidence.
+
+## Local graphical front end (B5)
+
+After the one-time dependency setup, double-click `forgebridge_gui.pyw` in the
+checkout on Windows, or run `python -m forgebridge gui`. Tkinter must be available
+in the selected Python installation; the Windows Python installer normally offers
+Tcl/Tk. No browser/server or network connection is used by the GUI.
+
+1. Choose a Foundry folder or ZIP and click **Discover scenes**.
+2. Select scenes (Ctrl-click for multiple). Pack/Adventure scope is preserved,
+   even when two scenes share the same Foundry ID.
+3. Choose an output parent; the app proposes a new child folder. Optionally select
+   already calibrated profile JSONs for native output while A0 is pending.
+4. Click **Build / export**, wait, and read the stage-specific loss summary.
+   The detailed combined report is saved alongside the per-scene packages.
+5. **Install reviewed native outputs** is enabled only for complete native output.
+   UVTT-only and rejected conversions cannot be installed through this button.
+   Review first, select actual MyAssets and a separate backup folder, keep Toolkit
+   closed and confirm the concrete destination/backup summary. Only native scenes
+   are added; unmatched manual UVTT scenes are explicitly excluded.
+
+The front end runs the same conversion/installer APIs in a background worker;
+wait for file operations to finish before closing. It does not open Toolkit,
+change system settings, infer calibration or claim a native/player test passed.
+This implementation has headless controller tests; it was not launched or visually
+validated in this file-only session. A0 native synthesis and human GUI acceptance
+remain separate from implementing the front end.

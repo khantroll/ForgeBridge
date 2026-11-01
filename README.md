@@ -568,3 +568,8 @@ Use the [operator guide](docs/USER-GUIDE.md) for fresh-checkout setup, the singl
 supported versions/limits, add-only backup/install, rollback and troubleshooting.
 Automatic native synthesis waits for A0; unmatched scenes remain explicit UVTT
 intermediates, not ready MyAssets content. Builds never install automatically.
+
+The optional local front end is available through `forgebridge_gui.pyw` (Windows
+double-click after setup) or `python -m forgebridge gui`. It provides source/scene
+selection, export and readable loss review; installation is enabled only for
+reviewed native outputs. See the [operator guide](docs/USER-GUIDE.md).

@@ -21,6 +21,9 @@ def main(argv: list[str] | None = None) -> int:
     if argv and argv[0] == 'install':
         from forgebridge.installer import main as install_main
         return install_main(argv[1:])
+    if argv and argv[0] == 'gui':
+        from forgebridge.gui import main as gui_main
+        return gui_main(argv[1:])
     parser = argparse.ArgumentParser(
         prog="forgebridge",
         description=(
