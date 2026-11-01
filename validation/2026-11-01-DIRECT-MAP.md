@@ -47,9 +47,25 @@ primitive-array and extra primitive types needed for new class definitions.
 - `MyAssets/Maps/ForgeBridge Direct Crypt 2026-11-01.rwmap` / `.rwmeta`
 - `MyAssets/Media/Cartographer/Quick Import/ForgeBridge Direct Crypt 2026-11-01/Counts_Crypt_40x42.rwfile` / `.rwmeta`
 
+## Second scene: Manor - 1st Floor — PASS (07:55)
+
+Foundry scene `2JQnuREHORbOigWo`, 3000×4000, 100 px grid, different size and
+aspect from Crypt. Generated **ForgeBridge Direct Manor 1st 2026-11-01**: 164
+walls, 12 doors (3 closed, 9 open), 24 lights, background centre (38.4, −51.2),
+which equals the hand-calibrated Manor centre. Installed add-only (4 new files),
+opened in Toolkit: walls follow the house and courtyard walls, doors in doorways
+and the courtyard gate, lights rendering; edit counter 0/0; closed without save.
+
+The older `counts_manor_first_floor` Toolkit import (2026-10-07, before the
+padding/origin and transparent-wall UVTT fixes) shares no segments with today's
+geometry and is not a valid record-level comparator; acceptance here is the
+visual alignment above plus the Crypt record-for-record match.
+
+Uninstall: `MyAssets/Maps/ForgeBridge Direct Manor 1st 2026-11-01.rwmap/.rwmeta`,
+`MyAssets/Media/Cartographer/Quick Import/ForgeBridge Direct Manor 1st 2026-11-01/`.
+
 ## Not yet done
 
-- Second scene with a different size (Manor 1st floor) — required by A0.
 - Map-browser thumbnail is blank (copied from the empty map's metadata).
 - Notes, room markers and tokens are not yet added to a synthesized map (the
   existing marker/token writers should apply unchanged; untested).
