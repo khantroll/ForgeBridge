@@ -173,7 +173,7 @@ class Writer:
                 raise ValueError('Invalid Char')
             self.out += value.encode('utf-8')
         else:
-            formats = {1: '?', 8: 'i', 11: 'f'}
+            formats = {1: '?', 2: 'B', 6: 'd', 7: 'h', 8: 'i', 9: 'q', 10: 'b', 11: 'f'}
             if kind not in formats: raise ValueError('Unsupported writer primitive')
             self.out += struct.pack('<' + formats[kind], value)
 
@@ -181,7 +181,8 @@ class Writer:
         if kind == 0: self.out.append(info)
         elif kind == 3: self.string(info)
         elif kind == 4: self.string(info['name']); self.integer(info['library_id'])
-        elif kind not in (1, 2, 6): raise ValueError('Unsupported writer type')
+        elif kind == 7: self.out.append(info)  # primitive array element type
+        elif kind not in (1, 2, 5, 6): raise ValueError('Unsupported writer type')
 
     def value(self, value):
         if value is None: self.out.append(10)
