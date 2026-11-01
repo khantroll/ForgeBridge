@@ -50,7 +50,7 @@ A missing report means incomplete publication. No imported scripts execute.
 
 ```powershell
 forgebridge convert "C:/Sources/MyModule.zip" --out "C:/Conversions/MyModule-01"
-forgebridge install_review --package "C:/Conversions/MyModule-01/scene-001/native-package.zip" --snapshot-root "C:/Backups/MyAssets" --static-snapshot
+python -m forgebridge.install_review --package "C:/Conversions/MyModule-01/scene-001/native-package.zip" --snapshot-root "C:/Backups/MyAssets" --static-snapshot
 ```
 
 The review uses a static copy prepared with Toolkit closed and writes nothing.
