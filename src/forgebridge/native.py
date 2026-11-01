@@ -219,7 +219,9 @@ class Writer:
     def array(self, array, oid):
         self.out.append(7); self.integer(oid); self.out.append(0); self.integer(1); self.integer(len(array.items))
         self.out.append(array.kind); self.type_info(array.kind, array.info)
-        for item in array.items: self.value(item)
+        for item in array.items:
+            if array.kind == 0: self.primitive(array.info, item)
+            else: self.value(item)
 
     def write(self, root):
         self.ids[id(root)] = 1; self.queue.append(root)
