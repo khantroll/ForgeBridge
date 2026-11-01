@@ -14,6 +14,10 @@ from forgebridge.validate import InventoryFatal, load_schema, repo_schema, valid
 
 
 def main(argv: list[str] | None = None) -> int:
+    argv = list(sys.argv[1:] if argv is None else argv)
+    if argv and argv[0] == 'convert':
+        from forgebridge.convert import main as convert_main
+        return convert_main(argv[1:])
     parser = argparse.ArgumentParser(
         prog="forgebridge",
         description=(

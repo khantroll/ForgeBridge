@@ -87,3 +87,9 @@ What stands in the way, and the plan:
 
 - Windows LevelDB tracing/probes (until C1 or a new supported-environment failure).
 - Formatting-only commits.
+
+## Part B execution updates
+
+B2: public convert entry point and synthetic CI walkthrough implemented. Existing
+profiles build native packages; scenes without profiles remain explicit UVTT/manual
+outputs until A0. See SCENE-IMPORT-RELEASE.md and validation/2026-11-01-PART-B.md.

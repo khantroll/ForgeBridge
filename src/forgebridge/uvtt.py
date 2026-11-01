@@ -188,9 +188,9 @@ def build_uvtt_slice(package: Path, scene_id: str) -> dict:
     return _slice_directory(package, scene_id, [])
 
 
-def _slice_directory(package: Path, scene_id: str, rejected_zip_entries: list[str]) -> dict:
-    inventory = inventory_path(package)
-    scene_row = _scene_row(inventory, scene_id)
+def _slice_directory(package: Path, scene_id: str, rejected_zip_entries: list[str], *, inventory=None, scene_row=None) -> dict:
+    inventory = inventory_path(package) if inventory is None else inventory
+    scene_row = _scene_row(inventory, scene_id) if scene_row is None else scene_row
     payload = _load_scene_payload(package, scene_row, scene_id)
     uvtt, lines = _scene_to_uvtt(package, payload)
     scene_notes = _scene_notes(package, inventory, scene_row, payload)
@@ -626,6 +626,8 @@ def _square_grid(scene: dict) -> float:
     size = _number(grid.get("size"))
     if size is None or size <= 0:
         raise InventoryFatal("scene grid size must be a positive number of pixels per square")
+    if not size.is_integer():
+        raise InventoryFatal("Fractional grid pixels cannot be represented by UVTT pixels_per_grid; refusing misaligned geometry")
     return size
 
 

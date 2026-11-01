@@ -147,3 +147,39 @@ assets are read or written. Inputs already include synthetic native geometry and
 controls: this does not automate native import/export/calibration, test a fresh
 human operator, or establish Toolkit acceptance. Follow the manual steps above
 for a real source. See [rehearsal evidence](../validation/2026-10-31-OPERATOR-REHEARSAL.md).
+
+## One-command scene discovery and conversion (B2)
+
+From a fresh clone, in the repository root (Python 3.13):
+
+```powershell
+python -m pip install -r requirements.txt -r requirements-native-capture.txt
+$env:PYTHONPATH = "$PWD\src"
+python -m forgebridge convert fixtures/synthetic-module --out converted-example
+```
+
+The exact last command runs in CI against the committed synthetic source; choose
+a new output directory for each run. For your own module/Adventure, replace
+`fixtures/synthetic-module` with its directory or ZIP. `--list-scenes` discovers
+IDs without creating outputs; repeat `--scene ID` to select scenes. Legacy
+inventory and `--uvtt-scene` commands remain available.
+
+Until A0 native synthesis is accepted, a scene without a supplied calibrated
+profile produces `scene-NNN/uvtt-package.zip`: UVTT, original scene/journal
+companion, readable notes and supported loose source assets. **Import scene.uvtt
+in Toolkit is still required.** Native save/export/calibration and a pinned
+profile remain necessary for this intermediate native pipeline; the command does
+not guess a universal native origin or scale. This is not a ready MyAssets tree.
+
+For already calibrated scenes, repeat `--profile profiles/scene.json` on the same
+command. Each profile must pin the exact unpacked package and selected scene;
+those scenes also receive a complete `native-package.zip` from the production
+builder. Unmatched scenes remain explicit UVTT/manual outputs. No installation
+occurs. A0 will supply the automatic native backend when its schema is proved.
+
+`conversion-report.json` at the output root is the combined loss report: each
+scoped source scene, graded source losses/counts, native report when available,
+manual steps and explicit rejections. Unsupported scenes produce PARTIAL/exit 1;
+a total input/output error exits 2. Read all outcomes, not just the presence of a
+ZIP. Existing output, source-contained output and linked paths are refused;
+source/profile hashes are rechecked before publication. No scripts are executed.

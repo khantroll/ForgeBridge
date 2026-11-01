@@ -39,6 +39,8 @@ jobs:
           summary=$(grep -E '^(Ran |OK|FAILED)' suite.log | tr '\n' ' ')
           echo "::notice title=suite ${{ matrix.os }} $(git rev-parse --short HEAD)::$summary"
           exit $status
+      - name: Documented convert walkthrough (synthetic source)
+        run: python -m forgebridge convert fixtures/synthetic-module --out .test-tmp/convert-walkthrough
       - name: Upload log
         if: always()
         uses: actions/upload-artifact@v4

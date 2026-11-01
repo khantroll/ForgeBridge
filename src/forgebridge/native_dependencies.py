@@ -4,6 +4,15 @@ import zipfile
 from forgebridge.nrbf import Reader
 
 
+def write_member(archive, name, data):
+    """Stable ZIP metadata; callers retain their exclusive-write/cleanup policy."""
+    info = zipfile.ZipInfo(name, date_time=(2026, 1, 1, 0, 0, 0))
+    info.compress_type = zipfile.ZIP_DEFLATED
+    info.create_system = 3
+    info.external_attr = 0o600 << 16
+    archive.writestr(info, data)
+
+
 def safe_name(name):
     """Require a portable native asset path without Windows aliases."""
     parts = name.split('/')
