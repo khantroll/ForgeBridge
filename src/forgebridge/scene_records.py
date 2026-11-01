@@ -4,7 +4,7 @@ import io
 
 from PIL import Image
 
-from forgebridge.native import Node, Array, Writer
+from forgebridge.native import Node, Array, Writer, NoteBuilder
 from forgebridge.native_scene_schema import CLASSES, DEFAULTS, LIBRARIES
 from forgebridge.nrbf import Reader
 
@@ -62,6 +62,39 @@ def template_map():
 
 def asset_templates():
     return encode(record('asset')), encode(record('asset_meta'))
+
+
+def control_files():
+    """Schema-built controls for the existing note/media/marker/token writers."""
+    builder = NoteBuilder()
+    base = 'MyAssets/Encyclopedia/Notes/GeneratedControls/Control'
+    image = 'MyAssets/Media/Encyclopedia/Images/GeneratedControls/Image'
+    name = 'ForgeBridge Control'
+    note = builder.note(name, [record('size')], tag='ForgeBridge token')
+    meta = builder.metadata(name)
+    note.members['_noteIcon'].members['_iconPath'] = image + '.rwmeta'
+    meta.members['_noteIcon'].members['_iconPath'] = image + '.rwmeta'
+    encode_note = lambda n: Writer(builder.schema['libraries']).write(n)
+    control = record('blank'); tile = record('content')
+    tiles = control.members['_tiles'].members
+    tiles['_items'].items = [tile]; tiles.update(_size=1, _version=1)
+    control.members.update(_name='_ForgeBridgeSchemaControl', _nextUID=2)
+    # Observed sized-token control: 500px icon, spriteWidth=-1 sentinel,
+    # Size 2 / scale 1.024; normalize to Size 1 / scale .512 in the definition.
+    picture = png(500, 500)
+    common = {image + '.rwfile': encode(record('asset', image=picture)),
+              image + '.rwmeta': encode(record('asset_meta', image=picture)),
+              base + '.rwnote': encode_note(note), base + '.rwmeta': encode_note(meta)}
+    token = {**common, 'MyAssets/Maps/_ForgeBridgeSchemaControl.rwmap': encode(control),
+             'MyAssets/Maps/_ForgeBridgeSchemaControl.rwmeta': encode(record('map_meta'))}
+    # The observed FB Cal A marker uses scale 1, versus Size-1 token scale .512.
+    tile.members['_tileInfo'].members['_scale'].members.update(x=1., y=1.)
+    marker = dict(token)
+    marker['MyAssets/Maps/_ForgeBridgeSchemaControl.rwmap'] = encode(control)
+    media_note = builder.note('Generated media control', [builder.media_field('Image', image + '.rwmeta', 1)])
+    media = {image + '.rwfile': common[image + '.rwfile'], image + '.rwmeta': common[image + '.rwmeta'],
+             base + '.rwnote': encode_note(media_note), base + '.rwmeta': encode_note(builder.metadata('Generated media control'))}
+    return marker, token, media
 
 
 def canonical_graph(data):

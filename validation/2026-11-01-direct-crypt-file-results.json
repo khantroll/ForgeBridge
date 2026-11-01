@@ -1,0 +1,72 @@
+{
+  "status": "PASS",
+  "scope": "file-level only; neither installed nor observed in Toolkit",
+  "selection": "--scene fP7VKkP46gQPED6X matches both source Adventure variants",
+  "native_counts": {
+    "scenes": 2,
+    "tokens": 18,
+    "rejected_tokens": 2,
+    "notes": 168,
+    "markers": 38
+  },
+  "closed_native_metadata_references": 666,
+  "native_files": 608,
+  "scenes": [
+    {
+      "source_path": "packs/adventure-5e",
+      "parent_adventure_id": "N63YevXMYeDZPCMh",
+      "name": "ForgeBridge Count's Crypt - c293b013c0",
+      "counts": {
+        "notes": 84,
+        "journal_pages": 76,
+        "documents": 7,
+        "native_tables": 2,
+        "rewritten_uuid_occurrences": 54,
+        "unresolved_uuid_occurrences": 1,
+        "map_note_references": 19,
+        "native_image_attachments": 55,
+        "native_image_assets": 48,
+        "native_pdf_documents": 0,
+        "native_pdf_pages": 0,
+        "native_pdf_attachments": 0,
+        "native_tokens": 9,
+        "unsupported_tokens": 1
+      },
+      "geometry": {
+        "walls": 199,
+        "doors": 23,
+        "lights": 66,
+        "image": 1
+      },
+      "native_package_sha256": "1228266b49f4c9819e03ea3c73cf60d914fbb3eec2ef00a6fb74c0ddd5eb1fc7"
+    },
+    {
+      "source_path": "packs/adventure-sa",
+      "parent_adventure_id": "2av309YsFOxVznjB",
+      "name": "ForgeBridge Count's Crypt - efd5e0e721",
+      "counts": {
+        "notes": 84,
+        "journal_pages": 76,
+        "documents": 7,
+        "native_tables": 2,
+        "rewritten_uuid_occurrences": 54,
+        "unresolved_uuid_occurrences": 1,
+        "map_note_references": 19,
+        "native_image_attachments": 55,
+        "native_image_assets": 48,
+        "native_pdf_documents": 0,
+        "native_pdf_pages": 0,
+        "native_pdf_attachments": 0,
+        "native_tokens": 9,
+        "unsupported_tokens": 1
+      },
+      "geometry": {
+        "walls": 199,
+        "doors": 23,
+        "lights": 66,
+        "image": 1
+      },
+      "native_package_sha256": "67c3de8e569f8a6e1d98aaa0648c1387a41fb692beb994b22651ba6f6cb2d1fa"
+    }
+  ]
+}

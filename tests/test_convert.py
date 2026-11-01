@@ -22,7 +22,7 @@ class ConvertTests(unittest.TestCase):
                 self.assertEqual(main(['convert', str(FIXTURE), '--out', str(dest)]), 0)
             report = json.loads(output.getvalue())
             self.assertEqual(report['scenes'][0]['id'], 'scene-crypt')
-            self.assertEqual(report['scenes'][0]['status'], 'MANUAL')
+            self.assertEqual(report['scenes'][0]['status'], 'BUILT')
             self.assertGreater(report['counts']['unsupported'], 0)
             self.assertEqual(json.loads((dest / 'conversion-report.json').read_text()), report)
             with zipfile.ZipFile(dest / 'scene-001/uvtt-package.zip') as archive:
@@ -31,6 +31,8 @@ class ConvertTests(unittest.TestCase):
                 companion = json.loads(archive.read('scene.forgebridge.json'))
                 self.assertEqual(companion['source_scene']['_id'], 'scene-crypt')
                 self.assertEqual(companion['loss_report'], report['scenes'][0]['loss_report'])
+            self.assertTrue((dest / 'MyAssets/Maps/ForgeBridge').is_dir())
+            self.assertGreater(report['closed_native_metadata_references'], 0)
             self.assertEqual(fingerprint(FIXTURE), before)
             stable = fingerprint(dest)
             with self.assertRaises(ValueError): convert(FIXTURE, dest)

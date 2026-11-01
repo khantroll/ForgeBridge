@@ -152,8 +152,8 @@ def insert_markers(data, placements, *, name, units_per_grid, origin=(0., 0.),
         raise ValueError('Invalid map name')
     if not math.isfinite(units_per_grid) or units_per_grid <= 0 or len(origin) != 2 or not all(math.isfinite(v) for v in origin):
         raise ValueError('Invalid calibrated map transform')
-    if not isinstance(placements, list) or not 1 <= len(placements) <= 2048:
-        raise ValueError('Expected 1 to 2048 marker placements')
+    if not isinstance(placements, list) or len(placements) > 2048:
+        raise ValueError('Expected at most 2048 marker placements')
     if type(marker_labels) is not bool or len(label_offset) != 2 or not all(math.isfinite(v) for v in label_offset):
         raise ValueError('Invalid marker label options')
     reader = Reader(data)
@@ -330,7 +330,15 @@ def write_map_zip(template_pack, companion, dest, *, name, units_per_grid,
         if len(marker_maps) != 1:
             raise ValueError('Expected one marker control map')
         marker_data = marker_files[marker_maps[0]]
-    updated, placements = insert_markers(files[map_path], report['placements'], name=name,
+    valid, unplaced = [], []
+    for placement in report['placements']:
+        position = placement.get('grid_position')
+        if placement.get('target') and isinstance(position, dict) and all(
+                type(position.get(k)) in (int, float) and math.isfinite(position[k]) for k in ('x', 'y')):
+            valid.append(placement)
+        else:
+            unplaced.append({**placement, 'reason': 'Unresolved note target or missing finite source position; source retained'})
+    updated, placements = insert_markers(files[map_path], valid, name=name,
         units_per_grid=units_per_grid, origin=origin, template_name=template_name, remove_names=remove_names,
         marker_labels=marker_labels, text_template=text_template, label_offset=label_offset,
         template_data=marker_data)
@@ -341,6 +349,7 @@ def write_map_zip(template_pack, companion, dest, *, name, units_per_grid,
     files[folder + '/' + name + '.rwmap'] = updated
     files[folder + '/' + name + '.rwmeta'] = metadata
     report['placements'] = placements
+    report['unplaced_markers'] = unplaced
     report['native_map'] = {'name': name, 'units_per_grid': units_per_grid, 'origin': list(origin),
                             'markers': len(placements), 'marker_labels': 'on' if marker_labels else 'off',
                             'labels': sum('label' in p for p in placements), 'label_offset_grid': list(label_offset),

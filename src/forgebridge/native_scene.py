@@ -7,9 +7,9 @@ square (Unity sprites use 100 px per unit; 256 / pixels_per_grid scales a
 source pixel). Verified record-for-record against the Toolkit's own import of
 Count's Crypt: 199 walls, 23 doors with open/closed state, 66 lights.
 
-Record shapes (wall/door Barrier, Light Source, image tile) are cloned from a
-map the user already has in MyAssets; no Arkenforge data ships with
-ForgeBridge. No CLR types are loaded and nothing is executed.
+Record shapes (wall/door Barrier, Light Source, image tile) may come from a
+user export or scene_records' code-defined templates. The default conversion
+uses the latter; no Arkenforge files ship with ForgeBridge. No CLR types load.
 """
 import math
 import struct
@@ -135,8 +135,8 @@ def _image(template, uvtt, size, image_meta_path, asset_name, uid, order):
 def synthesize_map(blank_data, template_data, uvtt, *, name, image_meta_path, asset_name):
     """Return native map bytes and a report. Neither input stream is modified.
 
-    blank_data: a native map to use as the container (an empty Toolkit map).
-    template_data: a Toolkit-imported native map supplying record shapes.
+    blank_data: an empty container, schema-built or from a user export.
+    template_data: schema-built or user-exported map supplying record shapes.
     """
     if not isinstance(name, str) or not name or len(name) > 256:
         raise ValueError('Invalid map name')

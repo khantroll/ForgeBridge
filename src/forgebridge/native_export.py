@@ -95,7 +95,7 @@ def companion_files(companion, *, map_markers=False, media_fields=None, note_fol
         raise ValueError('Companion needs scene_notes.dependencies; export it again with ForgeBridge')
     graph = bundle['dependencies']
     documents, edges = graph.get('documents'), graph.get('references')
-    if not isinstance(documents, list) or not 1 <= len(documents) <= 256 or not isinstance(edges, list) or len(edges) > 4096:
+    if not isinstance(documents, list) or len(documents) > 256 or not isinstance(edges, list) or len(edges) > 4096:
         raise ValueError('Invalid or oversized dependency graph')
     for document in documents:
         if not isinstance(document, dict) or document.get('document_type') not in {'JournalEntry', 'RollTable'} or not isinstance(document.get('payload'), dict) or not isinstance(document.get('source'), dict):

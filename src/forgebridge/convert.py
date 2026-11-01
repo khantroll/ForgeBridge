@@ -9,7 +9,7 @@ import tempfile
 import zipfile
 
 from forgebridge.inventory import inventory_path
-from forgebridge.native_dependencies import write_member
+from forgebridge.native_dependencies import write_member, read_package, merge_native, check_metadata_references
 from forgebridge.notes import render_notes_text
 from forgebridge.package import build_package
 from forgebridge.scene_profile import fingerprint, preflight_profile
@@ -71,11 +71,14 @@ def convert(package, destination, *, scene_ids=(), scene_keys=(), profiles=()):
     report = {'format': 'forgebridge.conversion', 'version': 1, 'status': 'PASS',
               'source_sha256': before, 'scenes': [], 'counts': {g: 0 for g in
                   ('native', 'approximate', 'manual', 'unsupported')},
+              'counts_scope': 'Source/UVTT grades; native outcomes and remaining losses are reported separately',
+              'native_counts': {'scenes': 0, 'tokens': 0, 'rejected_tokens': 0, 'notes': 0, 'markers': 0},
+              'native_losses': [],
               'runtime_validation': 'not performed', 'installed': False,
-              'native_synthesis': 'pending A0; no target origin/scale inferred',
-              'manual_steps': ['Without a matching calibrated profile, import each scene.uvtt in Toolkit; '
-                               'native export/calibration and profile capture are still needed for the native stage',
-                               'Review losses and installation conflicts; labels off; GIF/FPS setup remains manual']}
+              'native_synthesis': 'Schema-built Toolkit 0.5.1.18 records; default calibration 2.56 units/grid, upper-left origin (0,0)',
+              'manual_steps': ['Review combined losses and installation conflicts before player use; labels off',
+                               'GIF/FPS setup, manual native fog and unsupported actor/vision/behavior remain manual',
+                               'Generating files is not runtime validation of this output']}
     with source_root(package) as (root, rejected), tempfile.TemporaryDirectory(prefix='forgebridge-convert-') as tmp:
         inventory = inventory_path(root)
         report['package_id'] = inventory['provenance']['package_id']
@@ -111,6 +114,7 @@ def convert(package, destination, *, scene_ids=(), scene_keys=(), profiles=()):
                 raise ValueError('Profile is missing, ambiguous, duplicated or outside selected scenes')
             native[_identity(matches[0])] = (audit, settings)
         stage = Path(tmp)
+        combined_native = {}
         for index, row in enumerate(rows, 1):
             folder = stage / f'scene-{index:03d}'; folder.mkdir()
             result = {'id': row.get('id'), 'name': row.get('name'),
@@ -147,11 +151,45 @@ def convert(package, destination, *, scene_ids=(), scene_keys=(), profiles=()):
                     conversion = build_package(**settings, dest=folder / 'native-package.zip',
                                                profile_provenance=audit['provenance'])
                     result.update(status='BUILT', artifact='native-package.zip', native_report=conversion)
+                else:
+                    from forgebridge.direct_package import build_direct
+                    conversion = build_direct(root, document, row, report['package_id'], folder / 'native-package.zip')
+                    result.update(status='BUILT', artifact='native-package.zip', native_report=conversion)
+                members = read_package(folder / 'native-package.zip')
+                candidate = {n: d for n, d in members.items() if n.startswith('MyAssets/')}
+                additions = {n: d for n, d in candidate.items() if n not in combined_native}
+                if (len(combined_native) + len(additions) > 16384 or
+                        sum(map(len, combined_native.values())) + sum(map(len, additions.values())) > 1024 * 1024 * 1024):
+                    raise ValueError('Combined native output exceeds 1 GiB/16384-file limit; select fewer scenes')
+                merge_native(combined_native, candidate)
             except (ValueError, OSError, InventoryFatal, zipfile.BadZipFile) as exc:
                 result.update(status='REJECTED', error=str(exc))
                 report['counts']['unsupported'] += 1
                 report['status'] = 'PARTIAL'
             report['scenes'].append(result)
+            if result.get('status') == 'BUILT':
+                native_report = result['native_report']; counts = native_report['counts']
+                report['native_counts']['scenes'] += 1
+                for key, source in [('tokens', 'native_tokens'), ('rejected_tokens', 'unsupported_tokens'), ('notes', 'notes')]:
+                    report['native_counts'][key] += counts.get(source, 0)
+                report['native_counts']['markers'] += native_report['native_map']['markers']
+                remaining = list(native_report.get('native_synthesis', {}).get('losses', []))
+                remaining += [{'grade': 'unsupported', 'feature': 'light', **row}
+                              for row in native_report.get('native_synthesis', {}).get('omitted_lights', [])]
+                remaining += [{'grade': 'unsupported', 'feature': 'token', **row}
+                              for row in native_report.get('token_conversion', {}).get('unsupported', [])]
+                remaining += [{'grade': 'manual', 'feature': 'room-marker', **row}
+                              for row in native_report.get('unplaced_markers', [])]
+                remaining += [{'grade': 'manual', 'feature': 'native-attachment', **row}
+                              for row in native_report.get('source_media', [])
+                              if row.get('status') not in {'native_image', 'native_pdf_pages'}]
+                report['native_losses'].append({'scene_id': result['id'], 'folder': result['folder'],
+                    'losses': remaining, 'unresolved_links': native_report.get('unresolved_links', [])})
+        report['closed_native_metadata_references'] = check_metadata_references(combined_native)
+        # A directly copyable MyAssets tree, alongside per-scene archives and losses.
+        for name, data in combined_native.items():
+            target = stage / name; target.parent.mkdir(parents=True, exist_ok=True)
+            with target.open('xb') as stream: stream.write(data)
         if fingerprint(package) != before:
             raise ValueError('Source package changed during conversion; nothing published')
         # Revalidate all native inputs after compilation, without re-reading source DBs.
@@ -184,13 +222,33 @@ def main(argv=None):
     parser.add_argument('--scene', action='append', default=[])
     parser.add_argument('--scene-key', action='append', default=[])
     parser.add_argument('--profile', action='append', default=[])
+    parser.add_argument('--install', action='store_true', help='Explicit add-only installation after building/review checks')
+    parser.add_argument('--myassets', help='Actual MyAssets destination; required with --install')
+    parser.add_argument('--backup-root', help='Separate existing full-backup directory; required with --install')
     args = parser.parse_args(argv)
     try:
         if args.list_scenes:
+            if args.install or args.myassets or args.backup_root:
+                raise ValueError('--list-scenes is read-only; do not combine it with installation options')
             report = discover(args.package)
         else:
-            if not args.out: raise ValueError('Provide --out NEW_DIRECTORY or --list-scenes')
+            if args.install and (not args.myassets or not args.backup_root):
+                raise ValueError('--install requires --myassets and --backup-root')
+            if not args.install and (args.myassets or args.backup_root):
+                raise ValueError('Installation destinations require explicit --install')
+            if not args.out and args.install:
+                import uuid
+                args.out = str(Path.cwd() / ('ForgeBridge-output-' + uuid.uuid4().hex[:10]))
+            if not args.out: raise ValueError('Provide --out NEW_DIRECTORY, --install, or --list-scenes')
             report = convert(args.package, args.out, scene_ids=args.scene, scene_keys=args.scene_key, profiles=args.profile)
+            if args.install:
+                if report['status'] != 'PASS': raise ValueError('Resolve rejected scenes before installation; outputs retained for review')
+                from forgebridge.installer import install_conversion
+                installation = install_conversion(report, args.out, args.myassets, args.backup_root)
+                report['installed'] = True; report['installation'] = installation
+                with (Path(args.out) / 'installation-report.json').open('x', encoding='utf-8') as stream:
+                    json.dump(installation, stream, indent=2)
+                report['installation_report'] = 'installation-report.json (conversion-report.json records the pre-install build)'
         print(json.dumps(report, indent=2))
         return 0 if report.get('status', 'PASS') == 'PASS' else 1
     except (OSError, ValueError, InventoryFatal, zipfile.BadZipFile) as exc:

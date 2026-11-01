@@ -1,156 +1,14 @@
-# Scene-import operator and release checklist
+# Scene conversion and installation
 
-This is a calibrated scene-import workflow, not lossless campaign conversion.
-Use [the roadmap](ROADMAP.md) for priorities and [STATUS](../STATUS.md) for evidence.
-No release is tagged or PR merged by these instructions.
+The default pipeline now creates native maps from code-defined Toolkit 0.5.1.18
+records. No previous map, UVTT import/export, or manual calibration is needed.
+Geometry uses the proved Toolkit convention: 2.56 units per source grid, image
+upper-left at (0,0), native y up. No native files or image payloads ship with the
+code. Existing pinned profiles remain explicit optional overrides.
 
-## Prerequisites and input preparation
+## Fresh-checkout walkthrough
 
-1. Back up the source package and your Arkenforge MyAssets/campaign data. Keep
-   originals separate from working inputs. Use only assets you may migrate.
-2. Install Python and `requirements.txt` in your chosen environment. CI currently
-   covers Python 3.13 on Linux/Windows; local Windows evidence also uses Python 3.14.
-   Native acceptance evidence is Toolkit 0.5.1.18, not a promise for every version.
-3. Generate the selected scene's UVTT and preservation companion with the existing
-   [README commands](../README.md). Review missing media, unsupported fields and
-   identity/Adventure selection before continuing. Imported scripts never run.
-4. Import that UVTT into a separately named Toolkit map. Save/export it and measure
-   its origin and native units per source grid. Export reusable native marker,
-   media and token controls separately. Do not borrow another scene's geometry or
-   calibration. Native Size calibration is independent of sprite transforms.
-5. Author and pin a [scene profile](SCENE-PROFILES.md), including measurement
-   evidence. A profile requires the unpacked source directory. The repository's
-   private Manor/Crypt fixtures are examples, not redistributable prerequisites.
-
-## Audit, build and review
-
-From the repository root, with a pinned profile and a new output filename:
-
-```powershell
-$env:PYTHONPATH = "$PWD\src"
-py -m forgebridge.native_capture --export inputs/scene-native.zip --map "MyAssets/Maps/My Scene.rwmap" --audit
-py -m forgebridge.package --profile profiles/my-scene.json --preflight
-py -m forgebridge.package --profile profiles/my-scene.json --out builds/my-scene-v1.zip
-Get-FileHash -Algorithm SHA256 builds/my-scene-v1.zip
-```
-
-Audit/preflight read inputs; they do not install, infer calibration or certify
-runtime behavior. Stop on a failed command. Review audit conflicts/missing paths,
-conversion-report.json, token-report.json when present, profile-provenance.json,
-INSTALL.txt and retained source data inside the result. Reconcile converted,
-rejected, approximate and manual content. PDF page rendering is a build step;
-preflight alone cannot establish readability. Labels remain off.
-
-If an input hash changed, restore the pinned input or regenerate the companion
-and review/recalibrate that scene before explicitly pinning a new profile. Never
-edit hashes just to clear the warning. Use a new output map name/note namespace
-for an intentional parallel import, rather than replacing manually edited notes.
-
-## Reviewed installation and rollback
-
-For a repeatable read-only comparison, prepare a **static copy** of the destination
-MyAssets with Toolkit closed, then run:
-
-```powershell
-py -m forgebridge.install_review --package builds/my-scene-v1.zip --snapshot-root snapshots/MyAssets --static-snapshot
-```
-
-Repeat `--package` to review multiple packages together. Exit 0 means no conflicts
-were observed; exit 1 reports conflicting/blocked target paths; exit 2 rejects
-invalid inputs or a changing snapshot. JSON includes input/member hashes, new and
-identical files, conflicting user edits, blocked aliases/links and supplemental
-files that must stay outside MyAssets. Nothing is written by the review command.
-It checks package metadata references, not native runtime behavior. The flag is
-your assertion that the copy is static; the tool cannot establish its origin.
-The report is a point-in-time comparison, not authorization to install later:
-recheck the actual destination with Toolkit closed before copying anything.
-
-Every newly built package also carries `manual_steps` and `runtime_acceptance` in
-conversion-report.json. Bounded native fog is explicitly deferred/excluded in
-both that report and INSTALL.txt, independently of Foundry fog/vision conversion.
-These are scope disclosures, not runtime test results or permission to overwrite.
-
-1. Close Toolkit normally. Extract the ZIP into a staging folder outside its data
-   directory. Keep reports and source attachments outside the installed MyAssets.
-2. Compare every staged MyAssets relative path against the actual MyAssets root:
-   absent = eligible to add; byte-identical = leave existing file untouched;
-   different bytes or case aliases = STOP. Do not use Replace All or blind folder
-   synchronization. Inspect shared preserved native controls/backlinks too.
-3. Record the ZIP hash, backup location and each added relative path/hash. Add
-   only reviewed absent files. The build/audit commands do none of this for you.
-4. Open the separately named output map. Verify its image/grid, opaque walls and
-   doors, representative lights, supported token placement/Size/rotation/visibility,
-   note links and attachments. Save, switch away/reopen, then restart Toolkit and
-   check representative content in actual player output. Record Toolkit version,
-   map/package identities, observed results and any manual changes.
-5. To roll back, close Toolkit and review the installation record. A file added by
-   this import may have acquired later user edits or references: do not delete or
-   replace it merely because its path appears in the record. Restore only reviewed
-   affected data from backup; preserve subsequent edits separately. No automated
-   uninstall/rollback is supplied or claimed.
-
-## Current acceptance and limits
-
-| Area | Evidence / release treatment |
-|---|---|
-| Manor/Crypt GM token/link persistence | Accepted October 18 runtime samples |
-| Profile actual-player tokens/restart | Accepted October 31 observations; no map save in that pass |
-| Geometry/blocking/lights, PDF/GIF | Prior scoped runtime passes retained; repeat only for relevant changes |
-| Bounded native fog reveal/hide/restart | DEFERRED; explicitly excluded from current acceptance |
-| Foundry fog/vision | Manual loss-report guidance; no automatic vision/fog migration |
-| Native import/export/calibration, installation | Manual reviewed steps above |
-| GIF migration and FPS setup | Manual; procedural light animation is a separate unmapped capability |
-| Actor/stat/combat/behavior | Retained/unmapped; no imported macro execution |
-| Windows LevelDB intermittent replacement | Historical unresolved host failure; clean CI/local runs do not establish root cause |
-
-Player streaming may require per-session 1280×720/15 selection; Toolkit's dialog
-has reset to 1920×1080/30. Keep Toolkit at 30 FPS and only one player stream active.
-Black output with native fog text requires a fog/projection check before drawing
-conversion conclusions. A native WebRTC exception is a stream failure. A capture
-showing another app is a desktop-control blocker; send no input from that view.
-See the [desktop runbook](DESKTOP-VALIDATION.md).
-
-## Release gates
-
-- [ ] Review PR #8 and retain complete Windows/Linux CI logs; fail the gate on a
-      failed diagnostic phase, even if a later repeat passes.
-- [ ] Reconcile exact run/pass/skip totals per OS and Python version.
-- [ ] Bound the historical LevelDB failure with diagnostics and an explicit release
-      limitation or a reproduced, tested fix; no retries that hide failures.
-- [ ] Close bounded fog or visibly exclude it (currently excluded above).
-- [ ] Have a fresh operator exercise installation, native acceptance and recovery
-      on separate content; confirm no overwrite/source mutation.
-- [ ] Review provenance, loss reports, compatibility scope and release artifacts.
-- [ ] Obtain deliberate review/release approval before merging or tagging.
-
-## Synthetic operator rehearsal
-
-From a complete repository checkout with requirements.txt installed:
-
-```powershell
-py scripts/rehearse_scene_import.py --out rehearsal-output-NEW
-```
-
-This developer tool intentionally uses the repository's synthetic test-fixture
-builders, not private Manor/Crypt assets. It invokes the public capture/audit and
-package preflight/build CLIs from an unrelated working directory, relocates all
-three profiles and makes the original fixture paths unavailable. It verifies
-dependency coexistence, a zero-token scene, supported/rejected tokens, unchanged
-source bytes, overwrite refusal and changed-input rejection. It also reviews a
-simulated identical destination and detects a retained manual note edit (20 CLI
-commands total). Each command's
-stdout/stderr and exit code are retained. Existing rehearsal directories are
-refused; failed runs retain evidence instead of silently retrying.
-
-Only the freshly created synthetic fixture directory is renamed. No installed
-assets are read or written. Inputs already include synthetic native geometry and
-controls: this does not automate native import/export/calibration, test a fresh
-human operator, or establish Toolkit acceptance. Follow the manual steps above
-for a real source. See [rehearsal evidence](../validation/2026-10-31-OPERATOR-REHEARSAL.md).
-
-## One-command scene discovery and conversion (B2)
-
-From a fresh clone, in the repository root (Python 3.13):
+From the repository root, using Python 3.13:
 
 ```powershell
 python -m pip install -r requirements.txt -r requirements-native-capture.txt
@@ -158,65 +16,97 @@ $env:PYTHONPATH = "$PWD\src"
 python -m forgebridge convert fixtures/synthetic-module --out converted-example
 ```
 
-The exact last command runs in CI against the committed synthetic source; choose
-a new output directory for each run. For your own module/Adventure, replace
-`fixtures/synthetic-module` with its directory or ZIP. `--list-scenes` discovers
-IDs without creating outputs; repeat `--scene ID` to select scenes. Legacy
-inventory and `--uvtt-scene` commands remain available.
+CI runs the last command on synthetic data without Arkenforge installed. Replace
+the fixture with your module/world/Adventure directory or ZIP. Choose a new output
+folder under an existing parent. Use `--list-scenes`, repeat `--scene ID`, or use
+`--scene-key KEY` for exact selection when IDs repeat across Adventures.
 
-Until A0 native synthesis is accepted, a scene without a supplied calibrated
-profile produces `scene-NNN/uvtt-package.zip`: UVTT, original scene/journal
-companion, readable notes and supported loose source assets. **Import scene.uvtt
-in Toolkit is still required.** Native save/export/calibration and a pinned
-profile remain necessary for this intermediate native pipeline; the command does
-not guess a universal native origin or scale. This is not a ready MyAssets tree.
+Each supported scene produces UVTT, a schema-built background/map/thumbnail and
+existing-writer notes, room markers, media and supported tokens. Padding/grid
+normalization remains in the source adapter; source pixels are not native units.
 
-For already calibrated scenes, repeat `--profile profiles/scene.json` on the same
-command. Each profile must pin the exact unpacked package and selected scene;
-those scenes also receive a complete `native-package.zip` from the production
-builder. Unmatched scenes remain explicit UVTT/manual outputs. No installation
-occurs. A0 will supply the automatic native backend when its schema is proved.
-
-`conversion-report.json` at the output root is the combined loss report: each
-scoped source scene, graded source losses/counts, native report when available,
-manual steps and explicit rejections. Unsupported scenes produce PARTIAL/exit 1;
-a total input/output error exits 2. Read all outcomes, not just the presence of a
-ZIP. Existing output, source-contained output and linked paths are refused;
-source/profile hashes are rechecked before publication. No scripts are executed.
-
-## Add-only installation (B4)
-
-Native packages may be installed explicitly with Toolkit closed. UVTT intermediate
-ZIPs are not native install inputs; `convert --install` stays gated on A0.
-Review the generated loss report and use only native-package.zip or an existing
-reviewed scene ZIP. This session exercises only fake MyAssets test fixtures.
-
-```powershell
-python -m forgebridge install --package converted/scene-001/native-package.zip --myassets C:/ArkenforgeData/MyAssets --backup-root D:/ForgeBridgeBackups
+```text
+converted-example/
+  MyAssets/                    ready-to-copy native content; no reports
+  scene-001/uvtt-package.zip    geometry IR, original companion, loose originals
+  scene-001/native-package.zip coherent scene plus dependencies
+  conversion-report.json       combined source/native outcomes and losses
 ```
 
-Select the actual MyAssets directory and an existing backup folder in a separate
-tree. The installer checks for MastersToolkit.exe (and the alternate MasterToolkit
-spelling), fails closed if process inspection fails, reuses install_review, and
-refuses any conflict/case alias/link. It backs up the complete MyAssets tree,
-including empty folders, into a unique backup run before adding anything. Backup
-is bounded to 16 GiB/100,000 entries; exceeding that limit refuses installation.
-Close Toolkit throughout; do not let another app modify the destination during
-backup/install. Checks are not an OS-wide lock against unrelated programs.
+Only final scene maps are published; generated helper maps/notes are removed and
+native references checked. Zero-token/journal-free scenes work. Missing note
+positions or targets remain explicit unplaced-marker entries. Unsupported tokens,
+media and light ranges remain reported with source retained. Source/UVTT grades
+are preserved separately from `native_counts`, `native_losses` and per-scene
+`native_report`; don't mistake UVTT-only losses for final native support.
+Lights retain the proved Toolkit import defaults, not independent Foundry color,
+intensity or procedural-animation equivalence. Labels stay off.
 
-Only absent files are created, exclusively. Identical files are untouched; no
-reports are installed into MyAssets. A lock prevents simultaneous ForgeBridge
-installs. Retained backup-manifest.json and uninstall.json record hashes and exactly
-which files were added. An interrupted install retains an INCOMPLETE receipt for
-manual review; it is not silently rolled back or retried.
+BUILT means files generated, not observed in Toolkit. PARTIAL exits 1 and lists
+rejections; invalid requests exit 2. Existing, linked or source-contained output
+is refused. Input hashes are rechecked; the completion report is published last.
+A missing report means incomplete publication. No imported scripts execute.
+
+## Review and optional advanced profiles
 
 ```powershell
-python -m forgebridge install --uninstall D:/ForgeBridgeBackups/forgebridge-RUN_ID/uninstall.json
+python -m forgebridge convert "C:/Sources/MyModule.zip" --out "C:/Conversions/MyModule-01"
+python -m forgebridge install_review --package "C:/Conversions/MyModule-01/scene-001/native-package.zip" --snapshot-root "C:/Backups/MyAssets" --static-snapshot
 ```
 
-Uninstall first checks all added files against the complete receipt, refuses if
-any were edited/missing or the list includes a pre-existing file, then removes
-only recorded unchanged additions. Existing/identical files, later user files,
-directories and backups remain. It cannot detect every new cross-map reference to
-an added file: review those relationships before uninstalling. Restore full backup
-content only after preserving any later edits separately; never use Replace All.
+The review uses a static copy prepared with Toolkit closed and writes nothing.
+Repeat `--profile PROFILE.json` with convert only when deliberately choosing its
+pinned source/calibration/export over automatic synthesis. Original profile,
+portable capture and scene_batch commands remain available; do not edit hashes
+merely to clear a mismatch. See SCENE-PROFILES.md and NATIVE-CAPTURE.md.
+
+## Add-only installation and rollback
+
+Build and review first, then install explicitly:
+
+```powershell
+python -m forgebridge install --package "C:/Conversions/MyModule-01/scene-001/native-package.zip" --myassets "C:/ArkenforgeData/MyAssets" --backup-root "D:/ForgeBridgeBackups"
+```
+
+Or intentionally authorize build plus installation in one invocation:
+
+```powershell
+python -m forgebridge convert "C:/Sources/MyModule.zip" --out "C:/Conversions/MyModule-02" --install --myassets "C:/ArkenforgeData/MyAssets" --backup-root "D:/ForgeBridgeBackups"
+```
+
+`--install` is an explicit write request, not a preview or interactive prompt.
+Both destination flags are required. Without `--out`, a unique output directory
+is created under the working directory and printed. installation-report.json
+records installation; conversion-report.json remains the pre-install build.
+The GUI provides a separate review/confirm native installation button.
+
+Toolkit must stay closed. Inspection failure, conflicts, aliases and links refuse
+installation. The complete MyAssets backup is made first; only absent files are
+created, identical files untouched. Inputs/destination must stay static. A lock
+prevents concurrent ForgeBridge installs, not writes by unrelated programs.
+Backup limit: 16 GiB/100,000 entries. Combined installation-review limit:
+1 GiB/16384 native files. Select fewer scenes if needed; never bypass checks.
+Reports and original PDFs stay outside installed MyAssets.
+
+```powershell
+python -m forgebridge install --uninstall "D:/ForgeBridgeBackups/forgebridge-RUN_ID/uninstall.json"
+```
+
+Check later references to imported content first. Uninstall removes only recorded
+unchanged additions; edited/missing additions block removal. Existing files,
+later user content, directories and backups stay. INCOMPLETE receipts need manual
+review. Restore backups only after preserving later edits; never Replace All.
+
+## Limits and release gates
+
+GIF/FPS setup, native manual fog, Foundry fog/vision, procedural animations and
+actor/stat/combat/behavior fidelity remain manual/unsupported. Default geometry
+no longer requires native import/export/calibration. New combined schema outputs
+and thumbnails still need Claude's Toolkit checks; file generation is not native
+or player acceptance. No desktop work occurs in this implementation.
+
+Review, current CI/skip evidence, host LevelDB exception decision, native and
+fresh-operator acceptance and explicit merge/tag authorization remain gates.
+See USER-GUIDE.md and ACCEPTANCE-MATRIX.md. No merge or release tag here.
+The existing scripts/rehearse_scene_import.py synthetic profile rehearsal remains
+available alongside the new public convert CI walkthrough.

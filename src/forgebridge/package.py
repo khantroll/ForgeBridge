@@ -62,6 +62,7 @@ def build_package(companion, map_template, media_template, dest, *, name,
                 files[n] = data
         report['native_map'] = map_report['native_map']
         report['placements'] = map_report['placements']
+        report['unplaced_markers'] = map_report['unplaced_markers']
         report['regenerated_exported_note_files'] = preserved
         report['counts'].update(native_tokens=0, unsupported_tokens=0)
         report['status'] = 'Combined native package built; check this scene in Toolkit. See STATUS.md for tested scenes. Player visibility remains unverified.'

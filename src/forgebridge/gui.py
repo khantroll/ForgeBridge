@@ -6,25 +6,7 @@ import threading
 import uuid
 
 from forgebridge.convert import discover, convert
-from forgebridge.installer import install
-
-
-def native_outputs(report, output):
-    """Only complete, selected native outputs can reach the installer."""
-    if report.get('status') != 'PASS':
-        raise ValueError('Resolve rejected scenes before installing this conversion')
-    root = Path(output).absolute()
-    result = []
-    for scene in report.get('scenes', []):
-        if scene.get('status') != 'BUILT': continue
-        candidate = root / scene['folder'] / scene['artifact']
-        if (not candidate.resolve().is_relative_to(root.resolve()) or not candidate.is_file()
-                or any(p.is_symlink() or p.is_junction() for p in (candidate, *candidate.parents))):
-            raise ValueError('Native output is missing or outside the conversion folder')
-        result.append(candidate)
-    if not result:
-        raise ValueError('No native packages: A0 synthesis or matching calibrated profiles are required; UVTT is not installable')
-    return result
+from forgebridge.installer import install, native_outputs
 
 
 def install_outputs(report, output, myassets, backups):
@@ -76,7 +58,7 @@ def main(argv=None):
     scenes = tk.Listbox(panel, selectmode='extended', exportselection=False, height=9)
     scenes.pack(fill='x')
     controls = ttk.Frame(panel); controls.pack(fill='x', pady=6)
-    profile_label = tk.StringVar(value='No profiles: UVTT output until A0 native synthesis is accepted.')
+    profile_label = tk.StringVar(value='Schema-built native output. Existing calibrated profiles are optional overrides.')
     ttk.Label(panel, textvariable=profile_label, wraplength=850).pack(anchor='w')
     ttk.Label(panel, textvariable=status, wraplength=850).pack(anchor='w', pady=6)
     text = tk.Text(panel, wrap='word', height=15); text.pack(fill='both', expand=True)
@@ -116,7 +98,7 @@ def main(argv=None):
         chosen = filedialog.askopenfilenames(filetypes=[('Scene profiles', '*.json')])
         if chosen:
             profiles[:] = chosen
-            profile_label.set(f'{len(profiles)} existing calibrated profiles selected. Other scenes stay UVTT/manual.')
+            profile_label.set(f'{len(profiles)} existing profiles selected. Other scenes use schema-built native synthesis.')
 
     def built(report):
         state['report'] = report

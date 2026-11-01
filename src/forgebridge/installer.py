@@ -20,6 +20,28 @@ from forgebridge.scene_profile import fingerprint
 MAX_BACKUP_BYTES = 16 * 1024 * 1024 * 1024
 
 
+def native_outputs(report, output):
+    """Select only complete native conversion packages, never UVTT intermediates."""
+    if report.get('status') != 'PASS':
+        raise ValueError('Resolve rejected scenes before installing this conversion')
+    root = Path(output).absolute()
+    result = []
+    for scene in report.get('scenes', []):
+        if scene.get('status') != 'BUILT': continue
+        candidate = root / scene['folder'] / scene['artifact']
+        if (not candidate.resolve().is_relative_to(root.resolve()) or not candidate.is_file()
+                or any(_linked(p) for p in (candidate, *candidate.parents))):
+            raise ValueError('Native output is missing or outside the conversion folder')
+        result.append(candidate)
+    if not result:
+        raise ValueError('No native packages; UVTT intermediates are not installable')
+    return result
+
+
+def install_conversion(report, output, myassets, backups):
+    return install(native_outputs(report, output), myassets, backups)
+
+
 def require_toolkit_closed():
     """Read-only process inspection, fail closed if inspection is unavailable."""
     try:
@@ -165,7 +187,7 @@ def uninstall(manifest):
     # Reuse root/ancestor validation without writing or trusting an arbitrary path.
     if not root.is_absolute() or root.name != 'MyAssets' or not root.is_dir() or any(_linked(p) for p in (root, *root.parents)):
         raise ValueError('Unsafe MyAssets root')
-    if (not isinstance(data.get('added'), list) or len(data['added']) > 8192 or
+    if (not isinstance(data.get('added'), list) or len(data['added']) > 16384 or
             any(not isinstance(row, dict) or not isinstance(row.get('path'), str) or
                 not isinstance(row.get('sha256'), str) or not re.fullmatch('[0-9a-f]{64}', row['sha256'])
                 for row in data['added'])):

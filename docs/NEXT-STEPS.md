@@ -111,3 +111,14 @@ B5: local Tkinter front end and .pyw launcher implemented over convert/install,
 with scoped selection, export, loss review and guarded native install. Headless
 controller tests only; no GUI launch/desktop observation in this session. A0
 native backend and fresh human GUI acceptance remain separate requirements.
+
+## Schema-native integration update (file only)
+
+Default convert now builds native maps/backgrounds from code-defined records,
+uses computed 2.56/grid upper-left calibration, and runs the existing note,
+marker/media/token writers. It emits a ready MyAssets tree, per-scene ZIPs and
+combined source/native losses. Explicit --install and GUI review/install use the
+same backed-up add-only backend. Profiles remain advanced optional overrides.
+Synthetic schema/thumbnail, zero-token/journal-free, scoped-ID and fake-install
+checks are in CI. New combined-package and thumbnail Toolkit checks remain Claude's
+work; A-step notes and M1 rows are not changed by this implementation.

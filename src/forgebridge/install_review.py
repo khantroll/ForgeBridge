@@ -40,8 +40,8 @@ def review(packages, snapshot_root):
     if any(_linked(p) for p in (root, *root.parents)):
         raise ValueError('Snapshot root/ancestors must not be links or junctions')
     packages = list(packages)
-    if not 1 <= len(packages) <= 32:
-        raise ValueError('Select between 1 and 32 packages')
+    if not 1 <= len(packages) <= 256:
+        raise ValueError('Select between 1 and 256 packages')
     native, inputs, ignored = {}, [], []
     for package in packages:
         digest = fingerprint(package)
@@ -49,7 +49,7 @@ def review(packages, snapshot_root):
         if fingerprint(package) != digest:
             raise ValueError('Package changed during review: ' + str(package))
         merge_native(native, {n: d for n, d in files.items() if n.startswith('MyAssets/')})
-        if len(native) > 8192 or sum(map(len, native.values())) > 256 * 1024 * 1024:
+        if len(native) > 16384 or sum(map(len, native.values())) > 1024 * 1024 * 1024:
             raise ValueError('Combined packages exceed review limits')
         inputs.append({'filename': Path(package).name, 'sha256': digest})
         ignored.extend({'package': Path(package).name, 'path': n}
@@ -68,7 +68,7 @@ def review(packages, snapshot_root):
                 raise ValueError('Snapshot file exceeds review byte limit: ' + name)
             else:
                 snapshot_bytes += target.stat().st_size
-                if snapshot_bytes > 256 * 1024 * 1024:
+                if snapshot_bytes > 1024 * 1024 * 1024:
                     raise ValueError('Snapshot comparison exceeds total byte limit')
                 existing = target.read_bytes()
                 row['snapshot_sha256'] = hashlib.sha256(existing).hexdigest()

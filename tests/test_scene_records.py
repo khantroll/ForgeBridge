@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import patch
 from pathlib import Path
 
-from forgebridge.scene_records import record, encode, blank_map, template_map, canonical_graph
+from forgebridge.scene_records import record, encode, blank_map, template_map, canonical_graph, control_files
 from forgebridge.native_scene import find_templates
 from forgebridge.nrbf import Reader
 
@@ -34,3 +34,13 @@ class SceneRecordTests(unittest.TestCase):
         self.assertNotIn('KeyValuePairs', blank.members['_fogLevelDataFull'].members)
         self.assertEqual(blank.members['_bookmarks'].members['_size'], 0)
         self.assertEqual(blank.members['_creator'], 'ForgeBridge')
+
+    def test_schema_token_control_preserves_observed_sprite_sentinel_and_size_scale(self):
+        marker, token, media = control_files()
+        reader = Reader(token['MyAssets/Maps/_ForgeBridgeSchemaControl.rwmap']); reader.read()
+        wrapper = next(o['members'] for o in reader.objects.values() if isinstance(o, dict) and o.get('class') == 'ArkenMapTileUpgradeBase')
+        self.assertEqual(wrapper['spriteWidth'], -1.)
+        graph = Reader(token['MyAssets/Encyclopedia/Notes/GeneratedControls/Control.rwnote']).read()
+        size = next(o['members']['_squareSizeNew'] for o in graph['objects'].values()
+                    if isinstance(o, dict) and o.get('class') == 'ArkenNoteFieldSize')
+        self.assertEqual(size, 1.)

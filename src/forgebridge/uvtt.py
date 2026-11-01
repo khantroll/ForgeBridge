@@ -736,9 +736,22 @@ def _package_file(package: Path, safe: str) -> Path:
     if (
         len(parts) >= 3
         and parts[0] in {"modules", "worlds", "systems"}
-        and parts[1] == package.name
     ):
-        candidates.append("/".join(parts[2:]))
+        package_ids = {package.name}
+        # Flat source ZIPs extract under a temporary directory, not the module
+        # ID. Resolve qualified Foundry paths by the declared local identity too.
+        manifests = [package / n for n in ('module.json', 'world.json', 'system.json') if (package / n).is_file()]
+        if len(manifests) == 1 and not manifests[0].is_symlink() and not manifests[0].is_junction():
+            try:
+                with manifests[0].open('rb') as stream: raw = stream.read(1024 * 1024 + 1)
+                if len(raw) <= 1024 * 1024:
+                    manifest = json.loads(raw.decode('utf-8-sig'))
+                    identity = (manifest.get('id') or manifest.get('name')) if isinstance(manifest, dict) else None
+                    if isinstance(identity, str): package_ids.add(identity)
+            except (OSError, UnicodeError, ValueError):
+                pass  # No guess or outside lookup; the ordinary contained path still applies.
+        if parts[1] in package_ids:
+            candidates.append("/".join(parts[2:]))
 
     for candidate in candidates:
         path = package / candidate

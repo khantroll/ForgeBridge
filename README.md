@@ -1,45 +1,35 @@
 # ForgeBridge
 
-Portable native dependency capture and relocatable pinned profiles are available
-through `python -m forgebridge.native_capture`; see [the capture workflow](docs/NATIVE-CAPTURE.md).
-Profile generated-token player visibility/restart checks passed on October 31;
-bounded fog remains separately deferred. See the [roadmap](docs/ROADMAP.md) and
-[scene-import operator/release checklist](docs/SCENE-IMPORT-RELEASE.md).
-
-Latest batch validation (October 31): local Windows/Python 3.14.2 full suite
-**184 run, 180 passed, four skipped**; final batch tests **10/10 pass**.
-Implementation commit 9a86c63 CI on Python 3.13: Linux **185 run, 181 passed,
-four skipped**; Windows **185 run, 182 passed, three skipped**. Skips are not
-safety passes. See [batch evidence](validation/2026-10-31-SCENE-BATCH.md).
-The earlier 173-test local Windows run had one LevelDB replacement error;
-that historical host limitation remains unresolved and investigation is frozen.
-No retries or suppressed errors were added. Bounded fog is BLOCKED waiting for
-Claude's built-in browser. No desktop work is part of this batch milestone.
-Shared capture/package checks reject case aliases and merge
-conflicts before mutation. The CI diagnostic gate now propagates failed phases
-after retaining evidence; its updated GitHub run must be checked separately.
-
-> **Status: CALIBRATED SCENE PROFILES**
->
-> ForgeBridge builds calibrated native scene packages with geometry, room markers, linked notes, attachments and supported tokens. Version 1 profiles pin source identity, hashes and scene-specific calibration. Portable capture includes a read-only audit. Manor/Crypt GM persistence and October 31 player visibility/restart observations pass. Bounded fog is deferred; Foundry fog/vision is reported as manual, not converted. Historical Windows LevelDB replacement failures remain unrooted despite later clean runs. Native calibration, reviewed installation and GIF setup remain manual; actor/stat/behavior and procedural animation gaps stay explicit. Labels off.
+ForgeBridge now creates native scene packages directly from Foundry data using
+code-defined Toolkit 0.5.1.18 records. No previous map, manual UVTT import/export
+or calibration is required for the default path. Backgrounds, barriers, doors,
+lights and map-browser thumbnails feed the existing note, room-marker, media and
+token writers. No Arkenforge native files or image payloads ship in the code.
 
 ```powershell
-py -m forgebridge.package --profile profiles/manor.json --preflight
-py -m forgebridge.package --profile profiles/manor.json --out builds/manor-v1.zip
+$env:PYTHONPATH = "$PWD\src"
+python -m forgebridge convert "C:/Sources/MyModule.zip" --out "C:/Conversions/MyModule-01"
 ```
 
-See [October 31 player evidence](validation/2026-10-31-PROFILE-PLAYER.md) for the
-accepted Crypt token hide/restore and both-profile player restart checks. No map
-was saved in that pass. A later capture-target mismatch cleared after an explicit
-switch to Toolkit, with no map edits. Bounded fog remains deferred; see
-[resume evidence](validation/2026-10-31-RESUME.md).
+Output includes a combined ready-to-copy MyAssets tree, per-scene native/UVTT
+packages and one combined source/native loss report. Explicit `--install` uses
+the backed-up add-only installer; builds alone never install. The local GUI is
+available through forgebridge_gui.pyw or `python -m forgebridge gui`.
+See [the operator guide](docs/USER-GUIDE.md) and
+[walkthrough/install rules](docs/SCENE-IMPORT-RELEASE.md).
 
-Desktop validation now follows a [CPU-aware runbook](docs/DESKTOP-VALIDATION.md)
-with a read-only load sampler, separate compute/UI phases and sequential captures.
-Verified operating settings are Toolkit 30 FPS and player streaming 1280×720 at
-15 FPS. Later low-load failures show CPU contention is not the sole explanation
-for desktop timeouts. Pending runtime checks do not block reader, profile or
-dependency-tooling development.
+The code-defined Crypt geometry matches the cloned-template output field for
+field (including identical bytes in the controlled comparison). Synthetic CI
+covers synthesis, background assets and thumbnails without real native files.
+These are file checks; Claude owns new combined-package Toolkit acceptance.
+Historical direct Crypt/Manor runtime observations remain separately scoped.
+
+Source/UVTT grades are retained separately from native_counts/native_losses.
+Labels remain off. GIF/FPS setup, native manual fog, Foundry vision/exploration,
+procedural animation and actor/stat/behavior fidelity remain explicit gaps.
+Windows LevelDB host intermittency is retained; investigation is frozen, with no
+blind retries or suppressed errors. Pinned profiles/capture/batch remain available
+as advanced workflows. No full campaign-fidelity claim or release tag.
 
 ForgeBridge is a proposed migration/transpilation tool for converting **Foundry Virtual Tabletop** content into the closest practical **Arkenforge** equivalent.
 
@@ -566,8 +556,8 @@ waiting for a Claude built-in-browser run.
 Use the [operator guide](docs/USER-GUIDE.md) for fresh-checkout setup, the single
 `python -m forgebridge convert PACKAGE --out NEW_DIR` entry point, output review,
 supported versions/limits, add-only backup/install, rollback and troubleshooting.
-Automatic native synthesis waits for A0; unmatched scenes remain explicit UVTT
-intermediates, not ready MyAssets content. Builds never install automatically.
+Default conversion now uses schema-built native synthesis and produces MyAssets
+content; profiles are optional. Builds never install without explicit --install.
 
 The optional local front end is available through `forgebridge_gui.pyw` (Windows
 double-click after setup) or `python -m forgebridge gui`. It provides source/scene

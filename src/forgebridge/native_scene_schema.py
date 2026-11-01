@@ -3765,7 +3765,7 @@ DEFAULTS = {
                 'inline': True,
                 'members': {'value__': 0}
             },
-            'spriteWidth': 512.0,
+            'spriteWidth': -1.0,
             'spriteRatio': 1.0,
             '_trueSize': -1.0,
             '_additionalData': None
