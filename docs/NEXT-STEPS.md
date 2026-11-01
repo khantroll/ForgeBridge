@@ -102,3 +102,7 @@ B1: remaining module review completed with bounded-path/read/graph fixes,
 deterministic archive publication, overwrite refusal and synthetic regressions.
 See validation/2026-11-01-PART-B.md. Claude's diff review remains a merge gate;
 no A-step evidence or M1 row changed.
+
+B3: operator guide added and linked from README; tested version scope, public
+convert workflow, limitations, backup/install/rollback and troubleshooting covered.
+Jeffrey's fresh-operator run remains a release decision, not inferred from docs.

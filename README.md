@@ -560,3 +560,11 @@ See [batch workflow](docs/SCENE-BATCH.md) and the
 [M0–M2 acceptance matrix](docs/ACCEPTANCE-MATRIX.md). These commands are file-only;
 no installation or runtime acceptance is implied. Bounded fog is **BLOCKED**,
 waiting for a Claude built-in-browser run.
+
+## Start here
+
+Use the [operator guide](docs/USER-GUIDE.md) for fresh-checkout setup, the single
+`python -m forgebridge convert PACKAGE --out NEW_DIR` entry point, output review,
+supported versions/limits, add-only backup/install, rollback and troubleshooting.
+Automatic native synthesis waits for A0; unmatched scenes remain explicit UVTT
+intermediates, not ready MyAssets content. Builds never install automatically.
