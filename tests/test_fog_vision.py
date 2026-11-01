@@ -48,3 +48,17 @@ class FogVisionTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class SceneMusicTests(unittest.TestCase):
+    def test_linked_playlist_track_is_manual_not_unknown_field(self):
+        lines = lines_for({"playlist": "x6wMBGvOgzRIMrAF", "playlistSound": "9jxvW76WO32Crw65"})
+        (line,) = [l for l in lines if l["code"] == "scene-playlist"]
+        self.assertEqual(line["grade"], "manual")
+        self.assertIn("9jxvW76WO32Crw65", line["summary"])
+        unknown = {l.get("path") for l in lines if l["code"] == "scene-field"}
+        self.assertFalse(unknown & {"playlist", "playlistSound"})
+
+    def test_null_links_emit_nothing(self):
+        lines = lines_for({"playlist": None, "playlistSound": None})
+        self.assertEqual([l for l in lines if l["code"] == "scene-playlist"], [])

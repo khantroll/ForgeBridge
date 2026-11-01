@@ -121,6 +121,8 @@ SCENE_FIELDS_EXPLAINED = {
     "fog",
     "fogExploration",
     "globalLight",
+    "playlist",
+    "playlistSound",
 }
 
 RETAINED_SKIP = {
@@ -847,6 +849,7 @@ def _grade_scene_fields(scene: dict, image_ref: str, lines: list[dict]) -> None:
             )
         )
     _grade_fog_vision(scene, lines)
+    _grade_scene_music(scene, lines)
     _grade_placeables(scene, lines)
     flags = scene.get("flags")
     if isinstance(flags, dict):
@@ -929,6 +932,19 @@ def _grade_fog_vision(scene: dict, lines: list[dict]) -> None:
         f"scene fog/vision settings ({observed}). {intent} Foundry explored-fog history "
         "(FogExploration documents) and per-token vision are not converted.",
         document_type="Scene", id=_text_id(scene), name=_text_name(scene), path="fog"))
+
+
+def _grade_scene_music(scene: dict, lines: list[dict]) -> None:
+    """Report the scene's linked playlist track; native packages do not convert playlists."""
+    playlist, sound = scene.get("playlist"), scene.get("playlistSound")
+    if not (isinstance(playlist, str) and playlist) and not (isinstance(sound, str) and sound):
+        return
+    lines.append(_line(MANUAL, "scene-playlist",
+        f"scene music playlist {playlist!r}, track {sound!r}. Foundry starts this playlist track when "
+        "the scene is activated. ForgeBridge does not create Toolkit playlists or scene-linked music "
+        "(no playlist file format was published): import the track's audio file into a Toolkit "
+        "playlist and start it manually for this map.",
+        document_type="Scene", id=_text_id(scene), name=_text_name(scene), path="playlistSound"))
 
 
 def _grade_placeables(scene: dict, lines: list[dict]) -> None:
