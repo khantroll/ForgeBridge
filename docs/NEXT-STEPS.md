@@ -140,3 +140,11 @@ work; A-step notes and M1 rows are not changed by this implementation.
 - Release decisions (Jeffrey): C1 LevelDB exception, C2 merge PR #8, C3 tag v0.9.
 - Next build work: PDF handouts as note pages in convert/GUI (Codex);
   Fantasy Grounds reader on branch `fantasy-grounds-adapter` (needs a real FGU module).
+
+## Status 2026-11-02 midday
+
+- v0.9.0 tagged (`e5b9f2c`). PR #12 merged (naming, PDF pages, empty-folder
+  uninstall cleanup); Toolkit-checked — validation/2026-11-02-NAMING-PDF.md.
+- **v0.10.0** prepared (version, release notes, CHANGELOG); tag after merge.
+- Open: uninstall the 11:07 Count's Lair test install; optional folder tidy with
+  older receipts; Fantasy Grounds branch awaits an FGU module with doors/lights.

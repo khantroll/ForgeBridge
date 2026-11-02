@@ -6,7 +6,7 @@ ForgeBridge is an experimental, local migration tool that translates external VT
 
 The current Foundry workflow can build native Arkenforge scene packages directly from supported source data—without requiring an existing Arkenforge map, a manual UVTT import, or per-scene calibration. It preserves available source information and generates explicit reports for anything it cannot convert faithfully.
 
-**Current release candidate:** [v0.9.0](docs/RELEASE-NOTES-v0.9.0.md) · [Operator guide](docs/USER-GUIDE.md) · [Project status](STATUS.md) · [Next steps](docs/NEXT-STEPS.md)
+**Current release candidate:** [v0.10.0](docs/RELEASE-NOTES-v0.10.0.md) · [Operator guide](docs/USER-GUIDE.md) · [Project status](STATUS.md) · [Next steps](docs/NEXT-STEPS.md)
 
 > **Compatibility is limited to tested versions and content.** A successful build is not proof of complete scene or campaign fidelity. Review the conversion report and validate generated maps in Arkenforge before using them in a game.
 
@@ -17,7 +17,7 @@ On Windows, install Git and Python, then open PowerShell:
 ```powershell
 git clone https://github.com/khantroll/ForgeBridge.git
 cd ForgeBridge
-git checkout v0.9.0
+git checkout v0.10.0
 py -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install .
@@ -94,7 +94,7 @@ The guiding principles are:
 
 ## Compatibility and project status
 
-The v0.9.0 candidate documents testing with **Foundry v13** source content and **Arkenforge Toolkit 0.5.1.18**. Windows and Linux automated coverage exists, alongside scoped Toolkit validation for selected real scenes. Other source versions, systems, and native Toolkit releases need separate verification. An intermittent Windows/LevelDB temporary-file issue has also been observed on the development host; see [status and diagnostics](STATUS.md).
+The v0.10.0 candidate documents testing with **Foundry v13** source content and **Arkenforge Toolkit 0.5.1.18**. Windows and Linux automated coverage exists, alongside scoped Toolkit validation for selected real scenes. Other source versions, systems, and native Toolkit releases need separate verification. An intermittent Windows/LevelDB temporary-file issue was seen on one development PC and never reproduced elsewhere; it is an accepted, documented quirk (see the release notes).
 
 ForgeBridge is **usable within its tested scene-conversion scope**, but it is not a lossless campaign migration tool. Expanded source adapters (including Fantasy Grounds), deeper campaign data, and behavior/automation translation remain future work.
 
@@ -103,7 +103,7 @@ For implementation evidence, acceptance boundaries, known blockers, and the curr
 ## Documentation
 
 - [Operator guide](docs/USER-GUIDE.md) — installation, GUI/CLI use, output review, safe install, and recovery.
-- [v0.9.0 release notes](docs/RELEASE-NOTES-v0.9.0.md) — tested release scope and known limitations.
+- [v0.10.0 release notes](docs/RELEASE-NOTES-v0.10.0.md) — tested release scope and known limitations ([v0.9.0](docs/RELEASE-NOTES-v0.9.0.md); [changelog](CHANGELOG.md)).
 - [Project status](STATUS.md) and [next steps](docs/NEXT-STEPS.md) — current work and outstanding release gates.
 - [Acceptance matrix](docs/ACCEPTANCE-MATRIX.md) — evidence and boundaries of validated behavior.
 - [Scene profiles](docs/SCENE-PROFILES.md), [batch builds](docs/SCENE-BATCH.md), and [native capture](docs/NATIVE-CAPTURE.md) — advanced workflows.
