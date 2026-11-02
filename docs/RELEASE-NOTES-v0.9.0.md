@@ -1,5 +1,7 @@
 # ForgeBridge v0.9.0 — Foundry scenes to Arkenforge (candidate)
 
+> Superseded by [v0.10.0](RELEASE-NOTES-v0.10.0.md).
+
 Released 2026-11-02. First release candidate: a new user picks a Foundry VTT
 package and gets native Arkenforge maps installed, or a ready MyAssets folder to
 copy, with no manual UVTT import, export or calibration.
@@ -45,12 +47,8 @@ copy, with no manual UVTT import, export or calibration.
   playlists and ambient sound, macros and region behaviors (never executed),
   Foundry fog/vision (native manual fog starts covered for players), light
   animation, GIF/FPS setup.
-- On the naming-and-pdf development branch, PDF handouts default to bounded note
-  page images when pypdfium2 imports; --pdf references retains the reference-only
-  path. Invalid/oversized PDFs and missing renderers remain explicit losses.
-  This is file-level coverage pending Toolkit checks, not a claim about the
-  immutable v0.9.0 tag. Visible map/notes naming is configurable on that branch;
-  duplicate map names require explicit renaming, with no automatic hash suffix.
+- PDF handouts are kept as references, not note pages (added in v0.10.0).
+- Map and notes folders are always named "ForgeBridge…" (configurable from v0.10.0).
 - Light colour/intensity uses the Toolkit's own UVTT-import defaults.
 - Links to documents outside the selected scenes stay as text.
 - Player streaming: use a Chromium-based browser at `http://127.0.0.1/` on the
