@@ -45,10 +45,15 @@ def discover(package):
     """Read-only discovery used by CLI and GUI; no native calibration inference."""
     with source_root(package) as (root, _):
         inventory = inventory_path(root)
+        def adventure_name(row):
+            # Inventory promotes scenes from this same parent Adventure record.
+            parent = row.get('retained_fields', {}).get('_forgebridge_parent_adventure', {})
+            return parent.get('name')
         return {'package_id': inventory['provenance']['package_id'],
                 'scenes': [{'key': scene_key(row), 'id': row.get('id'), 'name': row.get('name'),
                             'source_path': row.get('source_path'),
-                            'parent_adventure_id': _parent_adventure_id(row)}
+                            'parent_adventure_id': _parent_adventure_id(row),
+                            'parent_adventure_name': adventure_name(row)}
                            for row in inventory['documents'] if row.get('document_type') == 'Scene']}
 
 

@@ -38,14 +38,19 @@ Pythonw), or run `python -m forgebridge gui`. Tkinter must be installed. No web
 server or browser is needed.
 
 1. Choose the Foundry folder/ZIP and click Discover scenes.
-2. Select scenes (Ctrl-click for multiple). Pack/Adventure scope remains separate
-   even if scene IDs match.
-3. Choose an output parent; the app proposes a new child folder. Profiles are
+2. Discovery starts with nothing selected. Rows show scene — Adventure name
+   (pack folder), grouped by Adventure then scene name; without an Adventure
+   name, the pack folder is shown instead. Select scenes (Ctrl-click for multiple),
+   or use Select all / Clear. Pack/Adventure scope remains separate even if IDs match.
+3. Click Choose where to save output and select a parent folder; the app proposes
+   a new child folder and shows the full Folder to create path. Profiles are
    optional overrides; default output uses schema-built native synthesis.
 4. Build/export and read the source-stage and native-stage loss summary.
 5. Review before using Install reviewed native outputs. Select actual MyAssets
    and a separate existing backup folder; keep Toolkit closed and confirm the
    displayed destination/backup summary. Rejected/UVTT-only results cannot install.
+   Opening notes in the Toolkit can change them; uninstall with --keep-changed
+   later keeps those edits.
 
 Wait for file work to finish before closing. The GUI has headless controller
 coverage, but was not launched/visually validated by Codex in this session.

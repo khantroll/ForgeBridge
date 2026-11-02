@@ -13,6 +13,25 @@ def install_outputs(report, output, myassets, backups):
     return install(native_outputs(report, output), myassets, backups)
 
 
+def scene_label(row):
+    pack = Path(row.get('source_path') or '').name
+    adventure = row.get('parent_adventure_name')
+    return f"{row.get('name') or row['id']} — {adventure} ({pack})" if adventure else f"{row.get('name') or row['id']} — {pack}"
+
+
+def populate_scenes(widget, report):
+    """Keep displayed order and key lookup together; discovery selects nothing."""
+    rows = sorted(report['scenes'], key=lambda row: (
+        (row.get('parent_adventure_name') or Path(row.get('source_path') or '').name).casefold(),
+        row.get('source_path') or '', row.get('parent_adventure_id') or '',
+        (row.get('name') or row['id']).casefold(), row['key']))
+    widget.delete(0, 'end')
+    for row in rows:
+        widget.insert('end', scene_label(row))
+    widget.selection_clear(0, 'end')
+    return rows
+
+
 def report_text(value):
     """Readable stage-specific loss summary; detailed JSON remains in output."""
     if 'scenes' in value:
@@ -53,10 +72,18 @@ def main(argv=None):
     ttk.Button(buttons, text='Choose ZIP', command=lambda: package.set(filedialog.askopenfilename(filetypes=[('Foundry ZIP', '*.zip')]) or package.get())).pack(side='left')
     ttk.Label(panel, text='New output folder (must not exist)').pack(anchor='w')
     ttk.Entry(panel, textvariable=output).pack(fill='x')
-    ttk.Button(panel, text='Choose output parent', command=lambda: choose_output()).pack(anchor='w', pady=4)
+    ttk.Button(panel, text='Choose where to save output', command=lambda: choose_output()).pack(anchor='w', pady=4)
+    output_preview = tk.StringVar()
+    def preview_output(*_):
+        output_preview.set('Folder to create: ' + output.get() if output.get() else 'Folder to create: choose where to save output.')
+    output.trace_add('write', preview_output); preview_output()
+    ttk.Label(panel, textvariable=output_preview, wraplength=850).pack(anchor='w')
     ttk.Label(panel, text='Scenes — select one or more (pack/Adventure scope is preserved)').pack(anchor='w')
     scenes = tk.Listbox(panel, selectmode='extended', exportselection=False, height=9)
     scenes.pack(fill='x')
+    selection_buttons = ttk.Frame(panel); selection_buttons.pack(fill='x', pady=4)
+    ttk.Button(selection_buttons, text='Select all', command=lambda: scenes.selection_set(0, 'end')).pack(side='left')
+    ttk.Button(selection_buttons, text='Clear', command=lambda: scenes.selection_clear(0, 'end')).pack(side='left')
     controls = ttk.Frame(panel); controls.pack(fill='x', pady=6)
     profile_label = tk.StringVar(value='Schema-built native output. Existing calibrated profiles are optional overrides.')
     ttk.Label(panel, textvariable=profile_label, wraplength=850).pack(anchor='w')
@@ -79,11 +106,8 @@ def main(argv=None):
         text.delete('1.0', 'end'); text.insert('1.0', report_text(value))
 
     def found(report, source):
-        rows[:] = report['scenes']; scenes.delete(0, 'end')
-        for row in rows:
-            scenes.insert('end', f"{row.get('name') or row['id']} | {row['source_path']} | Adventure {row['parent_adventure_id'] or '—'}")
-        scenes.selection_set(0, 'end'); state['source'] = source
-        status.set(f'{len(rows)} scenes found. Choose output and build; then review the loss report.')
+        rows[:] = populate_scenes(scenes, report); state['source'] = source
+        status.set(f'{len(rows)} scenes found. Select the scenes to convert, then choose an output folder.')
         display(report)
 
     def find():
@@ -135,7 +159,8 @@ def main(argv=None):
             f'Install {len(packages)} native packages from {len(report["scenes"])} scene results?\n'
             f'MyAssets: {target}\nBackups: {backups}\n\n'
             'Read the loss report first. Toolkit must stay closed. A full backup is made; conflicts refuse all copying. '
-            'Manual UVTT scenes are not installed.'): return
+            'Manual UVTT scenes are not installed.\n'
+            'Opening notes in the Toolkit can change them; uninstall with --keep-changed later keeps those edits.'): return
         def installed(result):
             display(result); status.set('Added native files. Backup/uninstall receipt shown. No Toolkit validation performed.')
         start(lambda: install_outputs(report, dest, target, backups), installed)
