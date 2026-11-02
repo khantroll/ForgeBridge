@@ -11,6 +11,7 @@ import zipfile
 
 from forgebridge.cli import main
 from forgebridge.convert import convert
+from forgebridge.convert import discover
 from forgebridge.native_dependencies import read_package, check_metadata_references
 from forgebridge.nrbf import Reader
 from forgebridge.installer import uninstall
@@ -79,7 +80,11 @@ class DirectPackageTests(unittest.TestCase):
             manifest = json.loads((package / 'module.json').read_text())
             manifest['packs'] = [{'name': 'adventure', 'type': 'Adventure', 'path': 'packs/adventure.db'}]
             (package / 'module.json').write_text(json.dumps(manifest))
-            report = convert(package, root / 'out')
+            keys = [r['key'] for r in discover(package)['scenes']]
+            with self.assertRaisesRegex(ValueError, 'Map name conflict'):
+                convert(package, root / 'refused')
+            self.assertFalse((root / 'refused').exists())
+            report = convert(package, root / 'out', map_names={keys[0]: 'First scene', keys[1]: 'Second scene'})
             self.assertEqual(report['status'], 'PASS')
             self.assertEqual(len(report['scenes']), 2)
             scopes = [s['native_report']['native_synthesis']['scope'] for s in report['scenes']]

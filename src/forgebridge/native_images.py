@@ -190,7 +190,7 @@ def source_image_files(companion, media_bundle, template_pack, *, pdf_pages=Fals
     return output, fields, rows
 
 
-def write_source_images_zip(companion_path, media_bundle, template_pack, dest, *, pdf_pages=False, note_folder=None, map_markers=False, asset_namespace=None):
+def write_source_images_zip(companion_path, media_bundle, template_pack, dest, *, pdf_pages=False, note_folder=None, map_markers=False, asset_namespace=None, note_prefix=''):
     companion_path, dest = Path(companion_path), Path(dest)
     if companion_path.stat().st_size > MAX_FILE:
         raise ValueError('Companion exceeds size limit')
@@ -200,7 +200,7 @@ def write_source_images_zip(companion_path, media_bundle, template_pack, dest, *
     media, fields, rows = source_image_files(companion, media_bundle, template_pack,
                                            pdf_pages=pdf_pages, asset_namespace=asset_namespace)
     notes, report = companion_files(companion, media_fields=fields, note_folder=note_folder,
-                                    map_markers=map_markers)
+                                    map_markers=map_markers, note_prefix=note_prefix)
     if set(media) & set(notes):
         raise ValueError('Media conflicts with note output')
     files = {**notes, **media}

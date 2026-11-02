@@ -31,7 +31,7 @@ class ConvertTests(unittest.TestCase):
                 companion = json.loads(archive.read('scene.forgebridge.json'))
                 self.assertEqual(companion['source_scene']['_id'], 'scene-crypt')
                 self.assertEqual(companion['loss_report'], report['scenes'][0]['loss_report'])
-            self.assertTrue((dest / 'MyAssets/Maps/ForgeBridge').is_dir())
+            self.assertTrue((dest / 'MyAssets/Maps/Synthetic Module').is_dir())
             self.assertGreater(report['closed_native_metadata_references'], 0)
             self.assertEqual(fingerprint(FIXTURE), before)
             stable = fingerprint(dest)
