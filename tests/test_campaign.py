@@ -104,6 +104,9 @@ class CampaignTests(unittest.TestCase):
             self.assertEqual(content(block['_skillsText']),'Skills Athletics +5')
             self.assertEqual(content(block['_challengeText']),'Challenge 1 (200 XP)')
             self.assertEqual(content(block['_hitPointsText']),'(4d8 + 4)')
+            self.assertEqual(block['_armorClassText'].members['_font'],'5eText')
+            self.assertEqual(block['_armorClassText'].members['_characters'].members['_items'].items[0].members['_hexColour'],'58180D')
+            self.assertEqual(block['_typeText'].members['_characters'].members['_items'].items[0].members['_defaultFont'],'5eText')
             hp=block['_trackedHitPoints'].members
             self.assertEqual((hp['_currentValueStr'],hp['_maxValueStr'],hp['_minValueStr']),('12','22','0'))
             for flag in ('_savingThrowsFieldActive','_damageResistanceFieldActive','_damageImmunitiesFieldActive','_damageVulnerabilitiesFieldActive','_conditionImmunitiesFieldActive'):self.assertTrue(block[flag])
@@ -112,6 +115,7 @@ class CampaignTests(unittest.TestCase):
             self.assertTrue(all(c.members['_fontSettings'].members['value__']==1 for c in chars[:6]))
             self.assertEqual(chars[7].members['_fontSettings'].members['value__'],2)
             self.assertNotIn('[[',content(action));self.assertNotIn('<',content(action))
+            self.assertEqual(action.members['_font'],'5eText')
             self.assertEqual(block['_abilities'].members['_size'],0)
             self.assertEqual(block['_reactions'].members['_size'],1)
             self.assertEqual(block['_legendaryActions'].members['_size'],1)

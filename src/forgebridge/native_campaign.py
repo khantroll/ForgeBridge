@@ -69,6 +69,20 @@ class CampaignBuilder(NoteBuilder):
             offset += len(value)
         return result
 
+    def style_block(self, block, kind):
+        for key,style in self.campaign['styles'][kind].items():
+            value=block.members[key]
+            if value.schema['name']=='ArkenTextString': texts=[value]
+            else:
+                seq=value.members;texts=seq['_items'].items[:seq['_size']]
+            for text_node in texts:
+                text_node.members['_font']=style['_font']
+                seq=text_node.members['_characters'].members
+                for char in seq['_items'].items[:seq['_size']]:
+                    char.members.update(_size=style['_size'],_defaultFont=style['_defaultFont'])
+                    if not char.members['_link']:char.members['_hexColour']=style['_hexColour']
+        return block
+
 
 def campaign_files(ir, package, *, notes_folder):
     builder = CampaignBuilder(); files, links, rows, playlists = {}, {}, [], []
@@ -167,6 +181,7 @@ def campaign_files(ir, package, *, notes_folder):
                         runs.extend((part,2 if re.fullmatch(r'.*Attack:|Hit:',part) else font,link) for part in parts if part)
                     seq.members['_items'].items.append(builder.rich(runs))
                 seq.members.update(_size=len(entries),_version=len(entries))
+            builder.style_block(block,'Character')
             fields=[block]
             image=portrait(a['portrait'])
             if image:fields.insert(0,builder.media_field('Portrait',image,2))
@@ -179,6 +194,7 @@ def campaign_files(ir, package, *, notes_folder):
             m.update(_nameText=txt(a['name'],title=True),_typeText=txt(a['type'],italic=True),_descriptionText=txt(a['description']))
             if spell:
                 for key,field,label in [('casting','_castingTimeText','Casting Time'),('range','_rangeText','Range'),('components','_componentsText','Components'),('duration','_durationText','Duration'),('attack_save','_attackSaveText','Attack/Save'),('damage_effect','_damageEffectText','Damage/Effect'),('higher','_higherLevelsText','At Higher Levels')]:m[field]=txt(a[key],label)
+            builder.style_block(block,'Spell' if spell else 'Item')
             fields=[block];image=portrait(a['portrait'])
             if image:fields.insert(0,builder.media_field('Item image',image,2))
             counts['spells' if spell else 'items']+=1

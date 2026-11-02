@@ -1863,176 +1863,234 @@
       "_nameText": {
         "_size": 90,
         "_hexColour": "58180D",
-        "_defaultFont": "ToolkitDefault"
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eHeading"
       },
       "_typeText": {
         "_size": 40,
         "_hexColour": "000000",
-        "_defaultFont": "5eText"
+        "_defaultFont": "5eText",
+        "_font": "5eText"
       },
       "_armorClassText": {
         "_size": 40,
         "_hexColour": "58180D",
-        "_defaultFont": "ToolkitDefault"
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
       },
       "_hitPointsText": {
         "_size": 40,
         "_hexColour": "58180D",
-        "_defaultFont": "ToolkitDefault"
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
       },
       "_speedText": {
         "_size": 40,
         "_hexColour": "58180D",
-        "_defaultFont": "ToolkitDefault"
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
       },
       "_strValNew": {
         "_size": 40,
         "_hexColour": "58180D",
-        "_defaultFont": "ToolkitDefault"
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
       },
       "_dexValNew": {
         "_size": 40,
         "_hexColour": "58180D",
-        "_defaultFont": "ToolkitDefault"
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
       },
       "_conValNew": {
         "_size": 40,
         "_hexColour": "58180D",
-        "_defaultFont": "ToolkitDefault"
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
       },
       "_intValNew": {
         "_size": 40,
         "_hexColour": "58180D",
-        "_defaultFont": "ToolkitDefault"
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
       },
       "_wisValNew": {
         "_size": 40,
         "_hexColour": "58180D",
-        "_defaultFont": "ToolkitDefault"
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
       },
       "_chaValNew": {
         "_size": 40,
         "_hexColour": "58180D",
-        "_defaultFont": "ToolkitDefault"
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
       },
       "_savingThrowsText": {
         "_size": 40,
         "_hexColour": "58180D",
-        "_defaultFont": "ToolkitDefault"
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
       },
       "_skillsText": {
         "_size": 40,
         "_hexColour": "58180D",
-        "_defaultFont": "ToolkitDefault"
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
       },
       "_damageResistancesText": {
         "_size": 40,
         "_hexColour": "58180D",
-        "_defaultFont": "ToolkitDefault"
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
       },
       "_damageImmunitiesText": {
         "_size": 40,
         "_hexColour": "58180D",
-        "_defaultFont": "ToolkitDefault"
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
       },
       "_conditionImmunitiesText": {
         "_size": 40,
         "_hexColour": "58180D",
-        "_defaultFont": "ToolkitDefault"
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
       },
       "_sensesText": {
         "_size": 40,
         "_hexColour": "58180D",
-        "_defaultFont": "ToolkitDefault"
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
       },
       "_languagesText": {
         "_size": 40,
         "_hexColour": "58180D",
-        "_defaultFont": "ToolkitDefault"
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
       },
       "_challengeText": {
         "_size": 40,
         "_hexColour": "58180D",
-        "_defaultFont": "ToolkitDefault"
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
       },
       "_proficiencyBonusText": {
         "_size": 40,
         "_hexColour": "58180D",
-        "_defaultFont": "ToolkitDefault"
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
       },
       "_damageVulnerabilitiesText": {
         "_size": 40,
         "_hexColour": "58180D",
-        "_defaultFont": "ToolkitDefault"
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
+      },
+      "_abilities": {
+        "_size": 40,
+        "_hexColour": "000000",
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
+      },
+      "_actions": {
+        "_size": 40,
+        "_hexColour": "000000",
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
+      },
+      "_reactions": {
+        "_size": 40,
+        "_hexColour": "000000",
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
+      },
+      "_legendaryActions": {
+        "_size": 40,
+        "_hexColour": "000000",
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
       }
     },
     "Item": {
       "_nameText": {
         "_size": 90,
         "_hexColour": "58180D",
-        "_defaultFont": "ToolkitDefault"
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eHeading"
       },
       "_typeText": {
         "_size": 40,
         "_hexColour": "000000",
-        "_defaultFont": "ToolkitDefault"
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
       },
       "_descriptionText": {
         "_size": 40,
         "_hexColour": "000000",
-        "_defaultFont": "ToolkitDefault"
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
       }
     },
     "Spell": {
       "_nameText": {
         "_size": 90,
         "_hexColour": "58180D",
-        "_defaultFont": "ToolkitDefault"
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eHeading"
       },
       "_typeText": {
         "_size": 40,
         "_hexColour": "000000",
-        "_defaultFont": "ToolkitDefault"
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
       },
       "_castingTimeText": {
         "_size": 40,
         "_hexColour": "000000",
-        "_defaultFont": "ToolkitDefault"
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
       },
       "_rangeText": {
         "_size": 40,
         "_hexColour": "000000",
-        "_defaultFont": "ToolkitDefault"
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
       },
       "_componentsText": {
         "_size": 40,
         "_hexColour": "000000",
-        "_defaultFont": "ToolkitDefault"
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
       },
       "_durationText": {
         "_size": 40,
         "_hexColour": "000000",
-        "_defaultFont": "ToolkitDefault"
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
       },
       "_descriptionText": {
         "_size": 40,
         "_hexColour": "000000",
-        "_defaultFont": "ToolkitDefault"
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
       },
       "_attackSaveText": {
         "_size": 40,
         "_hexColour": "000000",
-        "_defaultFont": "ToolkitDefault"
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
       },
       "_damageEffectText": {
         "_size": 40,
         "_hexColour": "000000",
-        "_defaultFont": "ToolkitDefault"
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
       },
       "_higherLevelsText": {
         "_size": 40,
         "_hexColour": "000000",
-        "_defaultFont": "ToolkitDefault"
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
       }
     }
   }
