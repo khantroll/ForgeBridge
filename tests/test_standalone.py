@@ -56,7 +56,7 @@ class StandaloneTests(unittest.TestCase):
             bundled = package / 'schema/test.json'; bundled.write_text('{}')
             (root / 'schema').mkdir(); (root / 'schema/test.json').write_text('{"wrong":"checkout"}')
             with patch('forgebridge.validate.__file__', str(package / 'validate.py')), patch('sys.frozen', True, create=True):
-                self.assertEqual(repo_schema('test.json'), bundled)
+                self.assertEqual(repo_schema('test.json'), bundled.resolve())
                 bundled.unlink()
                 with self.assertRaisesRegex(InventoryFatal, 'bundled schema not found'): repo_schema('test.json')
 
