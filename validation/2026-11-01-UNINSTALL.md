@@ -29,5 +29,21 @@ receipts retained.
    leaves changed/missing ones, lists them, and marks the receipt
    `UNINSTALLED_KEPT_CHANGED`. Tested on a fake MyAssets.
 
-Remaining: run `--keep-changed` on the Manor 1st receipt (expect 133 removed,
-1 kept), then confirm in the Toolkit that the ForgeBridge maps are gone.
+## Rerun with --keep-changed (Codex, 6ea68a8, Toolkit closed)
+
+`forgebridge install --uninstall <Manor 1st receipt> --keep-changed` → exit 0,
+`{"status": "PASS", "removed": 133, "kept_changed": [".../D000-P003.rwnote"],
+"backup_retained": true}`. New SHA-256 snapshot: 1,402 files; exactly three
+differences from the first (pre-ForgeBridge) backup — the kept note (added, hash
+unchanged since it was kept) and `Maps/New Map.rwmap/.rwmeta` (changed before
+the uninstall run). **No original file missing.**
+
+## Toolkit confirmation (Claude)
+
+`MyAssets\Maps\ForgeBridge` is empty on disk. Toolkit 0.5.1.18: Map Browser's
+ForgeBridge folder is empty; the rest of the library lists and the Toolkit exits
+normally.
+
+**Result: install → use → uninstall round trip PASS** for three installs (two CLI,
+one GUI). The only residue is the one note the Toolkit itself rewrote, kept by
+design and listed for the user.
