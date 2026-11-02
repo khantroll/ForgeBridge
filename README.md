@@ -15,6 +15,7 @@ Output includes a combined ready-to-copy MyAssets tree, per-scene native/UVTT
 packages and one combined source/native loss report. Explicit `--install` uses
 the backed-up add-only installer; builds alone never install. The local GUI is
 available through forgebridge_gui.pyw or `python -m forgebridge gui`.
+**Current release: v0.9.0** — [release notes](docs/RELEASE-NOTES-v0.9.0.md).
 See [the operator guide](docs/USER-GUIDE.md) and
 [walkthrough/install rules](docs/SCENE-IMPORT-RELEASE.md).
 
