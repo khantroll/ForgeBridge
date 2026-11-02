@@ -4,12 +4,15 @@ import math
 from pathlib import Path
 import queue
 import threading
+import traceback
 import uuid
 
 from forgebridge.convert import discover, convert
 from forgebridge.installer import install, native_outputs
 from forgebridge.install_review import review
 from forgebridge.output_names import default_folder, sanitize_name, plan_names
+from forgebridge.version import get_version
+from forgebridge.gui_errors import report_error
 
 
 def install_outputs(report, output, myassets, backups):
@@ -84,7 +87,7 @@ def main(argv=None):
     # Lazy import: headless CI exercises the controller without creating a window.
     import tkinter as tk
     from tkinter import filedialog, messagebox, simpledialog, ttk
-    app = tk.Tk(); app.title('ForgeBridge — scene conversion'); app.geometry('900x720')
+    app = tk.Tk(); app.title('ForgeBridge ' + get_version() + ' — scene conversion'); app.geometry('900x720')
     package = tk.StringVar(value=args.package); output = tk.StringVar(value=args.out)
     map_folder, notes_folder = tk.StringVar(), tk.StringVar()
     pdf_pages = tk.BooleanVar(value=True)
@@ -94,6 +97,9 @@ def main(argv=None):
     status = tk.StringVar(value='Select a Foundry package or Fantasy Grounds module, then discover scenes.')
     profiles, rows, jobs = [], [], queue.Queue()
     state = {'busy': False, 'report': None, 'output': None, 'source': None}
+    def callback_error(kind, value, tb):
+        report_error(str(value), ''.join(traceback.format_exception(kind, value, tb)), output=output.get())
+    app.report_callback_exception = callback_error
     panel = ttk.Frame(app, padding=12); panel.pack(fill='both', expand=True)
     ttk.Label(panel, text='Foundry package / Fantasy Grounds module').pack(anchor='w')
     ttk.Entry(panel, textvariable=package).pack(fill='x')
@@ -136,7 +142,7 @@ def main(argv=None):
         state['busy'] = True; status.set('Working locally. Keep inputs unchanged; wait for completion.')
         def worker():
             try: jobs.put((done, function(), None))
-            except Exception as exc: jobs.put((done, None, str(exc)))
+            except Exception as exc: jobs.put((done, None, (str(exc), traceback.format_exc())))
         threading.Thread(target=worker, daemon=True).start()
 
     def display(value):
@@ -285,7 +291,7 @@ def main(argv=None):
             done, value, error = jobs.get_nowait(); state['busy'] = False
             if error:
                 status.set('Failed; inspect the message and any incomplete output before retrying.')
-                messagebox.showerror('ForgeBridge', error)
+                report_error(error[0], error[1], output=output.get())
             else: done(value)
         except queue.Empty: pass
         app.after(150, pump)

@@ -5,5 +5,7 @@ It can also write one scene as UVTT JSON plus a loss report.
 It does not run imported code.
 """
 
-__version__ = "0.1.0"
+from forgebridge.version import get_version
+
+__version__ = get_version()
 IR_VERSION = "0.1.0"

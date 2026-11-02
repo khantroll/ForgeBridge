@@ -12,7 +12,12 @@ The current Foundry workflow can build native Arkenforge scene packages directly
 
 ## Quick start
 
-On Windows, install Git and Python, then open PowerShell:
+**Windows, no Python:** [download the Windows ZIP from Releases](https://github.com/khantroll/ForgeBridge/releases),
+unzip the whole folder, and double-click **ForgeBridge.exe**.
+[Windows app instructions, including unsigned-app SmartScreen](docs/USER-GUIDE.md#easiest-download-the-windows-app).
+CLI commands use **forgebridge-cli.exe** in the same folder.
+
+Alternatively, install Git and Python, then open PowerShell:
 
 ```powershell
 git clone https://github.com/khantroll/ForgeBridge.git
