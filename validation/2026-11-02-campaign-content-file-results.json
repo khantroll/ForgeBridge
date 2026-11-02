@@ -1,0 +1,646 @@
+{
+  "status": "PASS (file-level only)",
+  "implementation_commit": "4b86358dd889568c647475dec068508a29a63815",
+  "os": "Windows-11-10.0.26200-SP0",
+  "python": "3.14.2",
+  "target_schema_reference": "Toolkit 0.5.1.18 captured templates; Toolkit not launched or observed",
+  "runtime_validation": "PENDING Claude; no new runtime acceptance",
+  "source": "C:\\AMD\\lob-counts_manor-pk-v13\\ForgeBridge\\lob-counts_manor-pk-v13",
+  "source_sha256": "e48a9b2035a2460dc413b02290e1f9fd2fde1cb228e4ba391b7e38ddd33a4420",
+  "output": "C:\\AMD\\lob-counts_manor-pk-v13\\ForgeBridge\\.test-tmp\\campaign-manor-5e-validated-2026-11-02",
+  "pdf_mode": "references",
+  "installed": false,
+  "counts": {
+    "scenes": 17,
+    "tokens": 28,
+    "rejected_tokens": 1,
+    "notes": 1009,
+    "markers": 79,
+    "tables": 3,
+    "actors": 18,
+    "items": 17,
+    "spells": 0,
+    "playlists": 1,
+    "tracks": 0,
+    "manual_tracks": 3,
+    "static_tiles": 15,
+    "token_actor_links": 28
+  },
+  "campaign_counts": {
+    "tables": 3,
+    "actors": 18,
+    "items": 17,
+    "spells": 0,
+    "playlists": 1,
+    "tracks": 0,
+    "manual_tracks": 3,
+    "notes": 38
+  },
+  "actor_font_graph_checks": 18,
+  "campaign_loss_counts": {
+    "roll-table": 1,
+    "actor": 18,
+    "portrait": 14,
+    "item": 17,
+    "link": 3,
+    "playlist-track": 3,
+    "playlist": 1
+  },
+  "campaign_manual_losses": [
+    {
+      "grade": "manual",
+      "feature": "portrait",
+      "summary": "path is not a file inside the package: modules/legends-of-barovia-pk/assets/actors/Igor_token.webp",
+      "source": "modules/legends-of-barovia-pk/assets/actors/Igor_token.webp"
+    },
+    {
+      "grade": "manual",
+      "feature": "portrait",
+      "summary": "path is not a file inside the package: modules/lob-counts_manor-pk-v13/assets/items/Amulet%20of%20Proof.webp",
+      "source": "modules/lob-counts_manor-pk-v13/assets/items/Amulet%20of%20Proof.webp"
+    },
+    {
+      "grade": "manual",
+      "feature": "portrait",
+      "summary": "path is not a file inside the package: icons/equipment/back/cloak-plain-blue.webp",
+      "source": "icons/equipment/back/cloak-plain-blue.webp"
+    },
+    {
+      "grade": "manual",
+      "feature": "portrait",
+      "summary": "path is not a file inside the package: icons/sundries/misc/key-steel.webp",
+      "source": "icons/sundries/misc/key-steel.webp"
+    },
+    {
+      "grade": "manual",
+      "feature": "portrait",
+      "summary": "path is not a file inside the package: icons/weapons/swords/greatsword-crossguard-embossed-gold.webp",
+      "source": "icons/weapons/swords/greatsword-crossguard-embossed-gold.webp"
+    },
+    {
+      "grade": "manual",
+      "feature": "portrait",
+      "summary": "path is not a file inside the package: icons/sundries/misc/key-steel-grey.webp",
+      "source": "icons/sundries/misc/key-steel-grey.webp"
+    },
+    {
+      "grade": "manual",
+      "feature": "portrait",
+      "summary": "path is not a file inside the package: icons/equipment/neck/collar-rounded-copper.webp",
+      "source": "icons/equipment/neck/collar-rounded-copper.webp"
+    },
+    {
+      "grade": "manual",
+      "feature": "portrait",
+      "summary": "path is not a file inside the package: icons/sundries/misc/key-short-gold.webp",
+      "source": "icons/sundries/misc/key-short-gold.webp"
+    },
+    {
+      "grade": "manual",
+      "feature": "portrait",
+      "summary": "path is not a file inside the package: icons/consumables/potions/potion-jar-corked-green.webp",
+      "source": "icons/consumables/potions/potion-jar-corked-green.webp"
+    },
+    {
+      "grade": "manual",
+      "feature": "portrait",
+      "summary": "path is not a file inside the package: icons/sundries/misc/key-ring-long-silver.webp",
+      "source": "icons/sundries/misc/key-ring-long-silver.webp"
+    },
+    {
+      "grade": "manual",
+      "feature": "link",
+      "summary": "Unresolved or ambiguous source link retained as text",
+      "uuid": "Compendium.dnd5e.spells.MAxM77CDUu8dgIRQ"
+    },
+    {
+      "grade": "manual",
+      "feature": "portrait",
+      "summary": "path is not a file inside the package: icons/sundries/scrolls/scroll-bound-gold-brown.webp",
+      "source": "icons/sundries/scrolls/scroll-bound-gold-brown.webp"
+    },
+    {
+      "grade": "manual",
+      "feature": "link",
+      "summary": "Unresolved or ambiguous source link retained as text",
+      "uuid": "Compendium.dnd5e.spells.JbxsYXxSOTZbf9I0"
+    },
+    {
+      "grade": "manual",
+      "feature": "portrait",
+      "summary": "path is not a file inside the package: icons/sundries/scrolls/scroll-bound-gold-brown.webp",
+      "source": "icons/sundries/scrolls/scroll-bound-gold-brown.webp"
+    },
+    {
+      "grade": "manual",
+      "feature": "link",
+      "summary": "Unresolved or ambiguous source link retained as text",
+      "uuid": "Compendium.dnd5e.spells.8dzaICjGy6mTUaUr"
+    },
+    {
+      "grade": "manual",
+      "feature": "portrait",
+      "summary": "path is not a file inside the package: icons/sundries/scrolls/scroll-bound-orange-tan.webp",
+      "source": "icons/sundries/scrolls/scroll-bound-orange-tan.webp"
+    },
+    {
+      "grade": "manual",
+      "feature": "portrait",
+      "summary": "path is not a file inside the package: icons/sundries/survival/stake-rough-simple-brown.webp",
+      "source": "icons/sundries/survival/stake-rough-simple-brown.webp"
+    },
+    {
+      "grade": "manual",
+      "feature": "playlist-track",
+      "source": "modules/lob-counts_manor-pk-v13/assets/playlist/Manor.mp3",
+      "name": "Manor",
+      "summary": "MP3/native playback unverified; no bundled encoder demonstrated. Supply OGG Vorbis manually; Toolkit ffmpeg is never used"
+    },
+    {
+      "grade": "manual",
+      "feature": "playlist-track",
+      "source": "modules/lob-counts_manor-pk-v13/assets/playlist/Crypt%20and%20Lair.mp3",
+      "name": "Crypt And Lair",
+      "summary": "path is not a file inside the package: modules/lob-counts_manor-pk-v13/assets/playlist/Crypt%20and%20Lair.mp3"
+    },
+    {
+      "grade": "manual",
+      "feature": "playlist-track",
+      "source": "modules/lob-counts_manor-pk-v13/assets/playlist/Forest.mp3",
+      "name": "Forest",
+      "summary": "MP3/native playback unverified; no bundled encoder demonstrated. Supply OGG Vorbis manually; Toolkit ffmpeg is never used"
+    }
+  ],
+  "campaign_approximate_table_losses": [
+    {
+      "grade": "approximate",
+      "feature": "roll-table",
+      "summary": "Native range table retained; source formula/weights/replacement/document draws require review (not repaired)",
+      "source_id": "SOSYImI25aYkvTTv",
+      "formula": "1d2"
+    }
+  ],
+  "closed_metadata_references": 3307,
+  "suite": {
+    "run": 282,
+    "passed": 278,
+    "skipped": 4,
+    "failed": 0,
+    "skip_reason": "Windows symlink privileges",
+    "log_sha256": "cf1b555d7a3cd4487fca071258b73bca920c34037fc8f758ca43c25b934f767d"
+  },
+  "ci": {
+    "source": "https://github.com/khantroll/ForgeBridge/actions/runs/41538553053",
+    "standalone": "https://github.com/khantroll/ForgeBridge/actions/runs/41538553034"
+  },
+  "scenes": [
+    {
+      "name": "Manor - 1st Floor",
+      "scene_id": "2JQnuREHORbOigWo",
+      "folder": "scene-001",
+      "status": "BUILT",
+      "map_path": "MyAssets/Maps/The Count's Manor/Manor - 1st Floor.rwmap",
+      "records": {
+        "walls": 164,
+        "doors": 12,
+        "lights": 24,
+        "image": 1
+      },
+      "tokens": 0,
+      "rejected_tokens": 0,
+      "markers": 6,
+      "static_tiles": 1,
+      "token_actor_links": 0,
+      "package_sha256": "c3d6d9d0f6c301196f31acda9046af0597f5052f29253090d77939a9ab34f7d0",
+      "tile_manual_losses": []
+    },
+    {
+      "name": "Ritual Chamber - M",
+      "scene_id": "3JKob9TtiZxWcm0Z",
+      "folder": "scene-002",
+      "status": "BUILT",
+      "map_path": "MyAssets/Maps/The Count's Manor/Ritual Chamber - M.rwmap",
+      "records": {
+        "walls": 4,
+        "doors": 0,
+        "lights": 13,
+        "image": 1
+      },
+      "tokens": 0,
+      "rejected_tokens": 0,
+      "markers": 1,
+      "static_tiles": 1,
+      "token_actor_links": 0,
+      "package_sha256": "fb745f10046d8bcbaf0b98694e4d20dbbcd6e5d9eef6afb58605d6a4cee7f414",
+      "tile_manual_losses": []
+    },
+    {
+      "name": "Crypt Tomb - M",
+      "scene_id": "An52B0RanaF2yDji",
+      "folder": "scene-003",
+      "status": "BUILT",
+      "map_path": "MyAssets/Maps/The Count's Manor/Crypt Tomb - M.rwmap",
+      "records": {
+        "walls": 4,
+        "doors": 0,
+        "lights": 2,
+        "image": 1
+      },
+      "tokens": 0,
+      "rejected_tokens": 0,
+      "markers": 6,
+      "static_tiles": 0,
+      "token_actor_links": 0,
+      "package_sha256": "85c2cf591924b72556ed812e4da468c8ab7210265d39f34ee1337d8e22ee8666",
+      "tile_manual_losses": []
+    },
+    {
+      "name": "Count's Lair",
+      "scene_id": "CAx2kvd87wTQkHWt",
+      "folder": "scene-004",
+      "status": "BUILT",
+      "map_path": "MyAssets/Maps/The Count's Manor/Count's Lair.rwmap",
+      "records": {
+        "walls": 137,
+        "doors": 12,
+        "lights": 17,
+        "image": 1
+      },
+      "tokens": 11,
+      "rejected_tokens": 0,
+      "markers": 12,
+      "static_tiles": 2,
+      "token_actor_links": 11,
+      "package_sha256": "347aa39642a3aeadc802f516335772ada1147321a32bb5d32f965417f18d9eba",
+      "tile_manual_losses": [
+        {
+          "grade": "manual",
+          "feature": "tile",
+          "source_id": "2vUYeW5YFqIibUEP",
+          "source": "modules/legends-of-barovia-pk/assets/items/blank%20tile.jpg",
+          "summary": "path is not a file inside the package: modules/legends-of-barovia-pk/assets/items/blank%20tile.jpg"
+        },
+        {
+          "grade": "manual",
+          "feature": "tile",
+          "source_id": "9j4bSHR4dVF3i6MR",
+          "source": "modules/legends-of-barovia-pk/assets/items/blank%20tile.jpg",
+          "summary": "path is not a file inside the package: modules/legends-of-barovia-pk/assets/items/blank%20tile.jpg"
+        },
+        {
+          "grade": "manual",
+          "feature": "tile",
+          "source_id": "jqIYWK620CDumOa5",
+          "source": "modules/legends-of-barovia-pk/assets/items/blank%20tile.jpg",
+          "summary": "path is not a file inside the package: modules/legends-of-barovia-pk/assets/items/blank%20tile.jpg"
+        },
+        {
+          "grade": "manual",
+          "feature": "tile",
+          "source_id": "USq6TYTkSdnCCn2P",
+          "source": "modules/legends-of-barovia-pk/assets/items/blank%20tile.jpg",
+          "summary": "path is not a file inside the package: modules/legends-of-barovia-pk/assets/items/blank%20tile.jpg"
+        },
+        {
+          "grade": "manual",
+          "feature": "tile",
+          "source_id": "fpgsaaR1yw4vKZoY",
+          "source": "modules/legends-of-barovia-pk/assets/items/blank%20tile.jpg",
+          "summary": "path is not a file inside the package: modules/legends-of-barovia-pk/assets/items/blank%20tile.jpg"
+        },
+        {
+          "grade": "manual",
+          "feature": "tile",
+          "source_id": "sGTolUcXb7K769g2",
+          "source": "modules/legends-of-barovia-pk/assets/items/blank%20tile.jpg",
+          "summary": "path is not a file inside the package: modules/legends-of-barovia-pk/assets/items/blank%20tile.jpg"
+        },
+        {
+          "grade": "manual",
+          "feature": "tile",
+          "source_id": "7NpGMhaONb9F4NHP",
+          "source": "modules/legends-of-barovia-pk/assets/items/blank%20tile.jpg",
+          "summary": "path is not a file inside the package: modules/legends-of-barovia-pk/assets/items/blank%20tile.jpg"
+        }
+      ]
+    },
+    {
+      "name": "Manor - 4th Floor",
+      "scene_id": "DAlhONe7MYQ82keP",
+      "folder": "scene-005",
+      "status": "BUILT",
+      "map_path": "MyAssets/Maps/The Count's Manor/Manor - 4th Floor.rwmap",
+      "records": {
+        "walls": 41,
+        "doors": 6,
+        "lights": 1,
+        "image": 1
+      },
+      "tokens": 3,
+      "rejected_tokens": 0,
+      "markers": 6,
+      "static_tiles": 2,
+      "token_actor_links": 3,
+      "package_sha256": "2e391eea8a9d78db7c70b3f933f0e670b9a3751b37bb37dee1c15c51ed4d07aa",
+      "tile_manual_losses": []
+    },
+    {
+      "name": "Counts Lair - M",
+      "scene_id": "LVyvYenStlbQ7tsD",
+      "folder": "scene-006",
+      "status": "BUILT",
+      "map_path": "MyAssets/Maps/The Count's Manor/Counts Lair - M.rwmap",
+      "records": {
+        "walls": 4,
+        "doors": 0,
+        "lights": 2,
+        "image": 1
+      },
+      "tokens": 0,
+      "rejected_tokens": 0,
+      "markers": 1,
+      "static_tiles": 0,
+      "token_actor_links": 0,
+      "package_sha256": "67dddca0222bf8662139ae59c1c4414b0010a7456a1edc7efe19229402ad48ba",
+      "tile_manual_losses": []
+    },
+    {
+      "name": "Dungeon Cell - M",
+      "scene_id": "NBmhoUf4kDnnUEAE",
+      "folder": "scene-007",
+      "status": "BUILT",
+      "map_path": "MyAssets/Maps/The Count's Manor/Dungeon Cell - M.rwmap",
+      "records": {
+        "walls": 4,
+        "doors": 0,
+        "lights": 2,
+        "image": 1
+      },
+      "tokens": 0,
+      "rejected_tokens": 0,
+      "markers": 8,
+      "static_tiles": 0,
+      "token_actor_links": 0,
+      "package_sha256": "e2398dca2b5f049c49688013c77993406bfcf06a48f446c647a28db6f01dec40",
+      "tile_manual_losses": []
+    },
+    {
+      "name": "Manor - 3rd Floor",
+      "scene_id": "S8I59RCCJVeGHs1f",
+      "folder": "scene-008",
+      "status": "BUILT",
+      "map_path": "MyAssets/Maps/The Count's Manor/Manor - 3rd Floor.rwmap",
+      "records": {
+        "walls": 49,
+        "doors": 12,
+        "lights": 4,
+        "image": 1
+      },
+      "tokens": 2,
+      "rejected_tokens": 0,
+      "markers": 5,
+      "static_tiles": 2,
+      "token_actor_links": 2,
+      "package_sha256": "7362c4d20fe82bd140572b823aac0bdff95f35d0b85eab0407979fb601f93106",
+      "tile_manual_losses": []
+    },
+    {
+      "name": "Carriage - M",
+      "scene_id": "Vn38XNJ2pdGGrODj",
+      "folder": "scene-009",
+      "status": "BUILT",
+      "map_path": "MyAssets/Maps/The Count's Manor/Carriage - M.rwmap",
+      "records": {
+        "walls": 4,
+        "doors": 0,
+        "lights": 2,
+        "image": 1
+      },
+      "tokens": 1,
+      "rejected_tokens": 0,
+      "markers": 1,
+      "static_tiles": 0,
+      "token_actor_links": 1,
+      "package_sha256": "dbf5ba5c975596be7174898f4b47bf46b404926358ddb1797a1d1b83c29fdf9b",
+      "tile_manual_losses": []
+    },
+    {
+      "name": "Crypt Hall - M",
+      "scene_id": "X2POPpsrDLL2zaBG",
+      "folder": "scene-010",
+      "status": "BUILT",
+      "map_path": "MyAssets/Maps/The Count's Manor/Crypt Hall - M.rwmap",
+      "records": {
+        "walls": 4,
+        "doors": 0,
+        "lights": 3,
+        "image": 1
+      },
+      "tokens": 0,
+      "rejected_tokens": 0,
+      "markers": 2,
+      "static_tiles": 0,
+      "token_actor_links": 0,
+      "package_sha256": "78ec5167396e500b6f38eaec3b411f86dc708a8ac251fd61f2f0031c9a41b75c",
+      "tile_manual_losses": []
+    },
+    {
+      "name": "Crypt Stair Case - M",
+      "scene_id": "ckpMz6o0knU6yIXW",
+      "folder": "scene-011",
+      "status": "BUILT",
+      "map_path": "MyAssets/Maps/The Count's Manor/Crypt Stair Case - M.rwmap",
+      "records": {
+        "walls": 4,
+        "doors": 0,
+        "lights": 2,
+        "image": 1
+      },
+      "tokens": 0,
+      "rejected_tokens": 0,
+      "markers": 2,
+      "static_tiles": 0,
+      "token_actor_links": 0,
+      "package_sha256": "e16569eaa7188202cf642405c6749ffb38d9189529fe995c8ed551af5f4dc7db",
+      "tile_manual_losses": []
+    },
+    {
+      "name": "Manor - 2nd Floor",
+      "scene_id": "d0XKyRuR4GqdOagf",
+      "folder": "scene-012",
+      "status": "BUILT",
+      "map_path": "MyAssets/Maps/The Count's Manor/Manor - 2nd Floor.rwmap",
+      "records": {
+        "walls": 56,
+        "doors": 7,
+        "lights": 18,
+        "image": 1
+      },
+      "tokens": 1,
+      "rejected_tokens": 0,
+      "markers": 5,
+      "static_tiles": 2,
+      "token_actor_links": 1,
+      "package_sha256": "ec2a291b21b9db481aa7c57ec7527b5ebc606b5947b9cf717af15c1d3fefcf7d",
+      "tile_manual_losses": []
+    },
+    {
+      "name": "Count's Crypt",
+      "scene_id": "fP7VKkP46gQPED6X",
+      "folder": "scene-013",
+      "status": "BUILT",
+      "map_path": "MyAssets/Maps/The Count's Manor/Count's Crypt.rwmap",
+      "records": {
+        "walls": 199,
+        "doors": 23,
+        "lights": 66,
+        "image": 1
+      },
+      "tokens": 9,
+      "rejected_tokens": 1,
+      "markers": 19,
+      "static_tiles": 4,
+      "token_actor_links": 9,
+      "package_sha256": "4079a074c31ed60fecf338cfb29e7c8e16d4a385086c3fa443fbf9ce85988927",
+      "tile_manual_losses": [
+        {
+          "grade": "manual",
+          "feature": "tile",
+          "source_id": "G2x4NHkAEbV0ka4i",
+          "source": "modules/legends-of-barovia-pk/assets/items/Symbols_glow.png",
+          "summary": "path is not a file inside the package: modules/legends-of-barovia-pk/assets/items/Symbols_glow.png"
+        },
+        {
+          "grade": "manual",
+          "feature": "tile",
+          "source_id": "eXJIZ8LjiZtslwwz",
+          "source": "modules/legends-of-barovia-pk/assets/items/Start%20button.png",
+          "summary": "path is not a file inside the package: modules/legends-of-barovia-pk/assets/items/Start%20button.png"
+        },
+        {
+          "grade": "manual",
+          "feature": "tile",
+          "source_id": "FLZNhaCS4hqVTTyz",
+          "source": "modules/legends-of-barovia-pk/assets/items/Stop%20button.png",
+          "summary": "path is not a file inside the package: modules/legends-of-barovia-pk/assets/items/Stop%20button.png"
+        },
+        {
+          "grade": "manual",
+          "feature": "tile",
+          "source_id": "HJsEs288RzuE8WLA",
+          "source": "modules/legends-of-barovia-pk/assets/items/Lock%20button.png",
+          "summary": "path is not a file inside the package: modules/legends-of-barovia-pk/assets/items/Lock%20button.png"
+        },
+        {
+          "grade": "manual",
+          "feature": "tile",
+          "source_id": "U4T18NWpdZIAtsX4",
+          "source": "modules/legends-of-barovia-pk/assets/items/Arrow-Transparent-PNG.png",
+          "summary": "path is not a file inside the package: modules/legends-of-barovia-pk/assets/items/Arrow-Transparent-PNG.png"
+        },
+        {
+          "grade": "manual",
+          "feature": "tile",
+          "source_id": "jKkxlljizpNeMHA1",
+          "source": "modules/legends-of-barovia-pk/assets/items/Unlock%20button.png",
+          "summary": "path is not a file inside the package: modules/legends-of-barovia-pk/assets/items/Unlock%20button.png"
+        }
+      ]
+    },
+    {
+      "name": "Main Hall - M",
+      "scene_id": "iphhUdAl9VGxtEbP",
+      "folder": "scene-014",
+      "status": "BUILT",
+      "map_path": "MyAssets/Maps/The Count's Manor/Main Hall - M.rwmap",
+      "records": {
+        "walls": 4,
+        "doors": 0,
+        "lights": 8,
+        "image": 1
+      },
+      "tokens": 0,
+      "rejected_tokens": 0,
+      "markers": 1,
+      "static_tiles": 0,
+      "token_actor_links": 0,
+      "package_sha256": "77ba8e0433aafd469f3a2a9889e2f18d22fb2f833b03e8940696951da25aeff2",
+      "tile_manual_losses": []
+    },
+    {
+      "name": "Dining Hall - M",
+      "scene_id": "pXSf4mgpHjVfTKem",
+      "folder": "scene-015",
+      "status": "BUILT",
+      "map_path": "MyAssets/Maps/The Count's Manor/Dining Hall - M.rwmap",
+      "records": {
+        "walls": 24,
+        "doors": 0,
+        "lights": 11,
+        "image": 1
+      },
+      "tokens": 0,
+      "rejected_tokens": 0,
+      "markers": 1,
+      "static_tiles": 0,
+      "token_actor_links": 0,
+      "package_sha256": "a0ef83c1a8e1fd48372290ea621709b265486402a7534ce0dccaa0ca356e08eb",
+      "tile_manual_losses": []
+    },
+    {
+      "name": "Count's Manor - M",
+      "scene_id": "psb1tKqVercgmMiO",
+      "folder": "scene-016",
+      "status": "BUILT",
+      "map_path": "MyAssets/Maps/The Count's Manor/Count's Manor - M.rwmap",
+      "records": {
+        "walls": 4,
+        "doors": 0,
+        "lights": 5,
+        "image": 1
+      },
+      "tokens": 0,
+      "rejected_tokens": 0,
+      "markers": 2,
+      "static_tiles": 0,
+      "token_actor_links": 0,
+      "package_sha256": "561e4ba50e924d9ea6981794fa8f960819bab7b2d5c3a9b97f1063016acaabca",
+      "tile_manual_losses": []
+    },
+    {
+      "name": "Conservatory - M",
+      "scene_id": "tUKMNEmdWjsMhBcj",
+      "folder": "scene-017",
+      "status": "BUILT",
+      "map_path": "MyAssets/Maps/The Count's Manor/Conservatory - M.rwmap",
+      "records": {
+        "walls": 10,
+        "doors": 0,
+        "lights": 7,
+        "image": 1
+      },
+      "tokens": 1,
+      "rejected_tokens": 0,
+      "markers": 1,
+      "static_tiles": 1,
+      "token_actor_links": 1,
+      "package_sha256": "1f842dbc766b75320c36306de7075e6f08f904d6adf73d4db949478027066aa1",
+      "tile_manual_losses": [
+        {
+          "grade": "manual",
+          "feature": "tile",
+          "source_id": "pA7hiolrZKRsr6Sn",
+          "source": "modules/lob-counts_manor-pk-v13/assets/buttons/Stop%20button.webp",
+          "summary": "path is not a file inside the package: modules/lob-counts_manor-pk-v13/assets/buttons/Stop%20button.webp"
+        }
+      ]
+    }
+  ],
+  "audio_schema_followup": {
+    "commit": "98e979eba4e95ffdf7f88fe335c54a3330247b82",
+    "real_case_affected": false,
+    "reason": "No real OGG song entries; all source tracks are MP3/manual",
+    "ci_source": "https://github.com/khantroll/ForgeBridge/actions/runs/41540408310",
+    "ci_standalone": "https://github.com/khantroll/ForgeBridge/actions/runs/41540408336"
+  }
+}

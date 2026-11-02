@@ -164,7 +164,12 @@ Installation remains explicit, add-only and receipt-based; `.rwpl` is now an
 accepted native extension and participates in dependency closure. No real
 MyAssets installation is part of this development check.
 
-## Plan
+File-level evidence and per-scene package hashes are in
+[the campaign validation report](../validation/2026-11-02-CAMPAIGN-CONTENT.md).
+Captured heading/body fonts, stat colours and per-character font runs are
+preserved structurally; this is not a rendering observation.
+
+## Original staging plan
 
 - **A (no capture needed):** all adventure roll tables → notes with rollable
   table fields; playlist → `ArkenPlaylist` + songs; static map tiles → image
