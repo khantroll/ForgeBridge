@@ -114,6 +114,17 @@ python -m forgebridge install --uninstall "D:/ForgeBridgeBackups/forgebridge-RUN
 
 Only recorded unchanged additions are removed. Edited/missing additions block
 removal; existing content, later user files, directories and backups remain.
+
+Opening a converted note in the Toolkit can rewrite its file, so after real use a
+plain uninstall may refuse with "Added file changed/missing". To remove
+everything that is still exactly as installed and keep the changed files (they
+are listed, and recorded in the receipt), add `--keep-changed`:
+
+```powershell
+forgebridge install --uninstall "D:/ForgeBridgeBackups/forgebridge-RUN_ID/uninstall.json" --keep-changed
+```
+
+Delete the listed kept files yourself afterwards if you do not want them.
 INCOMPLETE receipts require manual review. Restore only reviewed affected backup
 files with Toolkit closed; never Replace All or blind folder synchronization.
 

@@ -12,6 +12,7 @@ from pathlib import Path
 import re
 import subprocess
 import uuid
+import zipfile
 
 from forgebridge.install_review import review, _target, _linked
 from forgebridge.native_dependencies import read_package, merge_native, safe_name
@@ -179,7 +180,7 @@ def install(packages, myassets, backup_root):
             lock.unlink()
 
 
-def uninstall(manifest):
+def uninstall(manifest, keep_changed=False):
     require_toolkit_closed()
     manifest = Path(manifest).absolute()
     if any(_linked(p) for p in (manifest, *manifest.parents)) or manifest.stat().st_size > 8 * 1024 * 1024:
@@ -200,30 +201,34 @@ def uninstall(manifest):
     if _linked(baseline_path) or baseline_path.stat().st_size > 32 * 1024 * 1024:
         raise ValueError('Unsafe backup manifest')
     baseline = json.loads(baseline_path.read_text(encoding='utf-8'))
-    targets, seen = [], set()
+    targets, seen, kept = [], set(), []
     for row in data['added']:
         name = safe_name(row['path'])
         if name.casefold() in seen or name[9:] in baseline:
             raise ValueError('Receipt duplicates or includes a pre-existing file')
         seen.add(name.casefold())
         target = _target(root, name)
-        if not target.is_file() or _hash(target)[0] != row['sha256']:
-            raise ValueError('Added file changed/missing; preserve edits and review manually: ' + name)
-        targets.append(target)
+        if not target.is_file() or _linked(target) or _hash(target)[0] != row['sha256']:
+            if not keep_changed:
+                raise ValueError('Added file changed/missing; preserve edits and review manually '
+                                 '(or rerun with --keep-changed to remove only unchanged files): ' + name)
+            kept.append(name)
+            continue
+        targets.append((target, row))
     lock = root.parent / '.forgebridge-install.lock'
     token = uuid.uuid4().hex
     with lock.open('x', encoding='ascii') as stream: stream.write(token)
     try:
         require_toolkit_closed()
-        for target, row in zip(targets, data['added']):
-            target = _target(root, row['path'])
+        for target, row in targets:
             if _linked(target) or _hash(target)[0] != row['sha256']:
                 raise ValueError('Target changed during uninstall; stop and inspect')
             target.unlink()
         # Leave directories and backups intact; they may now contain user content.
-        data['state'] = 'UNINSTALLED'
+        data['state'] = 'UNINSTALLED' if not kept else 'UNINSTALLED_KEPT_CHANGED'
+        data['kept_changed'] = kept
         _json(manifest, data)
-        return {'status': 'PASS', 'removed': len(targets), 'backup_retained': True}
+        return {'status': 'PASS', 'removed': len(targets), 'kept_changed': kept, 'backup_retained': True}
     finally:
         if lock.is_file() and not _linked(lock) and lock.read_text(encoding='ascii') == token: lock.unlink()
 
@@ -234,12 +239,16 @@ def main(argv=None):
     parser.add_argument('--myassets')
     parser.add_argument('--backup-root')
     parser.add_argument('--uninstall')
+    parser.add_argument('--keep-changed', action='store_true',
+                        help='With --uninstall: remove only files still identical to what was installed; '
+                             'leave changed or missing ones and list them')
     args = parser.parse_args(argv)
     try:
         if args.uninstall:
             if args.package or args.myassets or args.backup_root: raise ValueError('Uninstall takes only its receipt')
-            result = uninstall(args.uninstall)
+            result = uninstall(args.uninstall, keep_changed=args.keep_changed)
         else:
+            if args.keep_changed: raise ValueError('--keep-changed applies only to --uninstall')
             if not args.package or not args.myassets or not args.backup_root:
                 raise ValueError('Install requires --package, --myassets and --backup-root')
             result = install(args.package, args.myassets, args.backup_root)

@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from forgebridge.installer import install, uninstall, require_toolkit_closed
+from forgebridge.installer import install, uninstall, require_toolkit_closed, main
 from test_native_capture import record
 from test_scene_profile import archive
 
@@ -79,6 +79,35 @@ class InstallerTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'changed/missing'): uninstall(result['receipt'])
             self.assertEqual((target / 'Maps/New.rwmap').read_bytes(), b'new manual edits')
             self.assertTrue((target / 'Maps/Existing.rwmap').exists())
+
+    def test_refused_uninstall_cli_exits_1_with_message(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp); target, backups, package = self.inputs(root)
+            result = install([package], target, backups)
+            (target / 'Maps/New.rwmap').write_bytes(b'opened in Toolkit')
+            with patch('sys.stderr') as err, self.assertRaises(SystemExit) as stop:
+                main(['--uninstall', result['receipt']])
+            self.assertEqual(stop.exception.code, 1)
+            self.assertIn('--keep-changed', ''.join(c.args[0] for c in err.write.call_args_list))
+            self.assertEqual((target / 'Maps/New.rwmap').read_bytes(), b'opened in Toolkit')
+
+    def test_keep_changed_removes_only_unchanged_added_files(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp); target, backups = self.inputs(root)[:2]
+            package = root / 'two.zip'
+            archive(package, {'MyAssets/Maps/A.rwmap': record('a'), 'MyAssets/Maps/B.rwmap': record('b'),
+                              'conversion-report.json': b'{}'})
+            result = install([package], target, backups)
+            (target / 'Maps/B.rwmap').write_bytes(b'note edited by user')
+            out = uninstall(result['receipt'], keep_changed=True)
+            self.assertEqual((out['removed'], out['kept_changed']), (1, ['MyAssets/Maps/B.rwmap']))
+            self.assertFalse((target / 'Maps/A.rwmap').exists())
+            self.assertEqual((target / 'Maps/B.rwmap').read_bytes(), b'note edited by user')
+            self.assertTrue((target / 'Maps/Existing.rwmap').exists())
+            self.assertEqual((target / 'user.txt').read_bytes(), b'original user notes')
+            receipt = json.loads(Path(result['receipt']).read_text())
+            self.assertEqual(receipt['state'], 'UNINSTALLED_KEPT_CHANGED')
+            with self.assertRaisesRegex(ValueError, 'complete supported'): uninstall(result['receipt'])
 
     def test_case_alias_backup_overlap_and_existing_lock_are_refused(self):
         with tempfile.TemporaryDirectory() as tmp:

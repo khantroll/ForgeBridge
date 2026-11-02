@@ -130,4 +130,4 @@ work; A-step notes and M1 rows are not changed by this implementation.
 | 1 | Convert all 17 scenes (5e + SA) file-only | Codex | **DONE** — 34/34 BUILT, unique names |
 | 2 | Install Manor 1st Floor; verify in Toolkit incl. marker note + player view | Codex + Claude | **DONE** — validation/2026-11-01-MANOR-INSTALL.md |
 | 3 | Jeffrey tries `forgebridge-gui` on another scene (e.g. Manor 2nd Floor) | Jeffrey + Claude | **DONE** — validation/2026-11-01-GUI-INSTALL.md (marker→note click to re-check by hand) |
-| 4 | Uninstall from both receipts (Crypt, Manor); prove MyAssets restored | Codex + Claude | **next** (three receipts: Crypt, Manor 1st, Manor 2nd) |
+| 4 | Uninstall from both receipts (Crypt, Manor); prove MyAssets restored | Codex + Claude | Manor 2nd + Crypt PASS; Manor 1st refused correctly (note opened in Toolkit) → `--keep-changed` added; rerun pending — validation/2026-11-01-UNINSTALL.md |
