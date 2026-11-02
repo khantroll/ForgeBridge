@@ -1,5 +1,18 @@
 # Changelog
 
+## Unreleased
+
+- Added: Fantasy Grounds .mod/folder/unencrypted-vault detection in convert,
+  discovery and GUI, with ART filtering, explicit per-map grids and module-based
+  visible naming. Stored grids always win; fractional image resampling is reported.
+- Added: FG UVTT geometry through the shared native map/background/thumbnail
+  writer and existing reviewed add-only installer/receipts. Source counts,
+  metadata source, resampling and graded losses appear in reports/GUI.
+- FG pins, story and tokens remain manual; encrypted modules remain refused.
+  Native FG runtime acceptance is pending Claude's Toolkit check.
+- Fixed: rejected FG module initialization closes its archive immediately,
+  including encrypted-input errors surfaced through the GUI.
+
 ## v0.10.0 — 2026-11-02
 
 - Added: user-chosen map folder, notes folder and map names (GUI and CLI);

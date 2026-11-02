@@ -61,8 +61,11 @@ def scene_key(row):
     return hashlib.sha256(json.dumps(_identity(row)).encode()).hexdigest()[:24]
 
 
-def discover(package):
+def discover(package, *, include_art=False):
     """Read-only discovery used by CLI and GUI; no native calibration inference."""
+    from forgebridge.fg_convert import is_fg_input, discover_fg
+    if is_fg_input(package):
+        return discover_fg(package, include_art=include_art)
     with source_root(package) as (root, _):
         inventory = inventory_path(root)
         def adventure_name(row):
@@ -95,7 +98,15 @@ def _new_destination(destination, package):
 
 
 def convert(package, destination, *, scene_ids=(), scene_keys=(), profiles=(),
-            map_folder=None, notes_folder=None, map_names=None, pdf=None):
+            map_folder=None, notes_folder=None, map_names=None, pdf=None,
+            include_art=False, grid_size=(), squares=()):
+    from forgebridge.fg_convert import is_fg_input, convert_fg
+    if is_fg_input(package):
+        return convert_fg(package, destination, scene_ids=scene_ids, scene_keys=scene_keys, profiles=profiles,
+                          map_folder=map_folder, notes_folder=notes_folder, map_names=map_names,
+                          include_art=include_art, grid_size=grid_size, squares=squares)
+    if grid_size or squares or include_art:
+        raise ValueError('--grid-size, --squares and --include-art are Fantasy Grounds input options')
     package = Path(package).absolute()
     dest = _new_destination(destination, package)
     before = fingerprint(package)
@@ -240,18 +251,23 @@ def convert(package, destination, *, scene_ids=(), scene_keys=(), profiles=(),
             for role, item in _inputs(plan['profile']):
                 if fingerprint(plan['paths'][role]) != item['sha256']:
                     raise ValueError('Pinned profile input changed during conversion')
-        (stage / 'conversion-report.json').write_text(json.dumps(report, indent=2), encoding='utf-8')
-        _new_destination(dest, package)
-        dest.mkdir()
-        for path in sorted(stage.rglob('*')):
-            if path == stage / 'conversion-report.json': continue
-            target = dest / path.relative_to(stage)
-            if path.is_dir(): target.mkdir()
-            else:
-                with path.open('rb') as source, target.open('xb') as output: shutil.copyfileobj(source, output)
-        with (stage / 'conversion-report.json').open('rb') as source, (dest / 'conversion-report.json').open('xb') as output:
-            shutil.copyfileobj(source, output)
+        publish(stage, dest, package, report)
     return report
+
+
+def publish(stage, dest, package, report):
+    """Publish exclusively, with the completion report last, for either source adapter."""
+    (stage / 'conversion-report.json').write_text(json.dumps(report, indent=2), encoding='utf-8')
+    _new_destination(dest, package)
+    dest.mkdir()
+    for path in sorted(stage.rglob('*')):
+        if path == stage / 'conversion-report.json': continue
+        target = dest / path.relative_to(stage)
+        if path.is_dir(): target.mkdir()
+        else:
+            with path.open('rb') as source, target.open('xb') as output: shutil.copyfileobj(source, output)
+    with (stage / 'conversion-report.json').open('rb') as source, (dest / 'conversion-report.json').open('xb') as output:
+        shutil.copyfileobj(source, output)
 
 
 def main(argv=None):
@@ -262,6 +278,9 @@ def main(argv=None):
     parser.add_argument('--scene', action='append', default=[])
     parser.add_argument('--scene-key', action='append', default=[])
     parser.add_argument('--profile', action='append', default=[])
+    parser.add_argument('--include-art', action='store_true', help='Include FG artwork records in discovery/selection')
+    parser.add_argument('--grid-size', action='append', default=[], help='FG KEY=PX, or PX for one selected map without stored grid size')
+    parser.add_argument('--squares', action='append', default=[], help='FG KEY=N squares across, or N for one selected map without stored grid size')
     parser.add_argument('--map-folder', help='Visible map folder; default Adventure name, package title, or ForgeBridge')
     parser.add_argument('--notes-folder', help='Visible notes folder; default same as map folder')
     parser.add_argument('--map-name', action='append', default=[], help='SCENE_KEY=NAME; repeat per scene, or NAME for a single scene')
@@ -274,7 +293,7 @@ def main(argv=None):
         if args.list_scenes:
             if args.install or args.myassets or args.backup_root:
                 raise ValueError('--list-scenes is read-only; do not combine it with installation options')
-            report = discover(args.package)
+            report = discover(args.package, include_art=args.include_art)
         else:
             if args.install and (not args.myassets or not args.backup_root):
                 raise ValueError('--install requires --myassets and --backup-root')
@@ -285,7 +304,8 @@ def main(argv=None):
                 args.out = str(Path.cwd() / ('ForgeBridge-output-' + uuid.uuid4().hex[:10]))
             if not args.out: raise ValueError('Provide --out NEW_DIRECTORY, --install, or --list-scenes')
             report = convert(args.package, args.out, scene_ids=args.scene, scene_keys=args.scene_key, profiles=args.profile,
-                             map_folder=args.map_folder, notes_folder=args.notes_folder, map_names=args.map_name, pdf=args.pdf)
+                             map_folder=args.map_folder, notes_folder=args.notes_folder, map_names=args.map_name, pdf=args.pdf,
+                             include_art=args.include_art, grid_size=args.grid_size, squares=args.squares)
             if args.install:
                 if report['status'] != 'PASS': raise ValueError('Resolve rejected scenes before installation; outputs retained for review')
                 from forgebridge.installer import install_conversion

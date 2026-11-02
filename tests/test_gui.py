@@ -41,7 +41,7 @@ class FakeListbox:
     def curselection(self): return tuple(sorted(self.selected))
 
 
-def run_headless_gui(scenario):
+def run_headless_gui(scenario, package='test-source'):
     """Exercise the actual callbacks with inert widgets; never instantiate Tk."""
     ui = {'buttons': {}, 'labels': [], 'afters': [], 'list': FakeListbox(), 'fields': {}}
 
@@ -80,14 +80,15 @@ def run_headless_gui(scenario):
 
     dialogs = SimpleNamespace(askdirectory=lambda **kw: '', askopenfilename=lambda **kw: '')
     messages = SimpleNamespace(showerror=lambda *args: ui.setdefault('errors', []).append(args),
+                               showinfo=lambda *args: ui.setdefault('infos', []).append(args),
                                askyesno=lambda *args: ui.setdefault('confirmations', []).append(args) or False)
     tk = SimpleNamespace(Tk=Root, StringVar=Variable, BooleanVar=Variable, Listbox=lambda *a, **kw: ui['list'], Text=Widget,
-                         filedialog=dialogs, messagebox=messages, simpledialog=SimpleNamespace(askstring=lambda *a, **kw: None),
+                         filedialog=dialogs, messagebox=messages, simpledialog=SimpleNamespace(askstring=lambda *a, **kw: None, askfloat=lambda *a, **kw: None),
                          ttk=SimpleNamespace(Frame=Widget, Label=Widget, Entry=Widget, Button=Widget, Checkbutton=Widget))
     ui['dialogs'] = dialogs
     ui['simpledialog'] = tk.simpledialog
     with patch.dict('sys.modules', {'tkinter': tk}), patch('forgebridge.gui.threading.Thread', Thread):
-        return gui_main(['--package', 'test-source', '--out', 'test-output'])
+        return gui_main(['--package', str(package), '--out', 'test-output'])
 
 
 def click(ui, label): ui['buttons'][label].options['command']()
