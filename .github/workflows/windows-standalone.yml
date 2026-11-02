@@ -1,0 +1,80 @@
+name: Windows standalone
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          architecture: x64
+      - name: Build one-folder GUI and CLI
+        shell: pwsh
+        run: ./packaging/build_windows.ps1 -OutDir "$env:RUNNER_TEMP/forgebridge-dist"
+      - name: Smoke-test the extracted EXEs without Python on PATH
+        shell: pwsh
+        run: |
+          $summary = Get-Content -Raw "$env:RUNNER_TEMP/forgebridge-dist/build-summary.json" | ConvertFrom-Json
+          python packaging/smoke_windows.py --zip $summary.zip --fixture fixtures/synthetic-module --out "$env:RUNNER_TEMP/frozen-smoke"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $smoke = Get-Content -Raw "$env:RUNNER_TEMP/frozen-smoke/smoke-summary.json" | ConvertFrom-Json
+          if ($smoke.status -ne 'PASS') { throw 'All frozen smoke phases must pass in CI' }
+      - name: Upload Windows ZIP and build evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-standalone
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/forgebridge-dist/*.zip
+            ${{ runner.temp }}/forgebridge-dist/build-summary.json
+            ${{ runner.temp }}/frozen-smoke/*.json
+            ${{ runner.temp }}/frozen-smoke/*.txt
+            ${{ runner.temp }}/frozen-smoke/*.log
+            ${{ runner.temp }}/frozen-smoke/local-appdata/ForgeBridge/*.log
+
+  release:
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: windows-standalone
+          path: windows-release
+      - name: Attach ZIP or leave the workflow artifact if publishing is refused
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          tag="$GITHUB_REF_NAME"
+          version=$(python -c 'import json;print(json.load(open("windows-release/build-summary.json"))["version"])')
+          notes="docs/RELEASE-NOTES-$tag.md"
+          zip="windows-release/ForgeBridge-$version-windows-x64.zip"
+          if [[ "$tag" != "v$version" || ! -f "$notes" || ! -f "$zip" ]]; then
+            echo '::warning::Tag/version, matching release notes or ZIP missing; workflow artifact retained, nothing published.'
+            echo 'Windows ZIP retained as workflow artifact; tag/version/notes validation refused publication.' >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          if gh release view "$tag" >/dev/null 2>&1; then
+            if gh release upload "$tag" "$zip"; then exit 0; fi
+          else
+            if gh release create "$tag" "$zip" --verify-tag --prerelease --title "ForgeBridge $tag" --notes-file "$notes"; then exit 0; fi
+          fi
+          echo '::warning::Release creation/upload refused; Windows ZIP remains in the workflow artifact. Existing assets are never overwritten.'
+          echo 'Release publishing was refused (for example token permissions or an existing asset); download windows-standalone from this run.' >> "$GITHUB_STEP_SUMMARY"

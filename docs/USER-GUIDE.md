@@ -6,7 +6,39 @@ map export or calibration and no pre-existing imported map. Existing calibrated
 profiles remain optional advanced overrides. Every output still needs its own
 Toolkit check; this tool does not claim lossless campaign/behavior conversion.
 
-## Setup and tested scope
+## Easiest: download the Windows app
+
+No Python or Git installation is needed. Download
+`ForgeBridge-<version>-windows-x64.zip` from
+[GitHub Releases](https://github.com/khantroll/ForgeBridge/releases), then unzip
+the whole folder somewhere you own, such as Documents. Do **not** unzip into
+Program Files or MyAssets. Double-click **ForgeBridge.exe** for the GUI; follow
+the Graphical workflow below. Keep both executables and the `_internal` folder
+together; copying just the EXE will not work.
+
+The command-line program is **forgebridge-cli.exe** (Windows cannot distinguish
+ForgeBridge.exe from forgebridge.exe by capitalization alone). Open PowerShell
+in the extracted folder for commands such as:
+
+```powershell
+.\forgebridge-cli.exe --version
+.\forgebridge-cli.exe install --uninstall "C:\Backups\forgebridge-ID\uninstall.json" --keep-changed
+```
+
+For the other CLI examples below, replace `forgebridge` or
+`python -m forgebridge` with `.\forgebridge-cli.exe` when using the Windows app.
+
+The app is unsigned; code signing is not done yet. Windows SmartScreen may show
+"Windows protected your PC". For a ZIP obtained from this project's release,
+choose **More info → Run anyway**. Conversion errors show a message and write
+`forgebridge-error.log` beside your output folder, or under
+`%LOCALAPPDATA%\ForgeBridge` if that location cannot be used.
+
+Release ZIPs are attached by the Windows build workflow on new release tags.
+Development candidates are available as Windows standalone workflow artifacts
+for review before a release is published.
+
+## Option 2: Python setup and tested scope
 
 - Python 3.13 is the Windows/Linux CI target; local Windows also tests 3.14.2.
   Path checks require Python 3.12+, but 3.12 is not the CI promise.

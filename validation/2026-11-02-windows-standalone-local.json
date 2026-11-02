@@ -1,0 +1,155 @@
+{
+  "build_python": "3.14.2 (local x64)",
+  "pyinstaller": "6.22.3",
+  "version": "0.10.0",
+  "folder_bytes": 55023480,
+  "zip_bytes": 28231981,
+  "zip_sha256": "d09115a7ff80aec03e289604bcff4efb4f4469a95e161e188638de3dcc6964ed",
+  "largest": [
+    {
+      "path": "_internal\\PIL\\_avif.cp314-win_amd64.pyd",
+      "Length": 7890432
+    },
+    {
+      "path": "_internal\\pypdfium2_raw\\pdfium.dll",
+      "Length": 7260672
+    },
+    {
+      "path": "_internal\\python314.dll",
+      "Length": 6760792
+    },
+    {
+      "path": "_internal\\libcrypto-3.dll",
+      "Length": 5229424
+    },
+    {
+      "path": "forgebridge-cli.exe",
+      "Length": 3611571
+    },
+    {
+      "path": "ForgeBridge.exe",
+      "Length": 3601996
+    },
+    {
+      "path": "_internal\\PIL\\_imaging.cp314-win_amd64.pyd",
+      "Length": 2627072
+    },
+    {
+      "path": "_internal\\tcl86t.dll",
+      "Length": 1839896
+    },
+    {
+      "path": "_internal\\tk86t.dll",
+      "Length": 1589528
+    },
+    {
+      "path": "_internal\\base_library.zip",
+      "Length": 1387635
+    },
+    {
+      "path": "_internal\\ucrtbase.dll",
+      "Length": 1362264
+    },
+    {
+      "path": "_internal\\libssl-3.dll",
+      "Length": 794992
+    },
+    {
+      "path": "_internal\\unicodedata.pyd",
+      "Length": 758104
+    },
+    {
+      "path": "_internal\\plyvel_next.libs\\msvcp140-a4c2229bdc2a2a630acdc095b4d86008.dll",
+      "Length": 575056
+    },
+    {
+      "path": "_internal\\_zstd.pyd",
+      "Length": 503640
+    }
+  ],
+  "local_frozen_smoke": {
+    "status": "PARTIAL (local install skipped)",
+    "version": "ForgeBridge 0.10.0",
+    "python_on_exe_path": false,
+    "fixture_pdf_mode": "pages",
+    "rendered_pdf_pages": 2,
+    "leveldb_native_conversion": "PASS",
+    "gui": {
+      "version": "0.10.0",
+      "title": "ForgeBridge 0.10.0 \u2014 scene conversion",
+      "tcl": "8.6.15",
+      "psutil_pid": 20204,
+      "tk_file_picker_selection": "PASS",
+      "native_dialog_commands": "PASS (argument validation; no manual modal interaction)",
+      "worker_thread": "PASS",
+      "error_dialog_dispatch": "PASS (captured, no blocking modal)",
+      "error_log": "C:\\AMD\\lob-counts_manor-pk-v13\\ForgeBridge\\.test-tmp\\standalone-delivery-smoke\\forgebridge-error.log",
+      "status": "PASS"
+    },
+    "installation": {
+      "status": "SKIPPED (local Toolkit running; guard not bypassed)"
+    },
+    "commands": [
+      {
+        "exe": "forgebridge-cli.exe",
+        "args": [
+          "--version"
+        ],
+        "exit": 0
+      },
+      {
+        "exe": "forgebridge-cli.exe",
+        "args": [
+          "C:\\AMD\\lob-counts_manor-pk-v13\\ForgeBridge\\fixtures\\synthetic-module"
+        ],
+        "exit": 0
+      },
+      {
+        "exe": "forgebridge-cli.exe",
+        "args": [
+          "convert",
+          "C:\\AMD\\lob-counts_manor-pk-v13\\ForgeBridge\\fixtures\\synthetic-module",
+          "--out",
+          "C:\\AMD\\lob-counts_manor-pk-v13\\ForgeBridge\\.test-tmp\\standalone-delivery-smoke\\fixture-output"
+        ],
+        "exit": 0
+      },
+      {
+        "exe": "forgebridge-cli.exe",
+        "args": [
+          "convert",
+          "C:\\AMD\\lob-counts_manor-pk-v13\\ForgeBridge\\.test-tmp\\standalone-delivery-smoke\\pdf-source",
+          "--out",
+          "C:\\AMD\\lob-counts_manor-pk-v13\\ForgeBridge\\.test-tmp\\standalone-delivery-smoke\\pdf-output"
+        ],
+        "exit": 0
+      },
+      {
+        "exe": "forgebridge-cli.exe",
+        "args": [
+          "convert",
+          "C:\\AMD\\lob-counts_manor-pk-v13\\ForgeBridge\\.test-tmp\\standalone-delivery-smoke\\leveldb-source",
+          "--out",
+          "C:\\AMD\\lob-counts_manor-pk-v13\\ForgeBridge\\.test-tmp\\standalone-delivery-smoke\\leveldb-output"
+        ],
+        "exit": 0
+      },
+      {
+        "exe": "ForgeBridge.exe",
+        "args": [
+          "--bundle-check",
+          "C:\\AMD\\lob-counts_manor-pk-v13\\ForgeBridge\\.test-tmp\\standalone-delivery-smoke\\gui-check.json"
+        ],
+        "exit": 0
+      }
+    ]
+  },
+  "source_full_suite": {
+    "run": 255,
+    "passed": 250,
+    "failed": 1,
+    "skipped": 4,
+    "failure": "NotesTests.test_adventure_and_standalone_journals_in_all_supported_storage leveldb/adventure returned missing_entry once; cause unconfirmed; existing focused test passed once; reader unchanged",
+    "skip_reason": "Windows symlink creation privilege unavailable"
+  }
+}

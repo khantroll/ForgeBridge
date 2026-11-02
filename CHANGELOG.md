@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased
+
+- Added: Windows x64 one-folder GUI/CLI bundle, `ForgeBridge.exe` and
+  `forgebridge-cli.exe`, with bundled Python, Tcl/Tk, native dependencies and
+  schemas. No Python installation needed to run the app.
+- Added: executable smoke tests, workflow artifacts and automatic release ZIP
+  attachment for new version tags, retaining artifacts if publication is refused.
+- Added: package version in CLI --version and GUI title; local error logs and
+  visible worker/callback/startup error reporting for windowed builds.
+- Fixed: inventory schema accepts the generator's application release version
+  independently of the unchanged 0.1.0 IR version.
+
 ## v0.10.0 — 2026-11-02
 
 - Added: user-chosen map folder, notes folder and map names (GUI and CLI);

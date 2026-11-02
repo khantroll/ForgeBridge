@@ -11,6 +11,7 @@ from forgebridge.inventory import inventory_path
 from forgebridge.notes import render_notes_text
 from forgebridge.uvtt import build_uvtt_slice, scene_loose_files
 from forgebridge.validate import InventoryFatal, load_schema, repo_schema, validate
+from forgebridge.version import get_version
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -31,6 +32,7 @@ def main(argv: list[str] | None = None) -> int:
             "plus a graded loss report. Does not execute imported JavaScript, macros, or HTML."
         ),
     )
+    parser.add_argument('--version', action='version', version='ForgeBridge ' + get_version())
     parser.add_argument("package", help="Path to a module directory or .zip archive")
     parser.add_argument("--compact", action="store_true", help="Print JSON on one line")
     parser.add_argument(

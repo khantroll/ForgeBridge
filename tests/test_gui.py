@@ -68,7 +68,8 @@ def run_headless_gui(scenario):
         def insert(self, *args): pass
 
     class Root:
-        def title(self, *args): pass
+        def __init__(self): ui['root'] = self
+        def title(self, value): ui['title'] = value
         def geometry(self, *args): pass
         def protocol(self, *args): pass
         def after(self, delay, callback): ui['afters'].append(callback)
