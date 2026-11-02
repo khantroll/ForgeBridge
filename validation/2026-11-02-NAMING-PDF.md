@@ -56,3 +56,26 @@ Hashes and PDF document/page counts are in
 2026-11-02-naming-pdf-file-results.json. Claude still needs to check the new visible
 folders/map naming and PDF page display/order in Toolkit. Existing runtime
 acceptance belongs to the prior release evidence, not this build.
+
+## Toolkit check (Claude, 2026-11-02 ~11:12, Toolkit 0.5.1.18)
+
+Installed by Codex from `naming-and-pdf` with default names (exit 0, 244 files
+added, receipt `C:\AMD\fb-backups\forgebridge-a76ddb8ad1d14cfb94d75a103e26689e\uninstall.json`).
+
+- Map Browser: folder **The Count's Manor** → map **Count's Lair** (no
+  "ForgeBridge" prefix, no hash); opens with edit counter 0/0, title bar
+  "Count's Lair".
+- Notes library: folder **The Count's Manor**; notes listed by their journal
+  names ("Count's Lair — Start Here", "4. Lair & Dungeon — Steps to Lair", …);
+  the hash prefix on note file names is not shown.
+- **PDF handouts**: a "PDF Handouts" document with 10 notes (letters, Count's
+  Journal, Court of Ravenloft, Arcane Tome, Night of Darkness, …). Opening
+  "Letter - To Count from Strahd" shows the rendered page image (signature
+  "Strahd von Zarovich", red wax seal).
+- Found while looking: the Notes library still lists the `ForgeBridge-…` note
+  folders from earlier installs. Uninstall removed their files but left the
+  folders. Fixed: uninstall now removes folders the install created when they
+  are empty, and re-running `--uninstall` on an already-uninstalled receipt
+  tidies those folders without touching files (tests added).
+- The Toolkit was left open (a desktop window covered its exit dialog); quit it
+  with **No** to saving before uninstalling.
