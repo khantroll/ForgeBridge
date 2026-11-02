@@ -131,3 +131,12 @@ work; A-step notes and M1 rows are not changed by this implementation.
 | 2 | Install Manor 1st Floor; verify in Toolkit incl. marker note + player view | Codex + Claude | **DONE** — validation/2026-11-01-MANOR-INSTALL.md |
 | 3 | Jeffrey tries `forgebridge-gui` on another scene (e.g. Manor 2nd Floor) | Jeffrey + Claude | **DONE** — validation/2026-11-01-GUI-INSTALL.md (marker→note click to re-check by hand) |
 | 4 | Uninstall from both receipts (Crypt, Manor); prove MyAssets restored | Codex + Claude | **DONE** — all three removed (Manor 1st via `--keep-changed`, 1 Toolkit-edited note kept); no original file missing; Toolkit library clean — validation/2026-11-01-UNINSTALL.md |
+
+## Status 2026-11-02 morning
+
+- Fresh-operator run by Jeffrey (Count's Lair, GUI): **PASS** —
+  validation/2026-11-02-FRESH-OPERATOR.md. Marker → note confirmed in the Toolkit.
+- Remaining Toolkit-dependent items: none required for v0.9.
+- Release decisions (Jeffrey): C1 LevelDB exception, C2 merge PR #8, C3 tag v0.9.
+- Next build work: PDF handouts as note pages in convert/GUI (Codex);
+  Fantasy Grounds reader on branch `fantasy-grounds-adapter` (needs a real FGU module).
