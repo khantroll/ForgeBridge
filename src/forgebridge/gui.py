@@ -7,6 +7,8 @@ import uuid
 
 from forgebridge.convert import discover, convert
 from forgebridge.installer import install, native_outputs
+from forgebridge.install_review import review
+from forgebridge.output_names import default_folder, sanitize_name, plan_names
 
 
 def install_outputs(report, output, myassets, backups):
@@ -36,6 +38,10 @@ def report_text(value):
     """Readable stage-specific loss summary; detailed JSON remains in output."""
     if 'scenes' in value:
         lines = [f"Scenes: {len(value['scenes'])}"]
+        if value.get('pdf_mode'):
+            lines.append('PDF mode: ' + value['pdf_mode'])
+        if value.get('pdf_mode_loss'):
+            lines.append('PDF loss: ' + value['pdf_mode_loss'])
         if 'status' in value: lines.append('Conversion outcome: ' + value['status'])
         if 'counts' in value:
             lines.append('Source/UVTT stage: ' + ', '.join(f'{grade}: {count}' for grade, count in value['counts'].items()))
@@ -44,6 +50,9 @@ def report_text(value):
             if scene.get('error'): lines.append('Needs attention: ' + scene['error'])
             if scene.get('artifact'): lines.append('Output: ' + scene['folder'] + '/' + scene['artifact'])
             if scene.get('native_report'):
+                if scene['native_report'].get('output_names'):
+                    names = scene['native_report']['output_names']
+                    lines.append(f"Map: {names['map_path']}\nNotes folder: {names['notes_folder']}")
                 lines.append('Native package: ' + ', '.join(f'{k}: {v}' for k, v in scene['native_report']['counts'].items()))
         if value.get('manual_steps'): lines += ['', 'Manual requirements:', *value['manual_steps']]
         lines += ['', 'Generating files does not prove Toolkit behavior. Review conversion-report.json for full losses.']
@@ -58,9 +67,12 @@ def main(argv=None):
     args = parser.parse_args(argv)
     # Lazy import: headless CI exercises the controller without creating a window.
     import tkinter as tk
-    from tkinter import filedialog, messagebox, ttk
+    from tkinter import filedialog, messagebox, simpledialog, ttk
     app = tk.Tk(); app.title('ForgeBridge — scene conversion'); app.geometry('900x720')
     package = tk.StringVar(value=args.package); output = tk.StringVar(value=args.out)
+    map_folder, notes_folder = tk.StringVar(), tk.StringVar()
+    pdf_pages = tk.BooleanVar(value=True)
+    renamed = {}
     status = tk.StringVar(value='Select a Foundry folder or ZIP, then discover scenes.')
     profiles, rows, jobs = [], [], queue.Queue()
     state = {'busy': False, 'report': None, 'output': None, 'source': None}
@@ -78,6 +90,10 @@ def main(argv=None):
         output_preview.set('Folder to create: ' + output.get() if output.get() else 'Folder to create: choose where to save output.')
     output.trace_add('write', preview_output); preview_output()
     ttk.Label(panel, textvariable=output_preview, wraplength=850).pack(anchor='w')
+    for label, variable in [('Map folder', map_folder), ('Notes folder', notes_folder)]:
+        ttk.Label(panel, text=label).pack(anchor='w')
+        ttk.Entry(panel, textvariable=variable).pack(fill='x')
+    ttk.Checkbutton(panel, text='Convert PDF handouts into note pages', variable=pdf_pages).pack(anchor='w')
     ttk.Label(panel, text='Scenes — select one or more (pack/Adventure scope is preserved)').pack(anchor='w')
     scenes = tk.Listbox(panel, selectmode='extended', exportselection=False, height=9)
     scenes.pack(fill='x')
@@ -107,8 +123,29 @@ def main(argv=None):
 
     def found(report, source):
         rows[:] = populate_scenes(scenes, report); state['source'] = source
+        renamed.clear()
+        if rows:
+            try: folder = default_folder(rows[0], report.get('package_title'))
+            except ValueError as exc:
+                folder = ''; messagebox.showerror('Folder name needs attention', str(exc))
+            map_folder.set(folder); notes_folder.set(folder)
         status.set(f'{len(rows)} scenes found. Select the scenes to convert, then choose an output folder.')
         display(report)
+
+    def rename_selected(event=None):
+        if state['busy']: return
+        for index in scenes.curselection():
+            row = rows[index]
+            value = simpledialog.askstring('Rename map', 'Map name for ' + scene_label(row),
+                                           initialvalue=renamed.get(row['key'], row.get('name') or row['id']), parent=app)
+            if value is None: continue
+            try: value = sanitize_name(value)
+            except ValueError as exc:
+                messagebox.showerror('Invalid map name', str(exc)); continue
+            renamed[row['key']] = value
+            scenes.delete(index); scenes.insert(index, scene_label({**row, 'name': value})); scenes.selection_set(index)
+    scenes.bind('<Double-Button-1>', rename_selected)
+    ttk.Button(selection_buttons, text='Rename selected maps', command=rename_selected).pack(side='left')
 
     def find():
         source = package.get()
@@ -122,7 +159,8 @@ def main(argv=None):
         chosen = filedialog.askopenfilenames(filetypes=[('Scene profiles', '*.json')])
         if chosen:
             profiles[:] = chosen
-            profile_label.set(f'{len(profiles)} existing profiles selected. Other scenes use schema-built native synthesis.')
+            profile_label.set(f'{len(profiles)} existing profiles selected; pinned profile names are used. '
+                              'Visible naming fields apply when building without profiles.')
 
     def built(report):
         state['report'] = report
@@ -139,9 +177,19 @@ def main(argv=None):
         if not selected or not output.get():
             messagebox.showerror('Selection required', 'Choose scenes and a new output folder.'); return
         source, dest, controls = package.get(), output.get(), list(profiles)
+        names = {key: value for key, value in renamed.items() if key in selected}
+        options = {'pdf': 'pages' if pdf_pages.get() else 'references'}
+        if not controls:
+            try:
+                plans = plan_names([r for r in rows if r['key'] in selected], map_folder=map_folder.get(),
+                                   notes_folder=notes_folder.get(), map_names=names)
+            except ValueError as exc:
+                messagebox.showerror('Naming conflict or invalid name', str(exc)); return
+            options.update(map_folder=map_folder.get(), notes_folder=notes_folder.get(), map_names=names)
+            display({'chosen_names': list(plans.values())})
         state['build_source'] = source
         state['output'] = dest; state['report'] = None; install_button.configure(state='disabled')
-        start(lambda: convert(source, dest, scene_keys=selected, profiles=controls), built)
+        start(lambda: convert(source, dest, scene_keys=selected, profiles=controls, **options), built)
 
     def install_selected():
         if state['busy'] or not state['report']: return
@@ -153,6 +201,14 @@ def main(argv=None):
             messagebox.showerror('Native output unavailable', str(exc)); return
         target = filedialog.askdirectory(title='Select actual MyAssets (Toolkit must be closed)')
         if not target: return
+        try:
+            audit = review(packages, target)
+            if not audit['ok']:
+                conflicts = [row['path'] + ': ' + row.get('detail', row['status']) for row in audit['files']
+                             if row['status'] in ('conflict', 'blocked')]
+                messagebox.showerror('Installation conflicts — rename or review', '\n'.join(conflicts)); return
+        except (OSError, ValueError) as exc:
+            messagebox.showerror('Installation review refused', str(exc)); return
         backups = filedialog.askdirectory(title='Select separate existing backup directory')
         if not backups: return
         if not messagebox.askyesno('Review add-only installation',

@@ -6,6 +6,7 @@ static copy prepared with Toolkit closed; its origin cannot be inferred here.
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 import zipfile
 
@@ -42,10 +43,26 @@ def review(packages, snapshot_root):
     packages = list(packages)
     if not 1 <= len(packages) <= 256:
         raise ValueError('Select between 1 and 256 packages')
-    native, inputs, ignored = {}, [], []
+    native, inputs, ignored, map_names, named_maps, strict_titles = {}, [], [], set(), set(), set()
     for package in packages:
         digest = fingerprint(package)
         files = read_package(package)
+        named = None
+        if 'conversion-report.json' in files:
+            try:
+                named = json.loads(files['conversion-report.json']).get('output_names', {}).get('map_path')
+            except (ValueError, AttributeError):
+                named = None
+            if isinstance(named, str) and named in files and named.endswith('.rwmap'):
+                named_maps.add(named)
+        for name in files:
+            if name.startswith('MyAssets/') and name.endswith('.rwmap'):
+                title = Path(name).stem.casefold()
+                if title in map_names and (name == named or title in strict_titles):
+                    raise ValueError('Map name conflicts across packages: ' + Path(name).stem + '. Rename the map before installing.')
+                map_names.add(title)
+                if name == named:
+                    strict_titles.add(title)
         if fingerprint(package) != digest:
             raise ValueError('Package changed during review: ' + str(package))
         merge_native(native, {n: d for n, d in files.items() if n.startswith('MyAssets/')})
@@ -55,6 +72,17 @@ def review(packages, snapshot_root):
         ignored.extend({'package': Path(package).name, 'path': n}
                        for n in files if not n.startswith('MyAssets/'))
     references = check_metadata_references(native)
+    existing_maps = {}
+    visited = 0
+    map_tree = () if _linked(root / 'Maps') else os.walk(root / 'Maps', followlinks=False)
+    for directory, folders, filenames in map_tree:
+        folders[:] = [n for n in folders if not _linked(Path(directory) / n)]
+        for filename in filenames:
+            visited += 1
+            if visited > 100000:
+                raise ValueError('Map naming review exceeds file limit')
+            if filename.lower().endswith('.rwmap'):
+                existing_maps.setdefault(Path(filename).stem.casefold(), []).append(str(Path(directory) / filename))
     rows, observed, snapshot_bytes = [], [], 0
     for name, data in sorted(native.items()):
         row = {'path': name, 'package_sha256': hashlib.sha256(data).hexdigest(), 'bytes': len(data)}
@@ -74,6 +102,9 @@ def review(packages, snapshot_root):
                 row['snapshot_sha256'] = hashlib.sha256(existing).hexdigest()
                 row['status'] = 'identical' if existing == data else 'conflict'
             observed.append((name, row['status'], row.get('snapshot_sha256')))
+            if name in named_maps and Path(name).stem.casefold() in existing_maps:
+                row.update(status='conflict', detail='Map name already exists; rename the map before installing.',
+                           existing_maps=existing_maps[Path(name).stem.casefold()])
         except (OSError, ValueError) as exc:
             row.update(status='blocked', detail=str(exc))
         rows.append(row)

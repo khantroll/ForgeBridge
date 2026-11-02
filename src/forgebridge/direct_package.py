@@ -2,7 +2,6 @@
 import base64
 import json
 from pathlib import Path
-import re
 import math
 import tempfile
 
@@ -17,12 +16,11 @@ from forgebridge.scene_records import blank_map, template_map, asset_templates, 
 from forgebridge.uvtt import _parent_adventure_id
 
 
-def build_direct(package, document, row, package_id, destination):
+def build_direct(package, document, row, package_id, destination, *, names, pdf_pages=False):
     scene = document['source_scene']
     scope = canonical_hash(['native-scene-schema-v1', package_id, row.get('source_path'),
                             _parent_adventure_id(row), scene])[:20]
-    title = re.sub(r'[<>:"/\\|?*\x00-\x1f]', '_', str(scene.get('name') or scene['_id'])).strip(' .')[:70] or 'Scene'
-    name = f'ForgeBridge {title} - {scope[:10]}'
+    name = names['map_name']
     media_base = 'MyAssets/Media/Cartographer/Quick Import/ForgeBridge-' + scope + '/Background'
     uvtt = document['uvtt']; image = base64.b64decode(uvtt['image'], validate=True)
     omitted_lights = [light for light in uvtt.get('lights', []) if type(light.get('range')) not in (int, float)
@@ -46,7 +44,7 @@ def build_direct(package, document, row, package_id, destination):
             write_archive(root / (label + '.zip'), files)
         staged = root / 'combined.zip'
         report = build_package(companion, root / 'geometry.zip', root / 'media.zip', staged,
-            name=name, note_folder='ForgeBridge-' + title[:50] + '-' + scope,
+            name=name, note_folder=names['notes_folder'], note_prefix=scope + '-', pdf_pages=pdf_pages,
             units_per_grid=UNITS_PER_GRID, origin=(0., 0.), package=package,
             template_name='ForgeBridge Control', marker_template_pack=root / 'marker.zip',
             token_control_pack=root / 'token.zip', token_control_name='ForgeBridge Control',
@@ -66,6 +64,11 @@ def build_direct(package, document, row, package_id, destination):
                                  'MyAssets/Encyclopedia/Notes/GeneratedControls/',
                                  'MyAssets/Media/Encyclopedia/Images/GeneratedControls/'))):
                 removed.append(path); del files[path]
+        old_map = 'MyAssets/Maps/ForgeBridge/' + name
+        new_map = names['map_path'][:-6]
+        for suffix in ('.rwmap', '.rwmeta'):
+            files[new_map + suffix] = files.pop(old_map + suffix)
+        report['output_names'] = dict(names)
         report['closed_metadata_references'] = check_metadata_references(files)
         report['native_synthesis'] = {**synthesis, 'background': background,
             'schema_version': 1, 'toolkit_reference': '0.5.1.18', 'scope': scope,

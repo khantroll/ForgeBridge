@@ -1,0 +1,80 @@
+{
+  "scope": "file-only; not installed or observed in Toolkit",
+  "source_sha256": "e48a9b2035a2460dc413b02290e1f9fd2fde1cb228e4ba391b7e38ddd33a4420",
+  "scene_key": "28b08edf2e1148dd7e2e02c8",
+  "source_path": "packs/adventure-5e",
+  "parent_adventure_id": "N63YevXMYeDZPCMh",
+  "output_names": {
+    "map_folder": "The Count's Manor",
+    "map_name": "Count's Lair",
+    "notes_folder": "The Count's Manor",
+    "map_path": "MyAssets/Maps/The Count's Manor/Count's Lair.rwmap"
+  },
+  "counts": {
+    "notes": 49,
+    "journal_pages": 45,
+    "documents": 3,
+    "native_tables": 0,
+    "rewritten_uuid_occurrences": 26,
+    "unresolved_uuid_occurrences": 7,
+    "map_note_references": 12,
+    "native_image_attachments": 53,
+    "native_image_assets": 49,
+    "native_pdf_documents": 10,
+    "native_pdf_pages": 17,
+    "native_pdf_attachments": 17,
+    "native_tokens": 11,
+    "unsupported_tokens": 0
+  },
+  "closed_metadata_references": 229,
+  "pdf_documents": [
+    {
+      "ref": "modules/lob-counts_manor-pk-v13/assets/pdfs/Arcane%20Tome%20of%20Knowledge.pdf",
+      "page_count": 2
+    },
+    {
+      "ref": "modules/lob-counts_manor-pk-v13/assets/pdfs/Counts%20Journal.pdf",
+      "page_count": 2
+    },
+    {
+      "ref": "modules/lob-counts_manor-pk-v13/assets/pdfs/Court%20of%20Ravenloft.pdf",
+      "page_count": 6
+    },
+    {
+      "ref": "modules/lob-counts_manor-pk-v13/assets/pdfs/Letter%20-%20Dr%20Sewards%20suicide%20note.pdf",
+      "page_count": 1
+    },
+    {
+      "ref": "modules/lob-counts_manor-pk-v13/assets/pdfs/Letter%20-%20To%20Count%20Lugosi%20From%20Dr%20Seward.pdf",
+      "page_count": 1
+    },
+    {
+      "ref": "modules/lob-counts_manor-pk-v13/assets/pdfs/Letter%20-%20To%20Count%20Lugosi%20From%20Strahd.pdf",
+      "page_count": 1
+    },
+    {
+      "ref": "modules/lob-counts_manor-pk-v13/assets/pdfs/Letter%20-%20To%20Margret%20from%20Count%20Lugosi.pdf",
+      "page_count": 1
+    },
+    {
+      "ref": "modules/lob-counts_manor-pk-v13/assets/pdfs/Letter%20-%20To%20Strahd%20from%20Elizabeth%20Lugosi.pdf",
+      "page_count": 1
+    },
+    {
+      "ref": "modules/lob-counts_manor-pk-v13/assets/pdfs/Letter%20to%20Ismark.pdf",
+      "page_count": 1
+    },
+    {
+      "ref": "modules/lob-counts_manor-pk-v13/assets/pdfs/Night%20of%20Darkness.pdf",
+      "page_count": 1
+    }
+  ],
+  "native_package_sha256": "d9b0a763b29958919c19ea0e6951249c4bcb841bb144acefcd6e98b9fd5f80ea",
+  "map_sha256": "a530ea6ba9ba69690e78e83edb4ce32a360a110535ef31ac163c9103cb9e26b7",
+  "automated": {
+    "run": 244,
+    "passed": 240,
+    "skipped": 4,
+    "skip_reason": "Windows symlink creation privilege unavailable"
+  }
+}

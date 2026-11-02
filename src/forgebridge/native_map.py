@@ -300,7 +300,7 @@ def insert_markers(data, placements, *, name, units_per_grid, origin=(0., 0.),
 def write_map_zip(template_pack, companion, dest, *, name, units_per_grid,
                   origin=(0., 0.), template_name='FB Cal A', remove_names=(), marker_labels=False,
                   text_template="Igor's Room", label_offset=(1.25, 0.), note_folder=None,
-                  marker_template_pack=None, geometry_map_path=None):
+                  marker_template_pack=None, geometry_map_path=None, note_prefix=''):
     """Build a separate native test package from a single saved-map export."""
     from forgebridge.native_export import companion_files
     dest, companion = Path(dest), Path(companion)
@@ -320,7 +320,7 @@ def write_map_zip(template_pack, companion, dest, *, name, units_per_grid,
         maps = [geometry_map_path]
     if len(maps) != 1 or maps[0][:-6] + '.rwmeta' not in paths:
         raise ValueError('Export must contain one saved map and its metadata')
-    generated, report = companion_files(json.loads(companion.read_text(encoding='utf-8')), map_markers=True, note_folder=note_folder)
+    generated, report = companion_files(json.loads(companion.read_text(encoding='utf-8')), map_markers=True, note_folder=note_folder, note_prefix=note_prefix)
     map_path = maps[0]
     metadata_path = map_path[:-6] + '.rwmeta'
     marker_data = None

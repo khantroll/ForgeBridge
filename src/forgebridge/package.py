@@ -19,7 +19,7 @@ def build_package(companion, map_template, media_template, dest, *, name,
                   media_bundle=None, pdf_pages=False, template_name='FB Cal A',
                   regenerate_notes=False, token_control_pack=None, token_control_name=None,
                   control_units_per_grid=None, marker_template_pack=None, asset_namespace=None,
-                  token_namespace=None, profile_provenance=None, geometry_map_path=None):
+                  token_namespace=None, profile_provenance=None, geometry_map_path=None, note_prefix=''):
     if (package is None) == (media_bundle is None):
         raise ValueError('Provide exactly one source package or collected media bundle')
     token_options = (token_control_pack, token_control_name, control_units_per_grid)
@@ -41,13 +41,13 @@ def build_package(companion, map_template, media_template, dest, *, name,
         map_report = write_map_zip(map_template, companion, map_zip, name=name,
             units_per_grid=units_per_grid, origin=origin, template_name=template_name,
             marker_labels=False, note_folder=note_folder, marker_template_pack=marker_template_pack,
-            geometry_map_path=geometry_map_path)
+            geometry_map_path=geometry_map_path, note_prefix=note_prefix)
         preserved = map_report['preserved_exported_note_files']
         if preserved and not regenerate_notes:
             raise ValueError('Export contains existing generated notes. Back up manual edits and use --regenerate-notes to replace them')
         report = write_source_images_zip(companion, media_bundle, media_template,
             notes_zip, pdf_pages=pdf_pages, note_folder=note_folder, map_markers=True,
-            asset_namespace=asset_namespace)
+            asset_namespace=asset_namespace, note_prefix=note_prefix)
         if report['native_folder'] != map_report['native_folder']:
             raise ValueError('Map and media note folders do not match')
         with zipfile.ZipFile(map_zip) as archive:
