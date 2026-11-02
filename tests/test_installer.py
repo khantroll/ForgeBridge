@@ -107,7 +107,45 @@ class InstallerTests(unittest.TestCase):
             self.assertEqual((target / 'user.txt').read_bytes(), b'original user notes')
             receipt = json.loads(Path(result['receipt']).read_text())
             self.assertEqual(receipt['state'], 'UNINSTALLED_KEPT_CHANGED')
-            with self.assertRaisesRegex(ValueError, 'complete supported'): uninstall(result['receipt'])
+            again = uninstall(result['receipt'])  # already uninstalled: folders only, never files
+            self.assertEqual((again['removed'], again['already_uninstalled']), (0, True))
+            self.assertEqual((target / 'Maps/B.rwmap').read_bytes(), b'note edited by user')
+
+    def test_uninstall_removes_only_created_folders_that_are_empty(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp); target, backups = self.inputs(root)[:2]
+            package = root / 'nested.zip'
+            archive(package, {'MyAssets/Maps/New Set/A.rwmap': record('a'),
+                              'MyAssets/Encyclopedia/Notes/New Set/N1.rwnote': record('n1'),
+                              'MyAssets/Encyclopedia/Notes/New Set/N2.rwnote': record('n2'),
+                              'conversion-report.json': b'{}'})
+            result = install([package], target, backups)
+            (target / 'Encyclopedia/Notes/New Set/N2.rwnote').write_bytes(b'opened in Toolkit')
+            out = uninstall(result['receipt'], keep_changed=True)
+            self.assertFalse((target / 'Maps/New Set').exists())
+            self.assertTrue((target / 'Encyclopedia/Notes/New Set/N2.rwnote').exists())  # kept file keeps its folder
+            self.assertTrue((target / 'Maps').is_dir())  # pre-existing folder untouched
+            self.assertTrue((target / 'empty').is_dir())  # pre-existing empty folder untouched
+            self.assertGreaterEqual(out['removed_empty_folders'], 1)
+            self.assertNotIn('Encyclopedia/Notes/New Set', json.loads(Path(result['receipt']).read_text())['removed_directories'])
+
+    def test_rerun_on_old_receipt_tidies_folders_and_never_deletes_reinstalled_files(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp); target, backups = self.inputs(root)[:2]
+            package = root / 'nested.zip'
+            archive(package, {'MyAssets/Maps/New Set/A.rwmap': record('a'), 'conversion-report.json': b'{}'})
+            first = install([package], target, backups)
+            receipt = Path(first['receipt']); data = json.loads(receipt.read_text())
+            uninstall(receipt)
+            # Simulate an older receipt that left its folder behind, then a reinstall of the same content.
+            data['state'] = 'UNINSTALLED'; receipt.write_text(json.dumps(data))
+            (target / 'Maps/New Set').mkdir()
+            out = uninstall(receipt)
+            self.assertEqual((out['removed'], out['removed_empty_folders']), (0, 1))
+            self.assertFalse((target / 'Maps/New Set').exists())
+            install([package], target, backups)
+            self.assertEqual(uninstall(receipt)['removed'], 0)
+            self.assertTrue((target / 'Maps/New Set/A.rwmap').exists())
 
     def test_case_alias_backup_overlap_and_existing_lock_are_refused(self):
         with tempfile.TemporaryDirectory() as tmp:

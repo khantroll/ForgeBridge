@@ -16,6 +16,26 @@ from forgebridge.scene_profile import fingerprint, preflight_profile
 from forgebridge.uvtt import (_safe_extract_zip, _slice_directory, _parent_adventure_id,
                               _scene_asset_action, _safe_ref, _package_file, MAX_ENTRY_BYTES)
 from forgebridge.validate import InventoryFatal, load_schema, repo_schema, validate
+from forgebridge.output_names import plan_names
+
+
+def _pdf_renderer():
+    import pypdfium2
+    return pypdfium2
+
+
+def pdf_mode(requested=None):
+    if requested not in (None, 'pages', 'references'):
+        raise ValueError('PDF mode must be pages or references')
+    if requested == 'references':
+        return 'references', 'PDF handouts retained as references because references mode was selected'
+    try:
+        _pdf_renderer()
+    except (ImportError, OSError) as exc:
+        if requested == 'pages':
+            raise ValueError('PDF pages need an importable pypdfium2; install it or select --pdf references') from exc
+        return 'references', f'PDF handouts retained as references: pypdfium2 could not import ({exc})'
+    return 'pages', None
 
 
 @contextmanager
@@ -51,7 +71,7 @@ def discover(package):
             parent = retained.get('_forgebridge_parent_adventure') if isinstance(retained, dict) else None
             name = parent.get('name') if isinstance(parent, dict) else None
             return name if isinstance(name, str) and name else None
-        return {'package_id': inventory['provenance']['package_id'],
+        return {'package_id': inventory['provenance']['package_id'], 'package_title': inventory['provenance'].get('title'),
                 'scenes': [{'key': scene_key(row), 'id': row.get('id'), 'name': row.get('name'),
                             'source_path': row.get('source_path'),
                             'parent_adventure_id': _parent_adventure_id(row),
@@ -74,16 +94,19 @@ def _new_destination(destination, package):
     return dest
 
 
-def convert(package, destination, *, scene_ids=(), scene_keys=(), profiles=()):
+def convert(package, destination, *, scene_ids=(), scene_keys=(), profiles=(),
+            map_folder=None, notes_folder=None, map_names=None, pdf=None):
     package = Path(package).absolute()
     dest = _new_destination(destination, package)
     before = fingerprint(package)
+    selected_pdf, pdf_loss = pdf_mode(pdf)
     report = {'format': 'forgebridge.conversion', 'version': 1, 'status': 'PASS',
               'source_sha256': before, 'scenes': [], 'counts': {g: 0 for g in
                   ('native', 'approximate', 'manual', 'unsupported')},
               'counts_scope': 'Source/UVTT grades; native outcomes and remaining losses are reported separately',
               'native_counts': {'scenes': 0, 'tokens': 0, 'rejected_tokens': 0, 'notes': 0, 'markers': 0},
               'native_losses': [],
+              'pdf_mode': selected_pdf, 'pdf_mode_loss': pdf_loss,
               'runtime_validation': 'not performed', 'installed': False,
               'native_synthesis': 'Schema-built Toolkit 0.5.1.18 records; default calibration 2.56 units/grid, upper-left origin (0,0)',
               'manual_steps': ['Review combined losses and installation conflicts before player use; labels off',
@@ -107,10 +130,12 @@ def convert(package, destination, *, scene_ids=(), scene_keys=(), profiles=()):
             rows = [r for r in rows if r.get('id') in scene_ids]
         if not 1 <= len(rows) <= 256:
             raise ValueError('Package must contain between 1 and 256 selected scenes')
+        if profiles and (map_folder is not None or notes_folder is not None or map_names):
+            raise ValueError('Naming controls apply to synthesized scenes; use the package profile command for named profile overrides')
         native, guards = {}, []
         for profile in profiles:
             plan = {}
-            audit, settings = preflight_profile(profile, plan=plan)
+            audit, settings = preflight_profile(profile, {'pdf_pages': selected_pdf == 'pages'}, plan=plan)
             guards.append((profile, audit['provenance']['profile_file_sha256'], plan))
             source = audit['provenance']['source']
             if (not package.is_dir() or fingerprint(settings['package']) != before
@@ -123,6 +148,8 @@ def convert(package, destination, *, scene_ids=(), scene_keys=(), profiles=()):
             if len(matches) != 1 or _identity(matches[0]) in native:
                 raise ValueError('Profile is missing, ambiguous, duplicated or outside selected scenes')
             native[_identity(matches[0])] = (audit, settings)
+        naming = plan_names([r for r in rows if _identity(r) not in native], inventory['provenance'].get('title'),
+                            map_folder=map_folder, notes_folder=notes_folder, map_names=map_names)
         stage = Path(tmp)
         combined_native = {}
         for index, row in enumerate(rows, 1):
@@ -158,12 +185,13 @@ def convert(package, destination, *, scene_ids=(), scene_keys=(), profiles=()):
                 for grade, count in document['loss_report']['counts'].items(): report['counts'][grade] += count
                 if _identity(row) in native:
                     audit, settings = native[_identity(row)]
-                    conversion = build_package(**settings, dest=folder / 'native-package.zip',
+                    conversion = build_package(**{**settings, 'pdf_pages': selected_pdf == 'pages'}, dest=folder / 'native-package.zip',
                                                profile_provenance=audit['provenance'])
                     result.update(status='BUILT', artifact='native-package.zip', native_report=conversion)
                 else:
                     from forgebridge.direct_package import build_direct
-                    conversion = build_direct(root, document, row, report['package_id'], folder / 'native-package.zip')
+                    conversion = build_direct(root, document, row, report['package_id'], folder / 'native-package.zip',
+                                              names=naming[scene_key(row)], pdf_pages=selected_pdf == 'pages')
                     result.update(status='BUILT', artifact='native-package.zip', native_report=conversion)
                 members = read_package(folder / 'native-package.zip')
                 candidate = {n: d for n, d in members.items() if n.startswith('MyAssets/')}
@@ -184,6 +212,8 @@ def convert(package, destination, *, scene_ids=(), scene_keys=(), profiles=()):
                     report['native_counts'][key] += counts.get(source, 0)
                 report['native_counts']['markers'] += native_report['native_map']['markers']
                 remaining = list(native_report.get('native_synthesis', {}).get('losses', []))
+                if pdf_loss:
+                    remaining.append({'grade': 'manual', 'feature': 'pdf-mode', 'summary': pdf_loss})
                 remaining += [{'grade': 'unsupported', 'feature': 'light', **row}
                               for row in native_report.get('native_synthesis', {}).get('omitted_lights', [])]
                 remaining += [{'grade': 'unsupported', 'feature': 'token', **row}
@@ -232,6 +262,10 @@ def main(argv=None):
     parser.add_argument('--scene', action='append', default=[])
     parser.add_argument('--scene-key', action='append', default=[])
     parser.add_argument('--profile', action='append', default=[])
+    parser.add_argument('--map-folder', help='Visible map folder; default Adventure name, package title, or ForgeBridge')
+    parser.add_argument('--notes-folder', help='Visible notes folder; default same as map folder')
+    parser.add_argument('--map-name', action='append', default=[], help='SCENE_KEY=NAME; repeat per scene, or NAME for a single scene')
+    parser.add_argument('--pdf', choices=('pages', 'references'), help='Default pages if pypdfium2 imports, otherwise references with a reported loss')
     parser.add_argument('--install', action='store_true', help='Explicit add-only installation after building/review checks')
     parser.add_argument('--myassets', help='Actual MyAssets destination; required with --install')
     parser.add_argument('--backup-root', help='Separate existing full-backup directory; required with --install')
@@ -250,7 +284,8 @@ def main(argv=None):
                 import uuid
                 args.out = str(Path.cwd() / ('ForgeBridge-output-' + uuid.uuid4().hex[:10]))
             if not args.out: raise ValueError('Provide --out NEW_DIRECTORY, --install, or --list-scenes')
-            report = convert(args.package, args.out, scene_ids=args.scene, scene_keys=args.scene_key, profiles=args.profile)
+            report = convert(args.package, args.out, scene_ids=args.scene, scene_keys=args.scene_key, profiles=args.profile,
+                             map_folder=args.map_folder, notes_folder=args.notes_folder, map_names=args.map_name, pdf=args.pdf)
             if args.install:
                 if report['status'] != 'PASS': raise ValueError('Resolve rejected scenes before installation; outputs retained for review')
                 from forgebridge.installer import install_conversion

@@ -180,14 +180,36 @@ def install(packages, myassets, backup_root):
             lock.unlink()
 
 
+def _remove_created_folders(root, data):
+    """Remove folders the install created, deepest first, only when now empty.
+    os.rmdir refuses non-empty folders, so later user content is never touched."""
+    removed_dirs = []
+    created = data.get('created_directories') if isinstance(data.get('created_directories'), list) else []
+    for rel in sorted({c for c in created if isinstance(c, str)}, key=lambda c: c.count('/'), reverse=True)[:16384]:
+        try:
+            directory = _target(root, safe_name('MyAssets/' + rel))
+        except ValueError:
+            continue
+        if directory == root or _linked(directory) or not directory.is_dir():
+            continue
+        try:
+            directory.rmdir()
+            removed_dirs.append(rel)
+        except OSError:
+            pass
+    return removed_dirs
+
+
 def uninstall(manifest, keep_changed=False):
     require_toolkit_closed()
     manifest = Path(manifest).absolute()
     if any(_linked(p) for p in (manifest, *manifest.parents)) or manifest.stat().st_size > 8 * 1024 * 1024:
         raise ValueError('Unsafe/oversized uninstall receipt')
     data = json.loads(manifest.read_text(encoding='utf-8'))
-    if data.get('format') != 'forgebridge.installation' or data.get('version') != 1 or data.get('state') != 'COMPLETE':
+    if data.get('format') != 'forgebridge.installation' or data.get('version') != 1 or data.get('state') not in (
+            'COMPLETE', 'UNINSTALLED', 'UNINSTALLED_KEPT_CHANGED'):
         raise ValueError('Uninstall requires a complete supported installation receipt')
+    already = data['state'] != 'COMPLETE'
     root = Path(data['myassets'])
     # Reuse root/ancestor validation without writing or trusting an arbitrary path.
     if not root.is_absolute() or root.name != 'MyAssets' or not root.is_dir() or any(_linked(p) for p in (root, *root.parents)):
@@ -197,6 +219,21 @@ def uninstall(manifest, keep_changed=False):
                 not isinstance(row.get('sha256'), str) or not re.fullmatch('[0-9a-f]{64}', row['sha256'])
                 for row in data['added'])):
         raise ValueError('Invalid/oversized uninstall list')
+    if already:
+        # Files were handled by the earlier uninstall; never touch files again (a later
+        # install may own identical content). Only tidy folders this install created.
+        lock = root.parent / '.forgebridge-install.lock'
+        token = uuid.uuid4().hex
+        with lock.open('x', encoding='ascii') as stream: stream.write(token)
+        try:
+            require_toolkit_closed()
+            removed_dirs = _remove_created_folders(root, data)
+            data['removed_directories'] = sorted(set(data.get('removed_directories') or []) | set(removed_dirs))
+            _json(manifest, data)
+            return {'status': 'PASS', 'removed': 0, 'kept_changed': data.get('kept_changed', []),
+                    'removed_empty_folders': len(removed_dirs), 'already_uninstalled': True, 'backup_retained': True}
+        finally:
+            if lock.is_file() and not _linked(lock) and lock.read_text(encoding='ascii') == token: lock.unlink()
     baseline_path = manifest.parent / 'backup-manifest.json'
     if _linked(baseline_path) or baseline_path.stat().st_size > 32 * 1024 * 1024:
         raise ValueError('Unsafe backup manifest')
@@ -224,11 +261,13 @@ def uninstall(manifest, keep_changed=False):
             if _linked(target) or _hash(target)[0] != row['sha256']:
                 raise ValueError('Target changed during uninstall; stop and inspect')
             target.unlink()
-        # Leave directories and backups intact; they may now contain user content.
+        removed_dirs = _remove_created_folders(root, data)
         data['state'] = 'UNINSTALLED' if not kept else 'UNINSTALLED_KEPT_CHANGED'
         data['kept_changed'] = kept
+        data['removed_directories'] = removed_dirs
         _json(manifest, data)
-        return {'status': 'PASS', 'removed': len(targets), 'kept_changed': kept, 'backup_retained': True}
+        return {'status': 'PASS', 'removed': len(targets), 'kept_changed': kept,
+                'removed_empty_folders': len(removed_dirs), 'backup_retained': True}
     finally:
         if lock.is_file() and not _linked(lock) and lock.read_text(encoding='ascii') == token: lock.unlink()
 

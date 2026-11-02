@@ -59,8 +59,9 @@ python -m forgebridge convert fixtures/synthetic-module --out converted-example
 ```
 
 On Linux use python3, source .venv/bin/activate and export PYTHONPATH="$PWD/src".
-Optional requirements-pdf.txt enables PDF pages; otherwise PDFs remain
-retained/manual references. CI runs the synthetic command.
+The packaged install includes pypdfium2. Conversion defaults to PDF page images
+when it imports; otherwise PDFs remain references with an explicit loss reason.
+CI runs the synthetic command.
 
 ## Graphical workflow
 
@@ -73,10 +74,17 @@ server or browser is needed.
    (pack folder), grouped by Adventure then scene name; without an Adventure
    name, the pack folder is shown instead. Select scenes (Ctrl-click for multiple),
    or use Select all / Clear. Pack/Adventure scope remains separate even if IDs match.
+   Map folder and Notes folder start with the first displayed Adventure name
+   (or package title, or ForgeBridge). Edit them as needed. Map names default to
+   scene names: double-click a selected row or use Rename selected maps to edit.
+   Names actually used after Windows sanitization appear in the build summary.
 3. Click Choose where to save output and select a parent folder; the app proposes
    a new child folder and shows the full Folder to create path. Profiles are
    optional overrides; default output uses schema-built native synthesis.
-4. Build/export and read the source-stage and native-stage loss summary.
+4. Leave Convert PDF handouts into note pages checked for page images, or uncheck
+   it to keep references. Build/export and read the source-stage and native-stage
+   loss summary. Duplicate map names require renaming before building; no hash
+   suffix is added. Existing destination map names are shown before installing.
 5. Review before using Install reviewed native outputs. Select actual MyAssets
    and a separate existing backup folder; keep Toolkit closed and confirm the
    displayed destination/backup summary. Rejected/UVTT-only results cannot install.
@@ -97,6 +105,36 @@ Repeat --scene ID or select exact --scene-key KEY from discovery. Default native
 calibration is 2.56 units/grid, upper-left origin, native y up; source padding and
 grid are normalized before synthesis. No source pixel/native coordinate shortcut.
 Choose new output; existing paths are never refreshed or overwritten.
+
+Visible naming options (default synthesis):
+
+```powershell
+forgebridge convert PACKAGE --scene-key KEY --out NEW_DIR --map-folder "The Count's Manor" --notes-folder "The Count's Manor" --map-name "KEY=Count's Lair" --pdf pages
+```
+
+Map folder defaults per scene to its Adventure name, then package title, then
+ForgeBridge. Notes folder defaults to the same folder. Map name defaults to the
+scene name alone. Repeat --map-name SCENE_KEY=NAME for multiple scenes, or use
+--map-name NAME for one scene. Identical scene names across 5e/SA need explicit
+overrides. Map names are unique across a build and must not already exist in the
+destination, including another map folder. Review refuses these clashes and
+suggests renaming; it never silently adds a hash. The add-only installer and
+receipt/keep-changed uninstall rules are unchanged.
+
+Names strip Windows-invalid punctuation/control characters and trailing dots or
+spaces, must have 1–80 characters, and refuse reserved device names such as CON
+or COM1. Apostrophes and spaces are retained. Actual names/paths appear in
+output_names in each native report. Notes share the chosen visible folder; their
+internal filenames retain a scene hash to avoid cross-scene collisions. Internal
+media and token folders keep their existing hash scopes.
+
+--pdf pages renders bounded handouts using the existing limits (32 pages per PDF,
+64 MiB rendered bytes, capped image dimensions); --pdf references retains sources
+without page images. Automatic mode chooses pages if pypdfium2 imports, otherwise
+reports why references were used. Explicit pages requires an importable renderer;
+invalid/oversized PDFs stay explicit reference-only losses. New naming controls
+are for synthesized scenes; optional calibrated profiles keep their pinned naming
+workflow through the package command rather than silently ignoring overrides.
 
 Open conversion-report.json first: source/UVTT grades are retained separately
 from native_counts/native_losses and each native_report. BUILT is not runtime
@@ -161,6 +199,11 @@ forgebridge install --uninstall "D:/ForgeBridgeBackups/forgebridge-RUN_ID/uninst
 ```
 
 Delete the listed kept files yourself afterwards if you do not want them.
+
+Uninstall also removes folders the install created once they are empty; folders
+that still hold kept or later files stay. Running `--uninstall` again on a
+receipt that was already uninstalled only tidies such empty folders (useful for
+receipts from v0.9.0, which left empty folders behind); it never deletes files.
 INCOMPLETE receipts require manual review. Restore only reviewed affected backup
 files with Toolkit closed; never Replace All or blind folder synchronization.
 

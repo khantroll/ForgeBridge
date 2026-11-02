@@ -20,10 +20,17 @@ class FakeListbox:
 
     def pack(self, **kwargs): pass
 
-    def delete(self, *args):
-        self.items.clear(); self.selected.clear()
+    def bind(self, *args): pass
 
-    def insert(self, where, value): self.items.append(value)
+    def delete(self, *args):
+        if len(args) == 1:
+            del self.items[args[0]]; self.selected.discard(args[0])
+        else:
+            self.items.clear(); self.selected.clear()
+
+    def insert(self, where, value):
+        if where == 'end': self.items.append(value)
+        else: self.items.insert(where, value)
 
     def selection_clear(self, *args): self.selected.clear()
 
@@ -36,7 +43,7 @@ class FakeListbox:
 
 def run_headless_gui(scenario):
     """Exercise the actual callbacks with inert widgets; never instantiate Tk."""
-    ui = {'buttons': {}, 'labels': [], 'afters': [], 'list': FakeListbox()}
+    ui = {'buttons': {}, 'labels': [], 'afters': [], 'list': FakeListbox(), 'fields': {}}
 
     class Variable:
         def __init__(self, value=''): self.value, self.callbacks = value, []
@@ -51,6 +58,10 @@ def run_headless_gui(scenario):
             self.options = kwargs
             if 'command' in kwargs: ui['buttons'][kwargs['text']] = self
             if 'textvariable' in kwargs: ui['labels'].append(kwargs['textvariable'])
+            if 'variable' in kwargs: ui['fields'][kwargs['text']] = kwargs['variable']
+            if 'text' in kwargs and 'command' not in kwargs: ui['last_label'] = kwargs['text']
+            if 'textvariable' in kwargs and 'last_label' in ui:
+                ui['fields'][ui['last_label']] = kwargs['textvariable']
         def pack(self, **kwargs): pass
         def configure(self, **kwargs): self.options.update(kwargs)
         def delete(self, *args): pass
@@ -70,10 +81,11 @@ def run_headless_gui(scenario):
     dialogs = SimpleNamespace(askdirectory=lambda **kw: '', askopenfilename=lambda **kw: '')
     messages = SimpleNamespace(showerror=lambda *args: ui.setdefault('errors', []).append(args),
                                askyesno=lambda *args: ui.setdefault('confirmations', []).append(args) or False)
-    tk = SimpleNamespace(Tk=Root, StringVar=Variable, Listbox=lambda *a, **kw: ui['list'], Text=Widget,
-                         filedialog=dialogs, messagebox=messages,
-                         ttk=SimpleNamespace(Frame=Widget, Label=Widget, Entry=Widget, Button=Widget))
+    tk = SimpleNamespace(Tk=Root, StringVar=Variable, BooleanVar=Variable, Listbox=lambda *a, **kw: ui['list'], Text=Widget,
+                         filedialog=dialogs, messagebox=messages, simpledialog=SimpleNamespace(askstring=lambda *a, **kw: None),
+                         ttk=SimpleNamespace(Frame=Widget, Label=Widget, Entry=Widget, Button=Widget, Checkbutton=Widget))
     ui['dialogs'] = dialogs
+    ui['simpledialog'] = tk.simpledialog
     with patch.dict('sys.modules', {'tkinter': tk}), patch('forgebridge.gui.threading.Thread', Thread):
         return gui_main(['--package', 'test-source', '--out', 'test-output'])
 
@@ -85,6 +97,52 @@ def finish_job(ui): ui['afters'].pop(0)()
 
 
 class GuiControllerTests(unittest.TestCase):
+    def test_rename_folder_fields_and_pdf_checkbox_reach_conversion(self):
+        report = {'package_title': 'Package title', 'scenes': [
+            {'key': 'key', 'id': 'id', 'name': 'Room', 'source_path': 'packs/5e',
+             'parent_adventure_name': 'Adventure'}]}
+        def scenario(ui):
+            click(ui, 'Discover scenes'); finish_job(ui)
+            self.assertEqual(ui['fields']['Map folder'].get(), 'Adventure')
+            self.assertEqual(ui['fields']['Notes folder'].get(), 'Adventure')
+            self.assertTrue(ui['fields']['Convert PDF handouts into note pages'].get())
+            ui['fields']['Map folder'].set('Our maps'); ui['fields']['Notes folder'].set('Our notes')
+            ui['fields']['Convert PDF handouts into note pages'].set(False)
+            ui['list'].selection_set(0)
+            ui['simpledialog'].askstring = lambda *a, **kw: 'Our: Room'
+            click(ui, 'Rename selected maps')
+            self.assertIn('Our Room', ui['list'].items[0])
+            click(ui, 'Build / export')
+        with patch('forgebridge.gui.discover', return_value=report), patch('forgebridge.gui.convert') as converter:
+            run_headless_gui(scenario)
+            converter.assert_called_once_with('test-source', 'test-output', scene_keys=['key'], profiles=[],
+                map_folder='Our maps', notes_folder='Our notes', map_names={'key': 'Our Room'}, pdf='references')
+
+    def test_map_clashes_are_shown_before_build_and_install(self):
+        report = {'scenes': [{'key': key, 'id': key, 'name': 'Room', 'source_path': 'packs/scenes'} for key in ('a', 'b')]}
+        def scenario(ui):
+            click(ui, 'Discover scenes'); finish_job(ui); click(ui, 'Select all')
+            click(ui, 'Build / export')
+            self.assertIn('Map name conflict', ui['errors'][-1][1])
+        with patch('forgebridge.gui.discover', return_value=report), patch('forgebridge.gui.convert') as converter:
+            run_headless_gui(scenario); converter.assert_not_called()
+
+        built = {'status': 'PASS', 'scenes': [{'name': 'Room', 'status': 'BUILT', 'folder': 'scene-001',
+                                             'artifact': 'native-package.zip', 'native_report': {'counts': {}}}]}
+        def install_scenario(ui):
+            click(ui, 'Discover scenes'); finish_job(ui)
+            ui['list'].selection_set(0); click(ui, 'Build / export'); finish_job(ui)
+            ui['dialogs'].askdirectory = lambda **kwargs: 'fake-directory'
+            click(ui, 'Install reviewed native outputs')
+            self.assertIn('rename', ui['errors'][-1][1])
+            self.assertNotIn('confirmations', ui)
+        with patch('forgebridge.gui.discover', return_value=report), patch('forgebridge.gui.convert', return_value=built), \
+                patch('forgebridge.gui.native_outputs', return_value=['test.zip']), \
+                patch('forgebridge.gui.review', return_value={'ok': False, 'files': [
+                    {'path': 'MyAssets/Maps/Room.rwmap', 'status': 'conflict', 'detail': 'Map exists; rename'}]}), \
+                patch('forgebridge.gui.install_outputs') as installer:
+            run_headless_gui(install_scenario); installer.assert_not_called()
+
     def test_discovery_starts_empty_and_selection_buttons_are_explicit(self):
         report = {'scenes': [{'key': 'b', 'id': 'same', 'name': 'B', 'source_path': 'packs/scenes'},
                              {'key': 'a', 'id': 'other', 'name': 'A', 'source_path': 'packs/scenes'}]}
@@ -117,7 +175,8 @@ class GuiControllerTests(unittest.TestCase):
             click(ui, 'Build / export')
         with patch('forgebridge.gui.discover', return_value=report), patch('forgebridge.gui.convert') as converter:
             run_headless_gui(scenario)
-            converter.assert_called_once_with('test-source', 'test-output', scene_keys=['a-key'], profiles=[])
+            converter.assert_called_once_with('test-source', 'test-output', scene_keys=['a-key'], profiles=[],
+                pdf=None, map_folder='A Adventure', notes_folder='A Adventure', map_names={})
 
     def test_pack_fallback_and_rediscovery_clear_previous_selection(self):
         row = {'key': 'one', 'id': 'id', 'name': 'Room', 'source_path': 'packs/scenes.db',
@@ -167,7 +226,8 @@ class GuiControllerTests(unittest.TestCase):
             self.assertIn('Opening notes in the Toolkit can change them; uninstall with --keep-changed later keeps those edits.',
                           ui['confirmations'][0][1])
         with patch('forgebridge.gui.discover', return_value=discovered), patch('forgebridge.gui.convert', return_value=built), \
-                patch('forgebridge.gui.native_outputs', return_value=['test.zip']), patch('forgebridge.gui.install_outputs') as installer:
+                patch('forgebridge.gui.native_outputs', return_value=['test.zip']), patch('forgebridge.gui.install_outputs') as installer, \
+                patch('forgebridge.gui.review', return_value={'ok': True}):
             run_headless_gui(scenario)
             installer.assert_not_called()
 

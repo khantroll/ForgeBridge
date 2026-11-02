@@ -88,7 +88,7 @@ class TextCompiler(HTMLParser):
         return self.parts or [('', None)]
 
 
-def companion_files(companion, *, map_markers=False, media_fields=None, note_folder=None):
+def companion_files(companion, *, map_markers=False, media_fields=None, note_folder=None, note_prefix=''):
     media_fields = media_fields or {}
     bundle = companion.get('scene_notes')
     if not isinstance(bundle, dict) or not isinstance(bundle.get('dependencies'), dict):
@@ -135,12 +135,14 @@ def companion_files(companion, *, map_markers=False, media_fields=None, note_fol
                 *(f'COM{i}' for i in range(1, 10)), *(f'LPT{i}' for i in range(1, 10))}):
         raise ValueError('Note folder must be a portable single folder name')
     base = 'MyAssets/Encyclopedia/Notes/' + (note_folder or f'ForgeBridge-{digest}') + '/'
-    paths, names = {(None, None): base + '000-Scene-Index'}, {}
+    if note_prefix and not re.fullmatch(r'[a-f0-9]{20}-', note_prefix):
+        raise ValueError('Invalid internal note prefix')
+    paths, names = {(None, None): base + note_prefix + '000-Scene-Index'}, {}
     for di, document in enumerate(documents):
         payload = document['payload']
         if document['document_type'] not in {'JournalEntry', 'RollTable'} or not isinstance(payload, dict):
             raise ValueError('Unsupported dependency document')
-        paths[(di, None)] = base + f'D{di:03d}'
+        paths[(di, None)] = base + note_prefix + f'D{di:03d}'
         names[(di, None)] = str(payload.get('name') or f'Document {di + 1}')
         pages = payload.get('pages', [])
         if not isinstance(pages, list) or len(pages) > 512:
@@ -148,7 +150,7 @@ def companion_files(companion, *, map_markers=False, media_fields=None, note_fol
         for pi, page in enumerate(pages):
             if not isinstance(page, dict):
                 raise ValueError('Invalid journal page')
-            paths[(di, pi)] = base + f'D{di:03d}-P{pi:03d}'
+            paths[(di, pi)] = base + note_prefix + f'D{di:03d}-P{pi:03d}'
             names[(di, pi)] = names[(di, None)] + ' — ' + str(page.get('name') or f'Page {pi + 1}')
     if len(paths) > 2048:
         raise ValueError('Native note count exceeds limit')
