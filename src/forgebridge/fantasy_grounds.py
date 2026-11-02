@@ -61,6 +61,13 @@ class ModuleSource:
         self.path = Path(path)
         self._zip = None
         self._names: dict[str, str] = {}
+        try:
+            self._index()
+        except Exception:
+            self.close()
+            raise
+
+    def _index(self):
         if self.path.is_dir():
             root = self.path.resolve()
             count = 0
@@ -331,12 +338,16 @@ def to_uvtt(source: ModuleSource, entry: dict, *, include_image=True, grid_size=
         raise ModuleError(entry['record'] + ': module stores no grid size; supply pixels per square '
                           '(--grid-size) or squares across the map (--squares)')
     ppg = int(round(true_ppg))
+    if ppg < 1:
+        raise ModuleError(entry['record'] + ': grid size must round to at least one pixel per square')
     out_w, out_h = width, height
     if abs(ppg - true_ppg) > 1e-6:
         # UVTT needs whole pixels per square: resample the image so the grid stays exact.
         out_w, out_h = round(width * ppg / true_ppg), round(height * ppg / true_ppg)
         losses.append(('image', 'approximate', f'{true_ppg:g} px squares: image resampled {width}x{height} -> '
                                                f'{out_w}x{out_h} so each square is {ppg} px; geometry unchanged'))
+    if out_w < 1 or out_h < 1 or out_w * out_h > MAX_IMAGE_PIXELS:
+        raise ModuleError(entry['record'] + ': resampled map image exceeds dimension/64 MP limits')
     offset = _floats(_first(nodes, 'gridoffset') or '0,0', 'gridoffset')
     if any(abs(v) > 1e-6 for v in offset[:2]):
         losses.append(('grid', 'approximate', f'grid offset {offset[:2]} px not represented; grid starts at the image corner'))
@@ -436,11 +447,17 @@ def inventory(module) -> dict:
             try:
                 result = to_uvtt(source, entry, include_image=False)
                 row.update(status='READABLE', counts=result['counts'], size_px=result['size_px'],
-                           metadata_source=result['metadata_source'], losses=result['losses'])
+                           metadata_source=result['metadata_source'], losses=result['losses'],
+                           pixels_per_square=result['pixels_per_square'])
             except ModuleError as exc:
                 status = 'NEEDS_GRID' if 'no grid size' in str(exc) else 'BLOCKED'
-                if status == 'NEEDS_GRID' and not entry.get('grid_on') and not row['has_line_of_sight']:
-                    status = 'ART'  # grid off and no LoS: a picture/handout rather than a battle map
+                if status == 'NEEDS_GRID':
+                    nodes, origin = _metadata_nodes(source, entry)
+                    row.update(metadata_source=origin,
+                               has_line_of_sight=any(n.find('occluders') is not None for n in nodes),
+                               has_lights=any(n.find('lights') is not None for n in nodes))
+                    if not entry.get('grid_on') and not row['has_line_of_sight'] and not row['has_lights']:
+                        status = 'ART'  # no grid/geometry/lighting: a picture rather than a map
                 row.update(status=status, reason=str(exc))
             maps.append(row)
         if not source.exists('db.xml'):

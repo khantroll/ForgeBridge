@@ -1,4 +1,4 @@
-# Fantasy Grounds → Arkenforge adapter (groundwork)
+# Fantasy Grounds → Arkenforge adapter (reader and native output)
 
 Branch `fantasy-grounds-adapter`, started 2026-11-01. Kept off PR #8 so the
 Foundry v0.9 release is unaffected. Builds on the research in PR #9
@@ -16,7 +16,7 @@ Fantasy Grounds path only needs a **reader** that produces that same scene:
 FG module (.mod or folder)
   └─ fantasy_grounds.py  (read-only)  →  UVTT-shaped scene + loss lines
         ├─ write scene.uvtt           →  Arkenforge Quick Import (works today)
-        └─ native map writer + installer (Phase 2; same code as Foundry)
+        └─ native map writer + installer (Phase 2; shared geometry writer with Foundry)
 ```
 
 ## What exists now (`src/forgebridge/fantasy_grounds.py`)
@@ -130,13 +130,22 @@ anything, check on one real FGU module:
 
 ## Phases
 
-1. **Reader + UVTT (this branch).** Done for synthetic data. Needs one real
-   module to confirm the assumptions above. Output can be imported in the
-   Toolkit via Quick Import today.
-2. **Native output.** Feed `to_uvtt()` into the existing native map synthesis
-   and installer (`convert` gains `--source fantasy-grounds`, GUI gains "Choose
-   FG module"). Validate one map in the Toolkit (needs a Toolkit licence or
-   trial).
+1. **Reader + UVTT.** Implemented with synthetic tests, the real MFE 91 wall
+   layout and Arkenforge's independent FGU door/window/light export. Remaining
+   hand-drawn FGU assumptions are listed above; this is not universal format
+   compatibility. UVTT remains an available interchange artifact.
+2. **Native output — implemented, file-level validation.** Automatic detection
+   in convert/discover for .mod, definition.xml folders and unencrypted vault
+   ZIPs; shared geometry/background/thumbnail synthesis at 2.56 units/grid.
+   Foundry notes/tokens stages are skipped. Existing native install review,
+   backups, receipts and uninstall are reused unchanged. GUI includes Choose FG
+   module, ART filter, statuses/known pixels per square, per-map grid prompts,
+   module-based naming and FG count/loss summaries. CLI supports keyed or
+   single-selection --grid-size/--squares; stored grids win. No source-type flag
+   is required. Pins/story/tokens remain phase 3+ losses. Synthetic integration
+   includes encrypted refusal, fractional resampling, fake install/uninstall
+   and native segment counts. Validate one new native output in Toolkit before
+   claiming runtime acceptance (Claude owns this; no desktop work by Codex).
 3. **Pins and story → notes.** Map pins to Arkenforge note markers; FG
    `formattedtext` to native notes via the existing notes writer.
 4. **Tokens / NPCs** — after 3, same as the Foundry M3 plan.
