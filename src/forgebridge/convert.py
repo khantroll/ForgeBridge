@@ -63,8 +63,11 @@ def _new_destination(destination, package):
     dest = Path(destination).absolute()
     if any(p.is_symlink() or p.is_junction() for p in (dest, *dest.parents)):
         raise ValueError('Output must not contain links/junctions')
-    if dest.exists() or not dest.parent.is_dir():
-        raise ValueError('Choose a new output directory under an existing parent')
+    if dest.exists():
+        raise ValueError(f'Output folder already exists: {dest}. ForgeBridge never overwrites; '
+                         'choose a new folder name (for example add -2).')
+    if not dest.parent.is_dir():
+        raise ValueError(f'The folder that should contain the output does not exist: {dest.parent}')
     package = Path(package).absolute()
     if package.is_dir() and dest.resolve().is_relative_to(package.resolve()):
         raise ValueError('Output must be outside the source package')
