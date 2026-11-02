@@ -1,14 +1,18 @@
 """Small local Tk front end over the public conversion and add-only install APIs."""
 import argparse
+import math
 from pathlib import Path
 import queue
 import threading
+import traceback
 import uuid
 
 from forgebridge.convert import discover, convert
 from forgebridge.installer import install, native_outputs
 from forgebridge.install_review import review
 from forgebridge.output_names import default_folder, sanitize_name, plan_names
+from forgebridge.version import get_version
+from forgebridge.gui_errors import report_error
 
 
 def install_outputs(report, output, myassets, backups):
@@ -16,6 +20,10 @@ def install_outputs(report, output, myassets, backups):
 
 
 def scene_label(row):
+    if row.get('source_type') == 'fantasy_grounds':
+        grid = f"; {row['pixels_per_square']:g} px/square" if row.get('pixels_per_square') else ''
+        supplied = '; ' + row['grid_supplied'] if row.get('grid_supplied') else ''
+        return f"{row.get('name') or row['id']} — {row['module_name']} [{row['status']}{grid}{supplied}]"
     pack = Path(row.get('source_path') or '').name
     adventure = row.get('parent_adventure_name')
     return f"{row.get('name') or row['id']} — {adventure} ({pack})" if adventure else f"{row.get('name') or row['id']} — {pack}"
@@ -38,6 +46,10 @@ def report_text(value):
     """Readable stage-specific loss summary; detailed JSON remains in output."""
     if 'scenes' in value:
         lines = [f"Scenes: {len(value['scenes'])}"]
+        if value.get('source_type') == 'fantasy_grounds':
+            module = value.get('module_definition', {})
+            lines.append('Fantasy Grounds module: ' + str(module.get('displayname') or module.get('name')))
+            if value.get('hidden_art'): lines.append(f"Artwork hidden: {value['hidden_art']} (Include artwork to list it)")
         if value.get('pdf_mode'):
             lines.append('PDF mode: ' + value['pdf_mode'])
         if value.get('pdf_mode_loss'):
@@ -48,8 +60,15 @@ def report_text(value):
         for scene in value['scenes']:
             lines += ['', f"{scene.get('name') or scene.get('id')}: {scene.get('status', 'discovered')}"]
             if scene.get('error'): lines.append('Needs attention: ' + scene['error'])
+            fg = scene.get('fantasy_grounds')
+            if fg:
+                lines.append('FG counts: ' + ', '.join(f'{k}: {v}' for k, v in fg['counts'].items()))
+                lines.append(f"Metadata: {fg['metadata_source']}; pixels/square: {fg['pixels_per_square']:g}; resampling: {fg['resampling']}")
+                lines += [f"{loss['grade']}: {loss['field']} — {loss['detail']}" for loss in fg['losses']]
             if scene.get('artifact'): lines.append('Output: ' + scene['folder'] + '/' + scene['artifact'])
             if scene.get('native_report'):
+                records = scene['native_report'].get('native_synthesis', {}).get('records')
+                if records: lines.append('Native records: ' + ', '.join(f'{k}: {v}' for k, v in records.items()))
                 if scene['native_report'].get('output_names'):
                     names = scene['native_report']['output_names']
                     lines.append(f"Map: {names['map_path']}\nNotes folder: {names['notes_folder']}")
@@ -68,20 +87,27 @@ def main(argv=None):
     # Lazy import: headless CI exercises the controller without creating a window.
     import tkinter as tk
     from tkinter import filedialog, messagebox, simpledialog, ttk
-    app = tk.Tk(); app.title('ForgeBridge — scene conversion'); app.geometry('900x720')
+    app = tk.Tk(); app.title('ForgeBridge ' + get_version() + ' — scene conversion'); app.geometry('900x720')
     package = tk.StringVar(value=args.package); output = tk.StringVar(value=args.out)
     map_folder, notes_folder = tk.StringVar(), tk.StringVar()
     pdf_pages = tk.BooleanVar(value=True)
+    include_art = tk.BooleanVar(value=False)
+    grids, across = {}, {}
     renamed = {}
-    status = tk.StringVar(value='Select a Foundry folder or ZIP, then discover scenes.')
+    status = tk.StringVar(value='Select a Foundry package or Fantasy Grounds module, then discover scenes.')
     profiles, rows, jobs = [], [], queue.Queue()
     state = {'busy': False, 'report': None, 'output': None, 'source': None}
+    def callback_error(kind, value, tb):
+        report_error(str(value), ''.join(traceback.format_exception(kind, value, tb)), output=output.get())
+    app.report_callback_exception = callback_error
     panel = ttk.Frame(app, padding=12); panel.pack(fill='both', expand=True)
-    ttk.Label(panel, text='Foundry package').pack(anchor='w')
+    ttk.Label(panel, text='Foundry package / Fantasy Grounds module').pack(anchor='w')
     ttk.Entry(panel, textvariable=package).pack(fill='x')
     buttons = ttk.Frame(panel); buttons.pack(fill='x', pady=5)
     ttk.Button(buttons, text='Choose folder', command=lambda: package.set(filedialog.askdirectory() or package.get())).pack(side='left')
     ttk.Button(buttons, text='Choose ZIP', command=lambda: package.set(filedialog.askopenfilename(filetypes=[('Foundry ZIP', '*.zip')]) or package.get())).pack(side='left')
+    ttk.Button(buttons, text='Choose FG module', command=lambda: package.set(filedialog.askopenfilename(
+        filetypes=[('Fantasy Grounds module or vault ZIP', '*.mod *.zip *.dat')]) or package.get())).pack(side='left')
     ttk.Label(panel, text='New output folder (must not exist)').pack(anchor='w')
     ttk.Entry(panel, textvariable=output).pack(fill='x')
     ttk.Button(panel, text='Choose where to save output', command=lambda: choose_output()).pack(anchor='w', pady=4)
@@ -94,6 +120,7 @@ def main(argv=None):
         ttk.Label(panel, text=label).pack(anchor='w')
         ttk.Entry(panel, textvariable=variable).pack(fill='x')
     ttk.Checkbutton(panel, text='Convert PDF handouts into note pages', variable=pdf_pages).pack(anchor='w')
+    ttk.Checkbutton(panel, text='Include artwork (FG ART)', variable=include_art, command=lambda: find()).pack(anchor='w')
     ttk.Label(panel, text='Scenes — select one or more (pack/Adventure scope is preserved)').pack(anchor='w')
     scenes = tk.Listbox(panel, selectmode='extended', exportselection=False, height=9)
     scenes.pack(fill='x')
@@ -115,7 +142,7 @@ def main(argv=None):
         state['busy'] = True; status.set('Working locally. Keep inputs unchanged; wait for completion.')
         def worker():
             try: jobs.put((done, function(), None))
-            except Exception as exc: jobs.put((done, None, str(exc)))
+            except Exception as exc: jobs.put((done, None, (str(exc), traceback.format_exc())))
         threading.Thread(target=worker, daemon=True).start()
 
     def display(value):
@@ -123,7 +150,8 @@ def main(argv=None):
 
     def found(report, source):
         rows[:] = populate_scenes(scenes, report); state['source'] = source
-        renamed.clear()
+        state['source_type'] = report.get('source_type')
+        renamed.clear(); grids.clear(); across.clear()
         if rows:
             try: folder = default_folder(rows[0], report.get('package_title'))
             except ValueError as exc:
@@ -147,12 +175,33 @@ def main(argv=None):
     scenes.bind('<Double-Button-1>', rename_selected)
     ttk.Button(selection_buttons, text='Rename selected maps', command=rename_selected).pack(side='left')
 
+    def grid_selected(mode):
+        if state['busy']: return
+        for index in scenes.curselection():
+            row = rows[index]
+            if row.get('source_type') != 'fantasy_grounds':
+                messagebox.showerror('Fantasy Grounds grid only', 'Foundry grids come from the source scene.'); continue
+            if row.get('pixels_per_square'):
+                messagebox.showinfo('Stored grid wins', f"This module stores {row['pixels_per_square']:g} pixels per square; it cannot be overridden."); continue
+            label = 'Squares across' if mode == 'squares' else 'Pixels per square'
+            value = simpledialog.askfloat(label, label + ' for ' + row['name'], minvalue=0.000001, parent=app)
+            if value is None: continue
+            if not math.isfinite(value) or value <= 0:
+                messagebox.showerror('Invalid grid', 'Supply a finite positive number.'); continue
+            (across if mode == 'squares' else grids)[row['key']] = value
+            (grids if mode == 'squares' else across).pop(row['key'], None)
+            row['grid_supplied'] = f'{value:g} {label.lower()} supplied'
+            scenes.delete(index); scenes.insert(index, scene_label({**row, 'name': renamed.get(row['key'], row['name'])})); scenes.selection_set(index)
+    ttk.Button(selection_buttons, text='Squares across', command=lambda: grid_selected('squares')).pack(side='left')
+    ttk.Button(selection_buttons, text='Pixels per square', command=lambda: grid_selected('pixels')).pack(side='left')
+
     def find():
         source = package.get()
-        if not source: messagebox.showerror('Source required', 'Select a Foundry package first.'); return
+        if not source: messagebox.showerror('Source required', 'Select a package or module first.'); return
         if state['busy']: return
         state['report'] = None; install_button.configure(state='disabled')
-        start(lambda: discover(source), lambda report: found(report, source))
+        art = include_art.get()
+        start(lambda: discover(source, include_art=art) if art else discover(source), lambda report: found(report, source))
 
     def profiles_pick():
         if state['busy']: return
@@ -180,6 +229,12 @@ def main(argv=None):
         names = {key: value for key, value in renamed.items() if key in selected}
         # Ticked = pages when the PDF renderer is available, else references with a reported loss.
         options = {'pdf': None if pdf_pages.get() else 'references'}
+        if state.get('source_type') == 'fantasy_grounds':
+            if any(r['status'] in ('NEEDS_GRID', 'ART') and r['key'] not in grids and r['key'] not in across
+                   for r in rows if r['key'] in selected):
+                messagebox.showerror('Grid required', 'Set Squares across or Pixels per square for each selected uncalibrated map.'); return
+            options.update(include_art=include_art.get(), grid_size={k: v for k, v in grids.items() if k in selected},
+                           squares={k: v for k, v in across.items() if k in selected})
         if not controls:
             try:
                 plans = plan_names([r for r in rows if r['key'] in selected], map_folder=map_folder.get(),
@@ -236,7 +291,7 @@ def main(argv=None):
             done, value, error = jobs.get_nowait(); state['busy'] = False
             if error:
                 status.set('Failed; inspect the message and any incomplete output before retrying.')
-                messagebox.showerror('ForgeBridge', error)
+                report_error(error[0], error[1], output=output.get())
             else: done(value)
         except queue.Empty: pass
         app.after(150, pump)

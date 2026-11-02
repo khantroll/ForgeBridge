@@ -299,6 +299,13 @@ class InventoryTests(unittest.TestCase):
             for token in banned:
                 if path.name == 'installer.py' and token == 'subprocess':
                     continue  # Only fixed read-only host process inspection below.
+                if path.name == 'version.py' and token == 'importlib':
+                    # Fixed installed metadata lookup, not dynamic source execution.
+                    tree = ast.parse(text)
+                    imports = [n for n in ast.walk(tree) if isinstance(n, ast.ImportFrom) and (n.module or '').startswith('importlib')]
+                    self.assertEqual([n.module for n in imports], ['importlib.metadata'])
+                    self.assertEqual(text.count('importlib'), 1)
+                    continue
                 self.assertNotIn(token, text, f"{path.name} contains {token}")
             # Pure URL parsing is permitted; network-capable imports are not.
             for node in ast.walk(ast.parse(text)):

@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 import re
+import sys
 from pathlib import Path
 
 
@@ -20,6 +21,9 @@ def repo_schema(filename: str) -> Path:
     packaged = here.parent / "schema" / filename  # installed wheel
     if packaged.is_file():
         return packaged
+    if getattr(sys, 'frozen', False):
+        # A frozen build must be self-contained, never borrow a checkout's data.
+        raise InventoryFatal(f'bundled schema not found: {filename}')
     for parent in here.parents:
         candidate = parent / "schema" / filename
         if candidate.is_file():
