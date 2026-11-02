@@ -16,23 +16,31 @@ from forgebridge.scene_records import blank_map, template_map, asset_templates, 
 from forgebridge.uvtt import _parent_adventure_id
 
 
+def geometry_files(uvtt, scope, *, name, map_path):
+    """Source-independent UVTT → schema-native map/background, no notes or tokens."""
+    media_base = 'MyAssets/Media/Cartographer/Quick Import/ForgeBridge-' + scope + '/Background'
+    image = base64.b64decode(uvtt['image'], validate=True)
+    omitted_lights = [light for light in uvtt.get('lights', []) if type(light.get('range')) not in (int, float)
+                      or not math.isfinite(light['range']) or light['range'] <= 0]
+    geometry_uvtt = {**uvtt, 'lights': [light for light in uvtt.get('lights', []) if light not in omitted_lights]}
+    geometry, synthesis = synthesize_map(blank_map(), template_map(), geometry_uvtt, name=name,
+        image_meta_path=media_base + '.rwmeta', asset_name='Background')
+    asset, metadata, background = background_asset(*asset_templates(), image, 'Background')
+    exports = {map_path: geometry,
+        map_path[:-6] + '.rwmeta': map_metadata(encode(record('map_meta')), name, image),
+        media_base + '.rwfile': asset, media_base + '.rwmeta': metadata}
+    return exports, synthesis, background, omitted_lights
+
+
 def build_direct(package, document, row, package_id, destination, *, names, pdf_pages=False):
     scene = document['source_scene']
     scope = canonical_hash(['native-scene-schema-v1', package_id, row.get('source_path'),
                             _parent_adventure_id(row), scene])[:20]
     name = names['map_name']
-    media_base = 'MyAssets/Media/Cartographer/Quick Import/ForgeBridge-' + scope + '/Background'
-    uvtt = document['uvtt']; image = base64.b64decode(uvtt['image'], validate=True)
-    omitted_lights = [light for light in uvtt.get('lights', []) if type(light.get('range')) not in (int, float)
-                      or not math.isfinite(light['range']) or light['range'] <= 0]
-    geometry_uvtt = {**uvtt, 'lights': [light for light in uvtt.get('lights', []) if light not in omitted_lights]}
-    geometry, synthesis = synthesize_map(blank_map(), template_map(), geometry_uvtt, name='_ForgeBridgeSchemaGeometry',
-        image_meta_path=media_base + '.rwmeta', asset_name='Background')
-    asset, metadata, background = background_asset(*asset_templates(), image, 'Background')
     geometry_path = 'MyAssets/Maps/ForgeBridge/_ForgeBridgeSchemaGeometry.rwmap'
-    exports = {geometry_path: geometry,
-        geometry_path[:-6] + '.rwmeta': map_metadata(encode(record('map_meta')), '_ForgeBridgeSchemaGeometry', image),
-        media_base + '.rwfile': asset, media_base + '.rwmeta': metadata}
+    exports, synthesis, background, omitted_lights = geometry_files(document['uvtt'], scope,
+        name='_ForgeBridgeSchemaGeometry', map_path=geometry_path)
+    uvtt = document['uvtt']
     with tempfile.TemporaryDirectory(prefix='forgebridge-direct-') as tmp:
         root = Path(tmp)
         companion = root / 'scene.json'

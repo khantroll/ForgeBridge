@@ -1,0 +1,132 @@
+{
+  "scope": "file-only; no Toolkit launch or real MyAssets access",
+  "case_a": {
+    "status": "BLOCKED",
+    "input": "C:\\AMD\\MFE_91_Files.zip",
+    "reason": "Input archive is not present"
+  },
+  "case_b": {
+    "status": "PASS",
+    "source_sha256": "15fdc3655dffc78f7c31ee088ff5b2638f783003ed8d0cc3f78dc1f3b6a0d213",
+    "module_definition": {
+      "name": "ForgeBridge FG Export Check",
+      "displayname": "ForgeBridge FG Export Check",
+      "author": null,
+      "category": null,
+      "rulesets": [
+        "Any"
+      ],
+      "version": "4.1"
+    },
+    "input": "C:\\AMD\\fb-fg-phase2-export-module-2026-11-02",
+    "output": "C:\\AMD\\fb-fg-phase2-export-native-2026-11-02",
+    "output_names": {
+      "map_folder": "ForgeBridge FG Export Check",
+      "map_name": "Crypt FGU Export",
+      "notes_folder": "ForgeBridge FG Export Check",
+      "map_path": "MyAssets/Maps/ForgeBridge FG Export Check/Crypt FGU Export.rwmap"
+    },
+    "fantasy_grounds": {
+      "record": "image.id-export",
+      "name": "Crypt FGU Export",
+      "bitmap": "images/Crypt FGU Export.png",
+      "metadata_source": "images/Crypt FGU Export.xml",
+      "size_px": [
+        5000,
+        4800
+      ],
+      "pixels_per_square": 100.0,
+      "counts": {
+        "walls": 199,
+        "doors": 20,
+        "windows": 3,
+        "terrain": 0,
+        "lights": 66,
+        "lights_off": 0
+      },
+      "losses": [
+        {
+          "field": "grid",
+          "grade": "approximate",
+          "detail": "grid offset [0.0, 50.0] px not represented; grid starts at the image corner"
+        },
+        {
+          "field": "windows",
+          "grade": "approximate",
+          "detail": "3 windows written as open portals (see-through)"
+        },
+        {
+          "field": "doors",
+          "grade": "approximate",
+          "detail": "door centre line taken from the FG door shape; open/closed state as saved"
+        },
+        {
+          "field": "lights",
+          "grade": "approximate",
+          "detail": "FG bright/dim falloff reduced to one radius (the larger)"
+        },
+        {
+          "field": "tokens",
+          "grade": "manual",
+          "detail": "tokens placed on FG maps are not read yet"
+        },
+        {
+          "field": "story",
+          "grade": "manual",
+          "detail": "FG story, encounter text and note pages are not converted in phase 2"
+        },
+        {
+          "field": "environment",
+          "grade": "manual",
+          "detail": "FG ambient/tint settings are not mapped; native environment defaults are used"
+        },
+        {
+          "field": "fog-vision",
+          "grade": "manual",
+          "detail": "Native fog starts covered; FG exploration/vision is not converted"
+        },
+        {
+          "field": "native-light-rendering",
+          "grade": "approximate",
+          "detail": "Native writer uses observed UVTT-import light defaults; source color/falloff equivalence is not established"
+        }
+      ],
+      "pins": 0,
+      "resampling": {
+        "source_size_px": [
+          5000,
+          4800
+        ],
+        "output_size_px": [
+          5000,
+          4800
+        ],
+        "applied": false
+      },
+      "uvtt_pixels_per_grid": 100
+    },
+    "native_records": {
+      "walls": 199,
+      "doors": 23,
+      "lights": 66,
+      "image": 1
+    },
+    "calibration": {
+      "units_per_grid": 2.56,
+      "origin": [
+        0.0,
+        0.0
+      ],
+      "source": "computed (Toolkit UVTT import convention)"
+    },
+    "closed_metadata_references": 1,
+    "native_package_sha256": "417c6b90eea6a74e436fa3ce832b970cd78935304fc0c71c813d45897e75e627",
+    "map_sha256": "5c2f73457cfa82c6f35a6042f5b888fb63beccf340559ec3fd46291933115e90"
+  },
+  "automated": {
+    "run": 264,
+    "passed": 260,
+    "skipped": 4,
+    "skip_reason": "Windows symlink creation privilege unavailable"
+  }
+}

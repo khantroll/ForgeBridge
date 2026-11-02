@@ -128,6 +128,50 @@ coverage, but was not launched/visually validated by Codex in this session.
 
 ## Command-line conversion and output
 
+### Fantasy Grounds modules
+
+Use Choose FG module in the GUI, or give convert a `.mod`, an unpacked folder
+containing `definition.xml`, or an unencrypted vault-style ZIP containing one
+module under `modules/<name>/`. Detection is automatic; Foundry inputs retain
+their existing workflow. FG normally keeps `.mod` files in
+`%APPDATA%\SmiteWorks\Fantasy Grounds\modules` (AppData is hidden in Explorer;
+paste this path into Explorer's address bar). Store and Forge `vault` content is
+encrypted and **not supported**. Export an unprotected module from your own
+campaign instead; ForgeBridge never bypasses protection.
+
+```powershell
+forgebridge convert "C:/Sources/MyModule.mod" --list-scenes
+forgebridge convert "C:/Sources/MyModule.mod" --scene-key KEY --squares 40 --out "C:/Conversions/FG-01"
+```
+
+FG rows show the map name, module, READABLE/NEEDS_GRID/ART status and pixels per
+square when known. ART pictures are hidden by default; CLI --include-art or the
+GUI Include artwork (FG ART) checkbox lists them. Selecting ART does not invent
+a grid. For NEEDS_GRID, select the row and choose Squares across or Pixels per
+square. CLI --squares KEY=N and --grid-size KEY=PX may repeat per selected map;
+the bare value works only when exactly one map is selected. A stored gridsize
+always wins. Missing grids refuse that map; no grid is guessed. Fractional grids
+resample the background to whole UVTT pixels per square, with source/output
+dimensions and the approximation recorded.
+
+Map folder defaults to the module display name, then its name; map name defaults
+to the image record name. The same --map-folder, --notes-folder and keyed
+--map-name overrides, Windows sanitization and clash rules apply. Native output
+uses the existing 2.56 units/grid writer. FG pins, story, tokens, ambient/vision
+and unsupported occluders remain explicit manual/unsupported losses; no Foundry
+note/token stages run. Notes folder is reserved for future FG notes, not populated
+with invented content. FG wall counts describe source polylines; native record
+counts describe their straight segments. Native door counts include see-through
+window portals. Source counts, metadata source, pixels/square, resampling and
+graded FG losses appear in conversion-report.json and the GUI summary.
+
+The same explicit --install flags and GUI reviewed installer use full backups,
+refuse conflicts, and create receipts supporting uninstall/--keep-changed. Never
+install a PARTIAL build. FG native output has synthetic/file-level coverage;
+Claude's Toolkit check remains required for a new output.
+
+### Foundry packages
+
 ```powershell
 python -m forgebridge convert "C:/Sources/MyModule.zip" --list-scenes
 python -m forgebridge convert "C:/Sources/MyModule.zip" --out "C:/Conversions/MyModule-01"
