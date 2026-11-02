@@ -26,7 +26,7 @@ fence lines). You need Git and Python 3.12 or newer from python.org; 3.13 and
 cd C:\AMD                       # any folder you like
 git clone https://github.com/khantroll/ForgeBridge.git
 cd .\ForgeBridge                # git clone creates this folder; work inside it
-git checkout cursor/dynamic-lighting-c6b0   # until v0.9 is merged
+git checkout v0.9.0                # the tested release
 py -m venv .venv                # uses your newest installed Python
 .\.venv\Scripts\Activate.ps1
 python -m pip install .
