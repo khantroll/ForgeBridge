@@ -25,11 +25,23 @@ Upper Hall, Servant's Quarters, Library, Secret Room, Conservatory, and token
 **Stoker**. Matches the source scene (7 doors, 18 lights, 1 token, 5 notes) and
 Codex's all-scene build table.
 
-## Toolkit runtime
+## Toolkit 0.5.1.18 runtime (Claude, after the desktop app restarted)
 
-Pending: the connection to the PC dropped while the Toolkit was launching.
-Remaining: open the map, check alignment, Stoker token, a marker note, player view;
-quit without saving.
+- Map Browser → ForgeBridge → **ForgeBridge Manor - 2nd Floor - 37d63c4388**;
+  opens with edit 0/0.
+- Walls follow every room and the garden wall; all 7 doors sit in doorways; lights
+  on the drawn fixtures. Third map size aligned by computed calibration.
+- **Stoker** token present in the drawing room: portrait, one grid square,
+  visible (source: hidden False, width 1).
+- Five room markers present; selecting them shows Servant's Quarters and
+  Conservatory. Double-click did **not** open the note window this session (it did
+  on Manor 1st); repeated attempts only selected the marker/background and raised
+  the edit counter. File check: every marker/token `_contentBasePath`
+  (D000-P007…P011, ForgeBridgeTokens/07ddd1d8…) exists in MyAssets. Treat as a
+  UI-input issue, not a link defect; re-check by hand when convenient.
+- Player view (built-in browser, 1280×720/15): after session-only Clear all fog +
+  Mirror DM view, players see the whole lit floor; no ICE exception.
+- Stopped projecting; quit; **No** to save. Map files unchanged afterwards.
 
 ## UX notes for the GUI
 
