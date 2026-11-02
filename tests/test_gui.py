@@ -176,7 +176,7 @@ class GuiControllerTests(unittest.TestCase):
         with patch('forgebridge.gui.discover', return_value=report), patch('forgebridge.gui.convert') as converter:
             run_headless_gui(scenario)
             converter.assert_called_once_with('test-source', 'test-output', scene_keys=['a-key'], profiles=[],
-                pdf='pages', map_folder='A Adventure', notes_folder='A Adventure', map_names={})
+                pdf=None, map_folder='A Adventure', notes_folder='A Adventure', map_names={})
 
     def test_pack_fallback_and_rediscovery_clear_previous_selection(self):
         row = {'key': 'one', 'id': 'id', 'name': 'Room', 'source_path': 'packs/scenes.db',
