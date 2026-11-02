@@ -1,4 +1,4 @@
-# Fresh-operator run by Jeffrey — 2026-11-02 (in progress)
+# Fresh-operator run by Jeffrey — 2026-11-02 — PASS
 
 Fresh clone to `C:\AMD\fb-fresh`, following docs/USER-GUIDE.md without help.
 
@@ -58,4 +58,19 @@ internal link ("Stairs to the Count's Lair"). This closes the marker→note
 re-check from Manor 2nd Floor (an input problem on the agent side, not a
 conversion defect). Quit without saving (edit counter 4/0).
 
-Remaining: uninstall with `--keep-changed` following only the guide.
+## Uninstall (operator, from the guide)
+
+`forgebridge install --uninstall <receipt> --keep-changed` → exit 0,
+`{"status": "PASS", "removed": 209, "kept_changed": [".../ForgeBridge-Count's
+Lair-eb6e39d18ded7a96234b/D000-P001.rwnote"], "backup_retained": true}`.
+209 + 1 kept = the 210 installed. The kept file is the note the operator opened
+in the Toolkit ("Steps to Lair"), confirming that opening a note rewrites it and
+that --keep-changed preserves it.
+
+## Result
+
+Fresh clone → install → GUI convert/install → Toolkit check → uninstall completed
+by the owner from the guide alone, after the guide fixes found in the first
+minutes (findings 1–5) and two GUI improvements (6–7). **M2.5 fresh-operator
+run: PASS.** Follow-ups (not blockers): expose PDF pages in convert/GUI; build
+output overwritten in GUI (fixed bfca182).
