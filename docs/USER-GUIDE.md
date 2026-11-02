@@ -16,24 +16,55 @@ Toolkit check; this tool does not claim lossless campaign/behavior conversion.
 - Use only source assets you may migrate. Imported JS/macros/active HTML never run.
 - Folder and ZIP input support JSON/JSONL/NeDB and read-only LevelDB snapshots.
 
-From a complete checkout in PowerShell:
+### Quick start (Windows, new users)
+
+Type each line below into PowerShell on its own (do not paste the ```` ``` ````
+fence lines). You need Git and Python 3.12 or newer from python.org; 3.13 and
+3.14 are tested.
 
 ```powershell
-py -3.13 -m venv .venv
+cd C:\AMD                       # any folder you like
+git clone https://github.com/khantroll/ForgeBridge.git
+cd .\ForgeBridge                # git clone creates this folder; work inside it
+git checkout cursor/dynamic-lighting-c6b0   # until v0.9 is merged
+py -m venv .venv                # uses your newest installed Python
+.\.venv\Scripts\Activate.ps1
+python -m pip install .
+forgebridge-gui
+```
+
+The last line opens the ForgeBridge window; continue with *Graphical workflow*
+below. Next time, open PowerShell in the ForgeBridge folder, run
+`.\.venv\Scripts\Activate.ps1`, then `forgebridge-gui` (or double-click
+`forgebridge_gui.pyw`).
+
+- If `Activate.ps1` is blocked, skip it and use `.\.venv\Scripts\python.exe -m pip install .`
+  and `.\.venv\Scripts\forgebridge-gui.exe` instead. Don't change system security settings.
+- If `py` says "No suitable Python runtime found", run `py --list` and use one of the
+  listed versions, for example `py -3.14 -m venv .venv`.
+- Optional self-check (prints a long JSON report; look for `"status": "PASS"` near
+  the top): `forgebridge convert fixtures/synthetic-module --out "$env:TEMP\fb-check-1"`.
+  ForgeBridge never overwrites, so use a new folder name each time.
+
+### Developer setup
+
+From a checkout, without installing:
+
+```powershell
+py -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install -r requirements.txt -r requirements-native-capture.txt
 $env:PYTHONPATH = "$PWD\src"
 python -m forgebridge convert fixtures/synthetic-module --out converted-example
 ```
 
-If activation is blocked, use .venv/Scripts/python.exe directly; don't change
-global security settings. On Linux use python3, source .venv/bin/activate and
-export PYTHONPATH="$PWD/src". Optional requirements-pdf.txt enables PDF pages;
-otherwise PDFs remain retained/manual references. CI runs the synthetic command.
+On Linux use python3, source .venv/bin/activate and export PYTHONPATH="$PWD/src".
+Optional requirements-pdf.txt enables PDF pages; otherwise PDFs remain
+retained/manual references. CI runs the synthetic command.
 
 ## Graphical workflow
 
-After setup, double-click forgebridge_gui.pyw on Windows (it prefers .venv's
+After setup, run `forgebridge-gui`, double-click forgebridge_gui.pyw on Windows (it prefers .venv's
 Pythonw), or run `python -m forgebridge gui`. Tkinter must be installed. No web
 server or browser is needed.
 
