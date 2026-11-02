@@ -1,8 +1,36 @@
 # ForgeBridge
 
-> **Status: UVTT PLUS LOOSE IMAGE AND AUDIO**
->
-> The concept below is unchanged. The current work writes one zipped LevelDB scene as a UVTT file and copies that scene's importable image and audio files beside it. The UVTT object is unchanged. A general converter has not started. See [STATUS.md](STATUS.md).
+ForgeBridge now creates native scene packages directly from Foundry data using
+code-defined Toolkit 0.5.1.18 records. No previous map, manual UVTT import/export
+or calibration is required for the default path. Backgrounds, barriers, doors,
+lights and map-browser thumbnails feed the existing note, room-marker, media and
+token writers. No Arkenforge native files or image payloads ship in the code.
+
+```powershell
+$env:PYTHONPATH = "$PWD\src"
+python -m forgebridge convert "C:/Sources/MyModule.zip" --out "C:/Conversions/MyModule-01"
+```
+
+Output includes a combined ready-to-copy MyAssets tree, per-scene native/UVTT
+packages and one combined source/native loss report. Explicit `--install` uses
+the backed-up add-only installer; builds alone never install. The local GUI is
+available through forgebridge_gui.pyw or `python -m forgebridge gui`.
+**Current release: v0.9.0** — [release notes](docs/RELEASE-NOTES-v0.9.0.md).
+See [the operator guide](docs/USER-GUIDE.md) and
+[walkthrough/install rules](docs/SCENE-IMPORT-RELEASE.md).
+
+The code-defined Crypt geometry matches the cloned-template output field for
+field (including identical bytes in the controlled comparison). Synthetic CI
+covers synthesis, background assets and thumbnails without real native files.
+These are file checks; Claude owns new combined-package Toolkit acceptance.
+Historical direct Crypt/Manor runtime observations remain separately scoped.
+
+Source/UVTT grades are retained separately from native_counts/native_losses.
+Labels remain off. GIF/FPS setup, native manual fog, Foundry vision/exploration,
+procedural animation and actor/stat/behavior fidelity remain explicit gaps.
+Windows LevelDB host intermittency is retained; investigation is frozen, with no
+blind retries or suppressed errors. Pinned profiles/capture/batch remain available
+as advanced workflows. No full campaign-fidelity claim or release tag.
 
 ForgeBridge is a proposed migration/transpilation tool for converting **Foundry Virtual Tabletop** content into the closest practical **Arkenforge** equivalent.
 
@@ -208,3 +236,331 @@ That session is the inventory spike recorded in [STATUS.md](STATUS.md). The curr
 
 This README captures the ForgeBridge concept. A UVTT file plus the scene's importable image and audio files is the current work.
 
+
+## Tested Arkenforge import compatibility (2026-10-08)
+
+Install `requirements.txt` before exporting; Pillow normalizes embedded backgrounds to compatible PNG. UVTT output now uses the native-tested geometry/light structure. Every `--uvtt-out` also writes a `.forgebridge.json` companion preserving the complete selected source scene and loss report. Imported door states are preserved, but blocking capabilities may need enabling in Arkenforge. See [the current compatibility notes](docs/compatibility/UVTT-SLICE.md) for evidence, limitations, and the next source-scene validation.
+
+### Experimental native note smoke test
+
+The native writer is an import experiment, separate from Foundry/UVTT conversion.
+Generate two synthetic linked notes and one three-result table:
+
+```powershell
+$env:PYTHONPATH = "$PWD\src"
+py -m forgebridge.native --out ForgeBridge_Native_Notes_Test.zip
+```
+
+Choose a new output filename; existing files are not overwritten. Extract the
+ZIP and copy its `ForgeBridgeTests` folder from
+`MyAssets/Encyclopedia/Notes/` into the matching folder in your existing
+Arkenforge `MyAssets` directory while the Toolkit is closed. Reopen the Toolkit,
+search for `ForgeBridge Native Test A`, inspect its text/line breaks, click its
+link to B and B's link back, and roll A's table. The three possible results are
+`ForgeBridge result one`, `ForgeBridge result two`, and `ForgeBridge result three`.
+
+The user verified synthetic text, bidirectional links and matching table
+outcomes in the Toolkit. Links require the exact installation path. A subsequent
+startup log showed denied writes under Program Files; it does not establish
+that the generated files damaged installed packs. Visibility remains unverified.
+
+### Experimental native journals from a companion
+
+Convert the already-retained scene journals/pages and supported tables:
+
+```powershell
+$env:PYTHONPATH = "$PWD\src"
+py -m forgebridge.native --companion counts_crypt_links.forgebridge.json --out counts_crypt_native_notes.zip
+```
+
+This does not read the original Foundry package again. The ZIP includes a scene
+index, journal indexes, separate page notes, table notes, `INSTALL.txt`, a
+conversion report and the unchanged source companion. Copy only the generated
+`ForgeBridge-...` folder into the existing `MyAssets\Encyclopedia\Notes` directory.
+Keep its name and filenames unchanged: native links target the exact metadata
+paths. Existing output ZIPs are never overwritten. Different retained content
+gets a different folder to avoid overwriting a previous import.
+
+Resolved journal/page/table UUIDs become native links. Additional pages are
+checked against already-retained documents only; unresolved links remain literal
+source references and are reported. HTML becomes plain text; media are explicit
+references rather than copied assets. Non-BMP text characters are replaced and
+reported. Original HTML, source permissions and all unknown data remain in the
+companion. Only contiguous, unit-weight text outcomes on `1dN` replacement
+tables become rollable; other table semantics remain readable references.
+
+Review visibility before player use. The user verified Crypt room/rules links
+and table rolls; handout files remain missing. This notes-only command generates
+no native map or actor conversion;
+the report retains scene-note grid positions and exact native targets for later
+map-placement work. See `docs/research/NATIVE-NOTES.md` for evidence and limits.
+
+### Experimental markers in an exported native map
+
+`forgebridge.native_map` copies a single manually saved map export and inserts
+the companion's room-note markers using an explicitly calibrated transform.
+It requires an existing native note marker as its template. For the supplied
+Crypt calibration export, one grid square is 2.56 native units and the image's
+upper-left corner is (0, 0):
+
+```powershell
+$env:PYTHONPATH = "$PWD\src"
+py -m forgebridge.native_map --template-pack assets_with_markers.zip --companion counts_crypt_links.forgebridge.json --out counts_crypt_native_map.zip --name ForgeBridge_Crypt_With_Notes --units-per-grid 2.56 --origin 0 0 --remove-marker "FB Cal A" --remove-marker "FB Cal B" --remove-marker "FB Cal C"
+```
+
+The ZIP contains a separately named map, generated notes, and the exported
+media. Existing image, wall, door and light records are preserved. It does not
+build a native map from scratch or infer a transform for other maps. Output
+must use a new filename. The user verified the Crypt markers open their notes and persist after
+save/reload. Player visibility remains unverified. Permanent room labels are optional and off by default.
+
+To generate editable native room labels, the template export must contain a
+text object whose text matches `--text-template` (default `Igor's Room`). Use
+`--marker-labels on`; use `--marker-labels off` or omit the option to add none.
+The switch is an **export option**, not an added Toolkit control.
+
+For the supplied saved Crypt map with native text:
+
+```powershell
+$env:PYTHONPATH = "$PWD\src"
+py -m forgebridge.native_map --template-pack MyAssets_with_text.zip --companion counts_crypt_links.forgebridge.json --out counts_crypt_labels.zip --name ForgeBridge_Crypt_With_Labels --units-per-grid 2.56 --origin 0 0 --template-name "Igor's Room" --marker-labels on
+```
+
+Matching existing room markers keep their exact native positions and UIDs;
+exported native notes are preserved. The template's manual text object is
+replaced with one generated label per room. Label style/font/size come from
+that native object. Labels default to 1.25 grid squares right of the marker;
+`--label-offset X Y` changes this offset (positive Y means down). Generated
+labels have Hidden from players enabled, do not emit light or block movement,
+light, vision or sound, and remain separate editable text objects. Verify their
+appearance and Player View before use. Re-exporting a labelled map with labels
+off removes ForgeBridge-labelled text objects; unrelated manual text remains.
+
+### Collect journal handout files
+
+Labels are deferred for further testing. Keep `--marker-labels off` (the default).
+The Toolkit's simulated view left selected and deselected labels visible while
+the map image disappeared; this is not a successful player visibility test.
+
+To collect image, PDF, audio and video references from the retained journal/table
+documents, use the original Foundry package and the existing companion:
+
+```powershell
+$env:PYTHONPATH = "$PWD\src"
+py -m forgebridge.handouts --package "C:\AMD\lob-counts_manor-pk-v13.zip" --companion counts_crypt_links.forgebridge.json --out counts_crypt_handouts_v1.zip
+```
+
+Extract this ZIP to a separate folder. `assets/` contains original media;
+`handout-report.json` maps references and journal fields to those files, records
+sizes/hashes, and distinguishes missing, external, other-package, rejected and
+unsupported references. Repeated references share one file; identical basenames
+in different source directories remain distinct. URL-encoded local paths are
+decoded, with traversal and symlink checks. No URLs are fetched and no source
+content is executed. Collection is limited to 64 MiB per file and 256 MiB total.
+
+This is a collection for inspection, not an Arkenforge import pack: do not copy
+it into MyAssets. Existing native note links are unchanged. Native handout
+fields/media linking still need a controlled exported sample and Toolkit test.
+Use a new output filename; existing files are not overwritten.
+
+### Native image attachment test
+
+A controlled exported image note established `ArkenNoteFieldMedia` and its
+`_contentPathRelative` link to native media `.rwmeta`. The supplied image and
+thumbnail are embedded PNGs in `.rwfile` and `.rwmeta` respectively. Generate
+a separate test note from this small export:
+
+```powershell
+py -m forgebridge.native_media --template-pack FB_Media_notes.zip --out native_image_test.zip
+```
+
+Follow its INSTALL.txt. It generates a fresh note with a native Media field,
+relocates the supplied image asset pair while keeping its original filename,
+metadata and complete file bytes. It does not overwrite the original note/map, add room labels,
+convert arbitrary Foundry images or handle PDFs. Toolkit display and persistence
+must pass before integrating source handouts. Native visibility is unverified.
+
+The first image test reported a missing `.rwfile` despite both files being
+present. The revised v2 test retains original asset names/provenance and the
+source media-category folder layout. Its note is **ForgeBridge Generated Image
+Test v2**. The exact v1 lookup cause remains unconfirmed.
+
+The user subsequently confirmed v2 image display, note reopening and Toolkit
+restart all pass. The exact v1 lookup cause is still uncertain.
+
+### Attach collected images to converted journal notes
+
+Use the existing source companion, collected handout bundle and small exported
+native media template. Keep all three input files in the working folder:
+
+```powershell
+$env:PYTHONPATH = "$PWD\src"
+py -m forgebridge.native_media --template-pack FB_Media_notes.zip --companion counts_crypt_links.forgebridge.json --media-bundle counts_crypt_handouts_v1.zip --out counts_crypt_image_notes_v1.zip
+```
+
+The output supplies generated notes and native image pairs. Follow INSTALL.txt:
+back up MyAssets, then merge the contents and replace matching generated note
+files. This regenerates notes from the source companion, so retain any manual
+edits in the backup. Note folder/filenames and room-marker targets are unchanged.
+No map or room labels are emitted. Image pages and inline images get native
+Media fields; repeated references share one asset and duplicate occurrences in
+a note share one field. PNG/JPEG/static WebP/GIF are re-encoded as RGBA PNG with
+aspect-preserving thumbnails. The template's native names/filename agree and
+its media-category layout is retained. The user confirmed Count's Crypt source-image
+display, proportions, note reopening and Toolkit restart. Other packages still
+require Toolkit checks; native map asset placement is unverified. Attachments
+follow each note's source occurrence order and use readable source-filename
+titles (for example, Image — Raven skull cane). They remain below the text;
+original HTML layout is not reproduced.
+
+The handout report's scene, reference origins and copied asset sizes/hashes must
+match the current companion and ZIP. PDFs and animations remain references;
+collection gaps and failed images are reported. `conversion-report.json` lists
+native image assets, attached note targets and unresolved media. Check portrait
+and landscape handouts, room-note navigation, and note/restart persistence.
+
+### Optional PDF handout page images
+
+Arkenforge's published import formats do not list PDF. To view collected PDF
+handouts inside notes, install the optional renderer and enable page images:
+
+```powershell
+py -m pip install -r requirements-pdf.txt
+py -m forgebridge.native_media --template-pack FB_Media_notes.zip --companion counts_crypt_links.forgebridge.json --media-bundle counts_crypt_handouts_v1.zip --pdf-pages --out counts_crypt_pdf_notes_v1.zip
+```
+
+This keeps existing note/marker paths and image attachments. Each PDF becomes
+numbered native Media fields in source/page order. Successfully converted
+original PDFs are retained byte-for-byte in `original-pdfs/` outside MyAssets,
+with source references and hashes in the conversion report. They are page
+images, not searchable text or interactive PDFs. Rendering is up to 144 dpi,
+capped at 2400 pixels per side, 32 pages per PDF and 128 pages per package.
+Invalid/encrypted PDFs remain explicit references; package size limits still
+apply. Without `--pdf-pages`, PDF references behave as before.
+
+Back up MyAssets and any manually edited generated notes before replacing them.
+Check a single-page letter and all six pages of Court of Ravenloft for readable
+text, correct page order, note reopening and Toolkit restart. PDF page runtime
+behavior is pending; labels remain off and player visibility is unverified.
+
+### Readable note folders
+
+Native map and source-media commands accept `--note-folder`, for example
+`--note-folder "ForgeBridge - Manor - 2nd Floor"`. Use the same value for both
+commands so generated map markers and image/PDF notes share their target paths.
+The folder must be one portable name, without slashes or reserved Windows names.
+Choose a distinct folder for each scene/package. Without the option, existing
+hash-based folder paths stay compatible. Navigation note titles now use the
+scene name followed by `— Start Here`.
+
+Changing this option changes note paths: regenerate map markers and notes
+together in a separate map copy. Renaming a folder in File Explorer alone will
+break references. Keep the old map and notes until the new copy is verified.
+
+### One-command native package build
+
+After exporting the scene companion and saving/exporting its calibrated native
+Arkenforge map, build markers, linked notes, images and optional PDF pages in
+one operation. Install `requirements.txt` and, for PDFs, `requirements-pdf.txt`.
+Use a map export containing the `FB Cal A` marker and its note. For the tested
+second-floor inputs:
+
+```powershell
+$env:PYTHONPATH = "$PWD\src"
+py -m forgebridge.package --package "C:\AMD\lob-counts_manor-pk-v13.zip" --companion counts_manor_second_floor_test.forgebridge.json --map-template "MyAssets(1).zip" --media-template FB_Media_notes.zip --name "Manor - 2nd Floor - ForgeBridge" --note-folder "ForgeBridge - Manor - 2nd Floor" --units-per-grid 2.56 --pdf-pages --out manor_second_floor_complete.zip
+```
+
+`--package` collects assets from the original source. Alternatively use
+`--media-bundle` with a previously collected bundle matching this companion.
+The command produces one ZIP, conversion report and INSTALL.txt; the original
+PDFs and collection report remain outside MyAssets. Labels stay off, and native
+marker icons are retained. Scale/origin must be calibrated to the supplied map;
+2.56 is the tested second-floor value, not a universal assumption.
+
+If the export includes existing generated notes in the selected note folder,
+the command stops. Back up those notes and pass `--regenerate-notes` only when
+rebuilding from source is intended. Other exported assets may not be silently
+replaced with conflicting media. Existing output filenames are never overwritten.
+Inputs must come from the same scene/package. The native map export and Toolkit
+import steps are still necessary; this command does not control Arkenforge.
+
+
+## Experimental placed-token slice
+
+This requires an exported native map containing one manually created **Token**
+control with a native Size field, its note/image files and dependencies. Save and
+reopen that control first: Toolkit 0.5.1.18 normalizes transform-only sprite scale
+from Size. Preserve the original control export and use a distinct output/map name.
+
+```powershell
+$env:PYTHONPATH = "$PWD\src"
+py -m forgebridge.native_tokens --template-pack CONTROL.zip --companion SCENE.forgebridge.json --package MODULE_FOLDER --out NEW-TOKENS.zip --name "Separate Token Test" --control-name "Stoker_token_1" --units-per-grid 2.56 --control-units-per-grid 2.56 --origin 0 0
+```
+
+The values above describe the tested control, not universal defaults. Calibrate
+`--units-per-grid` as native units per **source** square and
+`--control-units-per-grid` as native units per **native Size** square. The origin is
+the native upper-left of the unpadded background. Source padding (rounded to source
+grid cells), grid size and token half-footprint enter center placement. For the
+manor, (2000,2800) source pixels become center (12.5,18.5) source squares, then
+(32,-47.36) native units with the observed calibration.
+
+This slice supports square footprints, centered static square textures and positive
+texture scales up to one. Texture scaling is baked into a transparent canvas;
+Size controls the footprint. It writes identity, name, image, position, Size,
+rotation and hidden flags. Asymmetric 0/90/180/270-degree arrows and hidden-state
+round trips pass in actual player output on the documented combined test scene,
+including Toolkit restart. Other scenes still require validation. Actors, statistics, scripts, vision, fog, lights and combat
+behavior remain retained source data with explicit report entries. Unsupported
+geometry/media are reported rather than replaced. The archive preserves the
+original control map/note assets because native metadata can link back to them;
+installation must abort on conflicting existing content. The command does not
+install anything and refuses output overwrite or a colliding map name.
+
+To include the same token writer in the complete scene package, use the original
+source directory and add the calibrated token control options:
+
+```powershell
+py -m forgebridge.package --package MODULE_FOLDER --companion SCENE.forgebridge.json --map-template FRESH-NATIVE-EXPORT.zip --marker-template-pack MARKER-CONTROL.zip --media-template IMAGE-NOTE-CONTROL.zip --name "Separate Combined Scene" --note-folder "Separate Scene Notes" --units-per-grid 2.56 --origin 0 0 --token-control-pack TOKEN-CONTROL.zip --token-control-name "Stoker_token_1" --control-units-per-grid 2.56 --pdf-pages --out NEW-COMBINED.zip
+```
+
+Omit `--marker-template-pack` when the geometry export already contains the
+calibration marker control. The builder clones controls into the same generated
+map, preserves existing map content and original map/metadata backlinks, includes
+required control dependencies, and rejects conflicting or missing references.
+Token assets are deterministic and namespaced by output map name to prevent
+different scene copies from sharing mutable token notes. No ZIP surgery is needed.
+The reports retain full source data and per-token rejection reasons; a missing
+texture does not discard other supported tokens. Install only absent or identical
+files and stop on conflicts with existing content. GIF import/playback remains a
+manual Arkenforge operation; procedural Foundry light animations have no proven
+mapping. Neither native fog operation nor token hidden state implements Foundry
+vision/fog conversion.
+
+## Multiple calibrated scenes
+
+Preflight existing profiles together, then build separate non-overwriting scene
+packages with one combined dependency/identity/loss report:
+
+```powershell
+py -m forgebridge.scene_batch --profile profiles/manor.json --profile profiles/crypt.json --preflight
+py -m forgebridge.scene_batch --profile profiles/manor.json --profile profiles/crypt.json --out builds/two-scenes-v1
+```
+
+See [batch workflow](docs/SCENE-BATCH.md) and the
+[M0–M2 acceptance matrix](docs/ACCEPTANCE-MATRIX.md). These commands are file-only;
+no installation or runtime acceptance is implied. Bounded fog is **BLOCKED**,
+waiting for a Claude built-in-browser run.
+
+## Start here
+
+Use the [operator guide](docs/USER-GUIDE.md) for fresh-checkout setup, the single
+`python -m forgebridge convert PACKAGE --out NEW_DIR` entry point, output review,
+supported versions/limits, add-only backup/install, rollback and troubleshooting.
+Default conversion now uses schema-built native synthesis and produces MyAssets
+content; profiles are optional. Builds never install without explicit --install.
+
+The optional local front end is available through `forgebridge_gui.pyw` (Windows
+double-click after setup) or `python -m forgebridge gui`. It provides source/scene
+selection, export and readable loss review; installation is enabled only for
+reviewed native outputs. See the [operator guide](docs/USER-GUIDE.md).

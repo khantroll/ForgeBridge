@@ -1,0 +1,182 @@
+[
+  {
+    "map": "ForgeBridge Player Control 2026-10-18",
+    "sha256": "91589bf6df3314a929e33416e23fa4730434dba46da982e60e60a1ab0034009a",
+    "scope": "saved-file settings; not runtime proof",
+    "settings": {
+      "_timeOfDay": 0.5,
+      "_fogLevelDataFull": {
+        "Version": 1,
+        "Comparer": {},
+        "HashSize": 3,
+        "KeyValuePairs": {
+          "array_type": 3,
+          "lengths": [
+            1
+          ],
+          "lower_bounds": null,
+          "items": [
+            {
+              "ref": -32
+            }
+          ]
+        }
+      },
+      "_fogEnabled": false,
+      "_fogMode": {
+        "value__": 1
+      },
+      "_fogPersists": true,
+      "_fogColour": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "_customAmbientColour": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      },
+      "_playerScreenLocation": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "_playerScreenSize": 19.807201385498047
+    }
+  },
+  {
+    "map": "ForgeBridge Multi Scene 2026-10-16",
+    "sha256": "9f704435b385c3e4bac645bba994fd89554ff01c2d1ec5da47ebe40fb451e6b6",
+    "scope": "saved-file settings; not runtime proof",
+    "settings": {
+      "_timeOfDay": 0.5,
+      "_fogLevelDataFull": {
+        "Version": 1,
+        "Comparer": {},
+        "HashSize": 3,
+        "KeyValuePairs": {
+          "array_type": 3,
+          "lengths": [
+            1
+          ],
+          "lower_bounds": null,
+          "items": [
+            {
+              "ref": -122
+            }
+          ]
+        }
+      },
+      "_fogEnabled": true,
+      "_fogMode": {
+        "value__": 1
+      },
+      "_fogPersists": true,
+      "_fogColour": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "_customAmbientColour": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      },
+      "_playerScreenLocation": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "_playerScreenSize": 19.804723739624023
+    }
+  },
+  {
+    "map": "ForgeBridge Profile Manor 2026-10-16",
+    "sha256": "48c314bb133881f1b3d7c14645a6da266ea01942f764ddf9c64d906659d7ea81",
+    "scope": "saved-file settings; not runtime proof",
+    "settings": {
+      "_timeOfDay": 0.5,
+      "_fogLevelDataFull": {
+        "Version": 1,
+        "Comparer": {},
+        "HashSize": 3,
+        "KeyValuePairs": {
+          "array_type": 3,
+          "lengths": [
+            1
+          ],
+          "lower_bounds": null,
+          "items": [
+            {
+              "ref": -118
+            }
+          ]
+        }
+      },
+      "_fogEnabled": true,
+      "_fogMode": {
+        "value__": 1
+      },
+      "_fogPersists": true,
+      "_fogColour": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "_customAmbientColour": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      },
+      "_playerScreenLocation": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "_playerScreenSize": 57.599998474121094
+    }
+  },
+  {
+    "map": "ForgeBridge Profile Crypt 2026-10-16",
+    "sha256": "d08058217fd719936d6a84ce88bbb7a61f331cacd67b9a80759fd2823217f87e",
+    "scope": "saved-file settings; not runtime proof",
+    "settings": {
+      "_timeOfDay": 0.5,
+      "_fogLevelDataFull": {
+        "Version": 1,
+        "Comparer": {},
+        "HashSize": 3,
+        "KeyValuePairs": {
+          "array_type": 3,
+          "lengths": [
+            1
+          ],
+          "lower_bounds": null,
+          "items": [
+            {
+              "ref": -349
+            }
+          ]
+        }
+      },
+      "_fogEnabled": true,
+      "_fogMode": {
+        "value__": 1
+      },
+      "_fogPersists": true,
+      "_fogColour": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "_customAmbientColour": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      },
+      "_playerScreenLocation": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "_playerScreenSize": 86.39999389648438
+    }
+  }
+]

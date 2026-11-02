@@ -1,0 +1,9 @@
+{
+  "description": "ForgeBridge synthetic three-frame signal; original technical fixture, 600ms/frame, red FB1, blue FB2, green FB3",
+  "sha256": {
+    "forgebridge-signal.gif": "3e0c072a023c717c18b11e15f6e8e01c4a9a23e49450b79fd5be54311da48f8d",
+    "frame-01.png": "3fb5d9ef92290eb29e44e4fc50c37ccb0204dabcfc2c29855765a4630f605a23",
+    "frame-02.png": "5e5211d887f11b09473a24e0efa89c5b90d8f8b2cac7789a318d9d616d26f90f",
+    "frame-03.png": "cfc87171c6b781ec55fed763694d9d214a9c7ebf48b920471f9ca751e7ab7476"
+  }
+}

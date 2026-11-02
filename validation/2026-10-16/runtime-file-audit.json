@@ -1,0 +1,116 @@
+{
+  "scope": "file inspection only; runtime observations are in VALIDATION.md",
+  "packages": {
+    "runtime-token-install.zip": {
+      "sha256": "257f08a197aa00a5e1886b9e9f9a377a2ddc4a02c8650dd0c68252a20d69926d",
+      "bytes": 15066357,
+      "native_files_parsed": 14,
+      "closed_metadata_references": 15
+    },
+    "runtime-fresh-install.zip": {
+      "sha256": "4d49c52d88b65ce716db85e75527569b4a1c823dc58ac425d629cd2c48b8671d",
+      "bytes": 58032438,
+      "native_files_parsed": 176,
+      "closed_metadata_references": 161
+    }
+  },
+  "saved_maps": {
+    "ForgeBridge Token Slice 2026-10-16": {
+      "sha256": "cb89ac912b598a65a5252d024875e92d83faa464118d7c677afaf6b083b91134",
+      "tokens": [
+        {
+          "name": "Stoker_token_1",
+          "position": {
+            "x": 56.31999969482422,
+            "y": -41.15850830078125
+          },
+          "scale": {
+            "x": 1.0240000486373901,
+            "y": 1.0240000486373901
+          }
+        },
+        {
+          "name": "Stoker",
+          "position": {
+            "x": 34.55999755859375,
+            "y": -47.36000061035156
+          },
+          "scale": {
+            "x": 0.5120000243186951,
+            "y": 0.5120000243186951
+          }
+        }
+      ],
+      "animation_properties": []
+    },
+    "ForgeBridge Runtime 2026-10-15 Blank": {
+      "sha256": "47b7122c6aad998da64db6fc4b53388bdd153dca6fd589b140ef0e4703a11ab5",
+      "tokens": [],
+      "animation_properties": [
+        {
+          "_playing": true,
+          "_currentFrame": 0,
+          "_framesPerSecond": 2.0,
+          "_noOfFrames": 1.0,
+          "_triggered": false,
+          "_startFrame": 0.0,
+          "_endFrame": 0.0,
+          "_destroyAfterOnePlay": false,
+          "_delay": false,
+          "_delayTime": 0.0,
+          "_delayVariance": 0.0,
+          "_deactivateOnDelay": false,
+          "_ghostTileFrame": 0
+        },
+        {
+          "_playing": true,
+          "_currentFrame": 0,
+          "_framesPerSecond": 2.0,
+          "_noOfFrames": 1.0,
+          "_triggered": false,
+          "_startFrame": 0.0,
+          "_endFrame": 0.0,
+          "_destroyAfterOnePlay": false,
+          "_delay": false,
+          "_delayTime": 0.0,
+          "_delayVariance": 0.0,
+          "_deactivateOnDelay": false,
+          "_ghostTileFrame": 0
+        },
+        {
+          "_playing": true,
+          "_currentFrame": 0,
+          "_framesPerSecond": 2.0,
+          "_noOfFrames": 3.0,
+          "_triggered": false,
+          "_startFrame": 0.0,
+          "_endFrame": 0.0,
+          "_destroyAfterOnePlay": false,
+          "_delay": false,
+          "_delayTime": 0.0,
+          "_delayVariance": 0.0,
+          "_deactivateOnDelay": false,
+          "_ghostTileFrame": 0
+        }
+      ]
+    },
+    "ForgeBridge Fresh Combined 2026-10-16": {
+      "sha256": "9bb7582719689c43b686c526686bc85f1296fb028d1936eb4f658450e9d88cc8",
+      "tokens": [
+        {
+          "name": "Stoker_token_1",
+          "position": {
+            "x": 56.31999969482422,
+            "y": -41.15850830078125
+          },
+          "scale": {
+            "x": 1.0240000486373901,
+            "y": 1.0240000486373901
+          }
+        }
+      ],
+      "animation_properties": []
+    }
+  },
+  "new_files_installed": 100
+}

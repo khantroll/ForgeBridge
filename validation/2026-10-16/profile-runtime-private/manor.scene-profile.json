@@ -1,0 +1,75 @@
+{
+  "format": "forgebridge.scene-profile",
+  "version": 1,
+  "source": {
+    "package_id": "lob-counts_manor-pk-v13",
+    "scene_id": "d0XKyRuR4GqdOagf",
+    "package": {
+      "path": "../../../lob-counts_manor-pk-v13",
+      "sha256": "e48a9b2035a2460dc413b02290e1f9fd2fde1cb228e4ba391b7e38ddd33a4420"
+    },
+    "companion": {
+      "path": "../../2026-10-15/manor-second-floor.forgebridge.json",
+      "sha256": "e0c473375b7c5a200b33778f266bc27ccaef0bb4ff3b7cb73bcad1df955856b7"
+    },
+    "scene_sha256": "c4d62e2b537026466c36771374bb67a2cc9615de373f0b71e292413254b5a582",
+    "selector": {
+      "source_path": "packs/adventure-5e",
+      "parent_adventure_id": "N63YevXMYeDZPCMh"
+    }
+  },
+  "geometry": {
+    "export": {
+      "path": "manor-native.zip",
+      "sha256": "80aa1df507dd9b3f77bbe047a1fc776f5d712df4f01a6182a80de566170fba5c"
+    },
+    "map_path": "MyAssets/Maps/ForgeBridge Runtime 2026-10-15 Fresh Manor 2nd.rwmap",
+    "calibration": {
+      "package_id": "lob-counts_manor-pk-v13",
+      "scene_id": "d0XKyRuR4GqdOagf",
+      "scene_sha256": "c4d62e2b537026466c36771374bb67a2cc9615de373f0b71e292413254b5a582",
+      "geometry_sha256": "80aa1df507dd9b3f77bbe047a1fc776f5d712df4f01a6182a80de566170fba5c",
+      "origin": [
+        0.0,
+        0.0
+      ],
+      "units_per_grid": 2.56,
+      "evidence": "VALIDATION.md fresh map calibration: 3000x4000, native center (38.4,-51.2), scale2.56; FB Cal A UI (.5,-.5). Origin0; grid100.",
+      "selector": {
+        "source_path": "packs/adventure-5e",
+        "parent_adventure_id": "N63YevXMYeDZPCMh"
+      },
+      "map_path": "MyAssets/Maps/ForgeBridge Runtime 2026-10-15 Fresh Manor 2nd.rwmap"
+    }
+  },
+  "controls": {
+    "marker": {
+      "input": {
+        "path": "../../../MyAssets(1).zip",
+        "sha256": "1adf7e29dc7a89ce77234169c6bcb86264ee9bd21f1bfdaff942b5363735bbc0"
+      },
+      "name": "FB Cal A"
+    },
+    "media": {
+      "input": {
+        "path": "../../../FB_Media_notes.zip",
+        "sha256": "90403ba571bc61d09cab64539f1cf3642196c98b5f1eb289760d58fd9736cd83"
+      }
+    },
+    "token": {
+      "input": {
+        "path": "manor-native.zip",
+        "sha256": "80aa1df507dd9b3f77bbe047a1fc776f5d712df4f01a6182a80de566170fba5c"
+      },
+      "name": "Stoker_token_1",
+      "units_per_size_square": 2.56
+    }
+  },
+  "output": {
+    "map_name": "ForgeBridge Profile Manor 2026-10-16",
+    "note_namespace": "ForgeBridge Profile Manor 2026-10-16"
+  },
+  "options": {
+    "pdf_pages": false
+  }
+}

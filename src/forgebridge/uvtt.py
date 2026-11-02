@@ -11,9 +11,10 @@ read 2026-10-03. That page's dateModified is 2026-08-22.
 Core fields used: format, resolution.map_origin, resolution.map_size,
 resolution.pixels_per_grid, line_of_sight, objects_line_of_sight, portals
 (position, bounds, rotation, closed, freestanding), environment.baked_lighting,
-environment.lights (position, color), and image.
+environment.ambient_light, top-level lights, and image.
+Exact point/color shapes follow a user-supplied Arkenforge export tested 2026-10-08.
 software and creator are Arkenforge extras on that page, so they are omitted.
-The page does not publish the format decimal and does not show a bounds example.
+The tested Arkenforge export uses format 1.0 and absolute {x, y} portal bounds.
 
 Grades use that page plus the public Toolkit notes recorded in
 docs/research/ARKENFORGE.md (retrieved 2026-10-03). native is a UVTT field this
@@ -25,19 +26,24 @@ invented.
 Foundry constants used for this slice, Version 14 API, retrieved 2026-10-03:
 GRID_TYPES.SQUARE is 1. WALL_DOOR_TYPES values that become portals are 1 and 2.
 WALL_DOOR_STATES: CLOSED 0, OPEN 1, LOCKED 2.
-LightData.bright, LightData.dim, and LightData.shadows are numbers. The light
-page does not state a unit for bright or dim. UVTT shadows is a bool, so those
-three are left out of the file.
+Foundry light radii are stored in scene distance units; grid.distance is the number of
+those units per square. UVTT range is in squares, so the outer Foundry radius is
+converted by grid.distance. Separate bright/dim radii and richer rendering properties
+are reported as approximations rather than silently flattened.
 """
 
 from __future__ import annotations
 
 import base64
 import json
+import io
 import math
+import stat
 import tempfile
 import zipfile
 from pathlib import Path
+
+from PIL import Image, UnidentifiedImageError
 
 from forgebridge.inventory import (
     MAX_ENTRIES,
@@ -49,6 +55,7 @@ from forgebridge.inventory import (
     inventory_path,
 )
 from forgebridge.leveldb import LevelDBUnavailable, read_leveldb_directory
+from forgebridge.notes import correlate_notes
 from forgebridge.validate import InventoryFatal
 
 UVTT_SOURCE = "https://arkenforge.com/universal-vtt-files/"
@@ -92,6 +99,9 @@ SCENE_FIELDS_EXPLAINED = {
     "_id",
     "name",
     "width",
+    "padding",
+    "background",
+    "dimensions",
     "height",
     "img",
     "grid",
@@ -105,6 +115,15 @@ SCENE_FIELDS_EXPLAINED = {
     "notes",
     "regions",
     "flags",
+    "environment",
+    "ambient_light",
+    "ambientLight",
+    "tokenVision",
+    "fog",
+    "fogExploration",
+    "globalLight",
+    "playlist",
+    "playlistSound",
 }
 
 RETAINED_SKIP = {
@@ -137,7 +156,8 @@ _MANUAL_DOCUMENT = {
     ),
     "JournalEntry": (
         "Notes exist in the Toolkit, including adventure templates (v0.5.0.0, 2026-01-13). "
-        "No journal file format was published, and the page text was not interpreted."
+        "Linked journal/page source data is correlated in the ForgeBridge companion. "
+        "No native Arkenforge note writer is implemented."
     ),
     "RollTable": (
         "Rollable tables exist in the Toolkit (v0.5.0.0, 2026-01-13). "
@@ -155,7 +175,7 @@ _MANUAL_DOCUMENT = {
 
 
 def build_uvtt_slice(package: Path, scene_id: str) -> dict:
-    """Return {"uvtt", "loss_report"} for one scene in a module folder or zip."""
+    """Return UVTT, report, full source scene, and correlated scene notes."""
     if package.is_symlink():
         raise InventoryFatal("UVTT slice does not follow a symlinked package root.")
     if package.is_file():
@@ -169,11 +189,28 @@ def build_uvtt_slice(package: Path, scene_id: str) -> dict:
     return _slice_directory(package, scene_id, [])
 
 
-def _slice_directory(package: Path, scene_id: str, rejected_zip_entries: list[str]) -> dict:
-    inventory = inventory_path(package)
-    scene_row = _scene_row(inventory, scene_id)
+def _slice_directory(package: Path, scene_id: str, rejected_zip_entries: list[str], *, inventory=None, scene_row=None) -> dict:
+    inventory = inventory_path(package) if inventory is None else inventory
+    scene_row = _scene_row(inventory, scene_id) if scene_row is None else scene_row
     payload = _load_scene_payload(package, scene_row, scene_id)
     uvtt, lines = _scene_to_uvtt(package, payload)
+    scene_notes = _scene_notes(package, inventory, scene_row, payload)
+    for note in scene_notes['notes']:
+        lines.append(_line(MANUAL, 'note-journal-correlation',
+            f"note {note['note_index']}, status {note['status']}. "
+            "See scene_notes in the companion JSON and the .notes.txt GM reference. "
+            "These preserve/correlate source data; they do not create native Arkenforge notes.",
+            document_type='Note', id=note.get('note_id'), path='entryId'))
+    for error in scene_notes['read_errors']:
+        lines.append(_line(UNSUPPORTED, 'journal-source-read', error, document_type='JournalEntry'))
+    dependencies = scene_notes['dependencies']
+    if dependencies['references'] or dependencies['truncated']:
+        lines.append(_line(MANUAL, 'journal-dependencies',
+            f"Linked-content resolution counts: {json.dumps(dependencies['counts'], sort_keys=True)}; "
+            f"traversal limited: {dependencies['truncated']}. "
+            "Full referenced journal/table source objects and exact link statuses are in scene_notes.dependencies. "
+            "The .notes.txt reference includes linked text and table ranges/weights; no native notes or table rolls are created.",
+            document_type='JournalEntry'))
     lines.extend(_other_document_lines(inventory, scene_id))
     lines.extend(_behavior_lines(inventory))
     lines.extend(_asset_lines(inventory, _image_ref(lines), scene_id))
@@ -181,7 +218,86 @@ def _slice_directory(package: Path, scene_id: str, rejected_zip_entries: list[st
     lines.extend(_package_file_lines(inventory))
     lines.extend(_rejected_zip_lines(rejected_zip_entries))
     report = _report(scene_id, payload.get("name"), lines)
-    return {"uvtt": uvtt, "loss_report": report}
+    return {"uvtt": uvtt, "loss_report": report, "source_scene": payload, "scene_notes": scene_notes}
+
+
+def _journal_pack_payloads(package: Path, row: dict) -> list[dict]:
+    """Read complete source objects using the same containment and size limits."""
+    safe, problem = _safe_ref(row.get('source_path'))
+    if problem or not safe:
+        raise InventoryFatal('journal pack path was rejected')
+    storage = row.get('storage')
+    if storage == 'leveldb':
+        src = _package_subdir(package, safe)
+        if src is None:
+            raise InventoryFatal('journal pack directory was rejected')
+        try:
+            result = read_leveldb_directory(src, max_entries=MAX_ENTRIES, max_value_bytes=MAX_ENTRY_BYTES)
+        except LevelDBUnavailable as exc:
+            raise InventoryFatal(str(exc)) from exc
+        if not result.opened:
+            raise InventoryFatal(f'journal pack {safe} could not be opened')
+        # Never silently report a partial pack as fully resolved.
+        if result.diagnostics:
+            raise InventoryFatal(f'journal pack {safe} has read diagnostics; inspect its inventory before correlation')
+        return [p for kind, p in result.documents if kind == row.get('document_type') and isinstance(p, dict)]
+    if storage not in {'json', 'nedb'}:
+        raise InventoryFatal(f'journal pack {safe} has unsupported storage {storage!r}')
+    path = _package_file(package, safe)
+    if path.stat().st_size > MAX_ENTRY_BYTES:
+        raise InventoryFatal('journal pack exceeds the read budget')
+    try:
+        text = path.read_text(encoding='utf-8-sig')
+    except (OSError, UnicodeError) as exc:
+        raise InventoryFatal(f'journal pack {safe} was not readable text') from exc
+    return _payloads_json(text) if storage == 'json' else _payloads_jsonl(text)
+
+
+def _scene_notes(package: Path, inventory: dict, scene_row: dict, scene: dict) -> dict:
+    candidates, errors = [], []
+    parent_id = _parent_adventure_id(scene_row)
+    rows = []
+    if parent_id:
+        rows.append({**scene_row, 'document_type': 'Adventure'})
+    rows.extend(row for row in inventory['documents'] if row.get('document_type') in {'JournalEntry', 'RollTable'})
+    seen = set()
+    if scene.get('notes'):
+        for row in rows:
+            key = (row.get('source_path'), row.get('document_type'))
+            if key in seen:
+                continue
+            seen.add(key)
+            try:
+                payloads = _journal_pack_payloads(package, row)
+            except (InventoryFatal, OSError) as exc:
+                errors.append(str(exc))
+                continue
+            source = {'pack': row.get('pack'), 'source_path': row.get('source_path'),
+                      'parent_adventure_id': parent_id if row['document_type'] == 'Adventure' else None,
+                      'pack_id': None if row['document_type'] == 'Adventure' else
+                          f"{inventory['provenance']['package_id']}.{row.get('pack')}"}
+            if row['document_type'] == 'Adventure':
+                parents = [p for p in payloads if _text_id(p) == parent_id]
+                if len(parents) != 1:
+                    errors.append('selected parent Adventure was missing or ambiguous during journal correlation')
+                    continue
+                for field, kind in [('journal', 'JournalEntry'), ('tables', 'RollTable')]:
+                    objects = parents[0].get(field, [])
+                    if not isinstance(objects, list):
+                        errors.append(f'selected Adventure {field} collection was not an array')
+                        continue
+                    if any(not isinstance(obj, dict) for obj in objects):
+                        errors.append(f'selected Adventure contains {field} references without full source objects')
+                    candidates.extend({'document_type': kind, 'source': source, 'payload': obj, 'priority': 0}
+                                      for obj in objects if isinstance(obj, dict))
+            else:
+                priority = 1 if row.get('pack') == scene_row.get('pack') else 2
+                candidates.extend({'document_type': row['document_type'], 'source': source,
+                                   'payload': obj, 'priority': priority}
+                                  for obj in payloads if isinstance(obj, dict))
+    size = _square_grid(scene)
+    origin = _scene_origin(scene, size, [])
+    return correlate_notes(scene, candidates, origin, size, errors)
 
 
 def _safe_extract_zip(archive: Path, dest: Path) -> tuple[Path, list[str]]:
@@ -195,12 +311,19 @@ def _safe_extract_zip(archive: Path, dest: Path) -> tuple[Path, list[str]]:
         raise InventoryFatal(f"not a zip archive: {archive}") from exc
     total = 0
     with zf:
+        seen = set()
         infos = [info for info in zf.infolist() if not info.is_dir() and not info.filename.endswith("/")]
         if len(infos) > MAX_ENTRIES:
             raise InventoryFatal("zip archive has too many entries and was not extracted")
         for info in infos:
             rel, _reason = _safe_zip_name(info.filename)
             if rel is None:
+                rejected.append(info.filename)
+                continue
+            if rel.casefold() in seen:
+                raise InventoryFatal('Duplicate/case-aliased ZIP path: ' + rel)
+            seen.add(rel.casefold())
+            if stat.S_ISLNK(info.external_attr >> 16):
                 rejected.append(info.filename)
                 continue
             target = root / rel
@@ -287,6 +410,19 @@ def _load_scene_payload(package: Path, row: dict, scene_id: str) -> dict:
         payloads = _payloads_json(text)
     else:
         payloads = _payloads_jsonl(text)
+
+    parent_id = _parent_adventure_id(row)
+    if parent_id is not None:
+        for payload in payloads:
+            doc_id = payload.get("_id") if isinstance(payload.get("_id"), str) else None
+            if doc_id == parent_id:
+                scene = _embedded_adventure_scene(payload, scene_id)
+                if scene is not None:
+                    return scene
+        raise InventoryFatal(
+            f"scene {scene_id!r} was not in Adventure {parent_id!r} in {safe}"
+        )
+
     for payload in payloads:
         doc_id = payload.get("_id") if isinstance(payload.get("_id"), str) else None
         if doc_id is None and isinstance(payload.get("id"), str):
@@ -309,16 +445,53 @@ def _load_leveldb_scene(package: Path, row: dict, scene_id: str) -> dict:
     except LevelDBUnavailable as exc:
         raise InventoryFatal(str(exc)) from exc
     if not result.opened:
+        diagnostics = '; '.join(f'{code}: {message}' for _, code, message in result.diagnostics[:3])
         raise InventoryFatal(
-            f"scene pack {safe} is LevelDB and was not opened. It was not read as text."
+            f"scene pack {safe} is LevelDB and was not opened. It was not read as text. "
+            f"Reader diagnostics: {diagnostics or 'none supplied'}"
         )
+    parent_id = _parent_adventure_id(row)
     for declared, payload in result.documents:
         if not isinstance(payload, dict):
             continue
         doc_id = payload.get("_id") if isinstance(payload.get("_id"), str) else None
-        if doc_id == scene_id and declared == "Scene":
+        if parent_id is not None and doc_id == parent_id and declared == "Adventure":
+            scene = _embedded_adventure_scene(payload, scene_id)
+            if scene is not None:
+                return scene
+        if parent_id is None and doc_id == scene_id and declared == "Scene":
             return payload
+    if parent_id is not None:
+        raise InventoryFatal(
+            f"scene {scene_id!r} was not in Adventure {parent_id!r} in {safe}"
+        )
     raise InventoryFatal(f"scene {scene_id!r} was not in {safe}")
+
+
+def _parent_adventure_id(row: dict) -> str | None:
+    retained = row.get("retained_fields")
+    if not isinstance(retained, dict):
+        return None
+    parent = retained.get("_forgebridge_parent_adventure")
+    if not isinstance(parent, dict):
+        return None
+    value = parent.get("id")
+    return value if isinstance(value, str) and value else None
+
+
+def _embedded_adventure_scene(adventure: dict, scene_id: str) -> dict | None:
+    scenes = adventure.get("scenes")
+    if not isinstance(scenes, list):
+        return None
+    for scene in scenes:
+        if not isinstance(scene, dict):
+            continue
+        doc_id = scene.get("_id") if isinstance(scene.get("_id"), str) else None
+        if doc_id is None and isinstance(scene.get("id"), str):
+            doc_id = scene["id"]
+        if doc_id == scene_id:
+            return scene
+    return None
 
 
 def _payloads_json(text: str) -> list[dict]:
@@ -354,8 +527,10 @@ def _scene_to_uvtt(package: Path, scene: dict) -> tuple[dict, list[dict]]:
     _grade_scene_fields(scene, image_ref, lines)
     walls = scene.get("walls") if isinstance(scene.get("walls"), list) else []
     lights = scene.get("lights") if isinstance(scene.get("lights"), list) else []
-    line_of_sight, portals = _walls_to_uvtt(walls, size, lines)
-    uvtt_lights = _lights_to_uvtt(lights, size, lines)
+    origin = _scene_origin(scene, size, lines)
+    line_of_sight, portals = _walls_to_uvtt(walls, size, lines, origin)
+    uvtt_lights = _lights_to_uvtt(lights, scene, size, lines, origin)
+    ambient_light = _ambient_light(scene, lines)
     width = _number(scene.get("width"))
     height = _number(scene.get("height"))
     if width is None or height is None or width <= 0 or height <= 0:
@@ -393,36 +568,16 @@ def _scene_to_uvtt(package: Path, scene: dict) -> tuple[dict, list[dict]]:
         _line(
             NATIVE,
             "baked-lighting",
-            "environment.baked_lighting false. The scene lights are separate data, not paint in the image.",
+            "environment.baked_lighting false enables imported dynamic lights; this does not remove illumination already painted into the background.",
             document_type="Scene",
             id=_text_id(scene),
             name=_text_name(scene),
             path=image_ref,
         )
     )
-    lines.append(
-        _line(
-            APPROXIMATE,
-            "format-decimal-unpublished",
-            (
-                "format is documented as a decimal version. The UVTT page, read "
-                f"{UVTT_READ_ON}, does not publish that number. This slice writes 0.0 "
-                "as a placeholder and does not claim that Arkenforge expects 0.0."
-            ),
-            path=UVTT_SOURCE,
-        )
-    )
-    lines.append(
-        _line(
-            APPROXIMATE,
-            "portal-bounds-unspecified",
-            (
-                "portal bounds are documented as an array of x,y values. The UVTT page, read "
-                f"{UVTT_READ_ON}, has no example. This slice writes [x, y] pairs relative to position."
-            ),
-            path=UVTT_SOURCE,
-        )
-    )
+    lines.append(_line(NATIVE, "arkenforge-wire-shape",
+        "format 1.0, named x/y points, absolute portal bounds, and top-level lights "
+        "match the user-supplied Arkenforge export and the successful 2026-10-08 import test."))
     lines.append(
         _line(
             APPROXIMATE,
@@ -446,7 +601,7 @@ def _scene_to_uvtt(package: Path, scene: dict) -> tuple[dict, list[dict]]:
         )
     )
     uvtt = {
-        "format": 0.0,
+        "format": 1.0,
         "resolution": {
             "map_origin": {"x": 0, "y": 0},
             "map_size": {"x": _coord(width / size), "y": _coord(height / size)},
@@ -457,8 +612,9 @@ def _scene_to_uvtt(package: Path, scene: dict) -> tuple[dict, list[dict]]:
         "portals": portals,
         "environment": {
             "baked_lighting": False,
-            "lights": uvtt_lights,
+            **({"ambient_light": ambient_light} if ambient_light is not None else {}),
         },
+        "lights": uvtt_lights,
         "image": base64.b64encode(image_bytes).decode("ascii"),
     }
     return uvtt, lines
@@ -478,6 +634,8 @@ def _square_grid(scene: dict) -> float:
     size = _number(grid.get("size"))
     if size is None or size <= 0:
         raise InventoryFatal("scene grid size must be a positive number of pixels per square")
+    if not size.is_integer():
+        raise InventoryFatal("Fractional grid pixels cannot be represented by UVTT pixels_per_grid; refusing misaligned geometry")
     return size
 
 
@@ -498,6 +656,9 @@ def _background_ref(scene: dict) -> str | None:
             background = level.get("background")
             if isinstance(background, dict) and isinstance(background.get("src"), str) and background["src"].strip():
                 return background["src"]
+    background = scene.get("background")
+    if isinstance(background, dict) and isinstance(background.get("src"), str) and background["src"].strip():
+        return background["src"]
     img = scene.get("img")
     if isinstance(img, str) and img.strip():
         return img
@@ -522,25 +683,95 @@ def _read_image(package: Path, ref: str) -> tuple[str, bytes]:
         raise InventoryFatal(f"UVTT image is not a PNG: {ref}")
     if suffix == ".webp" and not (len(data) >= 12 and data.startswith(b"RIFF") and data[8:12] == b"WEBP"):
         raise InventoryFatal(f"UVTT image is not a WEBP: {ref}")
+    try:
+        with Image.open(io.BytesIO(data)) as image:
+            if image.width > 16000 or image.height > 16000:
+                raise InventoryFatal(f"UVTT background exceeds Arkenforge's 16000 pixel limit: {ref}")
+            image.load()
+            # Preserve already compatible PNGs; convert WEBP and palette/grayscale images.
+            if image.format != "PNG" or image.mode not in {"RGB", "RGBA"}:
+                output = io.BytesIO()
+                image.convert("RGBA").save(output, format="PNG")
+                data = output.getvalue()
+    except (UnidentifiedImageError, OSError, ValueError, Image.DecompressionBombError) as exc:
+        raise InventoryFatal(f"UVTT image could not be decoded: {ref}: {exc}") from exc
     return safe, data
+
+
+def _scene_origin(scene: dict, size: float, lines: list[dict]) -> tuple[float, float]:
+    """Normalize canvas coordinates to the unpadded scene/background rectangle."""
+    dimensions = scene.get("dimensions")
+    explicit = isinstance(dimensions, dict) and all(_number(dimensions.get(k)) is not None for k in ("sceneX", "sceneY"))
+    if explicit:
+        x, y = float(dimensions["sceneX"]), float(dimensions["sceneY"])
+    else:
+        padding = _number(scene.get("padding", 0))
+        width, height = _number(scene.get("width")), _number(scene.get("height"))
+        if padding is None or padding < 0 or width is None or height is None:
+            raise InventoryFatal("scene padding and dimensions must be finite non-negative numbers")
+        x = math.ceil(width * padding / size) * size
+        y = math.ceil(height * padding / size) * size
+    background = scene.get("background")
+    if isinstance(background, dict):
+        for key in ("offsetX", "offsetY", "rotation", "scaleX", "scaleY"):
+            if key in background:
+                value = _number(background[key])
+                if value is None:
+                    raise InventoryFatal(f"background.{key} must be a finite number")
+                if key in {"rotation", "scaleX", "scaleY"} and value != (0 if key == "rotation" else 1):
+                    raise InventoryFatal(f"background.{key} transformation is not yet supported; refusing misaligned UVTT")
+        x += background.get("offsetX", 0)
+        y += background.get("offsetY", 0)
+    lines.append(_line(NATIVE if explicit else APPROXIMATE, "coordinate-origin",
+        f"Subtract canvas background origin {_plain(x)}, {_plain(y)} pixels from all walls, portals, and lights. "
+        + ("Uses stored sceneX/sceneY." if explicit else "Uses padding rounded up to whole grid spaces; absent padding assumes zero. Confirm against the source scene."),
+        document_type="Scene", id=_text_id(scene), path="padding"))
+    return x, y
 
 
 def _package_file(package: Path, safe: str) -> Path:
     root = package.resolve()
-    path = package / safe
-    current = path
-    while True:
-        if current.is_symlink():
-            raise InventoryFatal(f"symlink was not followed: {safe}")
-        if current.resolve() == root or current == package:
-            break
-        parent = current.parent
-        if parent == current:
-            break
-        current = parent
-    if not _contained(root, path) or not path.is_file():
-        raise InventoryFatal(f"path is not a file inside the package: {safe}")
-    return path
+    candidates = [safe]
+    parts = safe.split("/")
+    if (
+        len(parts) >= 3
+        and parts[0] in {"modules", "worlds", "systems"}
+    ):
+        package_ids = {package.name}
+        # Flat source ZIPs extract under a temporary directory, not the module
+        # ID. Resolve qualified Foundry paths by the declared local identity too.
+        manifests = [package / n for n in ('module.json', 'world.json', 'system.json') if (package / n).is_file()]
+        if len(manifests) == 1 and not manifests[0].is_symlink() and not manifests[0].is_junction():
+            try:
+                with manifests[0].open('rb') as stream: raw = stream.read(1024 * 1024 + 1)
+                if len(raw) <= 1024 * 1024:
+                    manifest = json.loads(raw.decode('utf-8-sig'))
+                    identity = (manifest.get('id') or manifest.get('name')) if isinstance(manifest, dict) else None
+                    if isinstance(identity, str): package_ids.add(identity)
+            except (OSError, UnicodeError, ValueError):
+                pass  # No guess or outside lookup; the ordinary contained path still applies.
+        if parts[1] in package_ids:
+            candidates.append("/".join(parts[2:]))
+
+    for candidate in candidates:
+        path = package / candidate
+        current = path
+        unsafe = False
+        while True:
+            if current.is_symlink():
+                unsafe = True
+                break
+            if current.resolve() == root or current == package:
+                break
+            parent = current.parent
+            if parent == current:
+                break
+            current = parent
+        if unsafe:
+            continue
+        if _contained(root, path) and path.is_file():
+            return path
+    raise InventoryFatal(f"path is not a file inside the package: {safe}")
 
 
 def _contained(root: Path, path: Path) -> bool:
@@ -640,6 +871,8 @@ def _grade_scene_fields(scene: dict, image_ref: str, lines: list[dict]) -> None:
                 name=level_name,
             )
         )
+    _grade_fog_vision(scene, lines)
+    _grade_scene_music(scene, lines)
     _grade_placeables(scene, lines)
     flags = scene.get("flags")
     if isinstance(flags, dict):
@@ -672,6 +905,69 @@ def _grade_scene_fields(scene: dict, image_ref: str, lines: list[dict]) -> None:
                 path=key,
             )
         )
+
+
+def _fog_vision_settings(scene: dict) -> dict:
+    """Read Foundry fog/vision switches across v10 (flat) and v11+ (nested) shapes."""
+    fog = scene.get("fog") if isinstance(scene.get("fog"), dict) else {}
+    environment = scene.get("environment") if isinstance(scene.get("environment"), dict) else {}
+    global_light = environment.get("globalLight")
+    settings = {}
+    if isinstance(scene.get("tokenVision"), bool):
+        settings["tokenVision"] = scene["tokenVision"]
+    if isinstance(fog.get("exploration"), bool):
+        settings["fog.exploration"] = fog["exploration"]
+    elif isinstance(scene.get("fogExploration"), bool):
+        settings["fogExploration"] = scene["fogExploration"]
+    if isinstance(global_light, dict) and isinstance(global_light.get("enabled"), bool):
+        settings["environment.globalLight.enabled"] = global_light["enabled"]
+    elif isinstance(scene.get("globalLight"), bool):
+        settings["globalLight"] = scene["globalLight"]
+    return settings
+
+
+def _grade_fog_vision(scene: dict, lines: list[dict]) -> None:
+    """Explain source fog/vision so a fogged Toolkit player view is expected, not a defect.
+
+    ForgeBridge does not write Toolkit fog state, explored areas or per-token
+    vision. Arkenforge manual fog starts with nothing revealed for players.
+    """
+    settings = _fog_vision_settings(scene)
+    has_fog_data = any(k in scene for k in ("tokenVision", "fog", "fogExploration", "globalLight"))
+    if not settings and not has_fog_data:
+        return
+    vision = settings.get("tokenVision")
+    exploration = settings.get("fog.exploration", settings.get("fogExploration"))
+    observed = ", ".join(f"{k}={str(v).lower()}" for k, v in settings.items()) or "no readable switches"
+    if vision is False:
+        intent = ("In Foundry players were not limited by token vision, so the whole lit scene was visible. "
+                  "To match, disable Arkenforge fog of war for this map (Live Play/VTT -> Fog of War) "
+                  "or clear all fog; otherwise players see only fog.")
+    elif vision is True:
+        intent = ("In Foundry players saw only what their tokens could see"
+                  + (", and explored areas stayed revealed" if exploration else "")
+                  + ". Arkenforge manual fog starts fully covered: reveal areas as the party explores, "
+                  "or enable dynamic fog if the map's tokens are set up for it.")
+    else:
+        intent = ("Foundry vision settings could not be read. Check Arkenforge fog of war before showing "
+                  "the player screen; covered manual fog shows players only fog.")
+    lines.append(_line(MANUAL, "fog-vision",
+        f"scene fog/vision settings ({observed}). {intent} Foundry explored-fog history "
+        "(FogExploration documents) and per-token vision are not converted.",
+        document_type="Scene", id=_text_id(scene), name=_text_name(scene), path="fog"))
+
+
+def _grade_scene_music(scene: dict, lines: list[dict]) -> None:
+    """Report the scene's linked playlist track; native packages do not convert playlists."""
+    playlist, sound = scene.get("playlist"), scene.get("playlistSound")
+    if not (isinstance(playlist, str) and playlist) and not (isinstance(sound, str) and sound):
+        return
+    lines.append(_line(MANUAL, "scene-playlist",
+        f"scene music playlist {playlist!r}, track {sound!r}. Foundry starts this playlist track when "
+        "the scene is activated. ForgeBridge does not create Toolkit playlists or scene-linked music "
+        "(no playlist file format was published): import the track's audio file into a Toolkit "
+        "playlist and start it manually for this map.",
+        document_type="Scene", id=_text_id(scene), name=_text_name(scene), path="playlistSound"))
 
 
 def _grade_placeables(scene: dict, lines: list[dict]) -> None:
@@ -774,7 +1070,7 @@ def _grade_placeables(scene: dict, lines: list[dict]) -> None:
         )
 
 
-def _walls_to_uvtt(walls: list, size: float, lines: list[dict]) -> tuple[list, list]:
+def _walls_to_uvtt(walls: list, size: float, lines: list[dict], origin: tuple[float, float] = (0, 0)) -> tuple[list, list]:
     line_of_sight = []
     portals = []
     for wall in walls:
@@ -798,6 +1094,8 @@ def _walls_to_uvtt(walls: list, size: float, lines: list[dict]) -> tuple[list, l
             )
             continue
         (x1, y1), (x2, y2) = segment
+        ox, oy = origin[0] / size, origin[1] / size
+        x1, y1, x2, y2 = x1 - ox, y1 - oy, x2 - ox, y2 - oy
         door = wall.get("door")
         if isinstance(door, int) and not isinstance(door, bool) and door in PORTAL_DOOR_CODES:
             closed, state_line = _portal_closed(wall.get("ds"), wall_id)
@@ -816,20 +1114,30 @@ def _walls_to_uvtt(walls: list, size: float, lines: list[dict]) -> tuple[list, l
                     path="door",
                 )
             )
-            mx = _coord((x1 + x2) / 2)
-            my = _coord((y1 + y2) / 2)
-            portals.append(
-                {
-                    "position": {"x": mx, "y": my},
-                    "bounds": [
-                        [_coord(x1 - mx), _coord(y1 - my)],
-                        [_coord(x2 - mx), _coord(y2 - my)],
-                    ],
-                    "rotation": _coord(math.atan2(y2 - y1, x2 - x1)),
-                    "closed": closed,
-                    "freestanding": False,
-                }
-            )
+            portals.append({
+                # The native Arkenforge exporter stores unsigned endpoint deltas here.
+                "position": {"x": _coord(abs(x2 - x1)), "y": _coord(abs(y2 - y1))},
+                "bounds": [{"x": _coord(x1), "y": _coord(y1)}, {"x": _coord(x2), "y": _coord(y2)}],
+                "rotation": 0,
+                "closed": closed,
+                "freestanding": False,
+            })
+            restrictions = {key: wall.get(key) for key in ("light", "sight", "move", "sound", "dir", "threshold") if key in wall}
+            blocking_instructions = []
+            for key, label in (("light", "Light"), ("sight", "Vision")):
+                if wall.get(key) == 0:
+                    blocking_instructions.append(f"Source {key}=0: leave Blocks {label} disabled, including when closed.")
+                elif wall.get(key) == 20:
+                    blocking_instructions.append(f"Source {key}=20: enable Blocks {label} for the closed state.")
+                else:
+                    blocking_instructions.append(f"Inspect the source {key} restriction before setting Blocks {label}.")
+            lines.append(_line(MANUAL, "portal-blocking-properties",
+                f'portal {len(portals)-1}, wall "{wall_id or "no id"}": source restrictions {json.dumps(restrictions, sort_keys=True)}, ds={wall.get("ds")!r}. '
+                "UVTT closed preserves the initial door state but cannot separately encode Arkenforge Blocks Light/Blocks Vision and toggle state. "
+                "Review the intended blocking capabilities in Customise -> Blocking after import. "
+                + " ".join(blocking_instructions) + " "
+                "Full source settings are preserved in the source scene sidecar; do not enable light blocking on transparent windows indiscriminately.",
+                document_type="Wall", id=wall_id, path="light"))
             lines.append(
                 _line(
                     NATIVE,
@@ -845,10 +1153,49 @@ def _walls_to_uvtt(walls: list, size: float, lines: list[dict]) -> tuple[list, l
                 )
             )
             continue
-        line_of_sight.append([[_coord(x1), _coord(y1)], [_coord(x2), _coord(y2)]])
+        restrictions = {key: wall.get(key) for key in ("light", "sight", "move", "sound", "dir", "threshold") if key in wall}
+        bounds = [{"x": _coord(x1), "y": _coord(y1)}, {"x": _coord(x2), "y": _coord(y2)}]
+        # UVTT LOS cannot represent a movement-only wall without inventing an
+        # opaque light/vision barrier. Keep its complete source in the sidecar.
+        if wall.get("light") == 0 and wall.get("sight") == 0:
+            lines.append(_line(MANUAL, "wall-transparent-omitted",
+                f'wall "{wall_id or "no id"}", bounds {json.dumps(bounds, sort_keys=True)}: '
+                f'source restrictions {json.dumps(restrictions, sort_keys=True)}. '
+                "Source light=0 and sight=0: omitted from UVTT line_of_sight so it does not become opaque. "
+                "If needed, recreate its movement/sound blocking separately in Arkenforge; leave Blocks Light and Blocks Vision disabled. "
+                "The complete source wall remains in the source scene sidecar.",
+                document_type="Wall", id=wall_id, path="c"))
+            continue
+        segment_index = len(line_of_sight)
+        line_of_sight.append(bounds)
+        threshold = wall.get("threshold")
+        has_threshold = (
+            any(value is not None and value is not False for value in threshold.values())
+            if isinstance(threshold, dict) else threshold is not None and threshold is not False
+        )
+        simple_optical_wall = (
+            wall.get("light") == 20 and wall.get("sight") == 20
+            and wall.get("dir", 0) == 0 and not has_threshold
+        )
+        if not simple_optical_wall:
+            instructions = []
+            for key, label in (("light", "Light"), ("sight", "Vision")):
+                if wall.get(key) == 0:
+                    instructions.append(f"Source {key}=0: disable Blocks {label}.")
+                elif wall.get(key) == 20:
+                    instructions.append(f"Source {key}=20: enable Blocks {label}.")
+                else:
+                    instructions.append(f"Source {key}={wall.get(key)!r}: inspect this restriction; it is not equivalent to a simple on/off setting.")
+            lines.append(_line(MANUAL, "wall-blocking-properties",
+                f'line_of_sight {segment_index}, wall "{wall_id or "no id"}", bounds {json.dumps(bounds, sort_keys=True)}: '
+                f'source restrictions {json.dumps(restrictions, sort_keys=True)}. '
+                "UVTT retains this segment's geometry but cannot independently encode its light/vision modes, direction, or thresholds. "
+                "After import review Customise -> Blocking. " + " ".join(instructions) + " "
+                "Movement/sound restrictions also require review; complete source settings remain in the sidecar.",
+                document_type="Wall", id=wall_id, path="light"))
         lines.append(
             _line(
-                NATIVE,
+                NATIVE if simple_optical_wall else APPROXIMATE,
                 "line-of-sight",
                 (
                     f'wall "{wall_id or "no id"}" as one line_of_sight segment. '
@@ -864,7 +1211,7 @@ def _walls_to_uvtt(walls: list, size: float, lines: list[dict]) -> tuple[list, l
             _line(
                 NATIVE,
                 "line-of-sight-empty",
-                "line_of_sight is empty. Door walls were written as portals and were not also written as walls.",
+                "line_of_sight is empty. Door walls use portals; walls explicitly transparent to both light and vision are omitted.",
                 document_type="Wall",
             )
         )
@@ -901,65 +1248,102 @@ def _portal_closed(ds: object, wall_id: str | None) -> tuple[bool, dict | None]:
     )
 
 
-def _lights_to_uvtt(lights: list, size: float, lines: list[dict]) -> list[dict]:
+def _ambient_light(scene: dict, lines: list[dict]) -> str | None:
+    """Return a directly stored scene ambient hex color when one is available."""
+    environment = scene.get("environment")
+    candidates = []
+    if isinstance(environment, dict):
+        for key in ("ambient_light", "ambientLight"):
+            value = environment.get(key)
+            if isinstance(value, str):
+                candidates.append((f"environment.{key}", value))
+    for key in ("ambient_light", "ambientLight"):
+        value = scene.get(key)
+        if isinstance(value, str):
+            candidates.append((key, value))
+    for path, color in candidates:
+        if _hex_color(color):
+            lines.append(_line(NATIVE, "ambient-light",
+                f"scene ambient color {color} as UVTT environment.ambient_light.",
+                document_type="Scene", id=_text_id(scene), name=_text_name(scene), path=path))
+            return color
+        lines.append(_line(UNSUPPORTED, "ambient-light-invalid",
+            f"scene ambient color {color!r} is not a hex color and was not written.",
+            document_type="Scene", id=_text_id(scene), name=_text_name(scene), path=path))
+    if isinstance(environment, dict) and environment:
+        lines.append(_line(APPROXIMATE, "foundry-environment",
+            "Foundry scene environment data is richer than UVTT ambient_light. No ambient hex color was stored directly, so ForgeBridge did not invent one from darknessLevel, base/dark hue, luminosity, saturation, shadows, or globalLight.",
+            document_type="Scene", id=_text_id(scene), name=_text_name(scene), path="environment"))
+    return None
+
+
+def _lights_to_uvtt(lights: list, scene: dict, size: float, lines: list[dict], origin: tuple[float, float] = (0, 0)) -> list[dict]:
     written = []
+    grid = scene.get("grid") if isinstance(scene.get("grid"), dict) else {}
+    grid_distance = _number(grid.get("distance"))
     for light in lights:
         if not isinstance(light, dict):
             continue
         light_id = _text_id(light)
         config = light.get("config") if isinstance(light.get("config"), dict) else {}
-        color = config.get("color") if isinstance(config.get("color"), str) else None
-        x = _number(light.get("x"))
-        y = _number(light.get("y"))
-        dim = config.get("dim")
-        bright = config.get("bright")
-        lines.append(
-            _line(
-                APPROXIMATE,
-                "light-range",
-                (
-                    f'light "{light_id or "no id"}" dim {dim!r} and bright {bright!r} '
-                    "were not written as range or intensity. Foundry LightData records dim, bright, "
-                    "and shadows as numbers and does not state the unit. UVTT shadows is a bool. "
-                    "No range, intensity, or shadows value was written."
-                ),
-                document_type="AmbientLight",
-                id=light_id,
-                path="config",
-            )
-        )
-        if x is None or y is None or not _hex_color(color):
-            lines.append(
-                _line(
-                    UNSUPPORTED,
-                    "light-not-written",
-                    (
-                        f'light "{light_id or "no id"}" has no square position and hex color, '
-                        "so no UVTT light was written."
-                    ),
-                    document_type="AmbientLight",
-                    id=light_id,
-                )
-            )
+        raw_color = config.get("color")
+        untinted = raw_color is None or (isinstance(raw_color, str) and not raw_color.strip())
+        color = "#ffffff" if untinted else raw_color
+        x, y = _number(light.get("x")), _number(light.get("y"))
+        dim, bright = _number(config.get("dim")), _number(config.get("bright"))
+        if x is None or y is None:
+            lines.append(_line(UNSUPPORTED, "light-not-written",
+                f'light "{light_id or "no id"}" has missing or invalid x/y coordinates, so no UVTT light was written.',
+                document_type="AmbientLight", id=light_id))
             continue
-        written.append(
-            {
-                "position": {"x": _coord(x / size), "y": _coord(y / size)},
-                "color": color,
-            }
-        )
-        lines.append(
-            _line(
-                NATIVE,
-                "light",
-                f'light "{light_id or "no id"}" position and color {color} only.',
-                document_type="AmbientLight",
-                id=light_id,
-                path="config.color",
-            )
-        )
+        if not _hex_color(color):
+            lines.append(_line(UNSUPPORTED, "light-not-written",
+                f'light "{light_id or "no id"}" has invalid non-empty color {raw_color!r}, so no UVTT light was written.',
+                document_type="AmbientLight", id=light_id, path="config.color"))
+            continue
+        if untinted:
+            lines.append(_line(APPROXIMATE, "light-untinted",
+                f'light "{light_id or "no id"}" has an unset tint, which is a valid Foundry light. '
+                "Represented as neutral white in UVTT rather than discarded. The original unset value and animation are preserved in source_scene.",
+                document_type="AmbientLight", id=light_id, path="config.color"))
+        digits = color[1:]
+        if len(digits) == 3:
+            digits = "".join(char * 2 for char in digits)
+        out = {"position": {"x": _coord((x - origin[0]) / size), "y": _coord((y - origin[1]) / size)},
+               "color": "ff" + digits, "intensity": 0.5, "shadows": True}
+        lines.append(_line(APPROXIMATE, "light-import-defaults",
+            f'light "{light_id or "no id"}": opaque ARGB color, intensity 0.5, shadows true match the working Arkenforge test. '
+            "These are compatibility defaults, not equivalent Foundry luminosity or numeric shadows; full source config is preserved in the sidecar.",
+            document_type="AmbientLight", id=light_id, path="config"))
+        radii = [value for value in (dim, bright) if value is not None]
+        if any(value < 0 for value in radii):
+            lines.append(_line(UNSUPPORTED, "darkness-source",
+                f'light "{light_id or "no id"}" has negative dim/bright radius {config.get("dim")!r}/{config.get("bright")!r}. Foundry uses negative light radii for darkness/blackness; UVTT documents a light range but no darkness-source equivalent. Range was not written.',
+                document_type="AmbientLight", id=light_id, path="config"))
+        elif radii and grid_distance is not None and grid_distance > 0:
+            outer = max(radii)
+            out["range"] = _coord(outer / grid_distance)
+            lines.append(_line(NATIVE, "light-range",
+                f'light "{light_id or "no id"}" outer radius {_plain(outer)} distance units at {_plain(grid_distance)} units per square as UVTT range {_plain(outer / grid_distance)} squares.',
+                document_type="AmbientLight", id=light_id, path="config.dim"))
+            if dim is not None and bright is not None and dim != bright:
+                lines.append(_line(APPROXIMATE, "light-bright-radius",
+                    f'light "{light_id or "no id"}" has separate Foundry dim/bright radii {_plain(dim)}/{_plain(bright)}. UVTT has one range, so only the outer radius is represented.',
+                    document_type="AmbientLight", id=light_id, path="config.bright"))
+        elif radii:
+            lines.append(_line(APPROXIMATE, "light-range-no-grid-distance",
+                f'light "{light_id or "no id"}" has dim/bright radii {config.get("dim")!r}/{config.get("bright")!r}, but the scene grid has no positive distance-units-per-square value. UVTT range is in squares, so ForgeBridge did not guess a conversion.',
+                document_type="AmbientLight", id=light_id, path="grid.distance"))
+        richer = [key for key in ("alpha","angle","animation","attenuation","coloration","contrast","darkness","luminosity","saturation","shadows") if key in config]
+        if richer:
+            lines.append(_line(APPROXIMATE, "light-rendering-properties",
+                f'light "{light_id or "no id"}" Foundry rendering properties {", ".join(richer)} were not mapped to UVTT intensity/shadows because the formats do not document equivalent semantics.',
+                document_type="AmbientLight", id=light_id, path="config"))
+        written.append(out)
+        lines.append(_line(NATIVE, "light",
+            f'light "{light_id or "no id"}" position and color {color}' + (f", range {out['range']} squares." if "range" in out else " only."),
+            document_type="AmbientLight", id=light_id, path="config.color"))
     return written
-
 
 def _other_document_lines(inventory: dict, scene_id: str) -> list[dict]:
     rows = []
@@ -1290,7 +1674,7 @@ def _report(scene_id: str, scene_name: object, lines: list[dict]) -> dict:
         f"Unsupported {len(unsupported)}. Manual {len(manual)}. "
         f"Approximate {len(approximate)}. Native {len(native)}. "
         "The importable file is UVTT JSON: map image, square grid, line of sight, portals, and lights. "
-        "Every other inventory entry is graded from public Arkenforge docs."
+        "Counts include package inventory as well as the selected scene. Unsupported means this slice did not translate a feature, not that Arkenforge cannot support it. The full selected source scene is preserved separately."
     )
     return {
         "headline": headline,

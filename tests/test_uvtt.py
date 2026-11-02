@@ -74,6 +74,7 @@ def _slice() -> dict:
 class UvttSliceTests(unittest.TestCase):
     def setUp(self) -> None:
         _clear_markers()
+        self.existing_uvtt = set(REPO.glob("**/*.uvtt"))
 
     def tearDown(self) -> None:
         _clear_markers()
@@ -88,6 +89,7 @@ class UvttSliceTests(unittest.TestCase):
             set(uvtt),
             {
                 "format",
+                "lights",
                 "resolution",
                 "line_of_sight",
                 "objects_line_of_sight",
@@ -98,26 +100,26 @@ class UvttSliceTests(unittest.TestCase):
         )
         self.assertNotIn("software", uvtt)
         self.assertNotIn("creator", uvtt)
-        self.assertEqual(uvtt["format"], 0.0)
+        self.assertEqual(uvtt["format"], 1.0)
         self.assertEqual(uvtt["resolution"]["map_origin"], {"x": 0, "y": 0})
         self.assertEqual(uvtt["resolution"]["map_size"], {"x": 2, "y": 2})
         self.assertEqual(uvtt["resolution"]["pixels_per_grid"], 100)
         self.assertEqual(uvtt["line_of_sight"], [])
         self.assertEqual(uvtt["objects_line_of_sight"], [])
         portal = uvtt["portals"][0]
-        self.assertEqual(portal["position"], {"x": 0.5, "y": 0})
-        self.assertEqual(portal["bounds"], [[-0.5, 0], [0.5, 0]])
+        self.assertEqual(portal["position"], {"x": 1, "y": 0})
+        self.assertEqual(portal["bounds"], [{"x": 0, "y": 0}, {"x": 1, "y": 0}])
         self.assertEqual(portal["rotation"], 0)
         self.assertIs(portal["closed"], True)
         self.assertIs(portal["freestanding"], False)
         self.assertNotIn("ambient_light", uvtt["environment"])
         self.assertIs(uvtt["environment"]["baked_lighting"], False)
-        light = uvtt["environment"]["lights"][0]
+        light = uvtt["lights"][0]
         self.assertEqual(light["position"], {"x": 0.5, "y": 0.5})
-        self.assertEqual(light["color"], "#ffcc88")
-        self.assertNotIn("range", light)
-        self.assertNotIn("intensity", light)
-        self.assertNotIn("shadows", light)
+        self.assertEqual(light["color"], "ffffcc88")
+        self.assertEqual(light["range"], 4)
+        self.assertEqual(light["intensity"], 0.5)
+        self.assertIs(light["shadows"], True)
         raw = (FIXTURE / "assets" / "crypt.png").read_bytes()
         self.assertEqual(base64.b64decode(uvtt["image"]), raw)
         for marker in MARKERS:
@@ -156,9 +158,8 @@ class UvttSliceTests(unittest.TestCase):
         for phrase in PHRASES:
             self.assertIn(phrase, loss_text, phrase)
         approximate_text = "\n".join(item["summary"] for item in report["approximate"])
-        self.assertIn("does not publish", approximate_text)
-        self.assertIn("0.0", approximate_text)
-        self.assertIn("bounds", approximate_text)
+        self.assertIn("compatibility defaults", approximate_text)
+        self.assertIn("source_scene", document)
         native_codes = {item["code"] for item in report["native"]}
         self.assertIn("image", native_codes)
         self.assertIn("portal", native_codes)
@@ -167,14 +168,14 @@ class UvttSliceTests(unittest.TestCase):
         manual_types = {item["document_type"] for item in report["manual"]}
         for dtype in ("Actor", "Item", "JournalEntry", "RollTable", "Playlist", "Macro", "Token", "Note"):
             self.assertIn(dtype, manual_types, dtype)
-        blob = json.dumps(document)
+        blob = json.dumps(document["loss_report"])
         self.assertNotIn("writeFileSync", blob)
         self.assertNotIn("/tmp/forgebridge", blob)
         uvtt_blob = json.dumps(document["uvtt"])
         self.assertNotIn("Mummy01", uvtt_blob)
         self.assertNotIn("homebrewRule", uvtt_blob)
         self.assertNotIn("notACoreField", uvtt_blob)
-        self.assertEqual(list(REPO.glob("**/*.uvtt")), [])
+        self.assertEqual(set(REPO.glob("**/*.uvtt")), self.existing_uvtt)
 
     def test_extra_uvtt_key_fails_schema(self) -> None:
         uvtt = _slice()["uvtt"]
@@ -204,6 +205,69 @@ class UvttSliceTests(unittest.TestCase):
         self.assertIn("SQUARE", str(caught.exception))
         self.assertIn("does not write", str(caught.exception))
 
+    def test_dynamic_lighting_writes_ambient_color_and_range_in_squares(self) -> None:
+        png = (FIXTURE / "assets" / "crypt.png").read_bytes()
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "lighting-module"
+            _write_module(
+                root,
+                {
+                    "_id": "scene-lighting",
+                    "name": "Lighting",
+                    "width": 400,
+                    "height": 400,
+                    "grid": {"type": 1, "size": 100, "distance": 5, "units": "ft"},
+                    "environment": {"ambient_light": "#223344"},
+                    "levels": [{"background": {"src": "assets/crypt.png"}}],
+                    "lights": [
+                        {"_id": "torch", "x": 150, "y": 250,
+                         "config": {"dim": 20, "bright": 10, "color": "#ffaa44",
+                                    "luminosity": 0.5, "shadows": 0.2}}
+                    ],
+                },
+                png,
+            )
+            document = build_uvtt_slice(root, "scene-lighting")
+        uvtt = document["uvtt"]
+        self.assertEqual(uvtt["environment"]["ambient_light"], "#223344")
+        self.assertEqual(
+            uvtt["lights"][0],
+            {"position": {"x": 1.5, "y": 2.5}, "range": 4, "color": "ffffaa44", "intensity": 0.5, "shadows": True},
+        )
+        self.assertEqual(validate(uvtt, load_schema(repo_schema("uvtt-core.schema.json"))), [])
+        native_codes = {item["code"] for item in document["loss_report"]["native"]}
+        approximate_codes = {item["code"] for item in document["loss_report"]["approximate"]}
+        self.assertIn("ambient-light", native_codes)
+        self.assertIn("light-range", native_codes)
+        self.assertIn("light-bright-radius", approximate_codes)
+        self.assertIn("light-rendering-properties", approximate_codes)
+
+    def test_darkness_source_is_reported_without_inventing_uvtt_range(self) -> None:
+        png = (FIXTURE / "assets" / "crypt.png").read_bytes()
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "darkness-module"
+            _write_module(
+                root,
+                {
+                    "_id": "scene-darkness",
+                    "name": "Darkness",
+                    "width": 200,
+                    "height": 200,
+                    "grid": {"type": 1, "size": 100, "distance": 5, "units": "ft"},
+                    "levels": [{"background": {"src": "assets/crypt.png"}}],
+                    "lights": [
+                        {"_id": "dark", "x": 100, "y": 100,
+                         "config": {"dim": -20, "bright": -10, "color": "#000000"}}
+                    ],
+                },
+                png,
+            )
+            document = build_uvtt_slice(root, "scene-darkness")
+        light = document["uvtt"]["lights"][0]
+        self.assertNotIn("range", light)
+        unsupported_codes = {item["code"] for item in document["loss_report"]["unsupported"]}
+        self.assertIn("darkness-source", unsupported_codes)
+
     def test_plain_wall_is_line_of_sight_and_door_is_only_a_portal(self) -> None:
         png = (FIXTURE / "assets" / "crypt.png").read_bytes()
         with tempfile.TemporaryDirectory() as tmp:
@@ -225,9 +289,9 @@ class UvttSliceTests(unittest.TestCase):
                 png,
             )
             uvtt = build_uvtt_slice(root, "scene-walls")["uvtt"]
-        self.assertEqual(uvtt["line_of_sight"], [[[0, 0], [0, 1]]])
+        self.assertEqual(uvtt["line_of_sight"], [[{"x": 0, "y": 0}, {"x": 0, "y": 1}]])
         self.assertEqual(len(uvtt["portals"]), 1)
-        self.assertEqual(uvtt["portals"][0]["position"], {"x": 0.5, "y": 0})
+        self.assertEqual(uvtt["portals"][0]["position"], {"x": 1, "y": 0})
 
     def test_cli_prints_schema_valid_slice(self) -> None:
         env = os.environ.copy()
@@ -293,7 +357,7 @@ class UvttSliceTests(unittest.TestCase):
             self.assertNotIn("software", written)
             self.assertNotIn("creator", written)
             self.assertEqual(base64.b64decode(written["image"]), raw)
-        self.assertEqual(list(REPO.glob("**/*.uvtt")), [])
+        self.assertEqual(set(REPO.glob("**/*.uvtt")), self.existing_uvtt)
         for marker in MARKERS:
             self.assertFalse(Path(marker).exists(), marker)
 
@@ -309,10 +373,10 @@ class UvttSliceTests(unittest.TestCase):
         self.assertEqual(validate(report, load_schema(repo_schema("uvtt-loss-report.schema.json"))), [])
         self.assertEqual(uvtt["resolution"]["map_size"], {"x": 2, "y": 2})
         self.assertEqual(uvtt["line_of_sight"], [])
-        self.assertEqual(uvtt["portals"][0]["position"], {"x": 0.5, "y": 0})
+        self.assertEqual(uvtt["portals"][0]["position"], {"x": 1, "y": 0})
         self.assertIs(uvtt["portals"][0]["closed"], True)
-        self.assertEqual(uvtt["environment"]["lights"][0]["color"], "#ffcc88")
-        self.assertNotIn("range", uvtt["environment"]["lights"][0])
+        self.assertEqual(uvtt["lights"][0]["color"], "ffffcc88")
+        self.assertEqual(uvtt["lights"][0]["range"], 4)
         raw = (LEVELDB_SCENE / "assets" / "crypt.png").read_bytes()
         self.assertEqual(base64.b64decode(uvtt["image"]), raw)
         self.assertTrue(report["headline"].startswith("Unsupported "))
@@ -341,7 +405,7 @@ class UvttSliceTests(unittest.TestCase):
             "../../etc/passwd",
         ):
             self.assertIn(phrase, loss_text, phrase)
-        blob = json.dumps(document)
+        blob = json.dumps(document["loss_report"])
         self.assertNotIn("writeFileSync", blob)
         self.assertNotIn("VaultToken", json.dumps(uvtt))
         self.assertNotIn("homebrewRule", json.dumps(uvtt))
@@ -397,7 +461,7 @@ class UvttSliceTests(unittest.TestCase):
             self.assertNotIn("loss_report", written)
             self.assertEqual(base64.b64decode(written["image"]), raw)
             self.assertIn("VaultToken", envelope["loss_report"]["headline"] + json.dumps(envelope["loss_report"]))
-        self.assertEqual(list(REPO.glob("**/*.uvtt")), [])
+        self.assertEqual(set(REPO.glob("**/*.uvtt")), self.existing_uvtt)
         self.assertFalse((LEVELDB_SCENE / "packs" / "scenes" / "LOCK").exists())
         for marker in MARKERS:
             self.assertFalse(Path(marker).exists(), marker)
@@ -411,7 +475,7 @@ class UvttSliceTests(unittest.TestCase):
         self.assertEqual(zipped["loss_report"]["counts"], unpacked["loss_report"]["counts"])
         self.assertTrue(zipped["loss_report"]["headline"].startswith("Unsupported "))
         self.assertEqual(base64.b64decode(zipped["uvtt"]["image"]), (LEVELDB_SCENE / "assets" / "crypt.png").read_bytes())
-        self.assertNotIn("writeFileSync", json.dumps(zipped))
+        self.assertNotIn("writeFileSync", json.dumps(zipped["uvtt"]))
         for marker in MARKERS:
             self.assertFalse(Path(marker).exists(), marker)
 
@@ -443,7 +507,7 @@ class UvttSliceTests(unittest.TestCase):
             self.assertEqual(written, build_uvtt_slice(LEVELDB_SCENE, "scene-vault")["uvtt"])
             self.assertTrue(envelope["loss_report"]["headline"].startswith("Unsupported "))
             self.assertNotIn("loss_report", written)
-        self.assertEqual(list(REPO.glob("**/*.uvtt")), [])
+        self.assertEqual(set(REPO.glob("**/*.uvtt")), self.existing_uvtt)
         for marker in MARKERS:
             self.assertFalse(Path(marker).exists(), marker)
 
@@ -477,7 +541,7 @@ class UvttSliceTests(unittest.TestCase):
             joined = "\n".join(item["summary"] for item in rejected)
             self.assertIn("../" + outside_name, joined)
             self.assertIn("/tmp/forgebridge-abs.js", joined)
-            self.assertNotIn("writeFileSync", json.dumps(document))
+            self.assertNotIn("writeFileSync", json.dumps(document["uvtt"]))
             self.assertEqual(document["uvtt"]["resolution"]["map_size"], {"x": 2, "y": 2})
         for marker in MARKERS:
             self.assertFalse(Path(marker).exists(), marker)
@@ -516,7 +580,7 @@ class UvttSliceTests(unittest.TestCase):
             self.assertEqual((dest.parent / "drip.wav").read_bytes(), wav)
             self.assertEqual(
                 sorted(path.name for path in dest.parent.iterdir()),
-                ["crypt.png", "drip.wav", "scene-vault.uvtt"],
+                ["crypt.png", "drip.wav", "scene-vault.forgebridge.json", "scene-vault.notes.txt", "scene-vault.uvtt"],
             )
             self.assertFalse((root / "etc" / "passwd").exists())
             self.assertFalse((root / "passwd").exists())
@@ -524,10 +588,124 @@ class UvttSliceTests(unittest.TestCase):
             joined = "\n".join(item["summary"] for item in report["unsupported"])
             self.assertIn("../../etc/passwd", joined)
             self.assertIn("not on Arkenforge's documented import list", joined)
-            self.assertNotIn("writeFileSync", completed.stdout)
-        self.assertEqual(list(REPO.glob("**/*.uvtt")), [])
+            self.assertNotIn("writeFileSync", json.dumps(envelope["uvtt"]))
+        self.assertEqual(set(REPO.glob("**/*.uvtt")), self.existing_uvtt)
         for marker in MARKERS:
             self.assertFalse(Path(marker).exists(), marker)
+
+    def test_adventure_embedded_scene_is_promoted_selected_and_converted(self) -> None:
+        png = (FIXTURE / "assets" / "crypt.png").read_bytes()
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "adventure-module"
+            (root / "packs").mkdir(parents=True)
+            (root / "assets").mkdir()
+            scene_one = {
+                "_id": "adv-scene-one",
+                "name": "Adventure Hall",
+                "width": 200,
+                "height": 200,
+                "background": {"src": f"modules/{root.name}/assets/crypt.png"},
+                "grid": {"type": 1, "size": 100, "distance": 5, "units": "ft"},
+                "walls": [
+                    {"_id": "adv-wall", "c": [0, 0, 100, 0], "door": 1, "ds": 0}
+                ],
+                "lights": [
+                    {
+                        "_id": "adv-light",
+                        "x": 50,
+                        "y": 50,
+                        "config": {"dim": 20, "bright": 10, "color": "#ffaa44"},
+                    }
+                ],
+                "sounds": [],
+                "tokens": [],
+                "tiles": [],
+                "notes": [],
+                "regions": [],
+            }
+            scene_two = {
+                "_id": "adv-scene-two",
+                "name": "Adventure Yard",
+                "width": 100,
+                "height": 100,
+                "background": {"src": f"modules/{root.name}/assets/crypt.png"},
+                "grid": {"type": 1, "size": 100, "distance": 5, "units": "ft"},
+                "walls": [],
+                "lights": [],
+            }
+            adventure = {
+                "_id": "adv-one",
+                "name": "Synthetic Adventure",
+                "scenes": [scene_one, scene_two],
+                "actors": [],
+                "items": [],
+                "journal": [],
+                "playlists": [],
+            }
+            (root / "module.json").write_text(
+                json.dumps(
+                    {
+                        "id": root.name,
+                        "title": "Adventure module",
+                        "version": "13.0.0",
+                        "packs": [
+                            {
+                                "name": "adventure",
+                                "label": "Adventure",
+                                "path": "packs/adventure.json",
+                                "type": "Adventure",
+                                "system": "dnd5e",
+                            }
+                        ],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            (root / "packs" / "adventure.json").write_text(
+                json.dumps(adventure),
+                encoding="utf-8",
+            )
+            (root / "assets" / "crypt.png").write_bytes(png)
+
+            inventory = inventory_path(root)
+            self.assertEqual(validate(inventory, load_schema()), [])
+            parent = next(
+                item for item in inventory["documents"] if item["id"] == "adv-one"
+            )
+            self.assertEqual(parent["document_type"], "Adventure")
+            self.assertEqual(parent["embedded_counts"]["Scene"], 2)
+
+            scenes = [
+                item
+                for item in inventory["documents"]
+                if item["document_type"] == "Scene"
+            ]
+            self.assertEqual(
+                [(item["id"], item["name"]) for item in scenes],
+                [
+                    ("adv-scene-one", "Adventure Hall"),
+                    ("adv-scene-two", "Adventure Yard"),
+                ],
+            )
+            provenance = scenes[0]["retained_fields"]["_forgebridge_parent_adventure"]
+            self.assertEqual(
+                provenance,
+                {"id": "adv-one", "name": "Synthetic Adventure", "source_index": 0},
+            )
+
+            document = build_uvtt_slice(root, "adv-scene-one")
+            uvtt = document["uvtt"]
+            self.assertEqual(
+                validate(uvtt, load_schema(repo_schema("uvtt-core.schema.json"))),
+                [],
+            )
+            self.assertEqual(uvtt["resolution"]["map_size"], {"x": 2, "y": 2})
+            self.assertEqual(len(uvtt["portals"]), 1)
+            self.assertEqual(uvtt["lights"][0]["range"], 4)
+            self.assertEqual(uvtt["lights"][0]["color"], "ffffaa44")
+            self.assertEqual(base64.b64decode(uvtt["image"]), png)
+            for marker in MARKERS:
+                self.assertFalse(Path(marker).exists(), marker)
 
     def test_non_zip_file_is_refused(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

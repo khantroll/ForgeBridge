@@ -1,0 +1,39 @@
+{
+  "date": "2026-10-17",
+  "base_commit": "39c163f",
+  "enumeration": {
+    "succeeded": true,
+    "toolkit": {
+      "app": "process:C:\\Program Files (x86)\\MastersToolkit\\MastersToolkit.exe",
+      "id": 6881588,
+      "title": "MastersToolkit"
+    }
+  },
+  "toolkit": {
+    "selection": "get_window succeeded",
+    "error": {
+      "name": "Error",
+      "message": "foreground window did not report a process id",
+      "stack": "Error: foreground window did not report a process id\n    at C:\\Users\\khantroll\\AppData\\Local\\Temp\\.tmp0w83MO\\kernel.js:1595:16\n    at Object.settle (C:\\Users\\khantroll\\AppData\\Local\\Temp\\.tmp0w83MO\\worker-runtime.js:396:5)\n    at C:\\Users\\khantroll\\AppData\\Local\\Temp\\.tmp0w83MO\\kernel.js:1871:11\n    at handleInputFrame (C:\\Users\\khantroll\\AppData\\Local\\Temp\\.tmp0w83MO\\worker-runtime.js:418:7)\n    at Socket.<anonymous> (C:\\Users\\khantroll\\AppData\\Local\\Temp\\.tmp0w83MO\\worker-runtime.js:434:9)\n    at Socket.emit (node:events:514:28)\n    at addChunk (node:internal/streams/readable:568:12)\n    at readableAddChunkPushByteMode (node:internal/streams/readable:519:3)\n    at Readable.push (node:internal/streams/readable:399:5)\n    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)",
+      "properties": {
+        "stack": "Error: foreground window did not report a process id\n    at C:\\Users\\khantroll\\AppData\\Local\\Temp\\.tmp0w83MO\\kernel.js:1595:16\n    at Object.settle (C:\\Users\\khantroll\\AppData\\Local\\Temp\\.tmp0w83MO\\worker-runtime.js:396:5)\n    at C:\\Users\\khantroll\\AppData\\Local\\Temp\\.tmp0w83MO\\kernel.js:1871:11\n    at handleInputFrame (C:\\Users\\khantroll\\AppData\\Local\\Temp\\.tmp0w83MO\\worker-runtime.js:418:7)\n    at Socket.<anonymous> (C:\\Users\\khantroll\\AppData\\Local\\Temp\\.tmp0w83MO\\worker-runtime.js:434:9)\n    at Socket.emit (node:events:514:28)\n    at addChunk (node:internal/streams/readable:568:12)\n    at readableAddChunkPushByteMode (node:internal/streams/readable:519:3)\n    at Readable.push (node:internal/streams/readable:399:5)\n    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)",
+        "message": "foreground window did not report a process id"
+      }
+    }
+  },
+  "ordinary_window": {
+    "target": {
+      "app": "process:C:\\Windows\\explorer.exe",
+      "id": 199770,
+      "title": "Program Files (x86) - File Explorer"
+    },
+    "selection": "get_window succeeded",
+    "capture": "succeeded"
+  },
+  "comparison_caveat": "Capture returned without error, but displayed Toolkit and overlapping Codex UI rather than a clearly identifiable Explorer surface. This does not establish reliable ordinary-window targeting.",
+  "input_sent": false,
+  "launcher_activated": false,
+  "rebuild_or_install": false,
+  "cause": "unconfirmed",
+  "runtime_result": "BLOCKED"
+}

@@ -17,6 +17,9 @@ class InventoryFatal(Exception):
 
 def repo_schema(filename: str) -> Path:
     here = Path(__file__).resolve()
+    packaged = here.parent / "schema" / filename  # installed wheel
+    if packaged.is_file():
+        return packaged
     for parent in here.parents:
         candidate = parent / "schema" / filename
         if candidate.is_file():

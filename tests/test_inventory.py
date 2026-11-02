@@ -194,7 +194,12 @@ class InventoryTests(unittest.TestCase):
                 }),
                 encoding="utf-8",
             )
-            (root / "packs" / "actors.db").symlink_to(outside)
+            try:
+                (root / "packs" / "actors.db").symlink_to(outside)
+            except OSError as exc:
+                if getattr(exc, "winerror", None) != 1314:
+                    raise
+                self.skipTest("Windows symlink creation privilege unavailable (WinError 1314)")
             document = inventory_path(root)
             self.assertNotIn("Leaked secret", json.dumps(document))
             self.assertIn("symlink-skipped", {item["code"] for item in document["diagnostics"]})
@@ -287,11 +292,32 @@ class InventoryTests(unittest.TestCase):
         self.assertEqual(missing.stdout, "")
 
     def test_reader_source_has_no_dynamic_execution(self) -> None:
-        banned = ("eval(", "exec(", "subprocess", "os.system", "importlib", "pickle", "urllib", "yaml.load")
+        import ast
+        banned = ("eval(", "exec(", "subprocess", "os.system", "importlib", "pickle", "yaml.load")
         for path in (SRC / "forgebridge").glob("*.py"):
             text = path.read_text(encoding="utf-8")
             for token in banned:
+                if path.name == 'installer.py' and token == 'subprocess':
+                    continue  # Only fixed read-only host process inspection below.
                 self.assertNotIn(token, text, f"{path.name} contains {token}")
+            # Pure URL parsing is permitted; network-capable imports are not.
+            for node in ast.walk(ast.parse(text)):
+                if (isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute)
+                        and isinstance(node.func.value, ast.Name) and node.func.value.id == 'subprocess'):
+                    self.assertEqual(path.name, 'installer.py')
+                    self.assertEqual(node.func.attr, 'run')
+                    self.assertIn(ast.literal_eval(node.args[0]),
+                                  (['tasklist', '/FO', 'CSV', '/NH'], ['ps', '-A', '-o', 'comm=']))
+                    keywords = {k.arg: k.value for k in node.keywords}
+                    self.assertNotIn('shell', keywords)
+                    self.assertEqual(ast.literal_eval(keywords['timeout']), 15)
+                    self.assertTrue(ast.literal_eval(keywords['check']))
+                    self.assertIn('executable', keywords)
+                if isinstance(node, ast.Import):
+                    self.assertFalse(any(a.name.startswith('urllib') for a in node.names))
+                elif isinstance(node, ast.ImportFrom) and (node.module or '').startswith('urllib'):
+                    self.assertEqual(node.module, 'urllib.parse')
+                    self.assertTrue({a.name for a in node.names} <= {'unquote', 'urlsplit'})
 
 
 if __name__ == "__main__":

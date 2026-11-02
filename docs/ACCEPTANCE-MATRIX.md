@@ -1,0 +1,42 @@
+# Scene-import acceptance matrix
+
+Baseline: PR #8 at 3409bd9, 2026-10-31. One row per numbered item in
+[completion roadmap M0–M2](COMPLETION-ROADMAP.md). PASS applies only to the
+whole stated item; partial evidence leaves it OPEN. BLOCKED identifies a specific
+external prerequisite. No runtime result is inferred from hashes or file builds.
+Windows native observations below use Toolkit **0.5.1.18**, launcher **7.0.0.3**.
+File-only checks have Toolkit **N/A**. No desktop testing occurred for this matrix.
+
+| Item | Status | Evidence file and evidence commit | OS / Toolkit | Still needed |
+| --- | --- | --- | --- | --- |
+| M0.1 PR integrity, safety, determinism, provenance, overwrite refusal, profile pinning review | PASS | validation/2026-11-01-PART-B.md (5d1e5ec); tests/test_review_safety.py; prior independent review validation/2026-11-01-REVIEW.md | Windows file tests; CI Linux/Windows / Toolkit N/A | Module review and reproducible safety fixes complete. Claude reviews the diff before merge; no native/runtime upgrade or general security certification. |
+| M0.2 Complete clean Linux and Windows suites with exact provenance | PASS | validation/2026-10-31-SCENE-BATCH.md, implementation 9a86c63, GitHub run 41257170986: Linux 185 run/181 passed/4 skipped; Windows 185 run/182 passed/3 skipped; logs and suite artifacts retained by workflow | GitHub ubuntu-latest/windows-latest, Python 3.13 / N/A | Scoped to this tested implementation. Repeat release candidate checks; older local failures remain M0.3 evidence, not erased by CI. |
+| M0.3 Bounded LevelDB diagnosis and justified release exception/containment | PASS (accepted exception) | validation/2026-10-31-NATIVE-REPLACE.md (d85e6f5); validation/2026-10-31-BINDING-PROVENANCE.md (69def77); decision 2026-11-02 in docs/RELEASE-NOTES-v0.9.0.md | Windows 11 / N/A | Jeffrey 2026-11-02: accepted as a host-specific quirk. Never reproduced on clean Windows CI runners or in later host runs; revisit only if users report it. |
+| M0.4 Relocation, closure, pinned inputs, audit and unsafe-input refusals | PASS | tests/test_scene_profile.py; tests/test_native_capture.py; validation/2026-10-24-DEPENDENCIES.md (107fe2b); validation/2026-10-31-OPERATOR-REHEARSAL.md (dd824b9); merge safety (0919cf6) | Windows and historical Linux/Windows CI / N/A | Preserve regressions; Windows symlink tests skipped locally are not passed safety tests. PASS is file-level behavior, not runtime. |
+| M0.5 Resolve review and merge | PASS | PR #8 remains open; docs/COMPLETION-ROADMAP.md (2603fee baseline); PR #8 merged 2026-11-02 (CI green on ad83f95) | N/A / N/A | Owner delegated the merge decision; merged after the fresh-operator run passed. |
+| M1.1 Two real structurally different source scenes | PASS | validation/2026-10-16/profile-pair-audit.json; validation/2026-10-18/profile-runtime-file-audit.json; STATUS.md (39c163f, 7d701c5 history); validation/2026-10-31-PROFILE-PLAYER.md (af9d99e) | Windows / 0.5.1.18 | Manor/Crypt scoped acceptance only; private inputs are not redistributable fixtures. |
+| M1.2 Geometry/grid/calibration, walls/doors/lights, tokens, notes/media/audio and isolation | PASS (scoped) | validation/2026-10-15/VALIDATION.md appended fresh combined/multi-token results (9de3e34); profile file audit and GM notes (39c163f, 7d701c5); player evidence (af9d99e); convert --install outputs: validation/2026-11-01-CONVERT-INSTALL.md (Crypt), validation/2026-11-01-MANOR-INSTALL.md (Manor 1st: geometry, marker→note, player view); validation/2026-11-01-GUI-INSTALL.md (Manor 2nd, token); validation/2026-11-02-FRESH-OPERATOR.md (Count's Lair, 11 tokens, 12 markers, marker→note) | Windows / 0.5.1.18 | Four generated maps checked in the Toolkit (Crypt, Manor 1st/2nd, Count's Lair): alignment, walls/doors/lights, tokens incl. hidden, room markers→notes, player view. Scope: Count's Manor package, Foundry v13, Toolkit 0.5.1.18. Audio stays a manual loss line; PDFs are references in the default path. |
+| M1.3 Save, Toolkit close/reopen, actual player and unsupported review | PASS | validation/2026-10-18/profile-runtime-file-audit.json and VALIDATION.md GM persistence (7d701c5); validation/2026-10-31-PROFILE-PLAYER.md (af9d99e) | Windows / 0.5.1.18 | Accepted GM saved persistence plus representative player restart checks; Oct31 player session itself was not saved. Maintain scope and source states. |
+| M1.4 Bounded manual fog reveal/hide and saved restart persistence | PASS | validation/2026-11-01-BOUNDED-FOG.md | Windows / 0.5.1.18 | Disposable copy only. Box reveal → cover → reveal in built-in-browser player output; saved; after a normal restart players see exactly the saved revealed room. Native manual fog only; no Foundry fog/vision mapping claimed. |
+| M1.5 Manual UVTT import/export/calibration and GIF/FPS behavior | PASS | validation/2026-10-15/VALIDATION.md appended fresh UVTT geometry and synthetic GIF restart results (cf50ebf / 9de3e34 historical baseline) | Windows / 0.5.1.18 | These steps remain manual; procedural light animation is separate. Repeat only for relevant changes. |
+| M1.6 Non-success cases and unsupported edge conditions | PASS | tests/test_scene_profile.py and tests/test_tokens.py (9de3e34); validation/2026-10-31-OPERATOR-REHEARSAL.md (dd824b9); install conflict evidence (1907fc0) | Windows, historical CI Linux/Windows / N/A | Scoped synthetic missing/hash/identity/reference/grid rejection coverage; not proof for every Foundry source. |
+| M2.1 Documented source-to-reviewable-package invocation and graded loss | PASS | docs/SCENE-IMPORT-RELEASE.md; tests/test_direct_package.py; validation/2026-11-01-SCENE-SCHEMA.md | Windows file tests; CI Linux/Windows / Toolkit N/A | Default convert synthesizes native geometry/background/thumbnail plus notes/markers/tokens, ready MyAssets and combined stage-specific losses; explicit install uses add-only backup. New combined outputs await Claude runtime checks; no M1 upgrade. |
+| M2.2 Relocation, dependencies/missing/conflicts before writes/install | PASS | validation/2026-10-24-DEPENDENCIES.md (107fe2b); validation/2026-10-31-OPERATOR-REHEARSAL.md (dd824b9); install review (1907fc0) | Windows / N/A | File-only; destination can change after review, so operator must recheck actual destination. Batch interaction is separately tested by the next slice. |
+| M2.3 Safe preflight and human-reviewed installation/no overwrites | PASS | docs/SCENE-IMPORT-RELEASE.md; validation/2026-10-31-INSTALL-REVIEW.md (1907fc0); src/forgebridge/install_review.py | Windows / N/A | Static snapshot assertion is operator supplied. No automatic install, update, campaign edits or overwrite authorization. |
+| M2.4 Prerequisites/versions/limitations/commands/rollback/troubleshooting | PASS | docs/USER-GUIDE.md; docs/SCENE-IMPORT-RELEASE.md; tests/test_convert.py; validation/2026-11-01-PART-B.md (02e386e) | Windows/Linux documented; file checks only / native reference 0.5.1.18 | Requested operator documentation complete, with Foundry v13 corpus scope and explicit gaps. Jeffrey still performs fresh-operator acceptance before release; no wider compatibility/runtime claim. |
+| M2.5 Build artifacts/release gates and v0.9 candidate tag | PASS | docs/COMPLETION-ROADMAP.md; .github/workflows/tests.yml (1bc58ea); tag v0.9.0; docs/RELEASE-NOTES-v0.9.0.md; validation/2026-11-02-FRESH-OPERATOR.md | CI Linux/Windows / N/A | Fresh-operator run by the owner passed from the guide alone; candidate tagged by delegated decision. |
+
+All evidence commits are historical anchors, not claims that each file was first
+introduced there. Accepted runtime checks remain distinct from later session ICE
+failures. Labels stay off; GIF migration remains manual; actor/stat/behavior,
+Foundry fog/vision and procedural animation mapping remain conversion gaps.
+
+## Batch/CI follow-up
+
+Implementation and regression evidence: [scene batch](../validation/2026-10-31-SCENE-BATCH.md)
+at 9a86c63. Its full CI suites pass on Python 3.13: Linux 185 run/181 passed/4
+skips; Windows 185 run/182 passed/3 skips. This supersedes the pending current-head
+CI verification in the baseline evidence and supports M0.2 PASS for 9a86c63.
+It does not erase the older local host failure or resolve M0.3's release decision.
+Release candidate checks must still be repeated at the eventual release head. M1 runtime statuses are unchanged. Batch package generation and
+combined closure are file checks, never native runtime acceptance.

@@ -1,0 +1,20 @@
+[
+  {
+    "scene": "d0XKyRuR4GqdOagf",
+    "map": "ForgeBridge Profile Manor 2026-10-16",
+    "input_validation": "PASS",
+    "capture_files": 8,
+    "capture_sha256": "e60479e9424ced7d7c42fe5fd060bd6f35683cafa3864f52f76c80e31764c814",
+    "optional_package_sha256": null,
+    "runtime_validation": "not performed"
+  },
+  {
+    "scene": "fP7VKkP46gQPED6X",
+    "map": "ForgeBridge Profile Crypt 2026-10-16",
+    "input_validation": "PASS",
+    "capture_files": 12,
+    "capture_sha256": "5323d2eeae51b6eeb566000188f0a754549125cc90be4d4d3d3c0add1abc3c59",
+    "optional_package_sha256": null,
+    "runtime_validation": "not performed"
+  }
+]

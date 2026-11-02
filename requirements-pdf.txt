@@ -1,0 +1,2 @@
+# Optional PDF page image attachments; includes PDFium wheels on Windows.
+pypdfium2==5.13.0

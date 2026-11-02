@@ -1,4 +1,5 @@
 # LevelDB compendia use the same on-disk format as Foundry's classic-level packs.
-# plyvel is the small Python binding to LevelDB. It is the only runtime dependency
-# beyond the standard library. Pinned to the 1.5.1 release.
-plyvel==1.5.1
+# plyvel-next is a maintained fork that publishes wheels for current Python
+# versions, including Python 3.14 on Windows. Pillow normalizes embedded map images to compatible PNG.
+plyvel-next==2.1.2
+Pillow>=11.3.0,<13

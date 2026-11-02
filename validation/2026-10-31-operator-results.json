@@ -1,0 +1,85 @@
+{
+  "format": "forgebridge.operator-rehearsal",
+  "version": 1,
+  "status": "PASS",
+  "scope": "synthetic public CLI/file checks; no install or native runtime validation",
+  "source_unchanged": true,
+  "commands": 18,
+  "scenes": [
+    {
+      "scene": "A",
+      "map": {
+        "name": "Output A",
+        "units_per_grid": 3.0,
+        "origin": [
+          7.0,
+          11.0
+        ],
+        "markers": 1,
+        "marker_labels": "off",
+        "labels": 0,
+        "label_offset_grid": [
+          1.25,
+          0.0
+        ],
+        "runtime_validation": "pending"
+      },
+      "native_tokens": 1,
+      "rejected_tokens": 2,
+      "closed_references": 29,
+      "package_sha256": "b1ed071f330e9b7df7680eeb48148e96deee32d49d39615d4daacc6ff82693c0",
+      "native_payload_sha256": "a4877e168125bffeecdbf7bf18109327cfb6a95b09a420d32b7944af01e6d82d"
+    },
+    {
+      "scene": "B",
+      "map": {
+        "name": "Output B",
+        "units_per_grid": 4.0,
+        "origin": [
+          8.0,
+          12.0
+        ],
+        "markers": 1,
+        "marker_labels": "off",
+        "labels": 0,
+        "label_offset_grid": [
+          1.25,
+          0.0
+        ],
+        "runtime_validation": "pending"
+      },
+      "native_tokens": 1,
+      "rejected_tokens": 2,
+      "closed_references": 29,
+      "package_sha256": "730b007654f2f0bcaa1a0f45421332d0458e593b6a556d5642bec00ecf89ca35",
+      "native_payload_sha256": "89305ba5ff50599c2898ff6e4ec3a8c054e0491f93ecff6599f6cc0ce14e2b05"
+    },
+    {
+      "scene": "Zero",
+      "map": {
+        "name": "Output Zero",
+        "units_per_grid": 5.0,
+        "origin": [
+          9.0,
+          13.0
+        ],
+        "markers": 1,
+        "marker_labels": "off",
+        "labels": 0,
+        "label_offset_grid": [
+          1.25,
+          0.0
+        ],
+        "runtime_validation": "pending"
+      },
+      "native_tokens": 0,
+      "rejected_tokens": 0,
+      "closed_references": 24,
+      "package_sha256": "c745ad218d3599ef27a9d5dd280709ddcb49e7b436dd5b15bfcf8e7295890584",
+      "native_payload_sha256": "338cc5f21759a577e9c60dd5545788cc14743294dca6e407f356b488657dd2a7"
+    }
+  ],
+  "combined_closed_references": 74,
+  "original_paths_unavailable_during_build": true,
+  "runtime_validation": "not performed"
+}

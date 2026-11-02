@@ -96,7 +96,7 @@ EMBEDDED_DOMAIN = {
 # Types without a pinned list keep their whole source document instead of being guessed.
 PINNED_KEYS = {
     "Scene": {
-        "_id", "_stats", "active", "backgroundColor", "drawings", "environment", "flags",
+        "_id", "_stats", "active", "background", "backgroundColor", "drawings", "environment", "flags",
         "fog", "folder", "grid", "height", "initial", "initialLevel", "journal",
         "journalEntryPage", "levels", "lights", "name", "navigation", "navName",
         "navOrder", "notes", "ownership", "padding", "playlist", "playlistSound",
@@ -625,11 +625,25 @@ def _read_pack(
     if decoded:
         for index, item in enumerate(payloads):
             type_from_key, payload = item
-            documents.append(
-                _document_from_payload(
+            effective_type = type_from_key or document_type or "Unknown"
+            parent = _document_from_payload(
+                store,
+                payload,
+                document_type=effective_type,
+                pack_name=name,
+                storage=storage,
+                source_path=safe_path,
+                source_index=index,
+                behaviors=behaviors,
+                asset_hits=asset_hits,
+                pinned_noted=pinned_noted,
+            )
+            documents.append(parent)
+            if effective_type == "Adventure":
+                promoted = _adventure_scene_documents(
                     store,
                     payload,
-                    document_type=type_from_key or document_type or "Unknown",
+                    parent=parent,
                     pack_name=name,
                     storage=storage,
                     source_path=safe_path,
@@ -638,11 +652,75 @@ def _read_pack(
                     asset_hits=asset_hits,
                     pinned_noted=pinned_noted,
                 )
-            )
+                documents.extend(promoted)
     return (
         _pack_record(name, label, document_type, system, safe_path, storage, decoded, len(documents)),
         documents,
     )
+
+
+def _adventure_scene_documents(
+    store: Store,
+    payload: dict,
+    *,
+    parent: dict,
+    pack_name: str | None,
+    storage: str,
+    source_path: str,
+    source_index: int,
+    behaviors: list[dict],
+    asset_hits: list[dict],
+    pinned_noted: set[str],
+) -> list[dict]:
+    """Expose scenes embedded in a Foundry Adventure without altering the parent."""
+    scenes = payload.get("scenes")
+    if scenes is None:
+        return []
+    if not isinstance(scenes, list):
+        store.warn(
+            "warning",
+            "adventure-scenes-not-list",
+            "Adventure scenes were not stored as a list, so no embedded scenes were promoted.",
+            source_path,
+        )
+        return []
+
+    promoted: list[dict] = []
+    parent_id = payload.get("_id") if isinstance(payload.get("_id"), str) else None
+    parent_name = payload.get("name") if isinstance(payload.get("name"), str) else None
+    for scene in scenes:
+        if not isinstance(scene, dict):
+            store.warn(
+                "warning",
+                "adventure-scene-not-object",
+                "An Adventure scene entry was not a JSON object and was skipped.",
+                source_path,
+            )
+            continue
+        row = _document_from_payload(
+            store,
+            scene,
+            document_type="Scene",
+            pack_name=pack_name,
+            storage=storage,
+            source_path=source_path,
+            source_index=source_index,
+            behaviors=behaviors,
+            asset_hits=asset_hits,
+            pinned_noted=pinned_noted,
+        )
+        row["retained_fields"]["_forgebridge_parent_adventure"] = {
+            "id": parent_id,
+            "name": parent_name,
+            "source_index": source_index,
+        }
+        promoted.append(row)
+
+    if promoted:
+        counts = dict(parent.get("embedded_counts") or {})
+        counts["Scene"] = len(promoted)
+        parent["embedded_counts"] = {key: counts[key] for key in sorted(counts)}
+    return promoted
 
 
 def _pack_record(name, label, document_type, system, path, storage, decoded, count) -> dict:

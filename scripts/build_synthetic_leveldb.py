@@ -4,7 +4,7 @@ The keys match foundryvtt-cli 0.0.6 (retrieved 2026-10-03): UTF-8 keys, JSON
 values, primary key `!<collection>!<id>`, embedded key
 `!<collection>.<field>!<parentId>.<embeddedId>`.
 
-Requires plyvel==1.5.1, the LevelDB binding pinned in requirements.txt.
+Requires plyvel-next==2.1.2, the LevelDB binding pinned in requirements.txt.
 """
 
 from __future__ import annotations
@@ -181,7 +181,7 @@ def build_scene(dest: Path) -> None:
 
 
 def _write(dest: Path, entries: list) -> None:
-    import plyvel
+    import plyvel_next as plyvel
 
     if dest.exists():
         shutil.rmtree(dest)

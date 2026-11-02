@@ -1,0 +1,630 @@
+{
+  "libraries": {
+    "2": "Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+    "29": "Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
+  },
+  "classes": [
+    {
+      "name": "ArkenNoteUpgradeMeta",
+      "names": [
+        "_aliases",
+        "_tooltipSummary",
+        "_noteIcon",
+        "_name",
+        "_pack",
+        "_creator",
+        "_genre",
+        "_subgenre",
+        "_tags",
+        "_starred",
+        "_hideFromView",
+        "_includedWorldPaths",
+        "_official",
+        "_prevPathIfDeleted",
+        "_links",
+        "ArkenBaseMeta+_name",
+        "ArkenBaseMeta+_pack",
+        "ArkenBaseMeta+_creator",
+        "ArkenBaseMeta+_genre",
+        "ArkenBaseMeta+_subgenre",
+        "ArkenBaseMeta+_tags",
+        "ArkenBaseMeta+_starred",
+        "ArkenBaseMeta+_hideFromView",
+        "ArkenBaseMeta+_includedWorldPaths",
+        "ArkenBaseMeta+_official",
+        "ArkenBaseMeta+_prevPathIfDeleted",
+        "ArkenBaseMeta+_links",
+        "LinkableContent+_links"
+      ],
+      "types": [
+        3,
+        1,
+        4,
+        1,
+        1,
+        1,
+        1,
+        1,
+        3,
+        0,
+        0,
+        3,
+        0,
+        1,
+        3,
+        1,
+        1,
+        1,
+        1,
+        1,
+        3,
+        0,
+        0,
+        3,
+        0,
+        1,
+        3,
+        3
+      ],
+      "infos": [
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        null,
+        {
+          "name": "ArkenNoteIcon",
+          "library_id": 2
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        1,
+        1,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        1,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        null,
+        null,
+        null,
+        null,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        1,
+        1,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        1,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"
+      ],
+      "library_id": 2
+    },
+    {
+      "name": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+      "names": [
+        "_items",
+        "_size",
+        "_version"
+      ],
+      "types": [
+        6,
+        0,
+        0
+      ],
+      "infos": [
+        null,
+        8,
+        8
+      ],
+      "library_id": null
+    },
+    {
+      "name": "ArkenNoteIcon",
+      "names": [
+        "_iconPath",
+        "_hue",
+        "_sat",
+        "_bri",
+        "_opa",
+        "_tint"
+      ],
+      "types": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        4
+      ],
+      "infos": [
+        null,
+        11,
+        11,
+        11,
+        11,
+        {
+          "name": "SVector3",
+          "library_id": 2
+        }
+      ],
+      "library_id": 2
+    },
+    {
+      "name": "ArkenNoteUpgrade",
+      "names": [
+        "_name",
+        "_pack",
+        "_creator",
+        "_aliases",
+        "_tags",
+        "_tooltipSummary",
+        "_noteIcon",
+        "_bgColour",
+        "_locked",
+        "_linkColourFix",
+        "_noteIconFieldFix",
+        "_indicatedStats",
+        "_noteFields",
+        "_bgImage",
+        "_bgImageTiled",
+        "nextUID"
+      ],
+      "types": [
+        1,
+        1,
+        1,
+        3,
+        3,
+        1,
+        4,
+        4,
+        0,
+        0,
+        0,
+        3,
+        4,
+        1,
+        0,
+        0
+      ],
+      "infos": [
+        null,
+        null,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        null,
+        {
+          "name": "ArkenNoteIcon",
+          "library_id": 2
+        },
+        {
+          "name": "SVector3",
+          "library_id": 2
+        },
+        1,
+        1,
+        1,
+        "System.Collections.Generic.List`1[[ArkenNoteFieldStat, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        {
+          "name": "ArkenNoteFieldCategory",
+          "library_id": 2
+        },
+        null,
+        1,
+        8
+      ],
+      "library_id": 2
+    },
+    {
+      "name": "SVector3",
+      "names": [
+        "x",
+        "y",
+        "z"
+      ],
+      "types": [
+        0,
+        0,
+        0
+      ],
+      "infos": [
+        11,
+        11,
+        11
+      ],
+      "library_id": 2
+    },
+    {
+      "name": "System.Collections.Generic.List`1[[ArkenNoteFieldStat, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+      "names": [
+        "_items",
+        "_size",
+        "_version"
+      ],
+      "types": [
+        4,
+        0,
+        0
+      ],
+      "infos": [
+        {
+          "name": "ArkenNoteFieldStat[]",
+          "library_id": 2
+        },
+        8,
+        8
+      ],
+      "library_id": null
+    },
+    {
+      "name": "ArkenNoteFieldCategory",
+      "names": [
+        "_content",
+        "_color",
+        "_open",
+        "_name",
+        "_visibleToPlayers",
+        "_UID",
+        "ArkenNoteField+_name",
+        "ArkenNoteField+_visibleToPlayers",
+        "ArkenNoteField+_UID"
+      ],
+      "types": [
+        4,
+        4,
+        0,
+        1,
+        3,
+        0,
+        1,
+        3,
+        0
+      ],
+      "infos": [
+        {
+          "name": "KVPOrderedList`1[[ArkenNoteField, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+          "library_id": 2
+        },
+        {
+          "name": "SVector3",
+          "library_id": 2
+        },
+        1,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        8,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        8
+      ],
+      "library_id": 2
+    },
+    {
+      "name": "KVPOrderedList`1[[ArkenNoteField, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+      "names": [
+        "_entries"
+      ],
+      "types": [
+        3
+      ],
+      "infos": [
+        "System.Collections.Generic.List`1[[KVPOrderedList`1+KVPEntry`1[[ArkenNoteField, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[ArkenNoteField, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]"
+      ],
+      "library_id": 2
+    },
+    {
+      "name": "System.Collections.Generic.List`1[[KVPOrderedList`1+KVPEntry`1[[ArkenNoteField, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[ArkenNoteField, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+      "names": [
+        "_items",
+        "_size",
+        "_version"
+      ],
+      "types": [
+        4,
+        0,
+        0
+      ],
+      "infos": [
+        {
+          "name": "KVPOrderedList`1+KVPEntry`1[[ArkenNoteField, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[ArkenNoteField, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]][]",
+          "library_id": 2
+        },
+        8,
+        8
+      ],
+      "library_id": null
+    },
+    {
+      "name": "KVPOrderedList`1+KVPEntry`1[[ArkenNoteField, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[ArkenNoteField, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+      "names": [
+        "_order",
+        "_value"
+      ],
+      "types": [
+        0,
+        4
+      ],
+      "infos": [
+        8,
+        {
+          "name": "ArkenNoteFieldText",
+          "library_id": 2
+        }
+      ],
+      "library_id": 2
+    },
+    {
+      "name": "ArkenNoteFieldText",
+      "names": [
+        "_text",
+        "_fieldColor",
+        "_headingColor",
+        "_bgOpacity",
+        "_showBorder",
+        "_font",
+        "_name",
+        "_visibleToPlayers",
+        "_UID",
+        "ArkenNoteField+_name",
+        "ArkenNoteField+_visibleToPlayers",
+        "ArkenNoteField+_UID"
+      ],
+      "types": [
+        4,
+        4,
+        4,
+        0,
+        0,
+        1,
+        1,
+        3,
+        0,
+        1,
+        3,
+        0
+      ],
+      "infos": [
+        {
+          "name": "ArkenTextString",
+          "library_id": 29
+        },
+        {
+          "name": "SVector3",
+          "library_id": 2
+        },
+        {
+          "name": "SVector3",
+          "library_id": 2
+        },
+        11,
+        1,
+        null,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        8,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        8
+      ],
+      "library_id": 2
+    },
+    {
+      "name": "ArkenNoteFieldRollableTable",
+      "names": [
+        "_rows",
+        "_name",
+        "_visibleToPlayers",
+        "_UID",
+        "ArkenNoteField+_name",
+        "ArkenNoteField+_visibleToPlayers",
+        "ArkenNoteField+_UID"
+      ],
+      "types": [
+        3,
+        1,
+        3,
+        0,
+        1,
+        3,
+        0
+      ],
+      "infos": [
+        "System.Collections.Generic.List`1[[ArkenNoteFieldRollableTableRow, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        8,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        8
+      ],
+      "library_id": 2
+    },
+    {
+      "name": "ArkenTextString",
+      "names": [
+        "_characters",
+        "_font"
+      ],
+      "types": [
+        3,
+        1
+      ],
+      "infos": [
+        "System.Collections.Generic.List`1[[ArkenTextCharacter, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        null
+      ],
+      "library_id": 29
+    },
+    {
+      "name": "System.Collections.Generic.List`1[[ArkenNoteFieldRollableTableRow, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+      "names": [
+        "_items",
+        "_size",
+        "_version"
+      ],
+      "types": [
+        4,
+        0,
+        0
+      ],
+      "infos": [
+        {
+          "name": "ArkenNoteFieldRollableTableRow[]",
+          "library_id": 2
+        },
+        8,
+        8
+      ],
+      "library_id": null
+    },
+    {
+      "name": "System.Collections.Generic.List`1[[ArkenTextCharacter, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+      "names": [
+        "_items",
+        "_size",
+        "_version"
+      ],
+      "types": [
+        4,
+        0,
+        0
+      ],
+      "infos": [
+        {
+          "name": "ArkenTextCharacter[]",
+          "library_id": 29
+        },
+        8,
+        8
+      ],
+      "library_id": null
+    },
+    {
+      "name": "ArkenNoteFieldRollableTableRow",
+      "names": [
+        "_from",
+        "_to",
+        "_data"
+      ],
+      "types": [
+        0,
+        0,
+        4
+      ],
+      "infos": [
+        8,
+        8,
+        {
+          "name": "ArkenTextString",
+          "library_id": 29
+        }
+      ],
+      "library_id": 2
+    },
+    {
+      "name": "ArkenTextCharacter",
+      "names": [
+        "_character",
+        "_size",
+        "_alignment",
+        "_fontSettings",
+        "_hexColour",
+        "_link",
+        "_defaultFont",
+        "_isUnicode",
+        "_unicodeCharacter"
+      ],
+      "types": [
+        0,
+        0,
+        0,
+        4,
+        1,
+        1,
+        1,
+        0,
+        0
+      ],
+      "infos": [
+        3,
+        8,
+        8,
+        {
+          "name": "ArkenTextCharacter+FontSettings",
+          "library_id": 29
+        },
+        null,
+        null,
+        null,
+        1,
+        3
+      ],
+      "library_id": 29
+    },
+    {
+      "name": "ArkenTextCharacter+FontSettings",
+      "names": [
+        "value__"
+      ],
+      "types": [
+        0
+      ],
+      "infos": [
+        8
+      ],
+      "library_id": 29
+    },
+    {
+      "name": "ArkenNoteFieldMedia",
+      "names": [
+        "_contentPathRelative",
+        "_frameColor",
+        "_headingColor",
+        "_showBorder",
+        "_customScale",
+        "_name",
+        "_visibleToPlayers",
+        "_UID",
+        "ArkenNoteField+_name",
+        "ArkenNoteField+_visibleToPlayers",
+        "ArkenNoteField+_UID"
+      ],
+      "types": [
+        1,
+        4,
+        4,
+        0,
+        0,
+        1,
+        3,
+        0,
+        1,
+        3,
+        0
+      ],
+      "infos": [
+        null,
+        {
+          "name": "SVector3",
+          "library_id": 2
+        },
+        {
+          "name": "SVector3",
+          "library_id": 2
+        },
+        1,
+        11,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        8,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        8
+      ],
+      "library_id": 2
+    }
+  ]
+}

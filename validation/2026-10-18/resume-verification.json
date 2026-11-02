@@ -1,0 +1,58 @@
+{
+  "baseline": "982f23d",
+  "scope": "resume evidence; file checks do not establish runtime player behavior",
+  "automated": {
+    "run": 144,
+    "passed": 140,
+    "skipped": 4,
+    "seconds": 66.104,
+    "skip_limit": "Windows symlink tests; not safety PASS"
+  },
+  "profiles": [
+    {
+      "scene": "manor",
+      "preflight_status": "PASS",
+      "preflight_scope": "read-only input/dependency/control preflight; no package or runtime validation",
+      "package_sha256": "14943c23d112c6bc25fd5a09a1e545b310d89d7d2a957372a7d1d04f32ecdf1c"
+    },
+    {
+      "scene": "crypt",
+      "preflight_status": "PASS",
+      "preflight_scope": "read-only input/dependency/control preflight; no package or runtime validation",
+      "package_sha256": "3fdc4ba06e4d7469f9e8f51178e4e53e832c29663efd7b9df212263354b68b5c"
+    }
+  ],
+  "runtime": {
+    "toolkit": "0.5.1.18",
+    "selected": "generated Stoker inside Profile Manor",
+    "native_size": 1,
+    "ui_position": [
+      12.5,
+      -18.5
+    ],
+    "ui_rotation": 0,
+    "ui_scale": [
+      0.512,
+      0.512
+    ],
+    "edits": false,
+    "player_visibility": "BLOCKED; prior human framing handoff still pending",
+    "bounded_fog": "DEFERRED; prior human gesture still pending"
+  },
+  "saved_maps": [
+    {
+      "scene": "manor",
+      "saved_map_sha256": "c8ab18087c35cd35ca70e341472e3fbb716be5918032e94c156fa466927003e2",
+      "token_identity_hidden_position_equal_to_generated": true,
+      "room_targets_equal_to_generated": true,
+      "room_target_count": 5
+    },
+    {
+      "scene": "crypt",
+      "saved_map_sha256": "d08058217fd719936d6a84ce88bbb7a61f331cacd67b9a80759fd2823217f87e",
+      "token_identity_hidden_position_equal_to_generated": true,
+      "room_targets_equal_to_generated": true,
+      "room_target_count": 19
+    }
+  ]
+}

@@ -1,0 +1,113 @@
+[
+  {
+    "experiment": "2026-10-31-native-replace-comparison",
+    "report_sha256": "08a2872f0b7aef5ff8003aa74b4dc388758f032779294ebb70cdb952b8a7b9d4",
+    "totals": {
+      "create": {
+        "PASS": 10,
+        "FAIL": 0
+      },
+      "copied-open": {
+        "PASS": 10,
+        "FAIL": 0
+      },
+      "replace-control": {
+        "PASS": 10,
+        "FAIL": 0
+      },
+      "reader-copy-open": {
+        "PASS": 10,
+        "FAIL": 0
+      },
+      "native-replace": {
+        "PASS": 9,
+        "FAIL": 1
+      },
+      "native-held-target": {
+        "PASS": 10,
+        "FAIL": 0
+      }
+    },
+    "source_unchanged": true,
+    "process_context": "not sampled in this report",
+    "failures": [
+      {
+        "case": "native-replace",
+        "trial": 2,
+        "status": "FAIL",
+        "error_type": "ValueError",
+        "seconds": 0.0105,
+        "error": "Unheld native replacement failed: {'held_without_delete_sharing': False, 'move_ok': False, 'move_error': 183, 'replace_ok': False, 'replace_error': 1175, 'target_sha256': '01d09d19c2139a46aebfb577780d123d7396e97201bc7ead210a2ebff8239dee', 'replacement_exists': True}"
+      }
+    ]
+  },
+  {
+    "experiment": "2026-10-31-native-replace-host",
+    "report_sha256": "a63c3461d2c4b3d16cb1b9e8c166506ed0337baf007cc7c789a8c2a578ac7b0b",
+    "totals": {
+      "create": {
+        "PASS": 10,
+        "FAIL": 0
+      },
+      "copied-open": {
+        "PASS": 9,
+        "FAIL": 1
+      },
+      "replace-control": {
+        "PASS": 10,
+        "FAIL": 0
+      },
+      "reader-copy-open": {
+        "PASS": 10,
+        "FAIL": 0
+      },
+      "native-replace": {
+        "PASS": 10,
+        "FAIL": 0
+      },
+      "native-held-target": {
+        "PASS": 10,
+        "FAIL": 0
+      }
+    },
+    "source_unchanged": true,
+    "process_context": {
+      "elevation_type": 3,
+      "elevated": 0,
+      "has_restrictions": 1,
+      "app_container": 0
+    },
+    "failures": [
+      {
+        "case": "copied-open",
+        "trial": 6,
+        "status": "FAIL",
+        "error_type": "IOError",
+        "seconds": 0.0213,
+        "error": "IO error: <retained-trial>/db/000006.dbtmp: Unable to remove the file to be replaced."
+      }
+    ]
+  },
+  {
+    "experiment": "2026-10-31-standalone-native-replace",
+    "report_sha256": "96be9613e9dd100939a0e88d89fc108d57637e1308c5cc788cbfcc1446bf7061",
+    "totals": {
+      "free": {
+        "PASS": 20,
+        "FAIL": 0
+      },
+      "held": {
+        "PASS": 20,
+        "FAIL": 0
+      }
+    },
+    "source_unchanged": null,
+    "process_context": {
+      "elevation_type": 3,
+      "elevated": 0,
+      "has_restrictions": 1,
+      "app_container": 1
+    },
+    "failures": []
+  }
+]

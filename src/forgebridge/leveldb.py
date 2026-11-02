@@ -105,7 +105,10 @@ def read_leveldb_bytes(files: dict[str, bytes], *, max_entries: int, max_value_b
         dest = Path(tmp) / "db"
         dest.mkdir()
         for name, data in files.items():
-            if "/" in name or name in {"", ".", ".."}:
+            # Archive-derived names must remain single portable filenames even
+            # when this reader runs on Windows. Path on a POSIX host would not
+            # recognize backslashes or drive-qualified paths as escapes.
+            if any(char in name for char in ("/", "\\", ":", "\x00")) or name in {"", ".", ".."}:
                 result.warn("warning", "leveldb-skipped-name", "Skipped a LevelDB entry whose name leaves the pack directory.")
                 continue
             if len(data) > max_value_bytes:
@@ -144,9 +147,9 @@ def _copy_flat(src: Path, dest: Path, result: LevelDBResult, max_value_bytes: in
 
 def _open_and_decode(dest: Path, result: LevelDBResult, *, max_entries: int, max_value_bytes: int) -> None:
     try:
-        import plyvel
+        import plyvel_next as plyvel
     except ImportError as exc:
-        raise LevelDBUnavailable("reading LevelDB requires plyvel==1.5.1") from exc
+        raise LevelDBUnavailable("reading LevelDB requires plyvel-next==2.1.2") from exc
     try:
         database = plyvel.DB(os.fspath(dest), create_if_missing=False)
     except plyvel.Error as exc:
@@ -154,7 +157,8 @@ def _open_and_decode(dest: Path, result: LevelDBResult, *, max_entries: int, max
             "warning",
             "leveldb-not-decoded",
             "LevelDB directory could not be opened. It was not read as text and was not executed. "
-            + _safe_exc(exc),
+            + _safe_exc(exc)
+            + " Opening was attempted only on a temporary copy; the source was not opened by LevelDB. No retry was performed.",
         )
         return
     result.opened = True
@@ -324,7 +328,9 @@ def _safe_exc(exc: BaseException) -> str:
     text = f"{type(exc).__name__}: {exc}".splitlines()[0]
     for banned in ("writeFileSync", "/tmp/forgebridge"):
         text = text.replace(banned, "[redacted]")
-    return text[:180]
+    # Long Windows snapshot paths can otherwise consume the entire budget and
+    # hide the native failure reason at the end of the message.
+    return text if len(text) <= 180 else text[:60] + " ... " + text[-115:]
 
 
 class LevelDBUnavailable(Exception):
