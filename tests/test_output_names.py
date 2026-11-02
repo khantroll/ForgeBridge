@@ -116,3 +116,11 @@ class OutputNamingTests(unittest.TestCase):
             refs = convert(package, root / 'refs', pdf='references')
             self.assertEqual(refs['scenes'][0]['native_report']['counts']['native_pdf_pages'], 0)
             self.assertTrue(any(r['feature'] == 'pdf-mode' for r in refs['native_losses'][0]['losses']))
+
+
+class DefaultFolderRobustnessTests(unittest.TestCase):
+    def test_malformed_retained_fields_fall_back(self):
+        from forgebridge.output_names import default_folder
+        self.assertEqual(default_folder({'retained_fields': None}), 'ForgeBridge')
+        self.assertEqual(default_folder({'retained_fields': {'_forgebridge_parent_adventure': 'x'}}, 'Pack'), 'Pack')
+        self.assertEqual(default_folder({'parent_adventure_name': '  '}, None), 'ForgeBridge')

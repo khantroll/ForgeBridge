@@ -178,7 +178,8 @@ def main(argv=None):
             messagebox.showerror('Selection required', 'Choose scenes and a new output folder.'); return
         source, dest, controls = package.get(), output.get(), list(profiles)
         names = {key: value for key, value in renamed.items() if key in selected}
-        options = {'pdf': 'pages' if pdf_pages.get() else 'references'}
+        # Ticked = pages when the PDF renderer is available, else references with a reported loss.
+        options = {'pdf': None if pdf_pages.get() else 'references'}
         if not controls:
             try:
                 plans = plan_names([r for r in rows if r['key'] in selected], map_folder=map_folder.get(),
