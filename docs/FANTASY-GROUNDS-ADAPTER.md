@@ -91,6 +91,21 @@ committed). Findings:
 - No doors or lights in this module, so door/window/light mapping is still
   checked only against uvtt2fgu's writer and the synthetic tests.
 
+## Module locations and protection (2026-11-02)
+
+- FG Unity data folder (default): `%APPDATA%\SmiteWorks\Fantasy Grounds`
+  (AppData is hidden in Explorer). Plain modules: `modules\*.mod`.
+- Forge/store downloads go to `vault\<guid>.dat`: ZIPs holding one module
+  under `modules/<name>/`, with **encrypted entries**. ForgeBridge refuses
+  encrypted modules with a clear message and does not attempt to read them.
+  It can read the unprotected vault layout (module one folder down).
+- Checked on the host: Aladar's Assets Battle Maps Pack 1 and Eldritch Runes:
+  Ruins of Zlargkon (vault, encrypted → refused); FG Battle Maps
+  (Combat_Battlemaps.mod, v3.1, 41 images) and Well Met in Kith'takharos
+  (v2.06, 17 images) are readable but have no LoS/lights (all reported ART).
+- Best route for doors/lights test data: draw them on a map in your own FG
+  campaign and export it as a module (exported modules are unencrypted).
+
 ## Assumptions still to verify
 
 Documented formats cover the per-image metadata XML; their use **inside

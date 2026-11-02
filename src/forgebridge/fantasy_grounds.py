@@ -82,6 +82,10 @@ class ModuleSource:
             except zipfile.BadZipFile as exc:
                 raise ModuleError('Not a .mod/ZIP archive: ' + str(self.path)) from exc
             infos = [i for i in self._zip.infolist() if not i.is_dir()]
+            if any(i.flag_bits & 0x1 for i in infos):
+                raise ModuleError('This module is encrypted (Fantasy Grounds vault/store protection). '
+                                  'ForgeBridge does not read protected content; use a module you can '
+                                  'export from your own campaign, or an unprotected .mod.')
             if len(infos) > MAX_ENTRIES:
                 raise ModuleError('Module archive has too many entries')
             if sum(i.file_size for i in infos) > MAX_TOTAL_BYTES:
@@ -94,7 +98,14 @@ class ModuleSource:
         else:
             raise ModuleError('Module path not found: ' + str(self.path))
         if 'definition.xml' not in self._names:
-            raise ModuleError('definition.xml missing from module root; not a Fantasy Grounds module')
+            # FG vault packages (Forge downloads, vault/<guid>.dat) are ZIPs holding
+            # exactly one module under modules/<name>/; read that module in place.
+            nested = [k for k in self._names if re.fullmatch(r'modules/[^/]+/definition\.xml', k)]
+            if len(nested) != 1:
+                raise ModuleError('definition.xml missing from module root; not a Fantasy Grounds module')
+            prefix = nested[0][:-len('definition.xml')]
+            self._names = {k[len(prefix):]: v for k, v in self._names.items() if k.startswith(prefix)}
+            self.vault_prefix = prefix
 
     def _add(self, rel, raw):
         key = rel.casefold()

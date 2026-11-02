@@ -173,6 +173,29 @@ class FantasyGroundsTests(unittest.TestCase):
         with Image.open(io.BytesIO(base64.b64decode(fractional['uvtt']['image']))) as picture:
             self.assertEqual(picture.size[0], round(400 * 103 / (400 / 3.9)))
 
+    def test_vault_package_layout_and_encrypted_modules(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            nested = Path(tmp) / 'vault.dat'
+            with zipfile.ZipFile(nested, 'w') as archive:
+                archive.writestr('manifest.json', b'{}')
+                archive.writestr('modules/Pack_1/definition.xml', DEFINITION)
+                archive.writestr('modules/Pack_1/db.xml', DB)
+                archive.writestr('modules/Pack_1/images/map.png', png())
+                archive.writestr('modules/Pack_1/images/side.png', png())
+                archive.writestr('modules/Pack_1/images/side.xml', SIDECAR)
+                archive.writestr('modules/Pack_1/images/nogrid.png', png())
+            self.assertEqual(inventory(nested)['module']['displayname'], 'ForgeBridge test')
+            encrypted = Path(tmp) / 'protected.dat'
+            with zipfile.ZipFile(encrypted, 'w') as archive:
+                archive.writestr('modules/P/definition.xml', DEFINITION)
+            raw = bytearray(encrypted.read_bytes())
+            for sig in (b'PK\x03\x04', b'PK\x01\x02'):  # set the "encrypted" flag bit in both headers
+                at = raw.find(sig); offset = 6 if sig == b'PK\x03\x04' else 8
+                raw[at + offset] |= 0x1
+            encrypted.write_bytes(bytes(raw))
+            with self.assertRaisesRegex(ModuleError, 'encrypted'):
+                ModuleSource(encrypted)
+
     def test_cli_writes_new_uvtt_only(self):
         with tempfile.TemporaryDirectory() as tmp:
             mod, out = module(tmp), Path(tmp) / 'map.uvtt'
