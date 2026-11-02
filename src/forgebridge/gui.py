@@ -162,7 +162,10 @@ def main(argv=None):
             'Manual UVTT scenes are not installed.\n'
             'Opening notes in the Toolkit can change them; uninstall with --keep-changed later keeps those edits.'): return
         def installed(result):
-            display(result); status.set('Added native files. Backup/uninstall receipt shown. No Toolkit validation performed.')
+            display(result)
+            text.insert('end', '\n\nBuild loss report (unchanged): ' + str(Path(dest) / 'conversion-report.json')
+                        + '\nReopen it any time; the install summary above does not replace it.\n')
+            status.set('Added native files. Backup/uninstall receipt shown. No Toolkit validation performed.')
         start(lambda: install_outputs(report, dest, target, backups), installed)
 
     ttk.Button(controls, text='Discover scenes', command=find).pack(side='left')

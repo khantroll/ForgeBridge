@@ -20,4 +20,18 @@ Fresh clone to `C:\AMD\fb-fresh`, following docs/USER-GUIDE.md without help.
 6. The synthetic self-check prints ~900 lines of JSON. Left as is (CI and tests
    parse it); the guide now tells users to look for "status": "PASS".
 
-Remaining: GUI install of Count's Lair, Toolkit check, uninstall.
+## After the guide fixes (4672afa)
+
+`git pull`, `py -m venv .venv` (Python 3.14), `Activate.ps1`, `python -m pip
+install .` (built and installed forgebridge 0.9.0.dev0 with cp314 wheels), then
+`forgebridge-gui`: all worked first time, no help.
+
+GUI: Count's Lair (adventure-5e) → build → install: **status PASS, added 210**,
+receipt `C:\AMD\fb-backups\forgebridge-ffad50b2d54c457f9b65d790473d38cb\uninstall.json`.
+
+7. The install result replaced the build loss report in the GUI text box, so the
+   operator lost sight of it. It is still in the output folder's
+   `conversion-report.json`; the GUI now says so after installing.
+
+Remaining: Toolkit check of Count's Lair (incl. marker → note), uninstall with
+`--keep-changed`.
