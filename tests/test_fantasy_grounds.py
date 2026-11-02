@@ -1,3 +1,4 @@
+import base64
 import io
 import json
 import math
@@ -89,8 +90,8 @@ class FantasyGroundsTests(unittest.TestCase):
         self.assertEqual(maps['image.id-00001']['name'], 'Layered Map')
         self.assertEqual(maps['image.id-00001']['metadata_source'], 'db.xml')
         self.assertEqual(maps['image.id-00002']['metadata_source'], 'images/side.xml')
-        self.assertEqual(maps['image.id-00003']['status'], 'BLOCKED')
-        self.assertIn('gridsize', maps['image.id-00003']['reason'])
+        self.assertEqual(maps['image.id-00003']['status'], 'ART')  # no grid, no LoS
+        self.assertIn('--grid-size', maps['image.id-00003']['reason'])
 
     def test_geometry_inverts_uvtt2fgu_transform_and_fits_schema(self):
         with tempfile.TemporaryDirectory() as tmp, ModuleSource(module(tmp)) as source:
@@ -145,6 +146,32 @@ class FantasyGroundsTests(unittest.TestCase):
             rows = {r['record']: r for r in inventory(huge)['maps']}
             self.assertEqual(rows['image.id-00001']['status'], 'BLOCKED')
             self.assertIn('64 MP', rows['image.id-00001']['reason'])
+
+    def test_fgu43_layer_occluders_without_gridsize(self):
+        # Shape of a real FGU 4.3 module: <grid>on</grid>, no <gridsize>, occluders inside the layer.
+        layered = f'''<?xml version="1.0"?><root version="4.3"><image><id-00007><image type="image">
+          <uselos>on</uselos><grid>on</grid><layers><layer><name>m.png</name><id>0</id><parentid>-1</parentid>
+          <type>image</type><bitmap>images/map.png</bitmap><occluders>
+          <occluder><id>0</id><points>{pts((0, 0), (4, 0))}</points></occluder></occluders></layer></layers>
+          </image><name type="string">Ice</name></id-00007></image></root>'''.encode()
+        with tempfile.TemporaryDirectory() as tmp:
+            path = module(tmp, {'definition.xml': DEFINITION, 'db.xml': layered, 'images/map.png': png()})
+            row = inventory(path)['maps'][0]
+            self.assertTrue(row['has_line_of_sight'])
+            self.assertEqual(row['status'], 'NEEDS_GRID')
+            with ModuleSource(path) as source:
+                entry = list_images(source)[0]
+                exact = to_uvtt(source, entry, squares=4)
+                fractional = to_uvtt(source, entry, grid_size=100 * 4 / 3.9)  # ~102.56 px squares
+        self.assertEqual(exact['uvtt']['line_of_sight'], [[{'x': 0, 'y': 0}, {'x': 4, 'y': 0}]])
+        self.assertEqual(exact['uvtt']['resolution']['pixels_per_grid'], 100)
+        self.assertIn(('grid', 'manual'), {(l['field'], l['grade']) for l in exact['losses']})
+        res = fractional['uvtt']['resolution']
+        self.assertEqual(res['pixels_per_grid'], 103)
+        self.assertAlmostEqual(res['map_size']['x'], 3.9, places=1)
+        self.assertAlmostEqual(fractional['uvtt']['line_of_sight'][0][1]['x'], 3.9, places=6)
+        with Image.open(io.BytesIO(base64.b64decode(fractional['uvtt']['image']))) as picture:
+            self.assertEqual(picture.size[0], round(400 * 103 / (400 / 3.9)))
 
     def test_cli_writes_new_uvtt_only(self):
         with tempfile.TemporaryDirectory() as tmp:

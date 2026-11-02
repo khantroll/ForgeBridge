@@ -64,15 +64,41 @@ Coordinate transform: FG pixels, origin at the image centre, y up →
 UVTT grid units, origin top-left, y down:
 `gx = (x + W/2) / ppg`, `gy = (H/2 − y) / ppg`.
 
-## Assumptions to verify on a real module
+## Checked on a real module (2026-11-02)
+
+*Mike's Free Encounters 91 — Gufuhvalur and Isfiskur* (free FGU module,
+`definition.xml` version 4.3, release 8.1|CoreRPG:6; supplied by Jeffrey, not
+committed). Findings:
+
+- **Coordinates confirmed**: pixels, origin at the image centre, **y up**.
+  Drawing the occluders over Ice Caverns matches the cave walls exactly with
+  y-up and clearly fails with y-down.
+- **Occluders live inside the layer** (`image/layers/layer/occluders`), not on
+  the image node. The reader now reads the node and every layer.
+- **No `<gridsize>` is stored**, only `<grid>on</grid>`. The grid is 51.2 px
+  (40 squares across 2048 px), measured from the "Grid" map images shipped
+  beside the module. The reader now accepts `--grid-size PX` or `--squares N`
+  and reports a manual loss line; status `NEEDS_GRID` until given.
+- Fractional squares: the image is resampled (2048 → 2040 px) so each square is
+  a whole 51 px; wall coordinates in squares are unchanged. Checked by drawing
+  the generated UVTT's walls over its own image.
+- The sidecar `images/Ice Caverns.xml` holds the same occluders clipped to the
+  image edge.
+- Not every `image` record is a map: five 1024 px creature pictures have grid
+  off and no LoS; the inventory labels them `ART`.
+- The module also carries encounters (`battle` with `npclist`, FG built-in
+  letter tokens) and full 5e NPC stat blocks (`npc`) — Phase 3/4 material.
+- No doors or lights in this module, so door/window/light mapping is still
+  checked only against uvtt2fgu's writer and the synthetic tests.
+
+## Assumptions still to verify
 
 Documented formats cover the per-image metadata XML; their use **inside
 db.xml** comes from forum/uvtt2fgu knowledge, not a spec. Before claiming
 anything, check on one real FGU module:
 
-1. db.xml image nodes carry `<gridsize>`, `<occluders>`, `<lights>` with the
-   same names and coordinate frame as the sidecar.
-2. Centre-origin/y-up applies to db.xml (sidecar documented; db.xml assumed).
+1. ~~db.xml frame~~ confirmed (see above). Lights inside layers: assumed like occluders.
+2. Doors/windows/lights on a real module (needs one that has them).
 3. `<closed/>` on a non-toggleable occluder means a closed shape.
 4. Doors drawn in FGU are rectangles (uvtt2fgu writes rectangles; FG's own
    drawn doors may be lines — the farthest-pair fallback handles that).

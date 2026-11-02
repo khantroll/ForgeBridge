@@ -196,9 +196,10 @@ def list_images(source: ModuleSource, db_name='db.xml') -> list[dict]:
             'name': _text(record, 'name') or (Path(bitmap).stem if bitmap else node.tag),
             'bitmap': bitmap,
             'layers': layers,
-            'has_line_of_sight': node.find('occluders') is not None,
-            'has_lights': node.find('lights') is not None,
+            'has_line_of_sight': node.find('.//occluders') is not None,
+            'has_lights': node.find('.//lights') is not None,
             'pins': len(node.findall('./shortcuts/shortcut')),
+            'grid_on': (_text(node, 'grid') or '').lower() == 'on',
             '_node': node,
         })
     return found
@@ -267,42 +268,76 @@ def image_size(source: ModuleSource, bitmap: str) -> tuple[int, int, bytes]:
     return width, height, data
 
 
-def _metadata_node(source, entry):
-    """LoS/lights from the db.xml image node, else the per-image sidecar XML."""
+def _metadata_nodes(source, entry):
+    """Elements holding grid/LoS/lights: the db.xml image node and its layers
+    (FGU 4.3 stores occluders per layer), else the per-image sidecar XML."""
     node = entry['_node']
-    if node.find('occluders') is not None or node.find('lights') is not None:
-        return node, 'db.xml'
+    nodes = [node] + node.findall('./layers/layer')
+    if any(n.find('occluders') is not None or n.find('lights') is not None for n in nodes):
+        return nodes, 'db.xml'
     sidecar = str(PurePosixPath(entry['bitmap']).with_suffix('.xml')) if entry['bitmap'] else None
     if sidecar and source.exists(sidecar):
-        return parse_xml(source.read(sidecar, MAX_XML_BYTES), sidecar), sidecar
-    return node, 'none'
+        return [parse_xml(source.read(sidecar, MAX_XML_BYTES), sidecar)] + nodes, sidecar
+    return nodes, 'none'
 
 
-def to_uvtt(source: ModuleSource, entry: dict, *, include_image=True) -> dict:
-    """Convert one listed image to {'uvtt': ..., 'losses': [...], 'counts': {...}}."""
+def _first(nodes, tag):
+    for n in nodes:
+        value = _text(n, tag)
+        if value:
+            return value
+    return None
+
+
+def _all(nodes, path):
+    return [item for n in nodes for item in n.findall(path)]
+
+
+def to_uvtt(source: ModuleSource, entry: dict, *, include_image=True, grid_size=None, squares=None) -> dict:
+    """Convert one listed image to {'uvtt': ..., 'losses': [...], 'counts': {...}}.
+
+    FG modules often do not store a grid size (e.g. FGU 4.3 maps with only
+    <grid>on</grid>); pass grid_size (pixels per square) or squares (squares
+    across the image width) then. A stored <gridsize> always wins.
+    """
     width, height, data = image_size(source, entry['bitmap'])
-    meta, origin = _metadata_node(source, entry)
+    nodes, origin = _metadata_nodes(source, entry)
     losses = []
-    grid = _floats(_text(meta, 'gridsize') or _text(entry['_node'], 'gridsize') or '', 'gridsize')
-    if len(grid) != 2 or grid[0] <= 0:
-        raise ModuleError(entry['record'] + ': no usable <gridsize>; cannot calibrate the map')
-    if abs(grid[0] - grid[1]) > 1e-6:
-        losses.append(('grid', 'approximate', f'non-square grid {grid[0]}x{grid[1]} px; using width'))
-    ppg = int(round(grid[0]))
-    if abs(ppg - grid[0]) > 1e-6:
-        losses.append(('grid', 'approximate', f'fractional grid {grid[0]} px rounded to {ppg}'))
-    offset = _floats(_text(meta, 'gridoffset') or _text(entry['_node'], 'gridoffset') or '0,0', 'gridoffset')
+    stored = _first(nodes, 'gridsize')
+    if stored:
+        grid = _floats(stored, 'gridsize')
+        if len(grid) != 2 or grid[0] <= 0:
+            raise ModuleError(entry['record'] + ': malformed <gridsize>')
+        if abs(grid[0] - grid[1]) > 1e-6:
+            losses.append(('grid', 'approximate', f'non-square grid {grid[0]}x{grid[1]} px; using width'))
+        true_ppg = grid[0]
+    elif grid_size or squares:
+        true_ppg = float(grid_size) if grid_size else width / float(squares)
+        if not math.isfinite(true_ppg) or true_ppg < 4 or true_ppg > max(width, height):
+            raise ModuleError(entry['record'] + ': grid size out of range')
+        losses.append(('grid', 'manual', f'module stores no grid size; {true_ppg:g} px per square supplied by the user'))
+    else:
+        raise ModuleError(entry['record'] + ': module stores no grid size; supply pixels per square '
+                          '(--grid-size) or squares across the map (--squares)')
+    ppg = int(round(true_ppg))
+    out_w, out_h = width, height
+    if abs(ppg - true_ppg) > 1e-6:
+        # UVTT needs whole pixels per square: resample the image so the grid stays exact.
+        out_w, out_h = round(width * ppg / true_ppg), round(height * ppg / true_ppg)
+        losses.append(('image', 'approximate', f'{true_ppg:g} px squares: image resampled {width}x{height} -> '
+                                               f'{out_w}x{out_h} so each square is {ppg} px; geometry unchanged'))
+    offset = _floats(_first(nodes, 'gridoffset') or '0,0', 'gridoffset')
     if any(abs(v) > 1e-6 for v in offset[:2]):
         losses.append(('grid', 'approximate', f'grid offset {offset[:2]} px not represented; grid starts at the image corner'))
-    if (_text(meta, 'gridtype') or 'square').lower() not in ('square', ''):
+    if (_first(nodes, 'gridtype') or 'square').lower() not in ('square', ''):
         losses.append(('grid', 'unsupported', 'non-square (hex/iso) grid type'))
     if entry['layers'] > 1:
         losses.append(('image', 'approximate', f"{entry['layers']} image layers; only the first bitmap layer is used"))
-    frame = _Frame(width, height, ppg)
+    frame = _Frame(width, height, true_ppg)
 
     walls, objects, portals = [], [], []
     counts = {'walls': 0, 'doors': 0, 'windows': 0, 'terrain': 0, 'lights': 0, 'lights_off': 0}
-    for occ in meta.findall('./occluders/occluder'):
+    for occ in _all(nodes, './occluders/occluder'):
         pts = _pairs(_floats(_text(occ, 'points'), entry['record'] + ' occluder'))
         if len(pts) < 2:
             continue
@@ -333,7 +368,7 @@ def to_uvtt(source: ModuleSource, entry: dict, *, include_image=True) -> dict:
         losses.append(('doors', 'approximate', 'door centre line taken from the FG door shape; open/closed state as saved'))
 
     lights = []
-    for light in meta.findall('./lights/light'):
+    for light in _all(nodes, './lights/light'):
         pos = _floats(_text(light, 'position'), entry['record'] + ' light position')
         if len(pos) != 2:
             continue
@@ -361,15 +396,24 @@ def to_uvtt(source: ModuleSource, entry: dict, *, include_image=True) -> dict:
 
     uvtt = {'format': 0.3,
             'resolution': {'map_origin': {'x': 0, 'y': 0},
-                           'map_size': {'x': round(width / ppg, 6), 'y': round(height / ppg, 6)},
+                           'map_size': {'x': round(out_w / ppg, 6), 'y': round(out_h / ppg, 6)},
                            'pixels_per_grid': ppg},
             'line_of_sight': walls, 'objects_line_of_sight': objects, 'portals': portals,
             'environment': {'baked_lighting': False},
-            'image': base64.b64encode(data).decode('ascii') if include_image else 'omitted',
+            'image': base64.b64encode(_resampled(data, out_w, out_h) if (out_w, out_h) != (width, height) else data
+                                      ).decode('ascii') if include_image else 'omitted',
             'lights': lights}
     return {'record': entry['record'], 'name': entry['name'], 'bitmap': entry['bitmap'],
-            'metadata_source': origin, 'size_px': [width, height], 'counts': counts,
+            'metadata_source': origin, 'size_px': [width, height], 'pixels_per_square': true_ppg, 'counts': counts,
             'losses': [{'field': f, 'grade': g, 'detail': d} for f, g, d in losses], 'uvtt': uvtt}
+
+
+def _resampled(data, width, height):
+    with Image.open(io.BytesIO(data)) as picture:
+        out = io.BytesIO()
+        picture.convert('RGBA' if picture.mode in ('RGBA', 'LA', 'P') else 'RGB').resize(
+            (width, height), Image.LANCZOS).save(out, 'PNG')
+        return out.getvalue()
 
 
 def inventory(module) -> dict:
@@ -383,7 +427,10 @@ def inventory(module) -> dict:
                 row.update(status='READABLE', counts=result['counts'], size_px=result['size_px'],
                            metadata_source=result['metadata_source'], losses=result['losses'])
             except ModuleError as exc:
-                row.update(status='BLOCKED', reason=str(exc))
+                status = 'NEEDS_GRID' if 'no grid size' in str(exc) else 'BLOCKED'
+                if status == 'NEEDS_GRID' and not entry.get('grid_on') and not row['has_line_of_sight']:
+                    status = 'ART'  # grid off and no LoS: a picture/handout rather than a battle map
+                row.update(status=status, reason=str(exc))
             maps.append(row)
         if not source.exists('db.xml'):
             info['note'] = 'No db.xml (player-only or asset module); no GM map records read.'
@@ -395,6 +442,8 @@ def main(argv=None):
     parser.add_argument('module', help='.mod file or unpacked module folder')
     parser.add_argument('--map', help='record path (from the inventory) to convert')
     parser.add_argument('--out', help='new .uvtt file to write for --map (must not exist)')
+    parser.add_argument('--grid-size', type=float, help='pixels per square, when the module stores none')
+    parser.add_argument('--squares', type=float, help='squares across the map width, when the module stores none')
     args = parser.parse_args(argv)
     try:
         if not args.map:
@@ -406,7 +455,7 @@ def main(argv=None):
             matches = [e for e in list_images(source) if e['record'] == args.map]
             if len(matches) != 1:
                 raise ModuleError('Map record not found (or ambiguous): ' + args.map)
-            result = to_uvtt(source, matches[0])
+            result = to_uvtt(source, matches[0], grid_size=args.grid_size, squares=args.squares)
         with open(args.out, 'x', encoding='utf-8') as stream:
             json.dump(result['uvtt'], stream)
         print(json.dumps({k: v for k, v in result.items() if k != 'uvtt'}, indent=2))
