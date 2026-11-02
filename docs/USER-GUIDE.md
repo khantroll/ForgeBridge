@@ -199,6 +199,11 @@ forgebridge install --uninstall "D:/ForgeBridgeBackups/forgebridge-RUN_ID/uninst
 ```
 
 Delete the listed kept files yourself afterwards if you do not want them.
+
+Uninstall also removes folders the install created once they are empty; folders
+that still hold kept or later files stay. Running `--uninstall` again on a
+receipt that was already uninstalled only tidies such empty folders (useful for
+receipts from v0.9.0, which left empty folders behind); it never deletes files.
 INCOMPLETE receipts require manual review. Restore only reviewed affected backup
 files with Toolkit closed; never Replace All or blind folder synchronization.
 
