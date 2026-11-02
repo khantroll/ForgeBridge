@@ -54,7 +54,7 @@ What stands in the way, and the plan:
 
 | # | Step | Owner | Done when |
 |---|---|---|---|
-| A0 | **Native map synthesis spike (top priority).** (1) Read record shapes from an existing saved map in MyAssets (Toolkit closed). (2) Generate a `.rwmap` for one Count's Manor scene directly from the Foundry source with computed calibration: background, walls, doors, lights. (3) Install it as a new disposable map and open it in the Toolkit: alignment, wall/door blocking, lights, player view. (4) Repeat for a second scene with a different size. | Claude — **Crypt + Manor PASS 11-01** (validation/2026-11-01-DIRECT-MAP.md). Schema-built records + convert/install done (Codex); **end-to-end convert --install PASS in Toolkit** (validation/2026-11-01-CONVERT-INSTALL.md) | Both generated maps open and match the UVTT-imported versions, or the exact failing records are documented and the fallback is chosen by 11-05. |
+| A0 | **Native map synthesis spike (top priority).** (1) Read record shapes from an existing saved map in MyAssets (Toolkit closed). (2) Generate a `.rwmap` for one Count's Manor scene directly from the Foundry source with computed calibration: background, walls, doors, lights. (3) Install it as a new disposable map and open it in the Toolkit: alignment, wall/door blocking, lights, player view. (4) Repeat for a second scene with a different size. | Claude — **Crypt + Manor PASS 11-01** (validation/2026-11-01-DIRECT-MAP.md). Schema-built records + convert/install done (Codex); **end-to-end convert --install PASS in Toolkit** (validation/2026-11-01-CONVERT-INSTALL.md); **all 34 scenes build; Manor 1st installed + Toolkit/player PASS** (validation/2026-11-01-MANOR-INSTALL.md) | Both generated maps open and match the UVTT-imported versions, or the exact failing records are documented and the fallback is chosen by 11-05. |
 | A1 | **M1.2 per-output runtime check** (after A0; on generated maps if A0 passes, otherwise profile maps). On disposable copies of Profile Crypt and Profile Manor: walls block light/vision; each door toggles and blocks when closed; lights sit where the loss report says; every generated token present with correct size/rotation/hidden state; every room marker opens the right note; note attachments/images open; scene music reported as manual. Check the player view where it matters (door and light blocking). | Claude | A results table per map in `validation/`, matrix row M1.2 updated to PASS or with each failure listed. |
 | A2 | **Decide whether to install a batch output.** Codex's `scene_batch` builds Manor+Crypt packages file-only. Validating one in the Toolkit means merging it into the real MyAssets. | Jeffrey | Yes/no recorded here. If yes: back up MyAssets, run `install_review` (expect 0 conflict/0 blocked), install, then Claude repeats a short A1 on the installed map. |
 | A3 | **Capture final evidence before the trial ends.** Screenshots/notes of anything still unverified; list any check that cannot be done after the trial. | Claude | Matrix has no Toolkit-dependent row left at OPEN without a written reason. |
@@ -122,3 +122,12 @@ same backed-up add-only backend. Profiles remain advanced optional overrides.
 Synthetic schema/thumbnail, zero-token/journal-free, scoped-ID and fake-install
 checks are in CI. New combined-package and thumbnail Toolkit checks remain Claude's
 work; A-step notes and M1 rows are not changed by this implementation.
+
+## Release-path order (agreed 2026-11-01 evening)
+
+| # | Step | Owner | Status |
+|---|---|---|---|
+| 1 | Convert all 17 scenes (5e + SA) file-only | Codex | **DONE** — 34/34 BUILT, unique names |
+| 2 | Install Manor 1st Floor; verify in Toolkit incl. marker note + player view | Codex + Claude | **DONE** — validation/2026-11-01-MANOR-INSTALL.md |
+| 3 | Jeffrey tries `forgebridge-gui` on another scene (e.g. Manor 2nd Floor) | Jeffrey | next |
+| 4 | Uninstall from both receipts (Crypt, Manor); prove MyAssets restored | Codex + Claude | after 3 |
