@@ -56,13 +56,63 @@ Already written as `ArkenNoteFieldRollableTable` fields inside notes (Toolkit
 tested on synthetic content). Count's Lair showed 0 because its table was only
 linked from text outside the selected scene's dependency set.
 
-## Still needs the Toolkit (capture before the trial ends)
+## 5e note templates — captured 2026-11-02 (Toolkit 0.5.1.18)
 
-- **5e monster/character note**: the 5e templates are compiled into the Toolkit
-  (not files). Create one note from the 5e monster template, fill HP, AC,
-  abilities and one attack, save, read the `.rwnote`.
-- **5e item note**: same with the item template.
-- Validation of every new writer on one installed scene.
+Created in the Toolkit from its built-in templates (New note → *5e Character*,
+*5e Item*, *5e Spell*; there is no separate monster template — *5e Character*
+is the creature stat block), saved untouched, copied to
+`fixtures/arkenforge-5e-templates/` (`5e-Character`, `5e-Item`, `5e-Spell`,
+`.rwnote` + `.rwmeta`). The originals stay in the owner's MyAssets as
+`Encyclopedia/Notes/FBCapture 5e *.rwnote`.
+
+Each note is an ordinary `ArkenNoteUpgrade` whose field category holds an
+`ArkenNoteFieldMedia` (*Item image*, empty path; Character/Item only) followed
+by one block field. Every visible value is an `ArkenTextString` (per-character
+`ArkenTextCharacter` with `_size`, `_hexColour`, `_fontSettings` enum
+**0 normal, 1 bold, 2 italic**, `_link`). Labels are bold runs inside the same
+string (`Armor Class` bold + ` 10` normal), not separate fields.
+
+### `ArkenNoteFieldStatBlock5e` (`_name = '5eStatBlock'`)
+
+| Member | Template text / meaning |
+|---|---|
+| `_nameText` | size 90, colour 58180D — creature name |
+| `_typeText` | italic — "Medium undead, lawful evil" |
+| `_armorClassText` | **Armor Class** 10 |
+| `_hitPointsText` | "(9d1 + 1)" — HP formula only |
+| `_trackedHitPoints` | `ArkenNoteFieldStat` (statType 2): `_currentValueStr`, `_minValueStr` '0', `_maxValueStr`; float fields 0 in the template |
+| `_speedText` | **Speed** 30 ft |
+| `_strValNew` … `_chaValNew` | "10 (+0)" each |
+| `_savingThrowsText` + `_savingThrowsFieldActive` | **Saving Throws** … |
+| `_skillsText` | **Skills** … |
+| `_damageVulnerabilitiesText` + `…FieldActive` (False in template) | |
+| `_damageResistancesText` + `_damageResistanceFieldActive` | |
+| `_damageImmunitiesText` + `…FieldActive` | |
+| `_conditionImmunitiesText` + `…FieldActive` | |
+| `_sensesText`, `_languagesText`, `_challengeText`, `_proficiencyBonusText` | bold label + value |
+| `_abilities`, `_actions`, `_reactions`, `_legendaryActions` | `List<ArkenTextString>`, one string per entry, colour 000000: **Name.** description; attacks use *Attack type:* / *Hit:* italic runs |
+
+Inactive optional lines are hidden by the `…FieldActive` flags; empty
+action/reaction/legendary lists should be tested (template has one each).
+
+### `ArkenNoteField5eItemBlock` (`_name = '5eItemBlock'`)
+
+`_nameText` (90, 58180D), `_typeText` ("1st-level wonderous item"),
+`_descriptionText` (plain description, colour 000000).
+
+### `ArkenNoteField5eSpellBlock` (`_name = '5eSpellBlock'`)
+
+Name; level/school line; *Casting time*, *Range*, *Components*, *Duration*,
+description, *Attack/Save*, *Damage/Effect*, *At higher levels* — all
+`ArkenTextString`.
+
+Long item/spell/feature descriptions can also go in ordinary text fields below
+the block, which already round-trip through `NoteBuilder`.
+
+## Still needs the Toolkit
+
+- Validation of every new writer on one installed scene (a filled stat block
+  opening without the Toolkit rewriting or rejecting it).
 
 ## Plan
 
@@ -70,6 +120,6 @@ linked from text outside the selected scene's dependency set.
   table fields; playlist → `ArkenPlaylist` + songs; static map tiles → image
   tiles on the map (same record family as the background); animated
   tiles/videos → loss line until a sample exists.
-- **B (after capture):** actors → 5e monster notes (and token → stat-block note
+- **B (formats captured 2026-11-02):** actors → 5e monster notes (and token → stat-block note
   link); items → 5e item notes; actor-embedded attacks/features into the
   stat block.
