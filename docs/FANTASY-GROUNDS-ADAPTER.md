@@ -106,6 +106,13 @@ committed). Findings:
 - Best route for doors/lights test data: draw them on a map in your own FG
   campaign and export it as a module (exported modules are unencrypted).
 
+## Doors, windows and lights checked (2026-11-02)
+
+Arkenforge's own Fantasy Grounds Unity export of a known map read back exactly:
+199/199 walls, 23/23 doors (20 doors + 3 open doors as windows, endpoints and
+state exact), 66/66 light positions. Arkenforge's exporter shrinks light radius
+≈0.88×. See validation/2026-11-02-FG-ARKENFORGE-EXPORT.md.
+
 ## Assumptions still to verify
 
 Documented formats cover the per-image metadata XML; their use **inside
@@ -113,7 +120,7 @@ db.xml** comes from forum/uvtt2fgu knowledge, not a spec. Before claiming
 anything, check on one real FGU module:
 
 1. ~~db.xml frame~~ confirmed (see above). Lights inside layers: assumed like occluders.
-2. Doors/windows/lights on a real module (needs one that has them).
+2. Doors/windows/lights in a module drawn by hand in FG (checked against Arkenforge's export and uvtt2fgu only).
 3. `<closed/>` on a non-toggleable occluder means a closed shape.
 4. Doors drawn in FGU are rectangles (uvtt2fgu writes rectangles; FG's own
    drawn doors may be lines — the farthest-pair fallback handles that).
