@@ -95,7 +95,7 @@ def check_metadata_references(files):
     _check_paths(files, native_only=False)
     count = 0
     for path, data in files.items():
-        if not path.endswith(('.rwmap', '.rwnote', '.rwmeta')):
+        if not path.endswith(('.rwmap', '.rwnote', '.rwmeta', '.rwpl')):
             continue
         reader = Reader(data, max_items=64000000)
         reader.read()

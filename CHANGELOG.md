@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Added: adventure-wide Foundry roll-table, dnd5e actor/item/spell display notes,
+  local portraits, journal links and token-note stat-block navigation. Native
+  records use captured member schemas; runtime acceptance remains pending.
+- Added: static map tiles and native playlists/OGG song records, with explicit
+  manual MP3, animation, missing-media and behavior losses. Shared campaign
+  content deduplicates across selected scenes; reports retain original objects.
+
 - Added: Fantasy Grounds .mod/folder/unencrypted-vault detection in convert,
   discovery and GUI, with ART filtering, explicit per-map grids and module-based
   visible naming. Stored grids always win; fractional image resampling is reported.

@@ -19,7 +19,8 @@ def build_package(companion, map_template, media_template, dest, *, name,
                   media_bundle=None, pdf_pages=False, template_name='FB Cal A',
                   regenerate_notes=False, token_control_pack=None, token_control_name=None,
                   control_units_per_grid=None, marker_template_pack=None, asset_namespace=None,
-                  token_namespace=None, profile_provenance=None, geometry_map_path=None, note_prefix=''):
+                  token_namespace=None, profile_provenance=None, geometry_map_path=None, note_prefix='',
+                  campaign_dependencies=None):
     if (package is None) == (media_bundle is None):
         raise ValueError('Provide exactly one source package or collected media bundle')
     token_options = (token_control_pack, token_control_name, control_units_per_grid)
@@ -105,6 +106,9 @@ def build_package(companion, map_template, media_template, dest, *, name,
             report['counts']['native_tokens'] = len(rows)
             report['counts']['unsupported_tokens'] = len(rejected)
         from forgebridge.native_dependencies import check_metadata_references
+        if campaign_dependencies:
+            from forgebridge.native_dependencies import merge_native
+            merge_native(files, campaign_dependencies)
         report['closed_metadata_references'] = check_metadata_references(files)
         if profile_provenance is not None:
             report['scene_profile'] = profile_provenance

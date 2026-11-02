@@ -114,6 +114,56 @@ the block, which already round-trip through `NoteBuilder`.
 - Validation of every new writer on one installed scene (a filled stat block
   opening without the Toolkit rewriting or rejecting it).
 
+## Implemented campaign-content path (file-level, 2026-11-02)
+
+The normal Foundry `convert` path now reads the selected Adventure's entire
+tables/actors/items/playlists collections, independent of scene note reachability.
+Standalone world/compendium actors and items are included through the same bounded
+readers. Other Adventures are excluded. The source adapter produces display IR;
+native writers build fresh typed records from `campaign-schema.json` and
+`audio-schema.json`, not byte patches or installed templates. The 5e field
+schema comes from the captured fixtures; audio declarations have neutral defaults
+with all shipped names, music and byte payloads removed.
+
+Campaign identities include package, source pack and parent Adventure. Shared
+campaign notes/media are identical across scene packages and deduplicate in the
+combined MyAssets tree. Source objects stay inert in each package's supplemental
+`campaign-source-<scope>.json`. The top-level `campaign_content` report counts each
+scope once and lists native targets, rewritten link aliases and graded losses.
+Scene reports separately list static tiles and token-to-actor note links.
+
+- Roll tables: native range rows, including tables unreachable from scenes.
+  Source formula, replacement, weight and drawn-state mismatches are reported,
+  never repaired. Invalid/overlapping ranges produce a reference note and a
+  manual loss. Journal links to converted tables/actors/items become native links.
+- Actors: dnd5e NPC/character display stat blocks, tracked HP strings and values,
+  active optional defense/save lines, six scores/modifiers, embedded features
+  sorted into abilities/actions/reactions/legendary actions, portrait when local.
+  Labels/name runs are bold; attack-type/Hit runs italic. No roll is evaluated.
+  Effects, automation, resources, slots, actor deltas and ownership remain manual.
+  Non-numeric bonuses/calculated AC remain explicit approximations.
+- Token links: a clickable stat-block field is added to the token's own note.
+  Its icon and Size stay intact. The observed map-token record has no demonstrated
+  separate actor binding; this is navigation, not live actor/stat synchronization.
+- Items/spells: 5e block fields and local images; descriptions are inert text,
+  rolls/enrichers become text and resolvable UUIDs become native note links.
+- Playlists: schema-built `.rwpl`/metadata with reachable song pairs for supplied
+  local OGG Vorbis. Original OGG bytes are preserved. MP3 playback is unverified
+  and no encoder is bundled: those tracks are explicitly manual, not embedded
+  under a misleading OGG filename. Toolkit ffmpeg is never used. An all-manual
+  playlist is an empty native playlist plus a loss for every track. Fades, mode,
+  volume, looping and channels remain manual. Playback still needs Toolkit tests.
+- Tiles: static PNG/JPEG/WebP rectangles, calibrated padding/grid coordinates,
+  rotation and hidden state. Animated/video, unsafe or missing media produce
+  manual losses. Texture offsets/scale, tint/alpha, occlusion, elevation/levels,
+  behavior and final display require review. Existing geometry math is unchanged.
+
+All runtime behavior remains unvalidated for this new output. Labels stay off;
+Foundry fog/vision and procedural animations remain separate conversion gaps.
+Installation remains explicit, add-only and receipt-based; `.rwpl` is now an
+accepted native extension and participates in dependency closure. No real
+MyAssets installation is part of this development check.
+
 ## Plan
 
 - **A (no capture needed):** all adventure roll tables → notes with rollable

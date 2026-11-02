@@ -32,7 +32,7 @@ def geometry_files(uvtt, scope, *, name, map_path):
     return exports, synthesis, background, omitted_lights
 
 
-def build_direct(package, document, row, package_id, destination, *, names, pdf_pages=False):
+def build_direct(package, document, row, package_id, destination, *, names, pdf_pages=False, campaign=None):
     scene = document['source_scene']
     scope = canonical_hash(['native-scene-schema-v1', package_id, row.get('source_path'),
                             _parent_adventure_id(row), scene])[:20]
@@ -45,6 +45,7 @@ def build_direct(package, document, row, package_id, destination, *, names, pdf_
         root = Path(tmp)
         companion = root / 'scene.json'
         companion.write_text(json.dumps({'schema_version': '1.0', 'scene_id': scene['_id'],
+            'campaign_links': campaign[1]['links'] if campaign else {},
             **{k: document[k] for k in ('source_scene', 'scene_notes', 'loss_report')}}), encoding='utf-8')
         write_archive(root / 'geometry.zip', exports)
         marker, token, media = control_files()
@@ -57,7 +58,8 @@ def build_direct(package, document, row, package_id, destination, *, names, pdf_
             template_name='ForgeBridge Control', marker_template_pack=root / 'marker.zip',
             token_control_pack=root / 'token.zip', token_control_name='ForgeBridge Control',
             control_units_per_grid=UNITS_PER_GRID, geometry_map_path=geometry_path,
-            asset_namespace=scope, token_namespace=scope)
+            asset_namespace=scope, token_namespace=scope,
+            campaign_dependencies=campaign[0] if campaign else None)
         files = read_package(staged)
         # These are owned generated controls, not exported user content. Re-emit
         # token notes to discard unreachable strings retained by byte patching.
@@ -77,6 +79,17 @@ def build_direct(package, document, row, package_id, destination, *, names, pdf_
         for suffix in ('.rwmap', '.rwmeta'):
             files[new_map + suffix] = files.pop(old_map + suffix)
         report['output_names'] = dict(names)
+        if campaign:
+            from forgebridge.native_dependencies import merge_native
+            from forgebridge.native_campaign import link_token_actors
+            merge_native(files, campaign[0])
+            report['campaign_content'] = campaign[1]
+            report['campaign_token_links'] = link_token_actors(files, scene, scope, campaign[1])
+        from forgebridge.native_tiles import add_tiles
+        files[names['map_path']], tile_files, tile_report = add_tiles(files[names['map_path']], scene, package, scope)
+        from forgebridge.native_dependencies import merge_native
+        merge_native(files, tile_files)
+        report['static_tiles'] = tile_report
         report['closed_metadata_references'] = check_metadata_references(files)
         report['native_synthesis'] = {**synthesis, 'background': background,
             'schema_version': 1, 'toolkit_reference': '0.5.1.18', 'scope': scope,
