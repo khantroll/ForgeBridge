@@ -15,8 +15,13 @@ def sanitize_name(value):
 
 
 def default_folder(row, package_title=None):
-    parent = row.get('retained_fields', {}).get('_forgebridge_parent_adventure', {})
-    return sanitize_name(row.get('parent_adventure_name') or parent.get('name') or package_title or 'ForgeBridge')
+    retained = row.get('retained_fields')
+    parent = retained.get('_forgebridge_parent_adventure') if isinstance(retained, dict) else None
+    parent_name = parent.get('name') if isinstance(parent, dict) else None
+    for candidate in (row.get('parent_adventure_name'), parent_name, package_title):
+        if isinstance(candidate, str) and candidate.strip():
+            return sanitize_name(candidate)
+    return 'ForgeBridge'
 
 
 def plan_names(rows, package_title=None, *, map_folder=None, notes_folder=None, map_names=None):
