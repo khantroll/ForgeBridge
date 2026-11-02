@@ -170,6 +170,11 @@ class CampaignTests(unittest.TestCase):
             self.assertIn(ogg,[bytes(o['bytes']) for o in reader.objects.values() if isinstance(o,dict) and 'bytes' in o])
             playlist=next(data for path,data in files.items() if path.endswith('.rwpl'))
             self.assertEqual(node(playlist).members['_songs'].members['_entries'].members['_size'],1)
+            info=find(node(playlist),'MusicTrackInfo')[0]
+            volumes=info.members['_trackVolumes'].members
+            self.assertEqual(volumes['HashSize'],0)
+            self.assertEqual(volumes['Version'],0)
+            self.assertIsNone(volumes['KeyValuePairs'])
             self.assertGreater(check_metadata_references(files),0)
 
     def test_tiles_preserve_existing_map_and_use_padding_grid(self):

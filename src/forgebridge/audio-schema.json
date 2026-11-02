@@ -533,14 +533,14 @@
                   "class": "System.Collections.Generic.Dictionary`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
                   "inline": false,
                   "members": {
-                    "Version": 438,
+                    "Version": 0,
                     "Comparer": {
                       "id": 5,
                       "class": "System.Collections.Generic.GenericEqualityComparer`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
                       "inline": false,
                       "members": {}
                     },
-                    "HashSize": 7,
+                    "HashSize": 0,
                     "KeyValuePairs": null
                   }
                 }
@@ -572,14 +572,14 @@
               "class": "System.Collections.Generic.Dictionary`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
               "inline": false,
               "members": {
-                "Version": 438,
+                "Version": 0,
                 "Comparer": {
                   "id": 4,
                   "class": "System.Collections.Generic.GenericEqualityComparer`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
                   "inline": false,
                   "members": {}
                 },
-                "HashSize": 7,
+                "HashSize": 0,
                 "KeyValuePairs": null
               }
             }
@@ -603,14 +603,14 @@
           "class": "System.Collections.Generic.Dictionary`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
           "inline": false,
           "members": {
-            "Version": 438,
+            "Version": 0,
             "Comparer": {
               "id": 3,
               "class": "System.Collections.Generic.GenericEqualityComparer`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
               "inline": false,
               "members": {}
             },
-            "HashSize": 7,
+            "HashSize": 0,
             "KeyValuePairs": null
           }
         }
