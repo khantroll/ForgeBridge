@@ -33,5 +33,29 @@ receipt `C:\AMD\fb-backups\forgebridge-ffad50b2d54c457f9b65d790473d38cb\uninstal
    operator lost sight of it. It is still in the output folder's
    `conversion-report.json`; the GUI now says so after installing.
 
-Remaining: Toolkit check of Count's Lair (incl. marker → note), uninstall with
-`--keep-changed`.
+## Build report (conversion-report.json from the operator's output folder)
+
+Count's Lair (adventure-5e): PASS / BUILT. 137 walls, 12 doors, 17 lights, 1
+background; **11 tokens converted, 0 rejected** (hidden flags carried); **12 room
+markers placed, 0 unplaced**; 49 notes (45 journal pages, 3 documents); 36 image
+attachments; 26 internal links rewritten.
+
+Reported gaps, all listed in the report:
+- 7 links point to journal pages / a roll table outside this scene's dependency
+  set (`missing_document`): left as text, not invented.
+- 10 PDF handouts (letters, the Count's journal, etc.) are reference-only: the
+  default `convert`/GUI path has no PDF-page option, so they are not rendered
+  into notes. Follow-up: expose PDF pages in convert/GUI (pypdfium2 is already a
+  dependency).
+
+## Toolkit check (operator, Toolkit 0.5.1.18)
+
+Map "ForgeBridge Count's Lair - eb6e39d18d": walls follow the drawn stonework,
+doors in doorways (red closed markers), lights on braziers, hidden tokens shown
+with the hidden (eye-slash) badge. **Marker → note works**: the marker opened
+"4. Lair & Dungeon — Steps to Lair" with its journal link, page text and an
+internal link ("Stairs to the Count's Lair"). This closes the marker→note
+re-check from Manor 2nd Floor (an input problem on the agent side, not a
+conversion defect). Quit without saving (edit counter 4/0).
+
+Remaining: uninstall with `--keep-changed` following only the guide.
