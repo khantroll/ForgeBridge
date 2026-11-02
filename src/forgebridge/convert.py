@@ -47,8 +47,10 @@ def discover(package):
         inventory = inventory_path(root)
         def adventure_name(row):
             # Inventory promotes scenes from this same parent Adventure record.
-            parent = row.get('retained_fields', {}).get('_forgebridge_parent_adventure', {})
-            return parent.get('name')
+            retained = row.get('retained_fields')
+            parent = retained.get('_forgebridge_parent_adventure') if isinstance(retained, dict) else None
+            name = parent.get('name') if isinstance(parent, dict) else None
+            return name if isinstance(name, str) and name else None
         return {'package_id': inventory['provenance']['package_id'],
                 'scenes': [{'key': scene_key(row), 'id': row.get('id'), 'name': row.get('name'),
                             'source_path': row.get('source_path'),
