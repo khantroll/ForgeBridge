@@ -14,7 +14,8 @@ target schema reference remains Toolkit 0.5.1.18, not a newly tested version.
 | Foundry regressions and full suite | PASS | 264 run, 260 passed, 4 Windows symlink-privilege skips; 196.382s |
 | (a) MFE 91 real module native build | BLOCKED | C:\AMD\MFE_91_Files.zip is absent; no replacement asset or real-module result invented |
 | (b) Independent Arkenforge FGU export → FG module → native package | PASS (file only) | Exact 199 barriers, 23 door records, 66 lights; see below and results JSON |
-| New native output rendering, geometry/player behavior and restart | PENDING CLAUDE | No interactive checks inferred from bytes or hashes |
+| New native output rendering and geometry in the Toolkit | PASS (Claude, 2026-11-02) | Installed by Codex with the add-only installer; opened in Toolkit 0.5.1.18 — see below |
+| Player view/fog for FG-sourced maps | NOT RE-CHECKED | Same shared native writer as the Foundry maps already checked over the player stream |
 
 ## Implementation boundaries
 
@@ -70,3 +71,18 @@ Ready package for Claude's separate reviewed install/Toolkit check:
 C:\AMD\fb-fg-phase2-export-native-2026-11-02\scene-001\native-package.zip.
 No real installation was performed. Prior reader/UVTT and prior Foundry runtime
 evidence remain separate from this new native-package result.
+
+## Toolkit check (Claude, 2026-11-02)
+
+Package installed into the real MyAssets by Codex
+(`MyAssets/Maps/ForgeBridge FG Export Check/Crypt FGU Export.rwmap` + background).
+Toolkit 0.5.1.18 started from the launcher; opened from the Map Browser
+(folder *ForgeBridge FG Export Check*, creator ForgeBridge, user content).
+
+- Loads without error; 5000×4800 background at the expected size on the grid.
+- Wall barriers sit on the drawn stone edges throughout (checked zoomed).
+- 23 door markers visible, matching 20 FG doors + 3 windows, each in a
+  doorway.
+- Light glows along corridors and in rooms, matching the source export.
+- Not re-checked here: player-stream fog/vision for this map (same writer as
+  the Foundry maps already checked). Map not saved; nothing edited.
