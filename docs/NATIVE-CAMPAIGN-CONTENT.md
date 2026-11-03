@@ -130,7 +130,7 @@ campaign notes/media are identical across scene packages and deduplicate in the
 combined MyAssets tree. Source objects stay inert in each package's supplemental
 `campaign-source-<scope>.json`. The top-level `campaign_content` report counts each
 scope once and lists native targets, rewritten link aliases and graded losses.
-Scene reports separately list static tiles and token-to-actor note links.
+Scene reports separately list static tiles and omitted token-to-actor links.
 
 - Roll tables: native range rows, including tables unreachable from scenes.
   Source formula, replacement, weight and drawn-state mismatches are reported,
@@ -142,9 +142,11 @@ Scene reports separately list static tiles and token-to-actor note links.
   Labels/name runs are bold; attack-type/Hit runs italic. No roll is evaluated.
   Effects, automation, resources, slots, actor deltas and ownership remain manual.
   Non-numeric bonuses/calculated AC remain explicit approximations.
-- Token links: a clickable stat-block field is added to the token's own note.
-  Its icon and Size stay intact. The observed map-token record has no demonstrated
-  separate actor binding; this is navigation, not live actor/stat synchronization.
+- Token links: omitted after Claude's 2026-11-03 Toolkit check showed that adding
+  a text/link field changes the map portrait into a note marker. The token
+  note/icon/Size files remain identical to the v0.10 writer. Actor notes remain
+  available separately; each omitted link is a manual loss. A safe separate
+  native actor binding is still unproven.
 - Items/spells: 5e block fields and local images; descriptions are inert text,
   rolls/enrichers become text and resolvable UUIDs become native note links.
 - Playlists: schema-built `.rwpl`/metadata with reachable song pairs for supplied
@@ -153,6 +155,12 @@ Scene reports separately list static tiles and token-to-actor note links.
   under a misleading OGG filename. Toolkit ffmpeg is never used. An all-manual
   playlist is an empty native playlist plus a loss for every track. Fades, mode,
   volume, looping and channels remain manual. Playback still needs Toolkit tests.
+  The current Toolkit-made user playlist and user ArkenAudioMeta declarations
+  drive metadata, including `_prevPathIfDeleted` and its inherited member.
+  Playlists use `MyAssets/Playlists/<notes folder>/<display name>.rwpl`; songs
+  use display-name files under `MyAssets/Audio/Songs/<notes folder>/`.
+  Previous shipped-pack metadata was structurally readable but invisible in the
+  user's Toolkit and is superseded. New listing/playback remains pending recheck.
 - Tiles: static PNG/JPEG/WebP rectangles, calibrated padding/grid coordinates,
   rotation and hidden state. Animated/video, unsafe or missing media produce
   manual losses. Texture offsets/scale, tint/alpha, occlusion, elevation/levels,
@@ -162,7 +170,20 @@ All runtime behavior remains unvalidated for this new output. Labels stay off;
 Foundry fog/vision and procedural animations remain separate conversion gaps.
 Installation remains explicit, add-only and receipt-based; `.rwpl` is now an
 accepted native extension and participates in dependency closure. No real
-MyAssets installation is part of this development check.
+MyAssets installation was part of the original 2026-11-02 file-level check.
+
+The 2026-11-03 corrected check was explicitly installed under new receipts;
+see [the recheck evidence](../validation/2026-11-03-CAMPAIGN-RECHECK.md).
+Generated campaign notes now have an explicit `Campaign-v2-` filename prefix,
+allowing edited v1 notes retained by `--keep-changed` to remain untouched.
+
+Stat derivation follows the package's dnd5e 4.3.5 source data: natural/flat AC
+uses its stored flat value (natural may add explicit bonuses/shield), equipment
+AC uses equipped armor and capped DEX, and attacks use the explicit activity
+ability, proficiency and numeric bonuses. Dynamic formulas/effects are reported,
+never executed. Boris explicitly specifies natural AC 10 and INT for Claws, so
+10/+1 are retained rather than replacing source data with DEX-based guesses.
+Languages deduplicate case-insensitively and walk speed appears first.
 
 File-level evidence and per-scene package hashes are in
 [the campaign validation report](../validation/2026-11-02-CAMPAIGN-CONTENT.md).

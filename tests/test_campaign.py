@@ -74,11 +74,13 @@ class CampaignTests(unittest.TestCase):
             scene={'_id':'s','tokens':[{'_id':'t','actorId':'actor','hidden':True,'rotation':90}]}
             before=node(original)
             report=link_token_actors(files,scene,'scope',c)
-            self.assertEqual(report['count'],1)
+            self.assertEqual(report['count'],0)
             after=node(files[path])
             self.assertEqual(find(before,'ArkenNoteFieldSize')[0].members['_squareSizeNew'],find(after,'ArkenNoteFieldSize')[0].members['_squareSizeNew'])
             self.assertEqual(after.members['_noteIcon'].members['_iconPath'],before.members['_noteIcon'].members['_iconPath'])
-            self.assertTrue(any(ch.members['_link']==c['links']['Actor.actor'] for ch in find(after,'ArkenTextCharacter')))
+            self.assertEqual(files[path],original)
+            self.assertFalse(find(after,'ArkenNoteFieldText'))
+            self.assertTrue(any(l['feature']=='token-actor-link' and l['grade']=='manual' for l in report['losses']))
             self.assertEqual(controls['MyAssets/Encyclopedia/Notes/GeneratedControls/Control.rwnote'],original)
             self.assertGreater(check_metadata_references(files),0)
 
@@ -222,3 +224,25 @@ class CampaignTests(unittest.TestCase):
             reference=find(captured,built.schema['name'])[0]
             self.assertEqual(set(built.members),set(reference.members))
             self.assertEqual(built.schema['types'],reference.schema['types'])
+
+    def test_user_audio_metadata_matches_captured_base_and_visible_paths(self):
+        from forgebridge.native_audio import record
+        from forgebridge.scene_records import canonical_graph
+        fixture=Path(__file__).resolve().parents[1]/'fixtures/arkenforge-user-playlist/toolkit-empty-playlist.rwmeta'
+        reader=Reader(fixture.read_bytes());graph=reader.read();expected=reader.object_metadata[graph['root_id']]
+        schema=json.loads((Path(__file__).resolve().parents[1]/'src/forgebridge/audio-schema.json').read_text())
+        playlist=record(schema,'playlist_meta');song=record(schema,'song_meta')
+        self.assertEqual(playlist.schema,expected)
+        audio_control=json.loads((fixture.parent/'toolkit-user-audio-meta.schema.json').read_text())
+        self.assertEqual(song.schema,audio_control['schema'])
+        self.assertTrue(song.members['_isSong'])
+        offset=song.schema['names'].index('_name')
+        for key in ('names','types','infos'):self.assertEqual(song.schema[key][offset:],expected[key])
+        for target in (playlist,song):
+            self.assertIsNone(target.members['_prevPathIfDeleted'])
+            self.assertIsNone(target.members['ArkenBaseMeta+_prevPathIfDeleted'])
+        with tempfile.TemporaryDirectory() as tmp:
+            files,_=playlist_files({'_id':'p','name':'Ambient','sounds':[]},tmp,'scope',folder='FB Campaign Check')
+            self.assertIn('MyAssets/Playlists/FB Campaign Check/Ambient.rwpl',files)
+            meta=node(files['MyAssets/Playlists/FB Campaign Check/Ambient.rwmeta'])
+            self.assertEqual(meta.members['_creator'],'')

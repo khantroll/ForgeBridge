@@ -2,6 +2,7 @@
 import math
 import re
 from forgebridge.notes import _plain_text
+from forgebridge.dnd5e_derived import armor_class, attacks
 
 ABILITIES = ('str', 'dex', 'con', 'int', 'wis', 'cha')
 SKILLS = dict(zip(('acr','ani','arc','ath','dec','his','ins','itm','inv','med','nat','prc','prf','per','rel','slt','ste','sur'),
@@ -22,11 +23,14 @@ def number(value):
 def signed(value): return f'{value:+g}'
 
 
-def trait(value):
+def trait(value, *, deduplicate=False):
     if not isinstance(value, dict): return text(value)
     values = value.get('value', [])
     if isinstance(values, str): values = [values]
-    parts = [str(v) for v in values or []] + ([value['custom']] if value.get('custom') else [])
+    custom=value.get('custom')
+    parts = [str(v) for v in values or []] + ((re.split(r'[,;]',custom) if deduplicate else [custom]) if custom else [])
+    if deduplicate:
+        seen=set();parts=[v.strip() for v in parts if v.strip() and not (v.strip().casefold() in seen or seen.add(v.strip().casefold()))]
     if value.get('bypasses'): parts.append('except ' + ', '.join(value['bypasses']))
     return ', '.join(parts)
 
@@ -40,6 +44,7 @@ def actor_ir(actor):
         basis = cr if actor.get('type') == 'npc' else level
         prof = max(2, 2 + math.floor((max(1, basis) - 1) / 4)) if number(basis) else None
     abilities, saves, skills, approximations = {}, [], [], []
+    derived_attacks=[];changes=[]
     modifiers = {}
     def bonus(value, label):
         if value in (None, ''): return 0
@@ -69,7 +74,7 @@ def actor_ir(actor):
     if isinstance(creature, dict): creature = creature.get('custom') or ' '.join(str(creature.get(k) or '') for k in ('value','subtype')).strip()
     size = {'tiny':'Tiny','sm':'Small','med':'Medium','lg':'Large','huge':'Huge','grg':'Gargantuan'}.get(traits.get('size'), traits.get('size', ''))
     movement = attrs.get('movement', {}); units = movement.get('units', 'ft')
-    speed = ', '.join((('' if k == 'walk' else k + ' ') + f'{v:g} {units}') for k,v in movement.items() if k in ('walk','burrow','climb','fly','swim') and number(v) and v)
+    speed = ', '.join((('' if k == 'walk' else k + ' ') + f'{movement[k]:g} {units}') for k in ('walk','burrow','climb','fly','swim') if number(movement.get(k)) and movement[k])
     if movement.get('hover'): speed += ' (hover)'
     senses = attrs.get('senses', {}); sensory = ', '.join(k + f' {v:g} ' + senses.get('units','ft') for k,v in senses.items() if number(v) and v)
     if senses.get('special'): sensory += ', ' + senses['special']
@@ -79,10 +84,10 @@ def actor_ir(actor):
         xp = values.get(cr)
     challenge = str(cr) if cr is not None else 'Unknown'
     if xp is not None: challenge += f' ({xp:g} XP)'
-    armor = ac.get('value', ac.get('flat'))
-    if armor is None: armor = ac.get('formula') or 'Unknown (source AC calculated by Foundry)'
-    if ac.get('calc') not in (None,'','flat','natural') and ac.get('value') is None and ac.get('flat') is None:
-        approximations.append('AC requires Foundry equipment/calculation; not guessed')
+    derived_ac=armor_class(actor,modifiers)
+    armor=derived_ac['value']
+    approximations.extend(derived_ac['warnings'])
+    armor=f'{armor:g}' if number(armor) else 'Unknown (dynamic/unsupported AC)'
     actions = {k:[] for k in ('abilities','actions','reactions','legendaryActions')}
     for item in actor.get('items', []):
         ins = item.get('system', {}); acts = ins.get('activities', {})
@@ -92,7 +97,17 @@ def actor_ir(actor):
         group = 'legendaryActions' if 'legendary' in modes else 'reactions' if any(str(x).startswith('reaction') for x in modes) else 'actions' if 'action' in modes or item.get('type') in ('weapon','spell') else 'abilities'
         description = ins.get('description', {})
         description = description.get('value', '') if isinstance(description, dict) else description
-        actions[group].append({'name': text(item.get('name','Unnamed')).rstrip('.'), 'description': text(description)})
+        description=text(description)
+        computed=attacks(actor,item,modifiers,prof);derived_attacks.extend(computed)
+        totals={a['total'] for a in computed if number(a['total'])}
+        if computed and len(totals)==1 and all(number(a['total']) for a in computed):
+            total=next(iter(totals));old=description
+            description,n=re.subn(r'(?<!\w)[+-]?\d+(?:\.\d+)?\s+to hit\b',signed(total)+' to hit',description,count=1,flags=re.I)
+            if not n:description=f'Attack: {signed(total)} to hit. '+description
+            if description!=old:changes.append({'field':'attack-to-hit','item':item.get('name'),'item_id':item.get('_id'),'source_text':re.findall(r'[+-]?\d+(?:\.\d+)?\s+to hit',old),'computed':signed(total)})
+        elif computed:
+            approximations.append('Attack bonus unresolved or differs by activity: '+str(item.get('name')))
+        actions[group].append({'name': text(item.get('name','Unnamed')).rstrip('.'), 'description': description})
     return {'name': actor.get('name','Unnamed'), 'portrait': actor.get('img'),
             'type': f'{size} {creature}, {details.get("alignment", "")}'.strip(' ,'),
             'ac': str(armor), 'hp_formula': str(hp.get('formula') or ''),
@@ -100,10 +115,11 @@ def actor_ir(actor):
             'abilities': abilities, 'saves': ', '.join(saves), 'skills': ', '.join(skills),
             'vulnerabilities': trait(traits.get('dv')), 'resistances': trait(traits.get('dr')),
             'immunities': trait(traits.get('di')), 'conditions': trait(traits.get('ci')),
-            'senses': sensory.strip(', '), 'languages': trait(traits.get('languages')),
+            'senses': sensory.strip(', '), 'languages': trait(traits.get('languages'),deduplicate=True),
             'challenge': challenge, 'proficiency': signed(prof) if number(prof) else 'Unknown',
             'biography': text(details.get('biography', {}).get('value','')),
-            'actions': actions, 'approximations': approximations}
+            'actions': actions, 'approximations': approximations,
+            'derived_values':{'ac':derived_ac,'attacks':derived_attacks,'prose_corrections':changes}}
 
 
 def item_ir(item):

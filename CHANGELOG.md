@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- Fixed: current user playlist/song metadata (including previous-path members),
+  display-name audio filenames and the chosen notes-folder layout.
+- Fixed: omit token stat-block links after Toolkit showed they replaced map
+  portraits with note-marker icons; preserve v0.10 token files instead.
+- Fixed: equipment AC and structured attack bonuses, duplicate languages and
+  walk-first speed text. Explicit source natural AC/attack abilities are honored.
+  Revised campaign-note filenames preserve edited v1 notes during reinstall.
+
 - Added: adventure-wide Foundry roll-table, dnd5e actor/item/spell display notes,
   local portraits, journal links and token-note stat-block navigation. Native
   records use captured member schemas; runtime acceptance remains pending.

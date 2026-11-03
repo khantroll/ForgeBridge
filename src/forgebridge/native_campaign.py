@@ -17,6 +17,8 @@ from forgebridge.scene_records import asset_templates
 from forgebridge.uvtt import _safe_ref, _package_file
 from forgebridge.validate import InventoryFatal
 
+NATIVE_CAMPAIGN_REVISION = 2
+
 
 class CampaignBuilder(NoteBuilder):
     def __init__(self):
@@ -87,7 +89,10 @@ class CampaignBuilder(NoteBuilder):
 def campaign_files(ir, package, *, notes_folder):
     builder = CampaignBuilder(); files, links, rows, playlists = {}, {}, [], []
     losses = list(ir['losses']); scope = ir['scope']; docs = ir['documents']
-    base = 'MyAssets/Encyclopedia/Notes/' + notes_folder + '/Campaign-' + scope + '-'
+    # Revision 1 stat-block/linked-token check can leave edited notes after
+    # --keep-changed. A visible revision in generated filenames preserves those
+    # user edits instead of requiring overwrites or silently repinning identity.
+    base = 'MyAssets/Encyclopedia/Notes/' + notes_folder + '/Campaign-v2-' + scope + '-'
     paths = {}
     aliases = {}
     def loss(grade, feature, summary, **details): losses.append(dict(grade=grade, feature=feature, summary=summary, **details))
@@ -201,13 +206,14 @@ def campaign_files(ir, package, *, notes_folder):
             loss('approximate','spell' if spell else 'item','Display text/image only; mechanical activities, effects, formula evaluation and uses are not automated',source_id=doc['id'])
         elif kind=='Playlist':
             from forgebridge.native_audio import playlist_files
-            audio,audit=playlist_files(p,package,scope)
+            audio,audit=playlist_files(p,package,scope,folder=notes_folder)
             files.update(audio);counts['playlists']+=audit['playlists'];counts['tracks']+=audit['tracks'];counts['manual_tracks']+=audit['manual_tracks'];losses.extend(audit['losses']);playlists.append(audit)
             continue
         else:continue
         files[path+'.rwnote']=Writer(builder.schema['libraries']).write(builder.note(name,fields,tag='ForgeBridge campaign'))
         files[path+'.rwmeta']=Writer(builder.schema['libraries']).write(builder.metadata(name))
-        rows.append({'kind':kind,'source_id':doc['id'],'source_path':doc['source_path'],'adventure_id':doc['adventure_id'],'target':path+'.rwmeta','name':name})
+        rows.append({'kind':kind,'source_id':doc['id'],'source_path':doc['source_path'],'adventure_id':doc['adventure_id'],'target':path+'.rwmeta','name':name,
+                     **({'derived_values':a['derived_values']} if kind=='Actor' else {})})
     emitted={r['target'] for r in rows}
     for alias,ids in aliases.items():
         if len(ids)==1 and paths[ids[0]]+'.rwmeta' in emitted:links[alias]=paths[ids[0]]+'.rwmeta'
@@ -216,42 +222,24 @@ def campaign_files(ir, package, *, notes_folder):
     check_metadata_references(files)
     files['campaign-source-'+scope+'.json']=json.dumps(ir,ensure_ascii=True,sort_keys=True).encode()
     from collections import Counter
-    return files,{'scope':scope,'adventure_id':ir.get('adventure_id'),'counts':{**counts,'notes':len(rows)},'documents':rows,'playlists':playlists,'links':links,'losses':losses,
+    return files,{'scope':scope,'native_revision':NATIVE_CAMPAIGN_REVISION,'adventure_id':ir.get('adventure_id'),'counts':{**counts,'notes':len(rows)},'documents':rows,'playlists':playlists,'links':links,'losses':losses,
                   'loss_counts':dict(Counter(l['grade'] for l in losses)),'runtime_validation':'not performed'}
 
 
 def link_token_actors(files, scene, namespace, campaign):
-    """Add a native clickable stat-block field without changing token Size/icon.
+    """Preserve v0.10 token bytes; linked text triggered note-marker rendering.
 
-    The observed token record's content link must continue to target the token
-    note (its Size field drives the footprint). No separate actor binding has
-    been demonstrated, so this is explicitly a note link, not live actor sync.
+    Toolkit observation 2026-11-03 showed that adding a text/link field changes
+    the map appearance despite an unchanged icon in metadata/selection. Until a
+    separate native actor binding is demonstrated, emit no link and no mutation.
     """
-    from forgebridge.nrbf import Reader
-    from forgebridge.native_map import clone
-    builder=NoteBuilder();rows=[];losses=[]
-    # campaign scope already isolates the Adventure; ambiguous actor IDs refuse.
-    grouped={}
-    for row in campaign['documents']:
-        if row['kind']=='Actor':grouped.setdefault(row['source_id'],[]).append(row)
+    losses=[]
     for token in scene.get('tokens',[]):
         identity='Scene.'+scene['_id']+'.Token.'+str(token.get('_id'))
         key=hashlib.sha256((namespace+'\0'+identity).encode()).hexdigest()[:24]
         path='MyAssets/Encyclopedia/Notes/ForgeBridgeTokens/'+key+'.rwnote'
-        if path not in files:continue
-        matches=grouped.get(token.get('actorId'),[])
-        local=[r for r in matches if r.get('adventure_id') and r.get('adventure_id')==campaign.get('adventure_id')]
-        if local:matches=local
-        if len(matches)!=1:
-            losses.append({'grade':'manual','feature':'token-actor-link','source_id':token.get('_id'),'actor_id':token.get('actorId'),'summary':'Actor absent, unsupported or ambiguous; token preserved without stat-block link'})
-            continue
-        actor=matches[0];reader=Reader(files[path]);graph=reader.read();note=clone(reader,graph['root_id'])
-        entries=note.members['_noteFields'].members['_content'].members['_entries']
-        items=entries.members['_items'].items[:entries.members['_size']]
-        uid=note.members['nextUID'];field=builder.text_field('Actor stat block',[(actor['name'],actor['target'])],uid)
-        items.append(builder.node('KVPOrderedList`1+KVPEntry',{'_order':len(items),'_value':field}))
-        entries.members['_items'].items=items;entries.members.update(_size=len(items),_version=len(items));note.members['nextUID']=uid+1
-        files[path]=Writer(reader.libraries).write(note)
-        rows.append({'token_id':token.get('_id'),'actor_id':token.get('actorId'),'token_note':path,'actor_note':actor['target']})
-    if rows:losses.append({'grade':'approximate','feature':'token-actor-link','summary':'Clickable stat-block link in each token note; no demonstrated separate map-token actor-link member or live stat synchronization. Token Size and icon preserved; actorDelta remains manual'})
-    return {'count':len(rows),'links':rows,'losses':losses}
+        if path in files and token.get('actorId'):
+            losses.append({'grade':'manual','feature':'token-actor-link',
+                'source_id':token.get('_id'),'actor_id':token['actorId'],
+                'summary':'Link omitted: adding a text/link field rendered a note-marker icon in Toolkit. Token note/icon/Size bytes preserved; open the separate actor stat-block note by name.'})
+    return {'count':0,'links':[],'losses':losses}

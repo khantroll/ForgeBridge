@@ -1,0 +1,961 @@
+{
+  "date": "2026-11-03",
+  "runtime_report_source": "User supplied Claude Toolkit observations: playlists/songs invisible; linked tokens rendered as markers; actor values questioned. Not observed by this agent.",
+  "runtime_recheck": "PENDING Claude; Toolkit not launched by this agent",
+  "metadata_control": "Toolkit-made empty user playlist plus complete Toolkit-created user ArkenAudioMeta declaration (SFX control, same class with _isSong false)",
+  "uninstall_audio": {
+    "status": "PASS",
+    "removed": 6,
+    "kept_changed": [],
+    "removed_empty_folders": 2,
+    "backup_retained": true
+  },
+  "uninstall_campaign": {
+    "status": "PASS",
+    "removed": 331,
+    "kept_changed": [
+      "MyAssets/Encyclopedia/Notes/FB Campaign Check/Campaign-edfc87a75fc39f64264e-2faadd18bb76b0f58dd5.rwnote",
+      "MyAssets/Encyclopedia/Notes/FB Campaign Check/Campaign-edfc87a75fc39f64264e-6ddd27b6dba1e597359e.rwnote",
+      "MyAssets/Encyclopedia/Notes/FB Campaign Check/Campaign-edfc87a75fc39f64264e-7160079c8c68016e7452.rwnote"
+    ],
+    "removed_empty_folders": 46,
+    "backup_retained": true
+  },
+  "install_campaign": {
+    "status": "PASS",
+    "added": 334,
+    "receipt": "C:\\AMD\\fb-backups\\forgebridge-034c85bacbe7477d8b4f76713e2b2072\\uninstall.json",
+    "backup": "C:\\AMD\\fb-backups\\forgebridge-034c85bacbe7477d8b4f76713e2b2072\\MyAssets",
+    "runtime_validation": "not performed"
+  },
+  "install_audio": {
+    "status": "PASS",
+    "added": 6,
+    "receipt": "C:\\AMD\\fb-backups\\forgebridge-0c74d4820ef94387863b38923f695505\\uninstall.json",
+    "backup": "C:\\AMD\\fb-backups\\forgebridge-0c74d4820ef94387863b38923f695505\\MyAssets",
+    "runtime_validation": "not performed"
+  },
+  "kept_changed_preserved": "All three retained note files byte-compared equal to the pre-reinstall full backup",
+  "output": "C:\\AMD\\fb-campaign-lair-recheck-2026-11-03",
+  "map": {
+    "map_folder": "FB Campaign Check",
+    "map_name": "Count's Lair",
+    "notes_folder": "FB Campaign Check",
+    "map_path": "MyAssets/Maps/FB Campaign Check/Count's Lair.rwmap"
+  },
+  "counts": {
+    "scenes": 1,
+    "tokens": 11,
+    "rejected_tokens": 0,
+    "notes": 87,
+    "markers": 12,
+    "tables": 3,
+    "actors": 18,
+    "items": 17,
+    "spells": 0,
+    "playlists": 1,
+    "tracks": 0,
+    "manual_tracks": 3,
+    "static_tiles": 2,
+    "token_actor_links": 0
+  },
+  "namespace_revision": 2,
+  "playlist": "MyAssets/Playlists/FB Campaign Check/Ambient.rwpl",
+  "campaign_package_sha256": "91fedc5510f69005c710f64a0a8749b4c14be0a4ef8c2a73009b1a10cee83087",
+  "audio_package_sha256": "915a19c7199174304ad1764e941c028aec213b7f6ecc6833fe1355764d5ec5d7",
+  "audio_bytes": "Both MP3 and OGG identical to first playback experiment; only metadata/layout changed",
+  "actor_audit": [
+    {
+      "name": "Animated Armor",
+      "source_id": "ErjpbjvNd7MT7EF6",
+      "ac_before": "18",
+      "ac_after": "18",
+      "languages_before": "",
+      "languages_after": "",
+      "speed_before": "25 ft",
+      "speed_after": "25 ft",
+      "derived_values": {
+        "ac": {
+          "mode": "natural",
+          "source_flat": 18,
+          "equipment": [],
+          "warnings": [],
+          "value": 18
+        },
+        "attacks": [
+          {
+            "item_id": "FbvxTCM1hbGIe2Lx",
+            "item": "Slam",
+            "activity_id": "dnd5eactivity000",
+            "ability": "str",
+            "ability_modifier": 2,
+            "proficiency": 2,
+            "proficiency_multiplier": 1,
+            "item_bonus": 0,
+            "magic_bonus": 0,
+            "actor_bonus": 0,
+            "flat_override": false,
+            "total": 4
+          }
+        ],
+        "prose_corrections": []
+      },
+      "warnings": []
+    },
+    {
+      "name": "Boris the Vampire",
+      "source_id": "TGtba62kBv3898D7",
+      "ac_before": "10",
+      "ac_after": "10",
+      "languages_before": "common, common",
+      "languages_after": "common",
+      "speed_before": "climb 30 ft, 30 ft",
+      "speed_after": "30 ft, climb 30 ft",
+      "derived_values": {
+        "ac": {
+          "mode": "natural",
+          "source_flat": 10,
+          "equipment": [],
+          "warnings": [],
+          "value": 10
+        },
+        "attacks": [
+          {
+            "item_id": "yIGXfyip1bDPdgJf",
+            "item": "Claws",
+            "activity_id": "dnd5eactivity000",
+            "ability": "int",
+            "ability_modifier": -1,
+            "proficiency": 2,
+            "proficiency_multiplier": 1,
+            "item_bonus": 0,
+            "magic_bonus": 0,
+            "actor_bonus": 0,
+            "flat_override": false,
+            "total": 1
+          },
+          {
+            "item_id": "vEle5E4ZqpEyFDLe",
+            "item": "Bite",
+            "activity_id": "dnd5eactivity000",
+            "ability": "str",
+            "ability_modifier": 1,
+            "proficiency": 2,
+            "proficiency_multiplier": 1,
+            "item_bonus": 0,
+            "magic_bonus": 0,
+            "actor_bonus": 0,
+            "flat_override": false,
+            "total": 3
+          }
+        ],
+        "prose_corrections": []
+      },
+      "warnings": []
+    },
+    {
+      "name": "Count Lugosi",
+      "source_id": "ktEiJyIYA4X74A8h",
+      "ac_before": "15",
+      "ac_after": "15",
+      "languages_before": "common, deep, the languages it knew in life",
+      "languages_after": "common, deep, the languages it knew in life",
+      "speed_before": "climb 30 ft, 30 ft",
+      "speed_after": "30 ft, climb 30 ft",
+      "derived_values": {
+        "ac": {
+          "mode": "natural",
+          "source_flat": 15,
+          "equipment": [],
+          "warnings": [],
+          "value": 15
+        },
+        "attacks": [
+          {
+            "item_id": "XLW4BwDiVbF3wFLP",
+            "item": "Unarmed Strike (Vampire Form Only)",
+            "activity_id": "dnd5eactivity000",
+            "ability": "str",
+            "ability_modifier": 3,
+            "proficiency": 2,
+            "proficiency_multiplier": 1,
+            "item_bonus": 0,
+            "magic_bonus": 0,
+            "actor_bonus": 0,
+            "flat_override": false,
+            "total": 5
+          },
+          {
+            "item_id": "8HJIRVP0w5A1B9lD",
+            "item": "Bite (Bat or Vampire Form Only)",
+            "activity_id": "dnd5eactivity000",
+            "ability": "str",
+            "ability_modifier": 3,
+            "proficiency": 2,
+            "proficiency_multiplier": 1,
+            "item_bonus": 0,
+            "magic_bonus": 0,
+            "actor_bonus": 0,
+            "flat_override": false,
+            "total": 5
+          },
+          {
+            "item_id": "411LVSMovc5Mws0B",
+            "item": "Unarmed Strike (Vampire Form Only)",
+            "activity_id": "dnd5eactivity000",
+            "ability": "str",
+            "ability_modifier": 3,
+            "proficiency": 2,
+            "proficiency_multiplier": 1,
+            "item_bonus": 0,
+            "magic_bonus": 0,
+            "actor_bonus": 0,
+            "flat_override": false,
+            "total": 5
+          },
+          {
+            "item_id": "dsriwmh6RxbgTsde",
+            "item": "Bite (Bat or Vampire Form Only)",
+            "activity_id": "dnd5eactivity000",
+            "ability": "str",
+            "ability_modifier": 3,
+            "proficiency": 2,
+            "proficiency_multiplier": 1,
+            "item_bonus": 0,
+            "magic_bonus": 0,
+            "actor_bonus": 0,
+            "flat_override": false,
+            "total": 5
+          }
+        ],
+        "prose_corrections": []
+      },
+      "warnings": []
+    },
+    {
+      "name": "Cursed Cannibal",
+      "source_id": "URbNzjkQHl7jeklQ",
+      "ac_before": "12",
+      "ac_after": "12",
+      "languages_before": "Does not speak",
+      "languages_after": "Does not speak",
+      "speed_before": "30 ft",
+      "speed_after": "30 ft",
+      "derived_values": {
+        "ac": {
+          "mode": "natural",
+          "source_flat": 12,
+          "equipment": [],
+          "warnings": [],
+          "value": 12
+        },
+        "attacks": [
+          {
+            "item_id": "GUrCFLBVe4IoOXjA",
+            "item": "Unarmed Attack",
+            "activity_id": "dnd5eactivity000",
+            "ability": "con",
+            "ability_modifier": 0,
+            "proficiency": 2,
+            "proficiency_multiplier": 1,
+            "item_bonus": 0,
+            "magic_bonus": 0,
+            "actor_bonus": 0,
+            "flat_override": false,
+            "total": 2
+          },
+          {
+            "item_id": "5MW2xPbegrksV99e",
+            "item": "Bite",
+            "activity_id": "dnd5eactivity000",
+            "ability": "str",
+            "ability_modifier": 2,
+            "proficiency": 2,
+            "proficiency_multiplier": 1,
+            "item_bonus": 0,
+            "magic_bonus": 0,
+            "actor_bonus": 0,
+            "flat_override": false,
+            "total": 4
+          }
+        ],
+        "prose_corrections": []
+      },
+      "warnings": []
+    },
+    {
+      "name": "Dark Soul",
+      "source_id": "S3woEkj2vgpSAt9C",
+      "ac_before": "12",
+      "ac_after": "12",
+      "languages_before": "Any languages it knew in life",
+      "languages_after": "Any languages it knew in life",
+      "speed_before": "fly 30 ft",
+      "speed_after": "fly 30 ft",
+      "derived_values": {
+        "ac": {
+          "mode": "flat",
+          "source_flat": 12,
+          "equipment": [],
+          "warnings": [],
+          "value": 12
+        },
+        "attacks": [
+          {
+            "item_id": "9lj1qT5gDkA6vfz6",
+            "item": "Soul Drain",
+            "activity_id": "dnd5eactivity000",
+            "ability": "dex",
+            "ability_modifier": 1,
+            "proficiency": 2,
+            "proficiency_multiplier": 1,
+            "item_bonus": 0,
+            "magic_bonus": 0,
+            "actor_bonus": 0,
+            "flat_override": false,
+            "total": 3
+          }
+        ],
+        "prose_corrections": [
+          {
+            "field": "attack-to-hit",
+            "item": "Soul Drain",
+            "item_id": "9lj1qT5gDkA6vfz6",
+            "source_text": [
+              "+2 to hit"
+            ],
+            "computed": "+3"
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "name": "Elizabeth",
+      "source_id": "IdfymuKbvHgl9O8B",
+      "ac_before": "13",
+      "ac_after": "13",
+      "languages_before": "common",
+      "languages_after": "common",
+      "speed_before": "30 ft",
+      "speed_after": "30 ft",
+      "derived_values": {
+        "ac": {
+          "mode": "flat",
+          "source_flat": 13,
+          "equipment": [],
+          "warnings": [],
+          "value": 13
+        },
+        "attacks": [
+          {
+            "item_id": "Oabqnp0rOgVgNaOB",
+            "item": "Bite",
+            "activity_id": "dnd5eactivity000",
+            "ability": "str",
+            "ability_modifier": 3,
+            "proficiency": 2,
+            "proficiency_multiplier": 1,
+            "item_bonus": 0,
+            "magic_bonus": 0,
+            "actor_bonus": 0,
+            "flat_override": false,
+            "total": 5
+          },
+          {
+            "item_id": "ofXT2NqoaIqsclFQ",
+            "item": "Claws",
+            "activity_id": "dnd5eactivity000",
+            "ability": "str",
+            "ability_modifier": 3,
+            "proficiency": 2,
+            "proficiency_multiplier": 1,
+            "item_bonus": 0,
+            "magic_bonus": 0,
+            "actor_bonus": 0,
+            "flat_override": false,
+            "total": 5
+          }
+        ],
+        "prose_corrections": [
+          {
+            "field": "attack-to-hit",
+            "item": "Bite",
+            "item_id": "Oabqnp0rOgVgNaOB",
+            "source_text": [
+              "+3 to hit"
+            ],
+            "computed": "+5"
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "name": "Giant Spider",
+      "source_id": "c8JlRrTrktUKMgcC",
+      "ac_before": "14",
+      "ac_after": "14",
+      "languages_before": "",
+      "languages_after": "",
+      "speed_before": "climb 30 ft, 30 ft",
+      "speed_after": "30 ft, climb 30 ft",
+      "derived_values": {
+        "ac": {
+          "mode": "natural",
+          "source_flat": 14,
+          "equipment": [],
+          "warnings": [],
+          "value": 14
+        },
+        "attacks": [
+          {
+            "item_id": "SuRAERXystPvC7Ci",
+            "item": "Bite",
+            "activity_id": "dnd5eactivity000",
+            "ability": "dex",
+            "ability_modifier": 3,
+            "proficiency": 2,
+            "proficiency_multiplier": 1,
+            "item_bonus": 0,
+            "magic_bonus": 0,
+            "actor_bonus": 0,
+            "flat_override": false,
+            "total": 5
+          },
+          {
+            "item_id": "g7e60AxXarlQ9xQC",
+            "item": "Web",
+            "activity_id": "dnd5eactivity000",
+            "ability": "dex",
+            "ability_modifier": 3,
+            "proficiency": 2,
+            "proficiency_multiplier": 1,
+            "item_bonus": 0,
+            "magic_bonus": 0,
+            "actor_bonus": 0,
+            "flat_override": false,
+            "total": 5
+          }
+        ],
+        "prose_corrections": []
+      },
+      "warnings": []
+    },
+    {
+      "name": "Igor",
+      "source_id": "Tfv8gGHpuf184egq",
+      "ac_before": "11",
+      "ac_after": "11",
+      "languages_before": "common",
+      "languages_after": "common",
+      "speed_before": "20 ft",
+      "speed_after": "20 ft",
+      "derived_values": {
+        "ac": {
+          "mode": "natural",
+          "source_flat": 11,
+          "equipment": [],
+          "warnings": [],
+          "value": 11
+        },
+        "attacks": [
+          {
+            "item_id": "pwkcer2TWTiQu7ZQ",
+            "item": "Bite",
+            "activity_id": "dnd5eactivity000",
+            "ability": "str",
+            "ability_modifier": 1,
+            "proficiency": 2,
+            "proficiency_multiplier": 1,
+            "item_bonus": 0,
+            "magic_bonus": 0,
+            "actor_bonus": 0,
+            "flat_override": false,
+            "total": 3
+          },
+          {
+            "item_id": "zIoc24YzpVU4efkm",
+            "item": "Claw",
+            "activity_id": "dnd5eactivity000",
+            "ability": "str",
+            "ability_modifier": 1,
+            "proficiency": 2,
+            "proficiency_multiplier": 1,
+            "item_bonus": 0,
+            "magic_bonus": 0,
+            "actor_bonus": 0,
+            "flat_override": false,
+            "total": 3
+          },
+          {
+            "item_id": "bdpPVYpGTzngs5ts",
+            "item": "Dagger",
+            "activity_id": "dnd5eactivity000",
+            "ability": "str",
+            "ability_modifier": 1,
+            "proficiency": 2,
+            "proficiency_multiplier": 1,
+            "item_bonus": 0,
+            "magic_bonus": 0,
+            "actor_bonus": 0,
+            "flat_override": false,
+            "total": 3
+          }
+        ],
+        "prose_corrections": []
+      },
+      "warnings": []
+    },
+    {
+      "name": "Margret the Ghost",
+      "source_id": "LoYzaqAkQ6nqmzea",
+      "ac_before": "11",
+      "ac_after": "11",
+      "languages_before": "Any languages it knew in life",
+      "languages_after": "Any languages it knew in life",
+      "speed_before": "fly 40 ft",
+      "speed_after": "fly 40 ft",
+      "derived_values": {
+        "ac": {
+          "mode": "flat",
+          "source_flat": 11,
+          "equipment": [],
+          "warnings": [],
+          "value": 11
+        },
+        "attacks": [
+          {
+            "item_id": "TOkvWNrOP16jE5SX",
+            "item": "Withering Touch",
+            "activity_id": "dnd5eactivity000",
+            "ability": "cha",
+            "ability_modifier": 3,
+            "proficiency": 2,
+            "proficiency_multiplier": 1,
+            "item_bonus": 0,
+            "magic_bonus": 0,
+            "actor_bonus": 0,
+            "flat_override": false,
+            "total": 5
+          }
+        ],
+        "prose_corrections": []
+      },
+      "warnings": []
+    },
+    {
+      "name": "Monster",
+      "source_id": "Kfykt7et6FJK51Bd",
+      "ac_before": "9",
+      "ac_after": "9",
+      "languages_before": "Common Understands but unable to speak. It cries, moans, and grunts.;  Understands the languages of its creator but can't speak",
+      "languages_after": "Common Understands but unable to speak. It cries, moans, and grunts., Understands the languages of its creator but can't speak",
+      "speed_before": "20 ft",
+      "speed_after": "20 ft",
+      "derived_values": {
+        "ac": {
+          "mode": "flat",
+          "source_flat": 9,
+          "equipment": [],
+          "warnings": [],
+          "value": 9
+        },
+        "attacks": [
+          {
+            "item_id": "EYj47aUH4O6XuLrc",
+            "item": "Slam",
+            "activity_id": "dnd5eactivity000",
+            "ability": "str",
+            "ability_modifier": 3,
+            "proficiency": 2,
+            "proficiency_multiplier": 1,
+            "item_bonus": 0,
+            "magic_bonus": 0,
+            "actor_bonus": 0,
+            "flat_override": false,
+            "total": 5
+          },
+          {
+            "item_id": "ZylF9e1JAlHgRtSP",
+            "item": "Chain Attack",
+            "activity_id": "dnd5eactivity000",
+            "ability": "str",
+            "ability_modifier": 3,
+            "proficiency": 2,
+            "proficiency_multiplier": 1,
+            "item_bonus": 0,
+            "magic_bonus": 0,
+            "actor_bonus": 0,
+            "flat_override": false,
+            "total": 5
+          }
+        ],
+        "prose_corrections": []
+      },
+      "warnings": []
+    },
+    {
+      "name": "Rahadin",
+      "source_id": "AscEV7GSqZUccVWl",
+      "ac_before": "Unknown (source AC calculated by Foundry)",
+      "ac_after": "18",
+      "languages_before": "common, elvish",
+      "languages_after": "common, elvish",
+      "speed_before": "35 ft",
+      "speed_after": "35 ft",
+      "derived_values": {
+        "ac": {
+          "mode": "default",
+          "source_flat": null,
+          "equipment": [
+            "Studded Leather"
+          ],
+          "warnings": [],
+          "value": 18
+        },
+        "attacks": [
+          {
+            "item_id": "qbHdAtHFvfNXSRlZ",
+            "item": "Scimitar",
+            "activity_id": "dnd5eactivity000",
+            "ability": "dex",
+            "ability_modifier": 6,
+            "proficiency": 4,
+            "proficiency_multiplier": 1,
+            "item_bonus": 0,
+            "magic_bonus": 0,
+            "actor_bonus": 0,
+            "flat_override": false,
+            "total": 10
+          },
+          {
+            "item_id": "eLyDGRWYy1UhoJxN",
+            "item": "Poisoned Dart",
+            "activity_id": "dnd5eactivity000",
+            "ability": "dex",
+            "ability_modifier": 6,
+            "proficiency": 4,
+            "proficiency_multiplier": 1,
+            "item_bonus": 0,
+            "magic_bonus": 0,
+            "actor_bonus": 0,
+            "flat_override": false,
+            "total": 10
+          }
+        ],
+        "prose_corrections": []
+      },
+      "warnings": []
+    },
+    {
+      "name": "Skeleton",
+      "source_id": "JyTGhSHsH83GbRPn",
+      "ac_before": "13",
+      "ac_after": "13",
+      "languages_before": "Understands all languages it knew in life but can't speak",
+      "languages_after": "Understands all languages it knew in life but can't speak",
+      "speed_before": "30 ft",
+      "speed_after": "30 ft",
+      "derived_values": {
+        "ac": {
+          "mode": "natural",
+          "source_flat": 13,
+          "equipment": [],
+          "warnings": [],
+          "value": 13
+        },
+        "attacks": [
+          {
+            "item_id": "hrTC2vP0xMgI8q8y",
+            "item": "Shortbow",
+            "activity_id": "dnd5eactivity000",
+            "ability": "dex",
+            "ability_modifier": 2,
+            "proficiency": 2,
+            "proficiency_multiplier": 1,
+            "item_bonus": 0,
+            "magic_bonus": 0,
+            "actor_bonus": 0,
+            "flat_override": false,
+            "total": 4
+          },
+          {
+            "item_id": "qXbbvudRpBoul3bH",
+            "item": "Shortsword",
+            "activity_id": "dnd5eactivity000",
+            "ability": "dex",
+            "ability_modifier": 2,
+            "proficiency": 2,
+            "proficiency_multiplier": 1,
+            "item_bonus": 0,
+            "magic_bonus": 0,
+            "actor_bonus": 0,
+            "flat_override": false,
+            "total": 4
+          }
+        ],
+        "prose_corrections": []
+      },
+      "warnings": []
+    },
+    {
+      "name": "Stoker",
+      "source_id": "3vr350NJGuDXiqZk",
+      "ac_before": "12",
+      "ac_after": "12",
+      "languages_before": "",
+      "languages_after": "",
+      "speed_before": "climb 30 ft, 40 ft",
+      "speed_after": "40 ft, climb 30 ft",
+      "derived_values": {
+        "ac": {
+          "mode": "flat",
+          "source_flat": 12,
+          "equipment": [],
+          "warnings": [],
+          "value": 12
+        },
+        "attacks": [
+          {
+            "item_id": "ov18AlrjUjAXPXZL",
+            "item": "Claws",
+            "activity_id": "dnd5eactivity000",
+            "ability": "cha",
+            "ability_modifier": -2,
+            "proficiency": 2,
+            "proficiency_multiplier": 1,
+            "item_bonus": 0,
+            "magic_bonus": 0,
+            "actor_bonus": 0,
+            "flat_override": false,
+            "total": 0
+          }
+        ],
+        "prose_corrections": []
+      },
+      "warnings": []
+    },
+    {
+      "name": "Swarm of Rats",
+      "source_id": "TIz7z8Y9jJW7ujBj",
+      "ac_before": "10",
+      "ac_after": "10",
+      "languages_before": "",
+      "languages_after": "",
+      "speed_before": "30 ft",
+      "speed_after": "30 ft",
+      "derived_values": {
+        "ac": {
+          "mode": "natural",
+          "source_flat": 10,
+          "equipment": [],
+          "warnings": [],
+          "value": 10
+        },
+        "attacks": [
+          {
+            "item_id": "ESv9NuVeZhnEW1ua",
+            "item": "Bites",
+            "activity_id": "dnd5eactivity000",
+            "ability": "dex",
+            "ability_modifier": 0,
+            "proficiency": 2,
+            "proficiency_multiplier": 1,
+            "item_bonus": 0,
+            "magic_bonus": 0,
+            "actor_bonus": 0,
+            "flat_override": false,
+            "total": 2
+          }
+        ],
+        "prose_corrections": []
+      },
+      "warnings": []
+    },
+    {
+      "name": "Swarm of Spiders",
+      "source_id": "C4GDKaEdmA0XMjj7",
+      "ac_before": "12",
+      "ac_after": "12",
+      "languages_before": "",
+      "languages_after": "",
+      "speed_before": "climb 20 ft, 20 ft",
+      "speed_after": "20 ft, climb 20 ft",
+      "derived_values": {
+        "ac": {
+          "mode": "natural",
+          "source_flat": 12,
+          "equipment": [],
+          "warnings": [],
+          "value": 12
+        },
+        "attacks": [
+          {
+            "item_id": "qoIR278ckqhlVaNr",
+            "item": "Bites",
+            "activity_id": "dnd5eactivity000",
+            "ability": "dex",
+            "ability_modifier": 1,
+            "proficiency": 2,
+            "proficiency_multiplier": 1,
+            "item_bonus": 0,
+            "magic_bonus": 0,
+            "actor_bonus": 0,
+            "flat_override": false,
+            "total": 3
+          },
+          {
+            "item_id": "qoIR278ckqhlVaNr",
+            "item": "Bites",
+            "activity_id": "UYqbc2PZjXGLdHsM",
+            "ability": "dex",
+            "ability_modifier": 1,
+            "proficiency": 2,
+            "proficiency_multiplier": 1,
+            "item_bonus": 0,
+            "magic_bonus": 0,
+            "actor_bonus": 0,
+            "flat_override": false,
+            "total": 3
+          }
+        ],
+        "prose_corrections": []
+      },
+      "warnings": []
+    },
+    {
+      "name": "Wight",
+      "source_id": "j7mSThAzHuK9wMJo",
+      "ac_before": "Unknown (source AC calculated by Foundry)",
+      "ac_after": "14",
+      "languages_before": "the languages it knew in life",
+      "languages_after": "the languages it knew in life",
+      "speed_before": "30 ft",
+      "speed_after": "30 ft",
+      "derived_values": {
+        "ac": {
+          "mode": "default",
+          "source_flat": null,
+          "equipment": [
+            "Studded Leather Armor"
+          ],
+          "warnings": [],
+          "value": 14
+        },
+        "attacks": [
+          {
+            "item_id": "PUYwkzEiKopyM6YL",
+            "item": "Longbow",
+            "activity_id": "dnd5eactivity000",
+            "ability": "dex",
+            "ability_modifier": 2,
+            "proficiency": 2,
+            "proficiency_multiplier": 1,
+            "item_bonus": 0,
+            "magic_bonus": 0,
+            "actor_bonus": 0,
+            "flat_override": false,
+            "total": 4
+          },
+          {
+            "item_id": "WZ3XGh48UoyAvBhS",
+            "item": "Longsword",
+            "activity_id": "dnd5eactivity000",
+            "ability": "str",
+            "ability_modifier": 2,
+            "proficiency": 2,
+            "proficiency_multiplier": 1,
+            "item_bonus": 0,
+            "magic_bonus": 0,
+            "actor_bonus": 0,
+            "flat_override": false,
+            "total": 4
+          },
+          {
+            "item_id": "NX8cqG6aZMns8wvY",
+            "item": "Life Drain",
+            "activity_id": "dnd5eactivity000",
+            "ability": "cha",
+            "ability_modifier": 2,
+            "proficiency": 2,
+            "proficiency_multiplier": 1,
+            "item_bonus": 0,
+            "magic_bonus": 0,
+            "actor_bonus": 0,
+            "flat_override": false,
+            "total": 4
+          }
+        ],
+        "prose_corrections": []
+      },
+      "warnings": []
+    },
+    {
+      "name": "Willa",
+      "source_id": "aFAUyohStwIcguA1",
+      "ac_before": "10",
+      "ac_after": "10",
+      "languages_before": "any one language (usually Common)",
+      "languages_after": "any one language (usually Common)",
+      "speed_before": "30 ft",
+      "speed_after": "30 ft",
+      "derived_values": {
+        "ac": {
+          "mode": "natural",
+          "source_flat": 10,
+          "equipment": [],
+          "warnings": [],
+          "value": 10
+        },
+        "attacks": [],
+        "prose_corrections": []
+      },
+      "warnings": []
+    },
+    {
+      "name": "Zombie",
+      "source_id": "qBWySLPUYqymXidP",
+      "ac_before": "8",
+      "ac_after": "8",
+      "languages_before": "understands the languages it knew in life but can't speak",
+      "languages_after": "understands the languages it knew in life but can't speak",
+      "speed_before": "20 ft",
+      "speed_after": "20 ft",
+      "derived_values": {
+        "ac": {
+          "mode": "flat",
+          "source_flat": 8,
+          "equipment": [],
+          "warnings": [],
+          "value": 8
+        },
+        "attacks": [
+          {
+            "item_id": "Y1wHqFTYqr7UzmA0",
+            "item": "Slam",
+            "activity_id": "dnd5eactivity000",
+            "ability": "str",
+            "ability_modifier": 1,
+            "proficiency": 2,
+            "proficiency_multiplier": 1,
+            "item_bonus": 0,
+            "magic_bonus": 0,
+            "actor_bonus": 0,
+            "flat_override": false,
+            "total": 3
+          }
+        ],
+        "prose_corrections": []
+      },
+      "warnings": []
+    }
+  ],
+  "suite": {
+    "run": 291,
+    "passed": 287,
+    "skipped": 4,
+    "failed": 0,
+    "skips": "Windows symlink privileges"
+  }
+}

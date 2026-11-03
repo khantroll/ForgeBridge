@@ -12,6 +12,7 @@ import struct
 from forgebridge.native import Node, Array, Writer
 from forgebridge.uvtt import _safe_ref, _package_file
 from forgebridge.validate import InventoryFatal
+from forgebridge.output_names import sanitize_name
 
 
 def record(schema, name):
@@ -35,7 +36,7 @@ def names(node,name):
     for key in node.members:
         bare=key.split('+')[-1]
         if bare=='_name':node.members[key]=name
-        elif bare=='_creator':node.members[key]='ForgeBridge'
+        elif bare=='_creator':node.members[key]=''
 
 
 def sequence(node, values):
@@ -71,12 +72,13 @@ def vorbis_duration(data):
     return granule/rate
 
 
-def playlist_files(source, package, scope):
+def playlist_files(source, package, scope, *, folder='ForgeBridge'):
     schema=json.loads(Path(__file__).with_name('audio-schema.json').read_text(encoding='utf-8'))
     playlist=record(schema,'playlist');meta=record(schema,'playlist_meta')
-    name=str(source.get('name') or 'Playlist');names(playlist,name);names(meta,name)
+    name=sanitize_name(str(source.get('name') or 'Playlist'));folder=sanitize_name(folder)
+    names(playlist,name);names(meta,name)
     key=hashlib.sha256((scope+'\0'+str(source.get('_id',source.get('id')))).encode()).hexdigest()[:20]
-    base='MyAssets/Playlists/ForgeBridgeCampaign-'+scope+'/'+key
+    base='MyAssets/Playlists/'+folder+'/'+name
     files={};entries=[];losses=[];tracks=0;songs=[]
     sounds=source.get('sounds',[])
     if not isinstance(sounds,list) or len(sounds)>256:raise ValueError('Invalid/oversized playlist')
@@ -90,14 +92,15 @@ def playlist_files(source, package, scope):
             if path.stat().st_size>64*1024*1024:raise ValueError('Audio exceeds 64 MiB')
             data=path.read_bytes();duration=vorbis_duration(data)
             songkey=hashlib.sha256((key+'\0'+str(sound.get('_id',tracks))+'\0').encode()+data).hexdigest()[:20]
-            songbase='MyAssets/Audio/Songs/ForgeBridgeCampaign-'+scope+'/'+songkey
+            songbase='MyAssets/Audio/Songs/'+folder+'/'+sanitize_name(track_name)
+            if songbase+'.rwfile' in files:raise ValueError('Song name conflict; rename source tracks before building: '+track_name)
             song=record(schema,'song');songmeta=record(schema,'song_meta');names(song,track_name);names(songmeta,track_name)
             song.members['_duration']=songmeta.members['_duration']=duration
             audio=record(schema,'audio_track');audio.members.update(_trackName='Master',_originalFile=songkey+'.ogg',_clipRAW=Array(list(data),0,2),_parentName=track_name)
             sequence(song.members['_tracks'],[audio])
             files[songbase+'.rwfile']=Writer(schema['libraries']).write(song)
             files[songbase+'.rwmeta']=Writer(schema['libraries']).write(songmeta)
-            info=record(schema,'track_info');info.members.update(_name=track_name,_songPath=songbase+'.rwmeta',_creator='ForgeBridge')
+            info=record(schema,'track_info');info.members.update(_name=track_name,_songPath=songbase+'.rwmeta',_creator='')
             content=record(schema,'content');content.members.update(_filePath=songbase+'.rwmeta',_content=info,_officialFlag=False)
             entry=record(schema,'entry');entry.members.update(_order=tracks,_value=content);entries.append(entry);tracks+=1
             songs.append({'source_id':sound.get('_id'),'source':ref,'source_sha256':hashlib.sha256(data).hexdigest(),

@@ -1,5 +1,9 @@
 # Campaign content: file-level validation, 2026-11-02
 
+Superseded limits: Claude's 2026-11-03 Toolkit check found invisible playlists
+and note-marker rendering after token links. Those behaviors were never passed
+by this file-level report. See [fix/recheck evidence](2026-11-03-CAMPAIGN-RECHECK.md).
+
 PASS: schema/serialization/dependency/source-preservation checks. Runtime remains PENDING Claude.
 Toolkit was not launched, and real MyAssets was neither read nor installed into. Captured schema reference: Toolkit 0.5.1.18.
 

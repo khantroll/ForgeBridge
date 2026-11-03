@@ -289,12 +289,18 @@ Foundry campaign content is included automatically for the selected Adventure:
 all roll tables, supported dnd5e actor stat blocks, item/spell notes and playlists,
 alongside the chosen scenes. Shared content is counted once in
 `conversion-report.json` → `campaign_content`; per-scene reports list static
-tiles and token-note links. Review the graded losses before installing. Stat
+tiles and omitted token-link losses. Token portraits use the v0.10 Size/icon
+notes; adding stat links caused note-marker rendering in Toolkit, so actor
+notes remain separate. Review the graded losses before installing. Stat
 blocks are display content, not actor automation. Missing portraits stay manual.
 MP3 tracks require manual OGG Vorbis preparation; ForgeBridge does not use the
 Toolkit's ffmpeg or claim that embedded MP3 plays. New campaign fields, playlists
 and tile placements still require Toolkit acceptance. See
 [native campaign details](NATIVE-CAMPAIGN-CONTENT.md).
+Playlists now use their display-name filenames inside the chosen notes folder
+in `MyAssets/Playlists`, with current Toolkit user metadata. Listing and playback
+await recheck. Corrected generated notes use `Campaign-v2-` filenames; edited
+v1 files kept by uninstall remain preserved and are not overwritten.
 
 | Symptom | Action |
 | --- | --- |
