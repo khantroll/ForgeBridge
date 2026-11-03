@@ -84,6 +84,7 @@ def report_text(value):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--version', action='version', version='ForgeBridge ' + get_version())
     parser.add_argument('--package', default='')
     parser.add_argument('--out', default='')
     args = parser.parse_args(argv)

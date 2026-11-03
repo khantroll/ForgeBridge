@@ -1,6 +1,12 @@
 # Changelog
 
-## Unreleased
+## v0.11.0 — 2026-11-03
+
+Fantasy Grounds Unity native maps, the Windows standalone app, and Foundry
+campaign content. [Release notes](docs/RELEASE-NOTES-v0.11.0.md).
+Audible MP3/OGG playback is not confirmed by ear; external art remains manual;
+encrypted FG modules are refused; Windows executables are unsigned (SmartScreen
+may warn).
 
 - Fixed: current user playlist/song metadata (including previous-path members),
   display-name audio filenames and the chosen notes-folder layout.
@@ -11,8 +17,9 @@
   Revised campaign-note filenames preserve edited v1 notes during reinstall.
 
 - Added: adventure-wide Foundry roll-table, dnd5e actor/item/spell display notes,
-  local portraits, journal links and token-note stat-block navigation. Native
-  records use captured member schemas; runtime acceptance remains pending.
+  local portraits and journal links. Native records use captured member schemas;
+  scoped Toolkit checks confirmed stat-block/item/table rendering. Actor links
+  from tokens are omitted to preserve portrait appearances.
 - Added: static map tiles and native playlists/OGG song records, with explicit
   manual MP3, animation, missing-media and behavior losses. Shared campaign
   content deduplicates across selected scenes; reports retain original objects.
@@ -24,7 +31,7 @@
   writer and existing reviewed add-only installer/receipts. Source counts,
   metadata source, resampling and graded losses appear in reports/GUI.
 - FG pins, story and tokens remain manual; encrypted modules remain refused.
-  Native FG runtime acceptance is pending Claude's Toolkit check.
+  Scoped FG native geometry was checked in Toolkit 0.5.1.18.
 - Fixed: rejected FG module initialization closes its archive immediately,
   including encrypted-input errors surfaced through the GUI.
 - Added: Windows x64 one-folder GUI/CLI bundle, `ForgeBridge.exe` and
