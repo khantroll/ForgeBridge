@@ -55,6 +55,8 @@ def smoke(archive, fixture, out, *, skip_install=False):
     version = run(cli, '--version', as_json=False)
     assert version.startswith('ForgeBridge ')
     assert Path(archive).name == f"ForgeBridge-{version.split(' ', 1)[1]}-windows-x64.zip"
+    # Windowed executable has no console stdout, but must exit without opening Tk.
+    run(gui, '--version', as_json=False)
     inventoried = run(cli, Path(fixture).absolute())
     assert inventoried['generator']['version'] == version.split(' ', 1)[1]
     assert inventoried['ir_version'] == '0.1.0'

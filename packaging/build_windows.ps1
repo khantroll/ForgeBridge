@@ -22,6 +22,12 @@ try {
     & $Python -m PyInstaller --distpath $OutDir --workpath $work packaging/forgebridge.spec
     if ($LASTEXITCODE -ne 0) { throw 'PyInstaller build failed' }
     $folder = Join-Path $OutDir 'ForgeBridge'
+    foreach ($exeName in @('ForgeBridge.exe', 'forgebridge-cli.exe')) {
+        $exeVersion = [Diagnostics.FileVersionInfo]::GetVersionInfo((Join-Path $folder $exeName))
+        if ($exeVersion.FileVersion -ne $version -or $exeVersion.ProductVersion -ne $version) {
+            throw "Executable version metadata mismatch: $exeName"
+        }
+    }
     @'
 ForgeBridge Windows app (unsigned)
 Run ForgeBridge.exe for the GUI. Keep _internal and both EXEs together.

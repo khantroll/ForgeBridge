@@ -1,6 +1,10 @@
 # Project Status
 
-See [next steps](docs/NEXT-STEPS.md) for the current plan and owners.
+**Superseded:** this file is historical. Use the
+[2026-11-03 handoff](docs/HANDOFF-2026-11-03.md) for the plan and owners and
+[v0.11.0 release notes](docs/RELEASE-NOTES-v0.11.0.md) for current scope and limits.
+PR #17 is merged as `023f30db`; its corrected runtime recheck is recorded in
+[the recheck report](validation/toolkit-recheck-2026-11-03.md).
 
 **Lifecycle:** CALIBRATED SCENE PROFILES — PLAYER RUNTIME VALIDATED
 **Implementation started:** Inventory CLI, importable UVTT, loose scene assets, embedded Adventure scene discovery, ambient color, and deterministic AmbientLight range conversion

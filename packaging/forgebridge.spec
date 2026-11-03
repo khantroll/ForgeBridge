@@ -4,6 +4,10 @@ import os
 import sys
 from pathlib import Path
 from importlib.metadata import version
+from PyInstaller.utils.win32.versioninfo import (
+    VSVersionInfo, FixedFileInfo, StringFileInfo, StringTable, StringStruct,
+    VarFileInfo, VarStruct,
+)
 from PyInstaller.utils.hooks import (
     collect_data_files, collect_dynamic_libs, collect_submodules, copy_metadata,
     collect_delvewheel_libs_directory,
@@ -11,6 +15,17 @@ from PyInstaller.utils.hooks import (
 
 root = Path(SPECPATH).parent
 build_version = version('forgebridge')
+version_numbers = tuple(map(int, build_version.split('.'))) + (0,)
+windows_version = VSVersionInfo(
+    ffi=FixedFileInfo(filevers=version_numbers, prodvers=version_numbers,
+                      mask=0x3f, flags=0, OS=0x40004, fileType=1, subtype=0, date=(0, 0)),
+    kids=[StringFileInfo([StringTable('040904B0', [
+        StringStruct('FileDescription', 'ForgeBridge'),
+        StringStruct('ProductName', 'ForgeBridge'),
+        StringStruct('FileVersion', build_version),
+        StringStruct('ProductVersion', build_version),
+    ])]), VarFileInfo([VarStruct('Translation', [1033, 1200])])],
+)
 info = Path(workpath) / 'build-info.json'
 info.parent.mkdir(parents=True, exist_ok=True)
 info.write_text(json.dumps({'version': build_version, 'mode': 'onedir', 'architecture': 'windows-x64'}), encoding='utf-8')
@@ -35,8 +50,8 @@ common = dict(pathex=[str(root / 'src'), str(root / 'packaging')], binaries=bina
 gui_a = Analysis([str(root / 'packaging/gui_entry.py')], **common)
 cli_a = Analysis([str(root / 'packaging/cli_entry.py')], **common)
 gui = EXE(PYZ(gui_a.pure), gui_a.scripts, [], exclude_binaries=True, name='ForgeBridge',
-          console=False, debug=False, strip=False, upx=False, contents_directory='_internal')
+          console=False, debug=False, strip=False, upx=False, contents_directory='_internal', version=windows_version)
 cli = EXE(PYZ(cli_a.pure), cli_a.scripts, [], exclude_binaries=True, name='forgebridge-cli',
-          console=True, debug=False, strip=False, upx=False, contents_directory='_internal')
+          console=True, debug=False, strip=False, upx=False, contents_directory='_internal', version=windows_version)
 bundle = COLLECT(gui, cli, gui_a.binaries, gui_a.datas, cli_a.binaries, cli_a.datas,
                  strip=False, upx=False, name='ForgeBridge')
