@@ -45,7 +45,6 @@ jobs:
             ${{ runner.temp }}/frozen-smoke/local-appdata/ForgeBridge/*.log
 
   release:
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     needs: build
     runs-on: ubuntu-latest
     permissions:
@@ -56,16 +55,30 @@ jobs:
         with:
           name: windows-standalone
           path: windows-release
+      - name: Validate the downloaded release artifact on every build
+        shell: bash
+        run: |
+          python - <<'PY'
+          import hashlib, json, pathlib, tomllib
+          root = pathlib.Path('windows-release/forgebridge-dist')
+          summary = json.loads((root / 'build-summary.json').read_text(encoding='utf-8-sig'))
+          version = tomllib.loads(pathlib.Path('pyproject.toml').read_text())['project']['version']
+          assert summary['version'] == version, 'Artifact/package version mismatch'
+          archive = root / f'ForgeBridge-{version}-windows-x64.zip'
+          assert archive.stat().st_size == summary['zip_bytes'], 'ZIP size mismatch'
+          assert hashlib.sha256(archive.read_bytes()).hexdigest() == summary['zip_sha256'], 'ZIP hash mismatch'
+          PY
       - name: Attach ZIP or leave the workflow artifact if publishing is refused
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           tag="$GITHUB_REF_NAME"
-          version=$(python -c 'import json;print(json.load(open("windows-release/build-summary.json"))["version"])')
+          version=$(python -c 'import json;print(json.load(open("windows-release/forgebridge-dist/build-summary.json", encoding="utf-8-sig"))["version"])')
           notes="docs/RELEASE-NOTES-$tag.md"
-          zip="windows-release/ForgeBridge-$version-windows-x64.zip"
+          zip="windows-release/forgebridge-dist/ForgeBridge-$version-windows-x64.zip"
           if [[ "$tag" != "v$version" || ! -f "$notes" || ! -f "$zip" ]]; then
             echo '::warning::Tag/version, matching release notes or ZIP missing; workflow artifact retained, nothing published.'
             echo 'Windows ZIP retained as workflow artifact; tag/version/notes validation refused publication.' >> "$GITHUB_STEP_SUMMARY"
