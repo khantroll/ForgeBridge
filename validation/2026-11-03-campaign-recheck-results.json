@@ -957,5 +957,21 @@
     "skipped": 4,
     "failed": 0,
     "skips": "Windows symlink privileges"
+  },
+  "handoff_followup": {
+    "handoff_ref": "origin/main at 9abeac3",
+    "production_fix_commit": "b3d67a0",
+    "suite": {
+      "run": 292,
+      "passed": 288,
+      "skipped": 4,
+      "failed": 0,
+      "skip_reason": "Windows symlink privileges"
+    },
+    "test_log_sha256": "7153f52e838c6fdb3d58e8223d0c6029e75e526a4e267ed4bdbe3c331ae46e44",
+    "current_receipts": "Both COMPLETE; all 334 campaign and 6 audio files match recorded SHA-256 hashes",
+    "installs_repeated": false,
+    "production_code_changed": false,
+    "runtime_recheck": "PENDING Claude"
   }
 }

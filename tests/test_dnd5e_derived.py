@@ -1,4 +1,7 @@
 from copy import deepcopy
+import json
+from pathlib import Path
+import tempfile
 import unittest
 from forgebridge.campaign_dnd5e import actor_ir
 from forgebridge.dnd5e_derived import static_number, armor_class, attacks
@@ -6,6 +9,31 @@ from test_campaign import actor
 
 
 class DerivedTests(unittest.TestCase):
+    def test_boris_source_fields_and_native_display_regression(self):
+        from forgebridge.campaign import display_document
+        from forgebridge.native_campaign import campaign_files
+        from test_campaign import campaign, node, find, content
+        fixture=Path(__file__).resolve().parents[1]/'fixtures/synthetic-boris.json'
+        boris=json.loads(fixture.read_text())
+        before=deepcopy(boris)
+        ir=actor_ir(boris)
+        self.assertEqual(ir['ac'],'10')  # natural uses explicit flat 10, not DEX
+        self.assertEqual(ir['proficiency'],'+2')
+        self.assertEqual(ir['derived_values']['attacks'][0]['ability'],'int')
+        self.assertEqual(ir['derived_values']['attacks'][0]['total'],1)
+        self.assertEqual(ir['languages'],'common')
+        self.assertEqual(ir['speed'],'30 ft, climb 30 ft')
+        doc=display_document({'kind':'Actor','id':boris['_id'],'source_path':'packs/actors.json','adventure_id':'A','payload':boris},'dnd5e')
+        with tempfile.TemporaryDirectory() as tmp:
+            files,report=campaign_files(campaign([doc]),tmp,notes_folder='FB Campaign Check')
+            target=report['documents'][0]['target'][:-7]+'.rwnote'
+            block=find(node(files[target]),'ArkenNoteFieldStatBlock5e')[0].members
+            self.assertEqual(content(block['_armorClassText']),'Armor Class 10')
+            self.assertEqual(content(block['_languagesText']),'Languages common')
+            self.assertEqual(content(block['_speedText']),'Speed 30 ft, climb 30 ft')
+            self.assertIn('+1 to hit',content(block['_actions'].members['_items'].items[0]))
+        self.assertEqual(boris,before)
+
     def test_natural_is_stored_flat_not_flat_plus_dex(self):
         a=actor();a['system']['attributes']['ac']={'calc':'natural','flat':10}
         a['system']['abilities']['dex']['value']=16

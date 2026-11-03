@@ -48,3 +48,22 @@ Corrected generated notes use an explicit Campaign-v2- filename prefix to coexis
 Windows suite: 291 run, 287 passed, four symlink-privilege skips, zero failures. Focused metadata/token and derivation regressions also passed. No new runtime check is marked passed.
 
 [Curated results, receipts, package hashes and 18-actor audit](2026-11-03-campaign-recheck-results.json).
+
+## Handoff follow-up
+
+Read `docs/HANDOFF-2026-11-03.md` from `origin/main` at `9abeac3` (the
+handoff is not yet a file on the campaign branch), together with the campaign
+design and user-playlist fixture README. The requested production fixes and
+replacement installs above were already complete at `b3d67a0`.
+
+Added an explicit named Boris source-to-native regression using a synthetic
+mechanical subset of his source fields, without copying adventure prose or art.
+It checks natural AC 10, the explicit INT-based Claws +1, single-language text,
+walk-first speed, native block text and unchanged input. Full Windows suite:
+**292 run, 288 passed, four symlink-privilege skips, zero failures**.
+
+Both replacement receipts were re-read and are COMPLETE: all 334 campaign files
+and all six audio-test files match their recorded SHA-256 hashes. These are the
+new receipts prepared above, so no duplicate uninstall/install was performed.
+No production writer or installed file changed in this regression-only follow-up.
+Runtime recheck remains pending Claude; no Toolkit launch, merge or release tag.
