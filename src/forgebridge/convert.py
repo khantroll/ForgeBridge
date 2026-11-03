@@ -115,13 +115,13 @@ def convert(package, destination, *, scene_ids=(), scene_keys=(), profiles=(),
               'source_sha256': before, 'scenes': [], 'counts': {g: 0 for g in
                   ('native', 'approximate', 'manual', 'unsupported')},
               'counts_scope': 'Source/UVTT grades; native outcomes and remaining losses are reported separately',
-              'native_counts': {'scenes': 0, 'tokens': 0, 'rejected_tokens': 0, 'notes': 0, 'markers': 0},
+              'native_counts': {k:0 for k in ('scenes','tokens','rejected_tokens','notes','markers','tables','actors','items','spells','playlists','tracks','manual_tracks','static_tiles','token_actor_links')},
               'native_losses': [],
               'pdf_mode': selected_pdf, 'pdf_mode_loss': pdf_loss,
               'runtime_validation': 'not performed', 'installed': False,
               'native_synthesis': 'Schema-built Toolkit 0.5.1.18 records; default calibration 2.56 units/grid, upper-left origin (0,0)',
               'manual_steps': ['Review combined losses and installation conflicts before player use; labels off',
-                               'GIF/FPS setup, manual native fog and unsupported actor/vision/behavior remain manual',
+                               'GIF/FPS setup, manual native fog, audio transcoding and actor/vision/behavior automation remain manual',
                                'Generating files is not runtime validation of this output']}
     with source_root(package) as (root, rejected), tempfile.TemporaryDirectory(prefix='forgebridge-convert-') as tmp:
         inventory = inventory_path(root)
@@ -163,6 +163,9 @@ def convert(package, destination, *, scene_ids=(), scene_keys=(), profiles=(),
                             map_folder=map_folder, notes_folder=notes_folder, map_names=map_names)
         stage = Path(tmp)
         combined_native = {}
+        campaign_cache, campaign_outputs = {}, {}
+        report['campaign_content'] = []
+        published_campaigns = set()
         for index, row in enumerate(rows, 1):
             folder = stage / f'scene-{index:03d}'; folder.mkdir()
             result = {'id': row.get('id'), 'name': row.get('name'),
@@ -201,8 +204,18 @@ def convert(package, destination, *, scene_ids=(), scene_keys=(), profiles=(),
                     result.update(status='BUILT', artifact='native-package.zip', native_report=conversion)
                 else:
                     from forgebridge.direct_package import build_direct
+                    from forgebridge.campaign import read_campaign
+                    from forgebridge.native_campaign import campaign_files
+                    scene_names = naming[scene_key(row)]
+                    campaign_key = (row.get('source_path') if _parent_adventure_id(row) else None,
+                                    _parent_adventure_id(row), scene_names['notes_folder'])
+                    if campaign_key not in campaign_outputs:
+                        ir = read_campaign(root, inventory, row, cache=campaign_cache)
+                        ir['package_id'] = report['package_id']
+                        campaign_outputs[campaign_key] = campaign_files(ir, root, notes_folder=scene_names['notes_folder'])
+                        report['campaign_content'].append(campaign_outputs[campaign_key][1])
                     conversion = build_direct(root, document, row, report['package_id'], folder / 'native-package.zip',
-                                              names=naming[scene_key(row)], pdf_pages=selected_pdf == 'pages')
+                                              names=scene_names, pdf_pages=selected_pdf == 'pages', campaign=campaign_outputs[campaign_key])
                     result.update(status='BUILT', artifact='native-package.zip', native_report=conversion)
                 members = read_package(folder / 'native-package.zip')
                 candidate = {n: d for n, d in members.items() if n.startswith('MyAssets/')}
@@ -222,7 +235,15 @@ def convert(package, destination, *, scene_ids=(), scene_keys=(), profiles=(),
                 for key, source in [('tokens', 'native_tokens'), ('rejected_tokens', 'unsupported_tokens'), ('notes', 'notes')]:
                     report['native_counts'][key] += counts.get(source, 0)
                 report['native_counts']['markers'] += native_report['native_map']['markers']
+                report['native_counts']['static_tiles'] += native_report.get('static_tiles', {}).get('count', 0)
+                report['native_counts']['token_actor_links'] += native_report.get('campaign_token_links', {}).get('count', 0)
+                campaign = native_report.get('campaign_content')
+                if campaign and campaign['scope'] not in published_campaigns:
+                    for key,value in campaign['counts'].items(): report['native_counts'][key] += value
+                    published_campaigns.add(campaign['scope'])
                 remaining = list(native_report.get('native_synthesis', {}).get('losses', []))
+                remaining += native_report.get('static_tiles', {}).get('losses', [])
+                remaining += native_report.get('campaign_token_links', {}).get('losses', [])
                 if pdf_loss:
                     remaining.append({'grade': 'manual', 'feature': 'pdf-mode', 'summary': pdf_loss})
                 remaining += [{'grade': 'unsupported', 'feature': 'light', **row}

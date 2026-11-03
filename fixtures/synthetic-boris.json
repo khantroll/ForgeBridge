@@ -1,0 +1,31 @@
+{
+  "_id": "synthetic-boris",
+  "name": "Boris the Vampire",
+  "type": "npc",
+  "_stats": {"systemId": "dnd5e", "systemVersion": "4.3.5"},
+  "system": {
+    "abilities": {
+      "str": {"value": 12}, "dex": {"value": 16, "proficient": 1},
+      "con": {"value": 12}, "int": {"value": 8},
+      "wis": {"value": 8, "proficient": 1}, "cha": {"value": 12}
+    },
+    "attributes": {
+      "ac": {"calc": "natural", "flat": 10},
+      "hp": {"value": 20, "max": 20, "formula": "3d8 + 4"},
+      "movement": {"climb": 30, "walk": 30, "units": "ft"}
+    },
+    "details": {"cr": 1, "type": {"value": "undead"}},
+    "traits": {"size": "sm", "languages": {"value": ["common"], "custom": "common"}}
+  },
+  "items": [{
+    "_id": "synthetic-claws", "name": "Claws", "type": "weapon",
+    "system": {
+      "proficient": 1,
+      "description": {"value": "Melee Weapon Attack: +1 to hit."},
+      "activities": {"claws": {
+        "type": "attack", "activation": {"type": "action"},
+        "attack": {"ability": "int", "bonus": "", "type": {"value": "melee", "classification": "weapon"}}
+      }}
+    }
+  }]
+}

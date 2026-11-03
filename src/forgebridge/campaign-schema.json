@@ -1,0 +1,2097 @@
+{
+  "provenance": "Member definitions/defaults from untouched 5e templates, Toolkit 0.5.1.18; text emptied; library IDs normalized by assembly identity. Not runtime validation.",
+  "libraries": {
+    "2": "Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+    "29": "Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
+  },
+  "classes": {
+    "ArkenNoteFieldStatBlock5e": {
+      "name": "ArkenNoteFieldStatBlock5e",
+      "names": [
+        "_nameText",
+        "_typeText",
+        "_armorClassText",
+        "_hitPointsText",
+        "_speedText",
+        "_strValNew",
+        "_dexValNew",
+        "_conValNew",
+        "_intValNew",
+        "_wisValNew",
+        "_chaValNew",
+        "_savingThrowsText",
+        "_savingThrowsFieldActive",
+        "_skillsText",
+        "_damageResistancesText",
+        "_damageResistanceFieldActive",
+        "_damageImmunitiesText",
+        "_damageImmunitiesFieldActive",
+        "_conditionImmunitiesText",
+        "_conditionImmunitiesFieldActive",
+        "_sensesText",
+        "_languagesText",
+        "_challengeText",
+        "_proficiencyBonusText",
+        "_abilities",
+        "_actions",
+        "_reactions",
+        "_legendaryActions",
+        "_damageVulnerabilitiesText",
+        "_damageVulnerabilitiesFieldActive",
+        "_trackedHitPoints",
+        "_name",
+        "_visibleToPlayers",
+        "_UID",
+        "ArkenNoteField+_name",
+        "ArkenNoteField+_visibleToPlayers",
+        "ArkenNoteField+_UID"
+      ],
+      "types": [
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        0,
+        4,
+        4,
+        0,
+        4,
+        0,
+        4,
+        0,
+        4,
+        4,
+        4,
+        4,
+        3,
+        3,
+        3,
+        3,
+        4,
+        0,
+        4,
+        1,
+        3,
+        0,
+        1,
+        3,
+        0
+      ],
+      "infos": [
+        {
+          "name": "ArkenTextString",
+          "library_id": 29
+        },
+        {
+          "name": "ArkenTextString",
+          "library_id": 29
+        },
+        {
+          "name": "ArkenTextString",
+          "library_id": 29
+        },
+        {
+          "name": "ArkenTextString",
+          "library_id": 29
+        },
+        {
+          "name": "ArkenTextString",
+          "library_id": 29
+        },
+        {
+          "name": "ArkenTextString",
+          "library_id": 29
+        },
+        {
+          "name": "ArkenTextString",
+          "library_id": 29
+        },
+        {
+          "name": "ArkenTextString",
+          "library_id": 29
+        },
+        {
+          "name": "ArkenTextString",
+          "library_id": 29
+        },
+        {
+          "name": "ArkenTextString",
+          "library_id": 29
+        },
+        {
+          "name": "ArkenTextString",
+          "library_id": 29
+        },
+        {
+          "name": "ArkenTextString",
+          "library_id": 29
+        },
+        1,
+        {
+          "name": "ArkenTextString",
+          "library_id": 29
+        },
+        {
+          "name": "ArkenTextString",
+          "library_id": 29
+        },
+        1,
+        {
+          "name": "ArkenTextString",
+          "library_id": 29
+        },
+        1,
+        {
+          "name": "ArkenTextString",
+          "library_id": 29
+        },
+        1,
+        {
+          "name": "ArkenTextString",
+          "library_id": 29
+        },
+        {
+          "name": "ArkenTextString",
+          "library_id": 29
+        },
+        {
+          "name": "ArkenTextString",
+          "library_id": 29
+        },
+        {
+          "name": "ArkenTextString",
+          "library_id": 29
+        },
+        "System.Collections.Generic.List`1[[ArkenTextString, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "System.Collections.Generic.List`1[[ArkenTextString, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "System.Collections.Generic.List`1[[ArkenTextString, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "System.Collections.Generic.List`1[[ArkenTextString, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        {
+          "name": "ArkenTextString",
+          "library_id": 29
+        },
+        1,
+        {
+          "name": "ArkenNoteFieldStat",
+          "library_id": 2
+        },
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        8,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        8
+      ],
+      "library_id": 2
+    },
+    "ArkenTextString": {
+      "name": "ArkenTextString",
+      "names": [
+        "_characters",
+        "_font"
+      ],
+      "types": [
+        3,
+        1
+      ],
+      "infos": [
+        "System.Collections.Generic.List`1[[ArkenTextCharacter, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        null
+      ],
+      "library_id": 29
+    },
+    "System.Collections.Generic.List`1[[ArkenTextCharacter, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]": {
+      "name": "System.Collections.Generic.List`1[[ArkenTextCharacter, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+      "names": [
+        "_items",
+        "_size",
+        "_version"
+      ],
+      "types": [
+        4,
+        0,
+        0
+      ],
+      "infos": [
+        {
+          "name": "ArkenTextCharacter[]",
+          "library_id": 29
+        },
+        8,
+        8
+      ],
+      "library_id": null
+    },
+    "System.Collections.Generic.List`1[[ArkenTextString, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]": {
+      "name": "System.Collections.Generic.List`1[[ArkenTextString, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+      "names": [
+        "_items",
+        "_size",
+        "_version"
+      ],
+      "types": [
+        4,
+        0,
+        0
+      ],
+      "infos": [
+        {
+          "name": "ArkenTextString[]",
+          "library_id": 29
+        },
+        8,
+        8
+      ],
+      "library_id": null
+    },
+    "ArkenNoteFieldStat": {
+      "name": "ArkenNoteFieldStat",
+      "names": [
+        "_currentValue",
+        "_minValue",
+        "_maxValue",
+        "_currentValueStr",
+        "_minValueStr",
+        "_maxValueStr",
+        "_statType",
+        "_fieldColor",
+        "_currentValueColour",
+        "_maxValueColour",
+        "_nameColour",
+        "_indicated",
+        "_name",
+        "_visibleToPlayers",
+        "_UID",
+        "ArkenNoteField+_name",
+        "ArkenNoteField+_visibleToPlayers",
+        "ArkenNoteField+_UID"
+      ],
+      "types": [
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        4,
+        4,
+        4,
+        4,
+        4,
+        0,
+        1,
+        3,
+        0,
+        1,
+        3,
+        0
+      ],
+      "infos": [
+        11,
+        11,
+        11,
+        null,
+        null,
+        null,
+        {
+          "name": "ArkenNoteFieldStat+StatFieldType",
+          "library_id": 2
+        },
+        {
+          "name": "SVector3",
+          "library_id": 2
+        },
+        {
+          "name": "SVector3",
+          "library_id": 2
+        },
+        {
+          "name": "SVector3",
+          "library_id": 2
+        },
+        {
+          "name": "SVector3",
+          "library_id": 2
+        },
+        1,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        8,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        8
+      ],
+      "library_id": 2
+    },
+    "ArkenNoteFieldStat+StatFieldType": {
+      "name": "ArkenNoteFieldStat+StatFieldType",
+      "names": [
+        "value__"
+      ],
+      "types": [
+        0
+      ],
+      "infos": [
+        8
+      ],
+      "library_id": 2
+    },
+    "SVector3": {
+      "name": "SVector3",
+      "names": [
+        "x",
+        "y",
+        "z"
+      ],
+      "types": [
+        0,
+        0,
+        0
+      ],
+      "infos": [
+        11,
+        11,
+        11
+      ],
+      "library_id": 2
+    },
+    "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]": {
+      "name": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+      "names": [
+        "_items",
+        "_size",
+        "_version"
+      ],
+      "types": [
+        6,
+        0,
+        0
+      ],
+      "infos": [
+        null,
+        8,
+        8
+      ],
+      "library_id": null
+    },
+    "ArkenNoteField5eItemBlock": {
+      "name": "ArkenNoteField5eItemBlock",
+      "names": [
+        "_nameText",
+        "_typeText",
+        "_descriptionText",
+        "_name",
+        "_visibleToPlayers",
+        "_UID",
+        "ArkenNoteField+_name",
+        "ArkenNoteField+_visibleToPlayers",
+        "ArkenNoteField+_UID"
+      ],
+      "types": [
+        4,
+        4,
+        4,
+        1,
+        3,
+        0,
+        1,
+        3,
+        0
+      ],
+      "infos": [
+        {
+          "name": "ArkenTextString",
+          "library_id": 29
+        },
+        {
+          "name": "ArkenTextString",
+          "library_id": 29
+        },
+        {
+          "name": "ArkenTextString",
+          "library_id": 29
+        },
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        8,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        8
+      ],
+      "library_id": 2
+    },
+    "ArkenNoteField5eSpellBlock": {
+      "name": "ArkenNoteField5eSpellBlock",
+      "names": [
+        "_nameText",
+        "_typeText",
+        "_castingTimeText",
+        "_rangeText",
+        "_componentsText",
+        "_durationText",
+        "_descriptionText",
+        "_attackSaveText",
+        "_damageEffectText",
+        "_higherLevelsText",
+        "_name",
+        "_visibleToPlayers",
+        "_UID",
+        "ArkenNoteField+_name",
+        "ArkenNoteField+_visibleToPlayers",
+        "ArkenNoteField+_UID"
+      ],
+      "types": [
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        1,
+        3,
+        0,
+        1,
+        3,
+        0
+      ],
+      "infos": [
+        {
+          "name": "ArkenTextString",
+          "library_id": 29
+        },
+        {
+          "name": "ArkenTextString",
+          "library_id": 29
+        },
+        {
+          "name": "ArkenTextString",
+          "library_id": 29
+        },
+        {
+          "name": "ArkenTextString",
+          "library_id": 29
+        },
+        {
+          "name": "ArkenTextString",
+          "library_id": 29
+        },
+        {
+          "name": "ArkenTextString",
+          "library_id": 29
+        },
+        {
+          "name": "ArkenTextString",
+          "library_id": 29
+        },
+        {
+          "name": "ArkenTextString",
+          "library_id": 29
+        },
+        {
+          "name": "ArkenTextString",
+          "library_id": 29
+        },
+        {
+          "name": "ArkenTextString",
+          "library_id": 29
+        },
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        8,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        8
+      ],
+      "library_id": 2
+    }
+  },
+  "defaults": {
+    "Character": {
+      "id": 1,
+      "class": "ArkenNoteFieldStatBlock5e",
+      "inline": false,
+      "members": {
+        "_nameText": {
+          "id": 2,
+          "class": "ArkenTextString",
+          "inline": false,
+          "members": {
+            "_characters": {
+              "id": 3,
+              "class": "System.Collections.Generic.List`1[[ArkenTextCharacter, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+              "inline": false,
+              "members": {
+                "_items": {
+                  "id": 4,
+                  "array": [
+                    4,
+                    {
+                      "name": "ArkenTextCharacter",
+                      "library_id": 29
+                    }
+                  ],
+                  "items": []
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_font": "5eHeading"
+          }
+        },
+        "_typeText": {
+          "id": 5,
+          "class": "ArkenTextString",
+          "inline": false,
+          "members": {
+            "_characters": {
+              "id": 6,
+              "class": "System.Collections.Generic.List`1[[ArkenTextCharacter, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+              "inline": false,
+              "members": {
+                "_items": {
+                  "id": 7,
+                  "array": [
+                    4,
+                    {
+                      "name": "ArkenTextCharacter",
+                      "library_id": 29
+                    }
+                  ],
+                  "items": []
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_font": "5eText"
+          }
+        },
+        "_armorClassText": {
+          "id": 8,
+          "class": "ArkenTextString",
+          "inline": false,
+          "members": {
+            "_characters": {
+              "id": 9,
+              "class": "System.Collections.Generic.List`1[[ArkenTextCharacter, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+              "inline": false,
+              "members": {
+                "_items": {
+                  "id": 10,
+                  "array": [
+                    4,
+                    {
+                      "name": "ArkenTextCharacter",
+                      "library_id": 29
+                    }
+                  ],
+                  "items": []
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_font": "5eText"
+          }
+        },
+        "_hitPointsText": {
+          "id": 11,
+          "class": "ArkenTextString",
+          "inline": false,
+          "members": {
+            "_characters": {
+              "id": 12,
+              "class": "System.Collections.Generic.List`1[[ArkenTextCharacter, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+              "inline": false,
+              "members": {
+                "_items": {
+                  "id": 13,
+                  "array": [
+                    4,
+                    {
+                      "name": "ArkenTextCharacter",
+                      "library_id": 29
+                    }
+                  ],
+                  "items": []
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_font": "5eText"
+          }
+        },
+        "_speedText": {
+          "id": 14,
+          "class": "ArkenTextString",
+          "inline": false,
+          "members": {
+            "_characters": {
+              "id": 15,
+              "class": "System.Collections.Generic.List`1[[ArkenTextCharacter, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+              "inline": false,
+              "members": {
+                "_items": {
+                  "id": 16,
+                  "array": [
+                    4,
+                    {
+                      "name": "ArkenTextCharacter",
+                      "library_id": 29
+                    }
+                  ],
+                  "items": []
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_font": "5eText"
+          }
+        },
+        "_strValNew": {
+          "id": 17,
+          "class": "ArkenTextString",
+          "inline": false,
+          "members": {
+            "_characters": {
+              "id": 18,
+              "class": "System.Collections.Generic.List`1[[ArkenTextCharacter, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+              "inline": false,
+              "members": {
+                "_items": {
+                  "id": 19,
+                  "array": [
+                    4,
+                    {
+                      "name": "ArkenTextCharacter",
+                      "library_id": 29
+                    }
+                  ],
+                  "items": []
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_font": "5eText"
+          }
+        },
+        "_dexValNew": {
+          "id": 20,
+          "class": "ArkenTextString",
+          "inline": false,
+          "members": {
+            "_characters": {
+              "id": 21,
+              "class": "System.Collections.Generic.List`1[[ArkenTextCharacter, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+              "inline": false,
+              "members": {
+                "_items": {
+                  "id": 22,
+                  "array": [
+                    4,
+                    {
+                      "name": "ArkenTextCharacter",
+                      "library_id": 29
+                    }
+                  ],
+                  "items": []
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_font": "5eText"
+          }
+        },
+        "_conValNew": {
+          "id": 23,
+          "class": "ArkenTextString",
+          "inline": false,
+          "members": {
+            "_characters": {
+              "id": 24,
+              "class": "System.Collections.Generic.List`1[[ArkenTextCharacter, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+              "inline": false,
+              "members": {
+                "_items": {
+                  "id": 25,
+                  "array": [
+                    4,
+                    {
+                      "name": "ArkenTextCharacter",
+                      "library_id": 29
+                    }
+                  ],
+                  "items": []
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_font": "5eText"
+          }
+        },
+        "_intValNew": {
+          "id": 26,
+          "class": "ArkenTextString",
+          "inline": false,
+          "members": {
+            "_characters": {
+              "id": 27,
+              "class": "System.Collections.Generic.List`1[[ArkenTextCharacter, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+              "inline": false,
+              "members": {
+                "_items": {
+                  "id": 28,
+                  "array": [
+                    4,
+                    {
+                      "name": "ArkenTextCharacter",
+                      "library_id": 29
+                    }
+                  ],
+                  "items": []
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_font": "5eText"
+          }
+        },
+        "_wisValNew": {
+          "id": 29,
+          "class": "ArkenTextString",
+          "inline": false,
+          "members": {
+            "_characters": {
+              "id": 30,
+              "class": "System.Collections.Generic.List`1[[ArkenTextCharacter, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+              "inline": false,
+              "members": {
+                "_items": {
+                  "id": 31,
+                  "array": [
+                    4,
+                    {
+                      "name": "ArkenTextCharacter",
+                      "library_id": 29
+                    }
+                  ],
+                  "items": []
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_font": "5eText"
+          }
+        },
+        "_chaValNew": {
+          "id": 32,
+          "class": "ArkenTextString",
+          "inline": false,
+          "members": {
+            "_characters": {
+              "id": 33,
+              "class": "System.Collections.Generic.List`1[[ArkenTextCharacter, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+              "inline": false,
+              "members": {
+                "_items": {
+                  "id": 34,
+                  "array": [
+                    4,
+                    {
+                      "name": "ArkenTextCharacter",
+                      "library_id": 29
+                    }
+                  ],
+                  "items": []
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_font": "5eText"
+          }
+        },
+        "_savingThrowsText": {
+          "id": 35,
+          "class": "ArkenTextString",
+          "inline": false,
+          "members": {
+            "_characters": {
+              "id": 36,
+              "class": "System.Collections.Generic.List`1[[ArkenTextCharacter, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+              "inline": false,
+              "members": {
+                "_items": {
+                  "id": 37,
+                  "array": [
+                    4,
+                    {
+                      "name": "ArkenTextCharacter",
+                      "library_id": 29
+                    }
+                  ],
+                  "items": []
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_font": "5eText"
+          }
+        },
+        "_savingThrowsFieldActive": true,
+        "_skillsText": {
+          "id": 38,
+          "class": "ArkenTextString",
+          "inline": false,
+          "members": {
+            "_characters": {
+              "id": 39,
+              "class": "System.Collections.Generic.List`1[[ArkenTextCharacter, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+              "inline": false,
+              "members": {
+                "_items": {
+                  "id": 40,
+                  "array": [
+                    4,
+                    {
+                      "name": "ArkenTextCharacter",
+                      "library_id": 29
+                    }
+                  ],
+                  "items": []
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_font": "5eText"
+          }
+        },
+        "_damageResistancesText": {
+          "id": 41,
+          "class": "ArkenTextString",
+          "inline": false,
+          "members": {
+            "_characters": {
+              "id": 42,
+              "class": "System.Collections.Generic.List`1[[ArkenTextCharacter, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+              "inline": false,
+              "members": {
+                "_items": {
+                  "id": 43,
+                  "array": [
+                    4,
+                    {
+                      "name": "ArkenTextCharacter",
+                      "library_id": 29
+                    }
+                  ],
+                  "items": []
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_font": "5eText"
+          }
+        },
+        "_damageResistanceFieldActive": true,
+        "_damageImmunitiesText": {
+          "id": 44,
+          "class": "ArkenTextString",
+          "inline": false,
+          "members": {
+            "_characters": {
+              "id": 45,
+              "class": "System.Collections.Generic.List`1[[ArkenTextCharacter, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+              "inline": false,
+              "members": {
+                "_items": {
+                  "id": 46,
+                  "array": [
+                    4,
+                    {
+                      "name": "ArkenTextCharacter",
+                      "library_id": 29
+                    }
+                  ],
+                  "items": []
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_font": "5eText"
+          }
+        },
+        "_damageImmunitiesFieldActive": true,
+        "_conditionImmunitiesText": {
+          "id": 47,
+          "class": "ArkenTextString",
+          "inline": false,
+          "members": {
+            "_characters": {
+              "id": 48,
+              "class": "System.Collections.Generic.List`1[[ArkenTextCharacter, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+              "inline": false,
+              "members": {
+                "_items": {
+                  "id": 49,
+                  "array": [
+                    4,
+                    {
+                      "name": "ArkenTextCharacter",
+                      "library_id": 29
+                    }
+                  ],
+                  "items": []
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_font": "5eText"
+          }
+        },
+        "_conditionImmunitiesFieldActive": true,
+        "_sensesText": {
+          "id": 50,
+          "class": "ArkenTextString",
+          "inline": false,
+          "members": {
+            "_characters": {
+              "id": 51,
+              "class": "System.Collections.Generic.List`1[[ArkenTextCharacter, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+              "inline": false,
+              "members": {
+                "_items": {
+                  "id": 52,
+                  "array": [
+                    4,
+                    {
+                      "name": "ArkenTextCharacter",
+                      "library_id": 29
+                    }
+                  ],
+                  "items": []
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_font": "5eText"
+          }
+        },
+        "_languagesText": {
+          "id": 53,
+          "class": "ArkenTextString",
+          "inline": false,
+          "members": {
+            "_characters": {
+              "id": 54,
+              "class": "System.Collections.Generic.List`1[[ArkenTextCharacter, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+              "inline": false,
+              "members": {
+                "_items": {
+                  "id": 55,
+                  "array": [
+                    4,
+                    {
+                      "name": "ArkenTextCharacter",
+                      "library_id": 29
+                    }
+                  ],
+                  "items": []
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_font": "5eText"
+          }
+        },
+        "_challengeText": {
+          "id": 56,
+          "class": "ArkenTextString",
+          "inline": false,
+          "members": {
+            "_characters": {
+              "id": 57,
+              "class": "System.Collections.Generic.List`1[[ArkenTextCharacter, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+              "inline": false,
+              "members": {
+                "_items": {
+                  "id": 58,
+                  "array": [
+                    4,
+                    {
+                      "name": "ArkenTextCharacter",
+                      "library_id": 29
+                    }
+                  ],
+                  "items": []
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_font": "5eText"
+          }
+        },
+        "_proficiencyBonusText": {
+          "id": 59,
+          "class": "ArkenTextString",
+          "inline": false,
+          "members": {
+            "_characters": {
+              "id": 60,
+              "class": "System.Collections.Generic.List`1[[ArkenTextCharacter, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+              "inline": false,
+              "members": {
+                "_items": {
+                  "id": 61,
+                  "array": [
+                    4,
+                    {
+                      "name": "ArkenTextCharacter",
+                      "library_id": 29
+                    }
+                  ],
+                  "items": []
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_font": "5eText"
+          }
+        },
+        "_abilities": {
+          "id": 62,
+          "class": "System.Collections.Generic.List`1[[ArkenTextString, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+          "inline": false,
+          "members": {
+            "_items": {
+              "id": 63,
+              "array": [
+                4,
+                {
+                  "name": "ArkenTextString",
+                  "library_id": 29
+                }
+              ],
+              "items": [
+                {
+                  "id": 64,
+                  "class": "ArkenTextString",
+                  "inline": false,
+                  "members": {
+                    "_characters": {
+                      "id": 65,
+                      "class": "System.Collections.Generic.List`1[[ArkenTextCharacter, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+                      "inline": false,
+                      "members": {
+                        "_items": {
+                          "id": 66,
+                          "array": [
+                            4,
+                            {
+                              "name": "ArkenTextCharacter",
+                              "library_id": 29
+                            }
+                          ],
+                          "items": []
+                        },
+                        "_size": 0,
+                        "_version": 0
+                      }
+                    },
+                    "_font": "5eText"
+                  }
+                },
+                null,
+                null,
+                null
+              ]
+            },
+            "_size": 1,
+            "_version": 1
+          }
+        },
+        "_actions": {
+          "id": 67,
+          "class": "System.Collections.Generic.List`1[[ArkenTextString, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+          "inline": false,
+          "members": {
+            "_items": {
+              "id": 68,
+              "array": [
+                4,
+                {
+                  "name": "ArkenTextString",
+                  "library_id": 29
+                }
+              ],
+              "items": [
+                {
+                  "id": 69,
+                  "class": "ArkenTextString",
+                  "inline": false,
+                  "members": {
+                    "_characters": {
+                      "id": 70,
+                      "class": "System.Collections.Generic.List`1[[ArkenTextCharacter, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+                      "inline": false,
+                      "members": {
+                        "_items": {
+                          "id": 71,
+                          "array": [
+                            4,
+                            {
+                              "name": "ArkenTextCharacter",
+                              "library_id": 29
+                            }
+                          ],
+                          "items": []
+                        },
+                        "_size": 0,
+                        "_version": 0
+                      }
+                    },
+                    "_font": "5eText"
+                  }
+                },
+                null,
+                null,
+                null
+              ]
+            },
+            "_size": 1,
+            "_version": 1
+          }
+        },
+        "_reactions": {
+          "id": 72,
+          "class": "System.Collections.Generic.List`1[[ArkenTextString, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+          "inline": false,
+          "members": {
+            "_items": {
+              "id": 73,
+              "array": [
+                4,
+                {
+                  "name": "ArkenTextString",
+                  "library_id": 29
+                }
+              ],
+              "items": [
+                {
+                  "id": 74,
+                  "class": "ArkenTextString",
+                  "inline": false,
+                  "members": {
+                    "_characters": {
+                      "id": 75,
+                      "class": "System.Collections.Generic.List`1[[ArkenTextCharacter, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+                      "inline": false,
+                      "members": {
+                        "_items": {
+                          "id": 76,
+                          "array": [
+                            4,
+                            {
+                              "name": "ArkenTextCharacter",
+                              "library_id": 29
+                            }
+                          ],
+                          "items": []
+                        },
+                        "_size": 0,
+                        "_version": 0
+                      }
+                    },
+                    "_font": "5eText"
+                  }
+                },
+                null,
+                null,
+                null
+              ]
+            },
+            "_size": 1,
+            "_version": 1
+          }
+        },
+        "_legendaryActions": {
+          "id": 77,
+          "class": "System.Collections.Generic.List`1[[ArkenTextString, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+          "inline": false,
+          "members": {
+            "_items": {
+              "id": 78,
+              "array": [
+                4,
+                {
+                  "name": "ArkenTextString",
+                  "library_id": 29
+                }
+              ],
+              "items": [
+                {
+                  "id": 79,
+                  "class": "ArkenTextString",
+                  "inline": false,
+                  "members": {
+                    "_characters": {
+                      "id": 80,
+                      "class": "System.Collections.Generic.List`1[[ArkenTextCharacter, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+                      "inline": false,
+                      "members": {
+                        "_items": {
+                          "id": 81,
+                          "array": [
+                            4,
+                            {
+                              "name": "ArkenTextCharacter",
+                              "library_id": 29
+                            }
+                          ],
+                          "items": []
+                        },
+                        "_size": 0,
+                        "_version": 0
+                      }
+                    },
+                    "_font": "5eText"
+                  }
+                },
+                null,
+                null,
+                null
+              ]
+            },
+            "_size": 1,
+            "_version": 1
+          }
+        },
+        "_damageVulnerabilitiesText": {
+          "id": 82,
+          "class": "ArkenTextString",
+          "inline": false,
+          "members": {
+            "_characters": {
+              "id": 83,
+              "class": "System.Collections.Generic.List`1[[ArkenTextCharacter, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+              "inline": false,
+              "members": {
+                "_items": {
+                  "id": 84,
+                  "array": [
+                    4,
+                    {
+                      "name": "ArkenTextCharacter",
+                      "library_id": 29
+                    }
+                  ],
+                  "items": []
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_font": "5eText"
+          }
+        },
+        "_damageVulnerabilitiesFieldActive": false,
+        "_trackedHitPoints": {
+          "id": 85,
+          "class": "ArkenNoteFieldStat",
+          "inline": false,
+          "members": {
+            "_currentValue": 0.0,
+            "_minValue": 0.0,
+            "_maxValue": 0.0,
+            "_currentValueStr": "10",
+            "_minValueStr": "0",
+            "_maxValueStr": "10",
+            "_statType": {
+              "id": 86,
+              "class": "ArkenNoteFieldStat+StatFieldType",
+              "inline": true,
+              "members": {
+                "value__": 2
+              }
+            },
+            "_fieldColor": {
+              "id": 87,
+              "class": "SVector3",
+              "inline": false,
+              "members": {
+                "x": 0.09803921729326248,
+                "y": 0.09803921729326248,
+                "z": 0.09803921729326248
+              }
+            },
+            "_currentValueColour": {
+              "id": 88,
+              "class": "SVector3",
+              "inline": false,
+              "members": {
+                "x": 0.3529411852359772,
+                "y": 0.3529411852359772,
+                "z": 0.3529411852359772
+              }
+            },
+            "_maxValueColour": {
+              "id": 89,
+              "class": "SVector3",
+              "inline": false,
+              "members": {
+                "x": 0.3529411852359772,
+                "y": 0.3529411852359772,
+                "z": 0.3529411852359772
+              }
+            },
+            "_nameColour": {
+              "id": 90,
+              "class": "SVector3",
+              "inline": false,
+              "members": {
+                "x": 0.09803921729326248,
+                "y": 0.09803921729326248,
+                "z": 0.09803921729326248
+              }
+            },
+            "_indicated": false,
+            "_name": "",
+            "_visibleToPlayers": {
+              "id": 91,
+              "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+              "inline": false,
+              "members": {
+                "_items": {
+                  "id": 92,
+                  "array": [
+                    1,
+                    null
+                  ],
+                  "items": []
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_UID": 0,
+            "ArkenNoteField+_name": "",
+            "ArkenNoteField+_visibleToPlayers": {
+              "use": 91
+            },
+            "ArkenNoteField+_UID": 0
+          }
+        },
+        "_name": "5eStatBlock",
+        "_visibleToPlayers": {
+          "id": 93,
+          "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+          "inline": false,
+          "members": {
+            "_items": {
+              "use": 92
+            },
+            "_size": 0,
+            "_version": 0
+          }
+        },
+        "_UID": 0,
+        "ArkenNoteField+_name": "5eStatBlock",
+        "ArkenNoteField+_visibleToPlayers": {
+          "use": 93
+        },
+        "ArkenNoteField+_UID": 0
+      }
+    },
+    "Item": {
+      "id": 1,
+      "class": "ArkenNoteField5eItemBlock",
+      "inline": false,
+      "members": {
+        "_nameText": {
+          "id": 2,
+          "class": "ArkenTextString",
+          "inline": false,
+          "members": {
+            "_characters": {
+              "id": 3,
+              "class": "System.Collections.Generic.List`1[[ArkenTextCharacter, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+              "inline": false,
+              "members": {
+                "_items": {
+                  "id": 4,
+                  "array": [
+                    4,
+                    {
+                      "name": "ArkenTextCharacter",
+                      "library_id": 29
+                    }
+                  ],
+                  "items": []
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_font": "5eHeading"
+          }
+        },
+        "_typeText": {
+          "id": 5,
+          "class": "ArkenTextString",
+          "inline": false,
+          "members": {
+            "_characters": {
+              "id": 6,
+              "class": "System.Collections.Generic.List`1[[ArkenTextCharacter, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+              "inline": false,
+              "members": {
+                "_items": {
+                  "id": 7,
+                  "array": [
+                    4,
+                    {
+                      "name": "ArkenTextCharacter",
+                      "library_id": 29
+                    }
+                  ],
+                  "items": []
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_font": "5eText"
+          }
+        },
+        "_descriptionText": {
+          "id": 8,
+          "class": "ArkenTextString",
+          "inline": false,
+          "members": {
+            "_characters": {
+              "id": 9,
+              "class": "System.Collections.Generic.List`1[[ArkenTextCharacter, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+              "inline": false,
+              "members": {
+                "_items": {
+                  "id": 10,
+                  "array": [
+                    4,
+                    {
+                      "name": "ArkenTextCharacter",
+                      "library_id": 29
+                    }
+                  ],
+                  "items": []
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_font": "5eText"
+          }
+        },
+        "_name": "5eItemBlock",
+        "_visibleToPlayers": {
+          "id": 11,
+          "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+          "inline": false,
+          "members": {
+            "_items": {
+              "id": 12,
+              "array": [
+                1,
+                null
+              ],
+              "items": []
+            },
+            "_size": 0,
+            "_version": 0
+          }
+        },
+        "_UID": 0,
+        "ArkenNoteField+_name": "5eItemBlock",
+        "ArkenNoteField+_visibleToPlayers": {
+          "use": 11
+        },
+        "ArkenNoteField+_UID": 0
+      }
+    },
+    "Spell": {
+      "id": 1,
+      "class": "ArkenNoteField5eSpellBlock",
+      "inline": false,
+      "members": {
+        "_nameText": {
+          "id": 2,
+          "class": "ArkenTextString",
+          "inline": false,
+          "members": {
+            "_characters": {
+              "id": 3,
+              "class": "System.Collections.Generic.List`1[[ArkenTextCharacter, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+              "inline": false,
+              "members": {
+                "_items": {
+                  "id": 4,
+                  "array": [
+                    4,
+                    {
+                      "name": "ArkenTextCharacter",
+                      "library_id": 29
+                    }
+                  ],
+                  "items": []
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_font": "5eHeading"
+          }
+        },
+        "_typeText": {
+          "id": 5,
+          "class": "ArkenTextString",
+          "inline": false,
+          "members": {
+            "_characters": {
+              "id": 6,
+              "class": "System.Collections.Generic.List`1[[ArkenTextCharacter, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+              "inline": false,
+              "members": {
+                "_items": {
+                  "id": 7,
+                  "array": [
+                    4,
+                    {
+                      "name": "ArkenTextCharacter",
+                      "library_id": 29
+                    }
+                  ],
+                  "items": []
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_font": "5eText"
+          }
+        },
+        "_castingTimeText": {
+          "id": 8,
+          "class": "ArkenTextString",
+          "inline": false,
+          "members": {
+            "_characters": {
+              "id": 9,
+              "class": "System.Collections.Generic.List`1[[ArkenTextCharacter, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+              "inline": false,
+              "members": {
+                "_items": {
+                  "id": 10,
+                  "array": [
+                    4,
+                    {
+                      "name": "ArkenTextCharacter",
+                      "library_id": 29
+                    }
+                  ],
+                  "items": []
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_font": "5eText"
+          }
+        },
+        "_rangeText": {
+          "id": 11,
+          "class": "ArkenTextString",
+          "inline": false,
+          "members": {
+            "_characters": {
+              "id": 12,
+              "class": "System.Collections.Generic.List`1[[ArkenTextCharacter, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+              "inline": false,
+              "members": {
+                "_items": {
+                  "id": 13,
+                  "array": [
+                    4,
+                    {
+                      "name": "ArkenTextCharacter",
+                      "library_id": 29
+                    }
+                  ],
+                  "items": []
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_font": "5eText"
+          }
+        },
+        "_componentsText": {
+          "id": 14,
+          "class": "ArkenTextString",
+          "inline": false,
+          "members": {
+            "_characters": {
+              "id": 15,
+              "class": "System.Collections.Generic.List`1[[ArkenTextCharacter, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+              "inline": false,
+              "members": {
+                "_items": {
+                  "id": 16,
+                  "array": [
+                    4,
+                    {
+                      "name": "ArkenTextCharacter",
+                      "library_id": 29
+                    }
+                  ],
+                  "items": []
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_font": "5eText"
+          }
+        },
+        "_durationText": {
+          "id": 17,
+          "class": "ArkenTextString",
+          "inline": false,
+          "members": {
+            "_characters": {
+              "id": 18,
+              "class": "System.Collections.Generic.List`1[[ArkenTextCharacter, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+              "inline": false,
+              "members": {
+                "_items": {
+                  "id": 19,
+                  "array": [
+                    4,
+                    {
+                      "name": "ArkenTextCharacter",
+                      "library_id": 29
+                    }
+                  ],
+                  "items": []
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_font": "5eText"
+          }
+        },
+        "_descriptionText": {
+          "id": 20,
+          "class": "ArkenTextString",
+          "inline": false,
+          "members": {
+            "_characters": {
+              "id": 21,
+              "class": "System.Collections.Generic.List`1[[ArkenTextCharacter, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+              "inline": false,
+              "members": {
+                "_items": {
+                  "id": 22,
+                  "array": [
+                    4,
+                    {
+                      "name": "ArkenTextCharacter",
+                      "library_id": 29
+                    }
+                  ],
+                  "items": []
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_font": "5eText"
+          }
+        },
+        "_attackSaveText": {
+          "id": 23,
+          "class": "ArkenTextString",
+          "inline": false,
+          "members": {
+            "_characters": {
+              "id": 24,
+              "class": "System.Collections.Generic.List`1[[ArkenTextCharacter, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+              "inline": false,
+              "members": {
+                "_items": {
+                  "id": 25,
+                  "array": [
+                    4,
+                    {
+                      "name": "ArkenTextCharacter",
+                      "library_id": 29
+                    }
+                  ],
+                  "items": []
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_font": "5eText"
+          }
+        },
+        "_damageEffectText": {
+          "id": 26,
+          "class": "ArkenTextString",
+          "inline": false,
+          "members": {
+            "_characters": {
+              "id": 27,
+              "class": "System.Collections.Generic.List`1[[ArkenTextCharacter, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+              "inline": false,
+              "members": {
+                "_items": {
+                  "id": 28,
+                  "array": [
+                    4,
+                    {
+                      "name": "ArkenTextCharacter",
+                      "library_id": 29
+                    }
+                  ],
+                  "items": []
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_font": "5eText"
+          }
+        },
+        "_higherLevelsText": {
+          "id": 29,
+          "class": "ArkenTextString",
+          "inline": false,
+          "members": {
+            "_characters": {
+              "id": 30,
+              "class": "System.Collections.Generic.List`1[[ArkenTextCharacter, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+              "inline": false,
+              "members": {
+                "_items": {
+                  "id": 31,
+                  "array": [
+                    4,
+                    {
+                      "name": "ArkenTextCharacter",
+                      "library_id": 29
+                    }
+                  ],
+                  "items": []
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_font": "5eText"
+          }
+        },
+        "_name": "5eSpellBlock",
+        "_visibleToPlayers": {
+          "id": 32,
+          "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+          "inline": false,
+          "members": {
+            "_items": {
+              "id": 33,
+              "array": [
+                1,
+                null
+              ],
+              "items": []
+            },
+            "_size": 0,
+            "_version": 0
+          }
+        },
+        "_UID": 0,
+        "ArkenNoteField+_name": "5eSpellBlock",
+        "ArkenNoteField+_visibleToPlayers": {
+          "use": 32
+        },
+        "ArkenNoteField+_UID": 0
+      }
+    }
+  },
+  "styles": {
+    "Character": {
+      "_nameText": {
+        "_size": 90,
+        "_hexColour": "58180D",
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eHeading"
+      },
+      "_typeText": {
+        "_size": 40,
+        "_hexColour": "000000",
+        "_defaultFont": "5eText",
+        "_font": "5eText"
+      },
+      "_armorClassText": {
+        "_size": 40,
+        "_hexColour": "58180D",
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
+      },
+      "_hitPointsText": {
+        "_size": 40,
+        "_hexColour": "58180D",
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
+      },
+      "_speedText": {
+        "_size": 40,
+        "_hexColour": "58180D",
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
+      },
+      "_strValNew": {
+        "_size": 40,
+        "_hexColour": "58180D",
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
+      },
+      "_dexValNew": {
+        "_size": 40,
+        "_hexColour": "58180D",
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
+      },
+      "_conValNew": {
+        "_size": 40,
+        "_hexColour": "58180D",
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
+      },
+      "_intValNew": {
+        "_size": 40,
+        "_hexColour": "58180D",
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
+      },
+      "_wisValNew": {
+        "_size": 40,
+        "_hexColour": "58180D",
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
+      },
+      "_chaValNew": {
+        "_size": 40,
+        "_hexColour": "58180D",
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
+      },
+      "_savingThrowsText": {
+        "_size": 40,
+        "_hexColour": "58180D",
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
+      },
+      "_skillsText": {
+        "_size": 40,
+        "_hexColour": "58180D",
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
+      },
+      "_damageResistancesText": {
+        "_size": 40,
+        "_hexColour": "58180D",
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
+      },
+      "_damageImmunitiesText": {
+        "_size": 40,
+        "_hexColour": "58180D",
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
+      },
+      "_conditionImmunitiesText": {
+        "_size": 40,
+        "_hexColour": "58180D",
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
+      },
+      "_sensesText": {
+        "_size": 40,
+        "_hexColour": "58180D",
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
+      },
+      "_languagesText": {
+        "_size": 40,
+        "_hexColour": "58180D",
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
+      },
+      "_challengeText": {
+        "_size": 40,
+        "_hexColour": "58180D",
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
+      },
+      "_proficiencyBonusText": {
+        "_size": 40,
+        "_hexColour": "58180D",
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
+      },
+      "_damageVulnerabilitiesText": {
+        "_size": 40,
+        "_hexColour": "58180D",
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
+      },
+      "_abilities": {
+        "_size": 40,
+        "_hexColour": "000000",
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
+      },
+      "_actions": {
+        "_size": 40,
+        "_hexColour": "000000",
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
+      },
+      "_reactions": {
+        "_size": 40,
+        "_hexColour": "000000",
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
+      },
+      "_legendaryActions": {
+        "_size": 40,
+        "_hexColour": "000000",
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
+      }
+    },
+    "Item": {
+      "_nameText": {
+        "_size": 90,
+        "_hexColour": "58180D",
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eHeading"
+      },
+      "_typeText": {
+        "_size": 40,
+        "_hexColour": "000000",
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
+      },
+      "_descriptionText": {
+        "_size": 40,
+        "_hexColour": "000000",
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
+      }
+    },
+    "Spell": {
+      "_nameText": {
+        "_size": 90,
+        "_hexColour": "58180D",
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eHeading"
+      },
+      "_typeText": {
+        "_size": 40,
+        "_hexColour": "000000",
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
+      },
+      "_castingTimeText": {
+        "_size": 40,
+        "_hexColour": "000000",
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
+      },
+      "_rangeText": {
+        "_size": 40,
+        "_hexColour": "000000",
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
+      },
+      "_componentsText": {
+        "_size": 40,
+        "_hexColour": "000000",
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
+      },
+      "_durationText": {
+        "_size": 40,
+        "_hexColour": "000000",
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
+      },
+      "_descriptionText": {
+        "_size": 40,
+        "_hexColour": "000000",
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
+      },
+      "_attackSaveText": {
+        "_size": 40,
+        "_hexColour": "000000",
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
+      },
+      "_damageEffectText": {
+        "_size": 40,
+        "_hexColour": "000000",
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
+      },
+      "_higherLevelsText": {
+        "_size": 40,
+        "_hexColour": "000000",
+        "_defaultFont": "ToolkitDefault",
+        "_font": "5eText"
+      }
+    }
+  }
+}

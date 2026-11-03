@@ -57,6 +57,9 @@ def report_text(value):
         if 'status' in value: lines.append('Conversion outcome: ' + value['status'])
         if 'counts' in value:
             lines.append('Source/UVTT stage: ' + ', '.join(f'{grade}: {count}' for grade, count in value['counts'].items()))
+        for campaign in value.get('campaign_content', []):
+            lines.append('Campaign content: ' + ', '.join(f'{kind}: {count}' for kind,count in campaign['counts'].items()))
+            lines += [f"{loss['grade']}: {loss['feature']} — {loss['summary']}" for loss in campaign['losses']]
         for scene in value['scenes']:
             lines += ['', f"{scene.get('name') or scene.get('id')}: {scene.get('status', 'discovered')}"]
             if scene.get('error'): lines.append('Needs attention: ' + scene['error'])

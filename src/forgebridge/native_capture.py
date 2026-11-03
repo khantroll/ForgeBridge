@@ -25,7 +25,7 @@ def native_references(data, origin):
     for value in reader.objects.values():
         if isinstance(value, str) and value.casefold().startswith(('myassets/', 'myassets\\')):
             safe_name(value)
-            if not value.endswith(('.rwmeta', '.rwmap', '.rwnote', '.rwfile')):
+            if not value.endswith(('.rwmeta', '.rwmap', '.rwnote', '.rwfile', '.rwpl')):
                 raise ValueError('Unsupported native dependency in ' + origin + ': ' + value
                                  + '; export a supported native control or extend the dependency parser')
             references.add(value)
@@ -56,10 +56,10 @@ def dependency_closure(files, primary=None):
             edges.append({'from': name, 'to': value})
             pending.append(value)
         if name.endswith('.rwmeta'):
-            siblings = [name[:-7] + suffix for suffix in ('.rwmap', '.rwnote', '.rwfile')]
+            siblings = [name[:-7] + suffix for suffix in ('.rwmap', '.rwnote', '.rwfile', '.rwpl')]
             pending.extend(n for n in siblings if n in files)
             if not any(n in files for n in siblings):
-                missing.add(name[:-7] + '.[rwmap|rwnote|rwfile]')
+                missing.add(name[:-7] + '.[rwmap|rwnote|rwfile|rwpl]')
     if missing:
         raise ValueError('Missing native dependencies: ' + ', '.join(sorted(missing)))
     return primary, found, sorted(edges, key=lambda e: (e['from'], e['to']))
@@ -92,10 +92,10 @@ def _closure_report(files, primary):
             edges.append({'from': name, 'to': value})
             pending.append(value)
         if name.endswith('.rwmeta'):
-            siblings = [name[:-7] + suffix for suffix in ('.rwmap', '.rwnote', '.rwfile')]
+            siblings = [name[:-7] + suffix for suffix in ('.rwmap', '.rwnote', '.rwfile', '.rwpl')]
             pending.extend(n for n in siblings if n in files)
             if not any(n in files for n in siblings):
-                missing.add(name[:-7] + '.[rwmap|rwnote|rwfile]')
+                missing.add(name[:-7] + '.[rwmap|rwnote|rwfile|rwpl]')
     errors.extend({'check': 'missing-dependency', 'detail': name} for name in sorted(missing))
     return found, sorted(edges, key=lambda e: (e['from'], e['to'])), errors
 
@@ -348,7 +348,7 @@ def capture_saved(asset_root, primary, destination, closed=False, role='scene-ge
             raise ValueError('Saved snapshot exceeds byte limit')
         pending.extend(native_references(data, name))
         if name.endswith('.rwmeta'):
-            pending.extend(name[:-7] + ext for ext in ('.rwmap', '.rwnote', '.rwfile')
+            pending.extend(name[:-7] + ext for ext in ('.rwmap', '.rwnote', '.rwfile', '.rwpl')
                            if source(name[:-7] + ext).is_file())
     _toolkit_closed()
     if any(source(n).read_bytes() != data for n, data in files.items()):

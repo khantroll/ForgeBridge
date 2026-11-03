@@ -16,10 +16,11 @@ from forgebridge.native import NoteBuilder, Writer
 
 
 class TextCompiler(HTMLParser):
-    def __init__(self, resolve_link, issues, origin):
+    def __init__(self, resolve_link, issues, origin, *, strip_enrichers=False):
         super().__init__(convert_charrefs=True)
         self.resolve_link, self.issues, self.origin = resolve_link, issues, origin
         self.parts, self.suppressed = [], []
+        self.strip_enrichers = strip_enrichers
 
     def issue(self, code, **details):
         self.issues.append({'code': code, 'origin': self.origin, **details})
@@ -70,7 +71,7 @@ class TextCompiler(HTMLParser):
             if target:
                 self.append(match.group(2) or match.group(1), target)
             else:
-                self.append(match.group(0))
+                self.append((match.group(2) or match.group(1)) if self.strip_enrichers else match.group(0))
             start = match.end()
         self.append(data[start:])
 
@@ -90,6 +91,14 @@ class TextCompiler(HTMLParser):
 
 def companion_files(companion, *, map_markers=False, media_fields=None, note_folder=None, note_prefix=''):
     media_fields = media_fields or {}
+    campaign_links = companion.get('campaign_links', {})
+    if (not isinstance(campaign_links,dict) or len(campaign_links)>4096 or
+            any(not isinstance(k,str) or not isinstance(v,str) or
+                not v.startswith('MyAssets/Encyclopedia/Notes/') or not v.endswith('.rwmeta')
+                for k,v in campaign_links.items())):
+        raise ValueError('Invalid campaign note links')
+    from forgebridge.native_dependencies import safe_name
+    for target in campaign_links.values(): safe_name(target)
     bundle = companion.get('scene_notes')
     if not isinstance(bundle, dict) or not isinstance(bundle.get('dependencies'), dict):
         raise ValueError('Companion needs scene_notes.dependencies; export it again with ForgeBridge')
@@ -143,6 +152,9 @@ def companion_files(companion, *, map_markers=False, media_fields=None, note_fol
         if document['document_type'] not in {'JournalEntry', 'RollTable'} or not isinstance(payload, dict):
             raise ValueError('Unsupported dependency document')
         paths[(di, None)] = base + note_prefix + f'D{di:03d}'
+        if document['document_type'] == 'RollTable':
+            external = campaign_links.get('RollTable.' + str(payload.get('_id', payload.get('id'))))
+            if external: paths[(di, None)] = external[:-7]
         names[(di, None)] = str(payload.get('name') or f'Document {di + 1}')
         pages = payload.get('pages', [])
         if not isinstance(pages, list) or len(pages) > 512:
@@ -165,6 +177,9 @@ def companion_files(companion, *, map_markers=False, media_fields=None, note_fol
     def compile_text(text, di, source_path, *, plain=False):
         origin = {'document_index': di, 'path': source_path}
         def resolve(uuid):
+            if uuid in campaign_links:
+                rewritten.append({'origin': origin, 'uuid': uuid, 'target': campaign_links[uuid]})
+                return campaign_links[uuid]
             matches = edge_map.get((di, source_path, uuid), [])
             edge = matches[0] if len(matches) == 1 else None
             target = edge.get('target') if edge else None
@@ -176,7 +191,10 @@ def companion_files(companion, *, map_markers=False, media_fields=None, note_fol
                 return target_path + '.rwmeta'
             unresolved.append({'origin': origin, 'uuid': uuid, 'status': edge.get('status') if edge else 'not_in_retained_graph'})
             return None
-        return TextCompiler(resolve, issues, origin).compile(text if isinstance(text, str) else '', plain=plain)
+        value = text if isinstance(text, str) else ''
+        if campaign_links:
+            value = re.sub(r'\[\[([^\]]+)\]\](?:\{([^}]+)\})?', lambda m: m[2] or m[1].removeprefix('/r '), value)
+        return TextCompiler(resolve, issues, origin, strip_enrichers=bool(campaign_links)).compile(value, plain=plain)
 
     builder = NoteBuilder()
     attached_media = []
@@ -192,6 +210,8 @@ def companion_files(companion, *, map_markers=False, media_fields=None, note_fol
 
     for di, document in enumerate(documents):
         payload = document['payload']
+        if document['document_type'] == 'RollTable' and ('RollTable.' + str(payload.get('_id', payload.get('id')))) in campaign_links:
+            continue
         fields = []
         if document['document_type'] == 'JournalEntry':
             pages = payload.get('pages', [])
@@ -271,7 +291,7 @@ def companion_files(companion, *, map_markers=False, media_fields=None, note_fol
         if issue.get('src') in attached_refs and issue['code'] in {'media_reference_only', 'page_media_reference_only', 'journal_media_reference_only'}:
             issue['code'] = 'media_attached_native_field'
     report = {'schema_version': '1.0', 'native_folder': base.rstrip('/'), 'scene_id': bundle.get('scene_id'),
-        'counts': {'notes': len(paths), 'journal_pages': sum(k[1] is not None for k in paths),
+        'counts': {'notes': sum(p.endswith('.rwnote') for p in files), 'journal_pages': sum(k[1] is not None for k in paths),
                    'documents': len(documents), 'native_tables': len(native_tables), 'rewritten_uuid_occurrences': len(rewritten),
                    'unresolved_uuid_occurrences': len(unresolved), 'map_note_references': len(placements),
                    'native_image_attachments': len(attached_media)},

@@ -2,6 +2,21 @@
 
 ## Unreleased
 
+- Fixed: current user playlist/song metadata (including previous-path members),
+  display-name audio filenames and the chosen notes-folder layout.
+- Fixed: omit token stat-block links after Toolkit showed they replaced map
+  portraits with note-marker icons; preserve v0.10 token files instead.
+- Fixed: equipment AC and structured attack bonuses, duplicate languages and
+  walk-first speed text. Explicit source natural AC/attack abilities are honored.
+  Revised campaign-note filenames preserve edited v1 notes during reinstall.
+
+- Added: adventure-wide Foundry roll-table, dnd5e actor/item/spell display notes,
+  local portraits, journal links and token-note stat-block navigation. Native
+  records use captured member schemas; runtime acceptance remains pending.
+- Added: static map tiles and native playlists/OGG song records, with explicit
+  manual MP3, animation, missing-media and behavior losses. Shared campaign
+  content deduplicates across selected scenes; reports retain original objects.
+
 - Added: Fantasy Grounds .mod/folder/unencrypted-vault detection in convert,
   discovery and GUI, with ART filtering, explicit per-map grids and module-based
   visible naming. Stored grids always win; fractional image resampling is reported.
