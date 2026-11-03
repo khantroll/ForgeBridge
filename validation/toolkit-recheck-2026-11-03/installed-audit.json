@@ -1,0 +1,356 @@
+{
+  "scope": "File inspection, not runtime or audible playback validation",
+  "playlists": [
+    {
+      "name": "Ambient",
+      "path": "C:\\Program Files (x86)\\ArkenforgeData\\MyAssets\\Playlists\\FB Campaign Check\\Ambient.rwpl",
+      "metadata_schema_matches_fixture": true,
+      "previous_paths": {
+        "_prevPathIfDeleted": null,
+        "ArkenBaseMeta+_prevPathIfDeleted": null
+      },
+      "song_entries": 0,
+      "metadata_sha256": "4f1275258953e9d15582699d285a026d07af708544b7c7b9fcaeba574b0ea83d",
+      "value_differences": {
+        "_name": [
+          "FBCapture Playlist",
+          "Ambient"
+        ],
+        "ArkenBaseMeta+_name": [
+          "FBCapture Playlist",
+          "Ambient"
+        ]
+      }
+    },
+    {
+      "name": "FB MP3 Test",
+      "path": "C:\\Program Files (x86)\\ArkenforgeData\\MyAssets\\Playlists\\FB Campaign Check\\FB MP3 Test.rwpl",
+      "metadata_schema_matches_fixture": true,
+      "previous_paths": {
+        "_prevPathIfDeleted": null,
+        "ArkenBaseMeta+_prevPathIfDeleted": null
+      },
+      "song_entries": 2,
+      "metadata_sha256": "6251cc9b8f681a840e82622223822d379a982724d85af9ab580a3c422b47786f",
+      "value_differences": {
+        "_name": [
+          "FBCapture Playlist",
+          "FB MP3 Test"
+        ],
+        "ArkenBaseMeta+_name": [
+          "FBCapture Playlist",
+          "FB MP3 Test"
+        ]
+      }
+    }
+  ],
+  "songs": [
+    {
+      "name": "FB MP3 Test - MP3 original",
+      "path": "C:\\Program Files (x86)\\ArkenforgeData\\MyAssets\\Audio\\Songs\\FB Campaign Check\\FB MP3 Test - MP3 original.rwmeta",
+      "schema_matches_user_audio_fixture": true,
+      "isSong": true,
+      "duration": 61.04090881347656,
+      "previous_paths": {
+        "_prevPathIfDeleted": null,
+        "ArkenBaseMeta+_prevPathIfDeleted": null
+      },
+      "tracks": [
+        {
+          "original_file": "Crypt and Lair.mp3",
+          "raw_sha256": "4e77a7a0717560718c79660e525b71ed37399e863a8a0e27bdcb15d27585ef04"
+        }
+      ]
+    },
+    {
+      "name": "FB MP3 Test - OGG Vorbis converted",
+      "path": "C:\\Program Files (x86)\\ArkenforgeData\\MyAssets\\Audio\\Songs\\FB Campaign Check\\FB MP3 Test - OGG Vorbis converted.rwmeta",
+      "schema_matches_user_audio_fixture": true,
+      "isSong": true,
+      "duration": 61.04090881347656,
+      "previous_paths": {
+        "_prevPathIfDeleted": null,
+        "ArkenBaseMeta+_prevPathIfDeleted": null
+      },
+      "tracks": [
+        {
+          "original_file": "Crypt and Lair.ogg",
+          "raw_sha256": "b5e1fcf41c0a9160a819155ce9ce33053778af9bce517f59b7e79a36b77a27d6"
+        }
+      ]
+    }
+  ],
+  "receipts": [
+    {
+      "path": "C:\\AMD\\fb-backups\\forgebridge-034c85bacbe7477d8b4f76713e2b2072\\uninstall.json",
+      "files": 334,
+      "missing": [],
+      "changed_after_toolkit": [
+        "MyAssets/Encyclopedia/Notes/FB Campaign Check/Campaign-v2-edfc87a75fc39f64264e-7160079c8c68016e7452.rwnote"
+      ],
+      "decoded_value_differences_from_package": {
+        "MyAssets/Encyclopedia/Notes/FB Campaign Check/Campaign-v2-edfc87a75fc39f64264e-7160079c8c68016e7452.rwnote": []
+      }
+    },
+    {
+      "path": "C:\\AMD\\fb-backups\\forgebridge-0c74d4820ef94387863b38923f695505\\uninstall.json",
+      "files": 6,
+      "missing": [],
+      "changed_after_toolkit": [
+        "MyAssets/Playlists/FB Campaign Check/FB MP3 Test.rwpl"
+      ],
+      "decoded_value_differences_from_package": {
+        "MyAssets/Playlists/FB Campaign Check/FB MP3 Test.rwpl": [
+          {
+            "path": "/_songs/_entries/_items/0/_value/_content/_trackVolumes/KeyValuePairs",
+            "before": null,
+            "after": null,
+            "after_member_present": false
+          },
+          {
+            "path": "/_songs/_entries/_items/0/_value/_officialFlag",
+            "before": false,
+            "after": null,
+            "after_member_present": false
+          },
+          {
+            "path": "/_songs/_entries/_items/1/_value/_content/_trackVolumes/KeyValuePairs",
+            "before": null,
+            "after": null,
+            "after_member_present": false
+          },
+          {
+            "path": "/_songs/_entries/_items/1/_value/_officialFlag",
+            "before": false,
+            "after": null,
+            "after_member_present": false
+          }
+        ]
+      }
+    }
+  ],
+  "boris": {
+    "path": "C:\\Program Files (x86)\\ArkenforgeData\\MyAssets\\Encyclopedia\\Notes\\FB Campaign Check\\Campaign-v2-edfc87a75fc39f64264e-7160079c8c68016e7452.rwnote",
+    "sha256": "d0bb19d81e570245c66a04494c6267cc9ee535fd3b743d2b2924c1d1289c9366",
+    "block_schema_matches_fixture": true,
+    "text": {
+      "_armorClassText": "Armor Class 10",
+      "_speedText": "Speed 30 ft, climb 30 ft",
+      "_languagesText": "Languages common",
+      "_proficiencyBonusText": "Proficiency Bonus +2"
+    },
+    "actions": [
+      "Multiattack. The vampire makes two attacks, only one of which can be a bite attack.",
+      "Claws. Melee Weapon Attack: +1 to hit, reach 5 ft., one creature. Hit: 5 (2d4 + 1) slashing damage. Instead of dealing damage, the vampire can grapple the target (escape DC 13).",
+      "Bite. Melee Weapon Attack: +3 to hit, reach 5 ft., one willing creature, or a creature that is grappled by the vampire, incapacitated, or restrained. Hit: 6 (1d6 + 3) piercing damage plus 2 (1d4) necrotic damage. The target's hit point maximum is reduced by an amount equal to the necrotic damage taken, and the vampire regains hit points equal to that amount. The reduction lasts until the target finishes a long rest. The target dies if this effect reduces its hit point maximum to 0."
+    ],
+    "field_active": {
+      "_savingThrowsFieldActive": true,
+      "_damageResistanceFieldActive": true,
+      "_damageImmunitiesFieldActive": false,
+      "_conditionImmunitiesFieldActive": false,
+      "_damageVulnerabilitiesFieldActive": false
+    },
+    "expected_differences": "Filled actor values, portrait and actions replace generic template defaults; same typed stat-block declaration."
+  },
+  "map": {
+    "path": "C:\\Program Files (x86)\\ArkenforgeData\\MyAssets\\Maps\\FB Campaign Check\\Count's Lair.rwmap",
+    "sha256": "aa576f979064c65b920956552577f275eb6289fa11dee07cb4db171ecbc310d1",
+    "tokens": [
+      {
+        "name": "Count Lugosi",
+        "hidden": true,
+        "position": {
+          "x": 42.2400016784668,
+          "y": -57.599998474121094
+        },
+        "reference": "MyAssets/Encyclopedia/Notes/ForgeBridgeTokens/86cfaaef1b2179add2dec456.rwmeta",
+        "fields": [
+          "ArkenNoteFieldCategory",
+          "ArkenNoteFieldSize"
+        ],
+        "icon": "MyAssets/Media/Encyclopedia/Tokens/ForgeBridgeTokens/86cfaaef1b2179add2dec456/Token.rwmeta",
+        "icon_exists": true
+      },
+      {
+        "name": "Dark Soul",
+        "hidden": true,
+        "position": {
+          "x": 19.200000762939453,
+          "y": -3.8399999141693115
+        },
+        "reference": "MyAssets/Encyclopedia/Notes/ForgeBridgeTokens/323efce46e59095bdb447d0c.rwmeta",
+        "fields": [
+          "ArkenNoteFieldCategory",
+          "ArkenNoteFieldSize"
+        ],
+        "icon": "MyAssets/Media/Encyclopedia/Tokens/ForgeBridgeTokens/323efce46e59095bdb447d0c/Token.rwmeta",
+        "icon_exists": true
+      },
+      {
+        "name": "Dark Soul",
+        "hidden": true,
+        "position": {
+          "x": 24.31999969482422,
+          "y": -3.8399999141693115
+        },
+        "reference": "MyAssets/Encyclopedia/Notes/ForgeBridgeTokens/82cffa963c13c84eeba9163c.rwmeta",
+        "fields": [
+          "ArkenNoteFieldCategory",
+          "ArkenNoteFieldSize"
+        ],
+        "icon": "MyAssets/Media/Encyclopedia/Tokens/ForgeBridgeTokens/82cffa963c13c84eeba9163c/Token.rwmeta",
+        "icon_exists": true
+      },
+      {
+        "name": "Dark Soul",
+        "hidden": true,
+        "position": {
+          "x": 29.440000534057617,
+          "y": -3.8399999141693115
+        },
+        "reference": "MyAssets/Encyclopedia/Notes/ForgeBridgeTokens/1e90adc2a284f2cb67e8be79.rwmeta",
+        "fields": [
+          "ArkenNoteFieldCategory",
+          "ArkenNoteFieldSize"
+        ],
+        "icon": "MyAssets/Media/Encyclopedia/Tokens/ForgeBridgeTokens/1e90adc2a284f2cb67e8be79/Token.rwmeta",
+        "icon_exists": true
+      },
+      {
+        "name": "Dark Soul",
+        "hidden": true,
+        "position": {
+          "x": 34.560001373291016,
+          "y": -3.8399999141693115
+        },
+        "reference": "MyAssets/Encyclopedia/Notes/ForgeBridgeTokens/42107e5aeb41ea944f5b3fbf.rwmeta",
+        "fields": [
+          "ArkenNoteFieldCategory",
+          "ArkenNoteFieldSize"
+        ],
+        "icon": "MyAssets/Media/Encyclopedia/Tokens/ForgeBridgeTokens/42107e5aeb41ea944f5b3fbf/Token.rwmeta",
+        "icon_exists": true
+      },
+      {
+        "name": "Dark Soul",
+        "hidden": true,
+        "position": {
+          "x": 42.2400016784668,
+          "y": -8.960000038146973
+        },
+        "reference": "MyAssets/Encyclopedia/Notes/ForgeBridgeTokens/8b09ef1382c8bb5f72300dcb.rwmeta",
+        "fields": [
+          "ArkenNoteFieldCategory",
+          "ArkenNoteFieldSize"
+        ],
+        "icon": "MyAssets/Media/Encyclopedia/Tokens/ForgeBridgeTokens/8b09ef1382c8bb5f72300dcb/Token.rwmeta",
+        "icon_exists": true
+      },
+      {
+        "name": "Dark Soul",
+        "hidden": true,
+        "position": {
+          "x": 42.2400016784668,
+          "y": -16.639999389648438
+        },
+        "reference": "MyAssets/Encyclopedia/Notes/ForgeBridgeTokens/f4f1926bfff482faf55d176c.rwmeta",
+        "fields": [
+          "ArkenNoteFieldCategory",
+          "ArkenNoteFieldSize"
+        ],
+        "icon": "MyAssets/Media/Encyclopedia/Tokens/ForgeBridgeTokens/f4f1926bfff482faf55d176c/Token.rwmeta",
+        "icon_exists": true
+      },
+      {
+        "name": "Skeleton",
+        "hidden": true,
+        "position": {
+          "x": 16.639999389648438,
+          "y": -37.119998931884766
+        },
+        "reference": "MyAssets/Encyclopedia/Notes/ForgeBridgeTokens/8b4d8d57cb662636efcf9143.rwmeta",
+        "fields": [
+          "ArkenNoteFieldCategory",
+          "ArkenNoteFieldSize"
+        ],
+        "icon": "MyAssets/Media/Encyclopedia/Tokens/ForgeBridgeTokens/8b4d8d57cb662636efcf9143/Token.rwmeta",
+        "icon_exists": true
+      },
+      {
+        "name": "Swarm of Spiders",
+        "hidden": true,
+        "position": {
+          "x": 3.8399999141693115,
+          "y": -42.2400016784668
+        },
+        "reference": "MyAssets/Encyclopedia/Notes/ForgeBridgeTokens/0545d464717ffc8c8c2117d8.rwmeta",
+        "fields": [
+          "ArkenNoteFieldCategory",
+          "ArkenNoteFieldSize"
+        ],
+        "icon": "MyAssets/Media/Encyclopedia/Tokens/ForgeBridgeTokens/0545d464717ffc8c8c2117d8/Token.rwmeta",
+        "icon_exists": true
+      },
+      {
+        "name": "Skeleton",
+        "hidden": true,
+        "position": {
+          "x": 3.8399999141693115,
+          "y": -52.47999954223633
+        },
+        "reference": "MyAssets/Encyclopedia/Notes/ForgeBridgeTokens/d4a39d58e862b3c138d5916a.rwmeta",
+        "fields": [
+          "ArkenNoteFieldCategory",
+          "ArkenNoteFieldSize"
+        ],
+        "icon": "MyAssets/Media/Encyclopedia/Tokens/ForgeBridgeTokens/d4a39d58e862b3c138d5916a/Token.rwmeta",
+        "icon_exists": true
+      },
+      {
+        "name": "Willa",
+        "hidden": false,
+        "position": {
+          "x": 3.8399999141693115,
+          "y": -62.720001220703125
+        },
+        "reference": "MyAssets/Encyclopedia/Notes/ForgeBridgeTokens/4c248c8462533b989c1ae100.rwmeta",
+        "fields": [
+          "ArkenNoteFieldCategory",
+          "ArkenNoteFieldSize"
+        ],
+        "icon": "MyAssets/Media/Encyclopedia/Tokens/ForgeBridgeTokens/4c248c8462533b989c1ae100/Token.rwmeta",
+        "icon_exists": true
+      }
+    ],
+    "token_count": 11,
+    "hidden_tokens": 10,
+    "intentional_journal_markers": [
+      "Steps to Lair",
+      "Hall of the Dead",
+      "Dungeon",
+      "Cell a. Empty",
+      "Cell b. Swam of Spiders",
+      "Cell c. Skeleton",
+      "Cell d. Servant Girl",
+      "Cell e. Skeleton",
+      "Cell f. Empty",
+      "Cell g. Blood",
+      "Entrance to Lair",
+      "Count's Lair"
+    ],
+    "expected_template_difference": "Token notes intentionally contain Size/icon rather than a 5e stat block or text/link field; actor notes are separate."
+  },
+  "screenshots": {
+    "01-launcher-before-start.png": "5046ad480fdb1020b7652dbe9c6eadc1420ccc24a7f2ce60e983ee09f50b9544",
+    "02-toolkit-started.png": "72cb2ccdd00b4986af52cf4045989b97db6c0bea9826aa23b2665994b11b8d29",
+    "03-playlists-visible.png": "94f25b3c741a76453d74dc489c20291fac2498816f8072eb0d9f5188c7ed4468",
+    "04-mp3-test-tracks-listed.png": "980d2847a7bdfbd934283f5b72433a2fbd7a0bcbc8e0fd8573aa9b0c07c2fb8b",
+    "05-mp3-timer-advanced.png": "e283243b566fb82de9c6fffa0485cb10565649defbeebb4d04459ff68c159a62",
+    "06-ogg-timer-advanced.png": "921894b4b7e936afddf09337d7357921e6f7f9cf7e5b01a41d0dca0300903963",
+    "07-boris-ac-speed.png": "9791fcb595f83b5b65d865bd3b4542b6fa4c3f83a8f31fa9159a0f282f43a601",
+    "08-boris-languages.png": "b31219183d3d83c8d5cf2a427e744e08cc67dd7ee6d3cec411a786e9860d31e3",
+    "09-boris-attacks.png": "951d452ec74bfc6eb2f9ee6be0773b11eeb64aa896608d8e134bea650eca88f5",
+    "10-counts-lair-overview.png": "8c46e696c4e989e59cfb47d7ea7133a35d5c332843fb1c566cfcc91a79982107"
+  }
+}
