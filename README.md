@@ -62,6 +62,19 @@ The Fantasy Grounds Unity adapter converts backgrounds, grids, walls, doors/wind
 
 Actor notes contain display statistics, not automation or live token bindings. MP3 tracks, external art, ambient sounds, animated media/GIF setup, procedural light animation and Foundry fog/vision/exploration remain manual or unsupported. Audible MP3/OGG playback is not yet confirmed by ear. Windows executables are unsigned; SmartScreen may warn. See [supported scope and limitations](docs/USER-GUIDE.md#supported--manual--unsupported).
 
+## Some spells need the free dnd5e system download
+
+Foundry adventures often store only a *link* to a spell, such as a scroll of
+Bless, and not the spell itself. The spell lives in Foundry's free **dnd5e game
+system**. To turn those links into real spell notes, download the newest
+non-pre-release `dnd5e-release-<version>.zip` (about 108 MB) from the
+[dnd5e releases page](https://github.com/foundryvtt/dnd5e/releases), unzip it,
+and choose that folder in the app's **Optional dnd5e system folder** field. On
+the command line, use `--dnd5e-system "C:\Foundry\dnd5e"`. You don't need
+Foundry installed or licensed. If you skip this, everything else still
+converts, and those spells are listed in the loss report.
+[Step-by-step guide](docs/USER-GUIDE.md#spells-that-need-the-free-dnd5e-system-download).
+
 ## Safe installation and rollback
 
 **Building does not install anything.** You can inspect the generated `MyAssets` contents and reports before deciding whether to install them.

@@ -283,38 +283,81 @@ receipts from v0.9.0, which left empty folders behind); it never deletes files.
 INCOMPLETE receipts require manual review. Restore only reviewed affected backup
 files with Toolkit closed; never Replace All or blind folder synchronization.
 
-## Optional dnd5e compendium spells
+## Spells that need the free dnd5e system download
 
-World/adventure spell Items already become native 5e Spell notes. To resolve
-links to spells outside the adventure, supply your own matching dnd5e system:
+### Why some spells don't convert on their own
 
-```powershell
-forgebridge convert PACKAGE --scene-key KEY --out NEW_DIR --dnd5e-system "C:\FoundryData\systems\dnd5e"
-```
+Many Foundry adventures don't store the full text of the spells they use. A
+spell scroll or a monster's spell list often holds only a *link* to the spell,
+and the spell itself lives in Foundry's free **dnd5e game system**, not in the
+adventure you bought. ForgeBridge can only convert what it's given. Without the
+dnd5e system, it can't see those spells.
 
-The GUI has an optional **dnd5e system folder / spells pack** field and browse
-buttons. Leave it empty for the existing package-only workflow. This option is
-for Foundry synthesized scenes, not FG input or legacy calibrated profiles.
-A system folder/ZIP must contain `system.json` with id `dnd5e`. Alternatively,
-select a standalone spells JSON/NeDB (`.db`)/LevelDB pack: that explicitly means
-the legacy `dnd5e.spells` namespace. Bare packs provide no media root, so their
-external images remain manual. System-folder images are read only inside that
-folder; core icons outside it remain losses.
+Example: in *The Count's Manor*, the scrolls of **Bless**, **Spiritual Weapon**
+and **Protection from Poison** are links like that.
 
-Only exact referenced spell UUIDs (and their referenced spell closure) are
-converted, not every spell in the system. Both `Compendium.dnd5e.spells.ID`
-and `Compendium.dnd5e.spells.Item.ID` forms are supported. There is no name,
-suffix or newer-edition substitution. Actor action/biography and item links
-are rewritten when their exact targets exist. Missing packs/IDs remain
-graded `external-spell` losses and plain-text links. Slot/effect automation is
-not converted. `campaign_content[].spell_source` lists resolved/unresolved
-UUIDs and imported count; hashes/version record provenance, not runtime proof.
-Input changes, ambiguous IDs and unsafe paths are refused. Output must be
-outside both source inputs and is never installed without explicit review.
+### What happens if you skip this
 
-Count's Manor references Protection from Poison, Spiritual Weapon and Bless
-through three scroll notes. Their system pack is not distributed with this
-repository; providing it is necessary for a real three-spell Toolkit check.
+Everything else still converts normally. The linked spells just don't become
+spell notes. Each one is listed once in the conversion report as a missing
+`external-spell`, and the link stays as plain text in the note that mentioned
+it. Nothing is made up or swapped for a similar spell.
+
+### How to fix it (about 5 minutes, no Foundry needed)
+
+You **don't** need Foundry installed, running or licensed. You only need the
+free dnd5e system download, which is about 108 MB.
+
+1. Open the dnd5e releases page:
+   <https://github.com/foundryvtt/dnd5e/releases>
+2. Find the newest release that is **not** marked *Pre-release*. As of
+   November 2026 that's **6.0.6**. Under **Assets**, download
+   `dnd5e-release-<version>.zip`, for example
+   [dnd5e-release-6.0.6.zip](https://github.com/foundryvtt/dnd5e/releases/download/release-6.0.6/dnd5e-release-6.0.6.zip).
+3. **Unzip it** to a folder, for example `C:\Foundry\dnd5e`. Right-click the zip
+   and choose **Extract All**. The folder should contain `system.json` and a
+   `packs` folder, and the spells are in `packs\spells`.
+   *Use the unzipped folder, not the .zip itself.* The release zip contains a
+   large monster file that ForgeBridge's safety limits refuse to read from inside
+   a zip.
+4. Point ForgeBridge at that folder:
+   - **Windows app:** in **Optional dnd5e system folder / spells pack**, click
+     **Choose dnd5e system folder** and pick `C:\Foundry\dnd5e`.
+   - **Command line:** add `--dnd5e-system` with that folder:
+
+     ```powershell
+     forgebridge convert "C:\Adventures\counts-manor" --out "C:\ForgeBridge\counts-manor-out" --dnd5e-system "C:\Foundry\dnd5e"
+     ```
+
+5. Check the report. The missing-spell entries are gone, and each linked
+   spell is now its own 5e Spell note that the scroll or monster note links to.
+
+**Already have Foundry installed?** You can skip the download and pick your
+existing system folder, `<Foundry user data>\Data\systems\dnd5e`. Its spells are
+in `Data\systems\dnd5e\packs\spells`.
+
+### Details for advanced users
+
+- `--dnd5e-system` accepts a dnd5e system folder (with `system.json` id
+  `dnd5e`), or the spells pack folder by itself (`packs/spells`, LevelDB). It
+  also accepts a standalone spells JSON/NeDB (`.db`) file. A bare pack means
+  the `dnd5e.spells` namespace and gives no image root, so spell icons from it
+  stay manual. Foundry's core `icons/...` images aren't in the system download
+  either way, so spell portraits are reported as manual.
+- A system ZIP is accepted only if every entry fits the read budget. The
+  official 6.0.6 ZIP doesn't (`packs/actors24/000005.ldb` is about 8.6 MB), so
+  unzip it first.
+- Only the exact spells the adventure links to are converted, plus any spells
+  those spells link to. ForgeBridge never matches by name and never swaps in a
+  different edition. Both `Compendium.dnd5e.spells.ID` and
+  `Compendium.dnd5e.spells.Item.ID` link forms work.
+- Spell notes show text only. Slots, effects and automation aren't converted.
+  `campaign_content[].spell_source` in the report lists the resolved and
+  unresolved links and the system version and hash.
+- The option applies to Foundry packages only, not Fantasy Grounds or legacy
+  calibrated profiles. ForgeBridge refuses to run if an input changes during
+  the build, if spell IDs are ambiguous, or if a path is unsafe. Inputs are never
+  modified.
 
 ## Troubleshooting
 

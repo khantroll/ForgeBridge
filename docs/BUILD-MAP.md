@@ -1,24 +1,20 @@
 # Remaining feature build map
 
-As of 2026-11-03, after v0.11.0. File-level implementation and native runtime
+As of 2026-11-04 (Jeffrey's Toolkit checks that day), after v0.11.0. File-level implementation and native runtime
 acceptance are separate. Native captures used Windows / Toolkit 0.5.1.18.
 
 | Feature | Status | Reference capture | What proves it in Toolkit |
 |---|---|---|---|
-| Spell notes | Available world spells implemented; optional system-pack resolution next | `fixtures/arkenforge-5e-templates/5e-Spell.*`; README confirms complete UI | Open generated spell, compare all fields and follow the actor's rewritten spell link |
+| Spell notes | Synthetic Toolkit check **PASS** (2026-11-04: links open Spell notes, fields render). Real Count's Manor three spells (Bless, Spiritual Weapon, Protection from Poison) **PASS at file level** with dnd5e 6.0.6 unzipped folder/`packs/spells` (`validation/2026-11-04-SPELLPACK-REAL-RUN.md`); ZIP input refused by read budget; **real three in Toolkit: NEEDS IN-TOOLKIT EVIDENCE** | `fixtures/arkenforge-5e-templates/5e-Spell.*` | Install real Count's Manor build with the pack; open each of the three scroll links, compare fields |
 | FG NPCs/items/story | OPEN, FG phase 3 | 5e Character/Item controls in `fixtures/arkenforge-5e-templates/`; no FG story control yet | Convert controlled FG module; compare notes and links to source, reopen |
 | Missing Foundry Data art | OPEN; external references remain losses | No new native schema needed; existing image/token controls | Resolve only explicitly supplied Data root; show correct portrait/tile and persist |
-| Animated tiles/video | PARTIAL references; native placement FAILED for both synthetic codecs | `fixtures/arkenforge-native-controls-2026-11-03/MyAssets/Media/Cartographer/` | Successful native placement, observable playback/position and save/restart; library import alone is insufficient |
-| Ambient sounds / presets | Preset + SFX captured; spatial/map attachment OPEN | Same capture folder, `AmbiencePresets/` and `Audio/SFX/` | Place a source, verify radius/falloff and attachment, save/restart; confirm sound by ear |
-| Music by ear | BLOCKED on Jeffrey's listening result | `fixtures/arkenforge-user-playlist/`; installed FB MP3 Test | Hear original MP3 and OGG separately; report any exact error |
+| Animated tiles/video | Toolkit **PASS** 2026-11-04 (Jeffrey): captured WEBM and MP4 import, place on a map and move. ForgeBridge does not yet *write* them (converter mapping OPEN) | `fixtures/arkenforge-native-controls-2026-11-03/MyAssets/Media/Cartographer/` | Converter-written animated tile places and plays after save/restart: NEEDS IN-TOOLKIT EVIDENCE |
+| Ambient sounds / presets | Toolkit **PASS** 2026-11-04 (Jeffrey): WAV tone added to a new ambience preset, saved, attached to a map, tone audible. Converter mapping from Foundry ambient sounds OPEN | Same capture folder, `AmbiencePresets/` and `Audio/SFX/` | Converter-written ambience attaches and plays; radius/falloff: NEEDS IN-TOOLKIT EVIDENCE |
+| Music by ear | **FAIL** 2026-11-04 (Jeffrey): FB MP3 Test timer advances, no error, but neither MP3 nor OGG is audible. Toolkit sound output is fine (WAV tone played). Fix in progress separately | `fixtures/arkenforge-user-playlist/`; installed FB MP3 Test | Hear original MP3 and OGG separately after the writer fix |
 | More systems | NOT STARTED | No system-specific captures beyond dnd5e | Source-specific field mapping and representative native acceptance |
 | Other native menu capabilities | OPEN inventory only | Capture README lists SFX palettes, text/shadow/blur/effects/blocking | Capture minimal controls before implementing each mapping |
 
-Jeffrey: please open **Audio → Playlists → FB Campaign Check → FB MP3 Test**,
-play the MP3 entry and the OGG entry separately, and record **audible / silent /
-error (exact message)** for each. Neither waveform bytes nor a changing play
-button constitutes audible acceptance. Answer is pending; no default audio
-encoding policy is inferred.
+Audio result recorded 2026-11-04: silent for both MP3 and OGG (see Music row). Audio is **not** passing.
 
 Capture/cleanup details and exact failures: see
 `fixtures/arkenforge-native-controls-2026-11-03/README.md` and its manifests.

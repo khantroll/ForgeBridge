@@ -7,6 +7,14 @@
   Referencing actor/item prose links are rewritten; missing source IDs and
   unsupported media remain graded losses. System folder/ZIP and standalone
   JSON/NeDB/LevelDB spells packs are read-only, bounded and fingerprinted.
+- Docs: plain-English README/user-guide steps for downloading the free dnd5e
+  system (needed for spells an adventure only links to). No Foundry install is
+  needed. Unzip the release first, because its ZIP exceeds the per-entry read budget.
+- Fixed: a missing external spell is reported once (`external-spell`), not
+  also as an unresolved `link` loss. Link-alias iteration is now sorted.
+- Validated: Count's Manor's Bless, Spiritual Weapon and Protection from Poison
+  IDs resolve from the real dnd5e 6.0.6 system at file level
+  (`validation/2026-11-04-SPELLPACK-REAL-RUN.md`).
 
 ## v0.11.0 — 2026-11-03
 
