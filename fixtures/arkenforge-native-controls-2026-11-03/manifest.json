@@ -1,0 +1,133 @@
+{
+  "toolkit_version": "0.5.1.18",
+  "captured": "2026-11-03",
+  "files": [
+    {
+      "source": "MyAssets/AmbiencePresets/FB Native Reference Ambience 2026-11-03.rwamb",
+      "fixture": "MyAssets/AmbiencePresets/FB Native Reference Ambience 2026-11-03.rwamb",
+      "size": 3028,
+      "sha256": "0c8bf91a6e455550a23a9eaa8795c41821ae2213754382b89202dbcb831acc71",
+      "classes": [
+        "AmbiencePreset",
+        "AmbienceTrack",
+        "ContentItem",
+        "System.Collections.Generic.Dictionary`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        "System.Collections.Generic.GenericEqualityComparer`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        "System.Collections.Generic.KeyValuePair`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        "System.Collections.Generic.List`1[[ContentItem, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        "UnitConversion+TimeUnit"
+      ]
+    },
+    {
+      "source": "MyAssets/AmbiencePresets/FB Native Reference Ambience 2026-11-03.rwmeta",
+      "fixture": "MyAssets/AmbiencePresets/FB Native Reference Ambience 2026-11-03.rwmeta",
+      "size": 1829,
+      "sha256": "ddcf4233678d8248161a005bffff84f5cbe47c54002bb9678d53c65e9c71f6c6",
+      "classes": [
+        "ArkenAmbiencePresetMeta",
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"
+      ]
+    },
+    {
+      "source": "MyAssets/Media/Cartographer/FBReference-motion.rwfile",
+      "fixture": "MyAssets/Media/Cartographer/FBReference-motion.rwfile",
+      "size": 12634,
+      "sha256": "50a05a402f3aaa9b44399235813d573ff54cb3eb7581298d69080379ba5bb5b4",
+      "classes": [
+        "ArkenImage",
+        "ArkenTile+TileType",
+        "ArkenTileUpgrade",
+        "ArkenTileUpgrade+TileCategory",
+        "ArkenVideo"
+      ]
+    },
+    {
+      "source": "MyAssets/Media/Cartographer/FBReference-motion.rwmeta",
+      "fixture": "MyAssets/Media/Cartographer/FBReference-motion.rwmeta",
+      "size": 15437,
+      "sha256": "f9df419688f2a4c8bd38a7e3afdc1d9ff61f2652e670ff67dab9e8d38cce824c",
+      "classes": [
+        "ArkenImage",
+        "ArkenTile+TileType",
+        "ArkenTileMeta",
+        "ArkenTilePresetVideo",
+        "ArkenTileUpgrade+TileCategory",
+        "MapOptions+ObjectPlacementType",
+        "SVector2",
+        "SVector3",
+        "System.Collections.Generic.List`1[[ArkenTilePresetBase, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "System.Collections.Generic.List`1[[IObjectEffect, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "System.Collections.Generic.List`1[[ObjectEffectBase, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "System.Collections.Generic.List`1[[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        "TileAmbienceProperties",
+        "TileAnimationProperties",
+        "TileBlockingProperties",
+        "TileDropShadowProperties",
+        "TileLightingProperties"
+      ]
+    },
+    {
+      "source": "MyAssets/Media/Cartographer/FBReference-video.rwfile",
+      "fixture": "MyAssets/Media/Cartographer/FBReference-video.rwfile",
+      "size": 15397,
+      "sha256": "ff32e5a2735d98f220bcb86f28216ae554bbf6ba63aed4ec90fdea2391019ef5",
+      "classes": [
+        "ArkenImage",
+        "ArkenTile+TileType",
+        "ArkenTileUpgrade",
+        "ArkenTileUpgrade+TileCategory",
+        "ArkenVideo"
+      ]
+    },
+    {
+      "source": "MyAssets/Media/Cartographer/FBReference-video.rwmeta",
+      "fixture": "MyAssets/Media/Cartographer/FBReference-video.rwmeta",
+      "size": 15924,
+      "sha256": "77f5060fd42dc43fb8d9dd33071593e97749850b8322af55c6e07adddc2657e5",
+      "classes": [
+        "ArkenImage",
+        "ArkenTile+TileType",
+        "ArkenTileMeta",
+        "ArkenTilePresetVideo",
+        "ArkenTileUpgrade+TileCategory",
+        "MapOptions+ObjectPlacementType",
+        "SVector2",
+        "SVector3",
+        "System.Collections.Generic.List`1[[ArkenTilePresetBase, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "System.Collections.Generic.List`1[[IObjectEffect, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "System.Collections.Generic.List`1[[ObjectEffectBase, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "System.Collections.Generic.List`1[[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        "TileAmbienceProperties",
+        "TileAnimationProperties",
+        "TileBlockingProperties",
+        "TileDropShadowProperties",
+        "TileLightingProperties"
+      ]
+    },
+    {
+      "source": "MyAssets/Audio/SFX/FBReference-tone.rwfile",
+      "fixture": "MyAssets/Audio/SFX/FBReference-tone.rwfile",
+      "size": 89466,
+      "sha256": "f4e298508b742881157115b7fb92f8bbd6b52fb7088a46e879b721dc12973028",
+      "classes": [
+        "ArkenAudio",
+        "AudioTrack",
+        "System.Collections.Generic.List`1[[AudioTrack, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"
+      ]
+    },
+    {
+      "source": "MyAssets/Audio/SFX/FBReference-tone.rwmeta",
+      "fixture": "MyAssets/Audio/SFX/FBReference-tone.rwmeta",
+      "size": 2028,
+      "sha256": "e0f6abaef2abdfcfc1cf84ce6d1122be0792bd81e384abd204604e3ee915ed3b",
+      "classes": [
+        "ArkenAudioMeta",
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"
+      ]
+    }
+  ]
+}

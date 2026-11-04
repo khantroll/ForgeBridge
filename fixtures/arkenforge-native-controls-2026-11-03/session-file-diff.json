@@ -1,0 +1,29 @@
+{
+  "added": [
+    "AmbiencePresets/FB Native Reference Ambience 2026-11-03.rwamb",
+    "AmbiencePresets/FB Native Reference Ambience 2026-11-03.rwmeta",
+    "Audio/SFX/FBReference-tone.rwfile",
+    "Audio/SFX/FBReference-tone.rwmeta",
+    "Maps/FB Native Reference 2026-11-03.rwmap",
+    "Maps/FB Native Reference 2026-11-03.rwmeta",
+    "Media/Cartographer/FBReference-motion.rwfile",
+    "Media/Cartographer/FBReference-motion.rwmeta",
+    "Media/Cartographer/FBReference-video.rwfile",
+    "Media/Cartographer/FBReference-video.rwmeta"
+  ],
+  "removed": [
+    "Encyclopedia/Notes/FBCapture 5e Character.rwmeta",
+    "Encyclopedia/Notes/FBCapture 5e Character.rwnote",
+    "Encyclopedia/Notes/FBCapture 5e Item.rwmeta",
+    "Encyclopedia/Notes/FBCapture 5e Item.rwnote",
+    "Encyclopedia/Notes/FBCapture 5e Spell.rwmeta",
+    "Encyclopedia/Notes/FBCapture 5e Spell.rwnote",
+    "Playlists/ForgeBridgeCampaign-edfc87a75fc39f64264e/FBCapture Playlist.rwmeta",
+    "Playlists/ForgeBridgeCampaign-edfc87a75fc39f64264e/FBCapture Playlist.rwpl"
+  ],
+  "changed": [
+    "Maps/New Map.rwmap",
+    "Maps/New Map.rwmeta",
+    "Misc/FileIndex.rwindex"
+  ]
+}
