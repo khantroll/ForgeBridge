@@ -472,8 +472,16 @@ def main(argv=None):
     parser.add_argument('--out', help='new .uvtt file to write for --map (must not exist)')
     parser.add_argument('--grid-size', type=float, help='pixels per square, when the module stores none')
     parser.add_argument('--squares', type=float, help='squares across the map width, when the module stores none')
+    parser.add_argument('--campaign-out', help='write native 5e notes for NPCs, items and story into a new directory')
     args = parser.parse_args(argv)
     try:
+        if args.campaign_out:
+            from forgebridge.fg_campaign import write_campaign
+            report = write_campaign(args.module, args.campaign_out)
+            print(json.dumps({'evidence': report.get('evidence'), 'counts': report.get('counts'),
+                              'losses': report.get('losses'), 'links': report.get('links')}, indent=2))
+            if not args.map:
+                return 0
         if not args.map:
             print(json.dumps(inventory(args.module), indent=2))
             return 0

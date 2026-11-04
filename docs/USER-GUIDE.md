@@ -170,6 +170,37 @@ refuse conflicts, and create receipts supporting uninstall/--keep-changed. Never
 install a PARTIAL build. FG native output has synthetic/file-level coverage;
 Claude's Toolkit check remains required for a new output.
 
+#### NPCs, items and story
+
+Map conversion does not write these notes. A separate command does, and only
+from text stored in the module:
+
+```powershell
+python -m forgebridge.fantasy_grounds "C:/Sources/MyModule.mod" --campaign-out "C:/Conversions/FG-notes"
+```
+
+What it writes (file-level only, Toolkit check pending):
+
+- Each NPC becomes a 5e Character note: armor class, hit points, speed, ability
+  scores, saves, skills, senses, languages, traits, actions, reactions and
+  legendary actions. Walk speed is listed first. Repeated languages are kept
+  once. An attack bonus is ability modifier + proficiency + item bonus when
+  the module stores the ability. A different stored total is left as written.
+- Each item becomes a 5e Item note. A spell item becomes a 5e Spell note only
+  when the module itself contains the spell text. A name that only points at
+  another FG library is skipped.
+- Each story or encounter entry with text becomes one note. Links between
+  those NPCs, items and story entries are kept. An image stored in the module
+  is attached. A path that leaves the module is not opened.
+
+What stays a loss, with the reason in `fg-campaign-report.json`:
+
+- Missing scores, hit points, challenge rating, descriptions or story text.
+- Bonus actions share the actions list, because the 5e Character note has no
+  bonus-action field. Lair actions are not placed.
+- Map pins, tokens on maps, and the map file itself are unchanged by this
+  command. Do not treat a passing test as proof the Toolkit shows the note.
+
 ### Foundry packages
 
 ```powershell
