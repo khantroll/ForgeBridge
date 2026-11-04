@@ -1,0 +1,188 @@
+{
+ "date": "2026-11-04",
+ "scope": "file-level only; not installed into Arkenforge Toolkit; no runtime validation",
+ "forgebridge": "0.11.0 (main 8908a7d + this branch)",
+ "dnd5e_system": {
+  "version": "6.0.6",
+  "zip": "dnd5e-release-6.0.6.zip",
+  "zip_sha256": "88c4013a5fb9aaaae18405b6a7eda69fd72c4f0b74920906c899c6df6b617595"
+ },
+ "source": "fixtures/synthetic-module + packs/items.db with three scroll Items linking the exact Count's Manor UUIDs (real package not on the validation host)",
+ "runs": {
+  "none": {
+   "exit": 0,
+   "native_spells": 0,
+   "spell_source": {
+    "provenance": null,
+    "resolved_uuids": [],
+    "unresolved_uuids": [
+     "Compendium.dnd5e.spells.8dzaICjGy6mTUaUr",
+     "Compendium.dnd5e.spells.JbxsYXxSOTZbf9I0",
+     "Compendium.dnd5e.spells.MAxM77CDUu8dgIRQ"
+    ],
+    "imported_spells": 0,
+    "runtime_validation": "not performed"
+   },
+   "external_spell_losses": 3,
+   "dnd5e_link_losses": 0,
+   "campaign_losses": 10,
+   "loss_counts": {
+    "manual": 4,
+    "unsupported": 1,
+    "approximate": 5
+   },
+   "spell_notes": [],
+   "scroll_links_to_spell_note": {
+    "Spell Scroll: Bless": false,
+    "Spell Scroll: Spiritual Weapon": false,
+    "Spell Scroll: Protection from Poison": false
+   }
+  },
+  "zip": {
+   "exit": 2,
+   "error": "zip entry exceeds the read budget: packs/actors24/000005.ldb"
+  },
+  "folder": {
+   "exit": 0,
+   "native_spells": 3,
+   "spell_source": {
+    "provenance": {
+     "input_sha256": "bfad37bff4705cde0b90a5588b958f30a30c72cf80c9742dbef9bf1444e677d7",
+     "system_id": "dnd5e",
+     "version": "6.0.6",
+     "layout": "system package"
+    },
+    "resolved_uuids": [
+     "Compendium.dnd5e.spells.8dzaICjGy6mTUaUr",
+     "Compendium.dnd5e.spells.JbxsYXxSOTZbf9I0",
+     "Compendium.dnd5e.spells.MAxM77CDUu8dgIRQ"
+    ],
+    "unresolved_uuids": [],
+    "imported_spells": 3,
+    "runtime_validation": "not performed"
+   },
+   "external_spell_losses": 0,
+   "dnd5e_link_losses": 0,
+   "campaign_losses": 13,
+   "loss_counts": {
+    "unsupported": 1,
+    "approximate": 8,
+    "manual": 4
+   },
+   "spell_notes": [
+    {
+     "name": "Bless",
+     "type": "1-level enc",
+     "castingTime": "Casting Time 1 action",
+     "range": "Range 30 ft",
+     "components": "Components vocal, somatic, material, concentration (A sprinkling of holy water)",
+     "duration": "Duration 1 minute",
+     "description": "You bless up to three creatures of your choice within range. Whenever a target makes an attack roll or a saving throw before the spell ends, the target can roll 1d4 and add the number rolled to the attack roll or saving throw.\nAt Higher Levels. When you cast this spell using a spell slot of 2nd level or higher, you can target one additional creature for each slot level above 1st.",
+     "attackSave": "Attack/Save ",
+     "damageEffect": "Damage/Effect ",
+     "higherLevels": "At Higher Levels "
+    },
+    {
+     "name": "Spiritual Weapon",
+     "type": "2-level evo",
+     "castingTime": "Casting Time 1 bonus",
+     "range": "Range 60 ft",
+     "components": "Components vocal, somatic",
+     "duration": "Duration 1 minute",
+     "description": "You create a floating, spectral weapon within range that lasts for the duration or until you cast this spell again. When you cast the spell, you can make a melee spell attack against a creature within 5 feet of the weapon. On a hit, the target takes force damage equal to 1d8 + your spellcasting ability modifier.\nAs a bonus action on your turn, you can move the weapon up to 20 feet and repeat the attack against a creature within 5 feet of it.\nThe weapon can take whatever form you choose. Clerics of deities who are associated with a particular weapon (as St. Cuthbert is known for his mace and Thor for his hammer) make this spell's effect resemble that weapon.\nAt Higher Levels. When you cast this spell using a spell slot of 3rd level or higher, the damage increases by 1d8 for every two slot levels above the 2nd.",
+     "attackSave": "Attack/Save ",
+     "damageEffect": "Damage/Effect ",
+     "higherLevels": "At Higher Levels "
+    },
+    {
+     "name": "Protection from Poison",
+     "type": "2-level abj",
+     "castingTime": "Casting Time 1 action",
+     "range": "Range touch",
+     "components": "Components vocal, somatic",
+     "duration": "Duration 1 hour",
+     "description": "You touch a creature. If it is poisoned, you neutralize the poison. If more than one poison afflicts the target, you neutralize one poison that you know is present, or you neutralize one at random.\nFor the duration, the target has advantage on saving throws against being &Reference[poisoned apply=false], and it has resistance to poison damage.",
+     "attackSave": "Attack/Save ",
+     "damageEffect": "Damage/Effect ",
+     "higherLevels": "At Higher Levels "
+    }
+   ],
+   "scroll_links_to_spell_note": {
+    "Spell Scroll: Bless": true,
+    "Spell Scroll: Spiritual Weapon": true,
+    "Spell Scroll: Protection from Poison": true
+   }
+  },
+  "bare": {
+   "exit": 0,
+   "native_spells": 3,
+   "spell_source": {
+    "provenance": {
+     "input_sha256": "e89535df082b76d08a427a3b17eae6c2d08c32a79e5c3b1318bc915464a9bd69",
+     "system_id": "dnd5e",
+     "version": null,
+     "layout": "standalone dnd5e.spells pack"
+    },
+    "resolved_uuids": [
+     "Compendium.dnd5e.spells.8dzaICjGy6mTUaUr",
+     "Compendium.dnd5e.spells.JbxsYXxSOTZbf9I0",
+     "Compendium.dnd5e.spells.MAxM77CDUu8dgIRQ"
+    ],
+    "unresolved_uuids": [],
+    "imported_spells": 3,
+    "runtime_validation": "not performed"
+   },
+   "external_spell_losses": 0,
+   "dnd5e_link_losses": 0,
+   "campaign_losses": 13,
+   "loss_counts": {
+    "unsupported": 1,
+    "approximate": 8,
+    "manual": 4
+   },
+   "spell_notes": [
+    {
+     "name": "Bless",
+     "type": "1-level enc",
+     "castingTime": "Casting Time 1 action",
+     "range": "Range 30 ft",
+     "components": "Components vocal, somatic, material, concentration (A sprinkling of holy water)",
+     "duration": "Duration 1 minute",
+     "description": "You bless up to three creatures of your choice within range. Whenever a target makes an attack roll or a saving throw before the spell ends, the target can roll 1d4 and add the number rolled to the attack roll or saving throw.\nAt Higher Levels. When you cast this spell using a spell slot of 2nd level or higher, you can target one additional creature for each slot level above 1st.",
+     "attackSave": "Attack/Save ",
+     "damageEffect": "Damage/Effect ",
+     "higherLevels": "At Higher Levels "
+    },
+    {
+     "name": "Spiritual Weapon",
+     "type": "2-level evo",
+     "castingTime": "Casting Time 1 bonus",
+     "range": "Range 60 ft",
+     "components": "Components vocal, somatic",
+     "duration": "Duration 1 minute",
+     "description": "You create a floating, spectral weapon within range that lasts for the duration or until you cast this spell again. When you cast the spell, you can make a melee spell attack against a creature within 5 feet of the weapon. On a hit, the target takes force damage equal to 1d8 + your spellcasting ability modifier.\nAs a bonus action on your turn, you can move the weapon up to 20 feet and repeat the attack against a creature within 5 feet of it.\nThe weapon can take whatever form you choose. Clerics of deities who are associated with a particular weapon (as St. Cuthbert is known for his mace and Thor for his hammer) make this spell's effect resemble that weapon.\nAt Higher Levels. When you cast this spell using a spell slot of 3rd level or higher, the damage increases by 1d8 for every two slot levels above the 2nd.",
+     "attackSave": "Attack/Save ",
+     "damageEffect": "Damage/Effect ",
+     "higherLevels": "At Higher Levels "
+    },
+    {
+     "name": "Protection from Poison",
+     "type": "2-level abj",
+     "castingTime": "Casting Time 1 action",
+     "range": "Range touch",
+     "components": "Components vocal, somatic",
+     "duration": "Duration 1 hour",
+     "description": "You touch a creature. If it is poisoned, you neutralize the poison. If more than one poison afflicts the target, you neutralize one poison that you know is present, or you neutralize one at random.\nFor the duration, the target has advantage on saving throws against being &Reference[poisoned apply=false], and it has resistance to poison damage.",
+     "attackSave": "Attack/Save ",
+     "damageEffect": "Damage/Effect ",
+     "higherLevels": "At Higher Levels "
+    }
+   ],
+   "scroll_links_to_spell_note": {
+    "Spell Scroll: Bless": true,
+    "Spell Scroll: Spiritual Weapon": true,
+    "Spell Scroll: Protection from Poison": true
+   }
+  }
+ }
+}

@@ -96,6 +96,9 @@ def campaign_files(ir, package, *, notes_folder, spell_root=None):
     paths = {}
     aliases = {}
     def loss(grade, feature, summary, **details): losses.append(dict(grade=grade, feature=feature, summary=summary, **details))
+    # Missing external spells already carry one graded 'external-spell' loss;
+    # their prose links stay as text without a second 'link' loss.
+    external_missing = set((ir.get('spell_source') or {}).get('unresolved_uuids') or [])
     for doc in docs:
         if doc['kind'] == 'Playlist': continue
         if doc['kind'] == 'Actor' and doc.get('format') != 'dnd5e-actor': continue
@@ -107,7 +110,7 @@ def campaign_files(ir, package, *, notes_folder, spell_root=None):
         if doc['adventure_id']:
             candidates.append('Compendium.'+pack_id+'.Adventure.'+doc['adventure_id']+'.'+doc['kind']+'.'+doc['id'])
         else:candidates += ['Compendium.'+pack_id+'.'+doc['kind']+'.'+doc['id'], 'Compendium.'+pack_id+'.'+doc['id']]
-        for alias in set(candidates):
+        for alias in sorted(set(candidates)):
             aliases.setdefault(alias, []).append(identity)
     # Only references to successfully emitted notes are exposed below.
     def segments(value):
@@ -121,7 +124,7 @@ def campaign_files(ir, package, *, notes_folder, spell_root=None):
             targets=aliases.get(m[1],[])
             target=paths[targets[0]]+'.rwmeta' if len(targets)==1 else None
             result.append((m[2] or m[1],0,target)); end=m.end()
-            if target is None: loss('manual','link','Unresolved or ambiguous source link retained as text',uuid=m[1])
+            if target is None and m[1] not in external_missing: loss('manual','link','Unresolved or ambiguous source link retained as text',uuid=m[1])
         result.append((value[end:],0,None))
         return result
     def txt(value, label=None, italic=False, title=False):
