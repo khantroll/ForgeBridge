@@ -110,6 +110,17 @@ class SpellSourceTests(unittest.TestCase):
                 self.assertEqual(resolve_spells(ir, source)['spell_source']['unresolved_uuids'],
                                  result['spell_source']['unresolved_uuids'])
 
+    def test_missing_spell_is_one_loss_not_also_an_unresolved_link(self):
+        prose = ' '.join('@UUID[Compendium.dnd5e.spells.' + i + ']{S}' for i in IDS)
+        ir = campaign([document('Item', {'_id': 'scroll', 'name': 'Scroll', 'type': 'loot', 'system': {
+            'description': {'value': prose + ' @UUID[Item.nowhere]{Other}'}}})])
+        _, report = campaign_files(resolve_spells(ir, None), Path('.'), notes_folder='S')
+        spell_losses = [l for l in report['losses'] if l.get('uuid', '').startswith('Compendium.dnd5e.')]
+        self.assertEqual(sorted(l['uuid'] for l in spell_losses), sorted('Compendium.dnd5e.spells.' + i for i in IDS))
+        self.assertTrue(all(l['feature'] == 'external-spell' and l['grade'] == 'manual' for l in spell_losses))
+        # Ordinary unresolved links are still reported.
+        self.assertTrue(any(l['feature'] == 'link' and l['uuid'] == 'Item.nowhere' for l in report['losses']))
+
     def test_system_zip_namespace_portrait_and_invalid_or_duplicate_sources(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp); system = root / 'dnd5e'; system.mkdir(); (system / 'packs').mkdir()
