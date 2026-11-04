@@ -99,6 +99,18 @@ def finish_job(ui): ui['afters'].pop(0)()
 
 
 class GuiControllerTests(unittest.TestCase):
+    def test_optional_spell_source_reaches_worker_without_changing_empty_default(self):
+        report = {'scenes': [{'key': 'key', 'id': 'id', 'name': 'Room', 'source_path': 'packs/scenes'}]}
+        def scenario(ui):
+            click(ui, 'Discover scenes'); finish_job(ui)
+            field = ui['fields']['Optional dnd5e system folder / spells pack (Foundry only)']
+            self.assertEqual(field.get(), '')
+            field.set('synthetic-spells.json')
+            ui['list'].selection_set(0); click(ui, 'Build / export')
+        with patch('forgebridge.gui.discover', return_value=report), patch('forgebridge.gui.convert') as converter:
+            run_headless_gui(scenario)
+            self.assertEqual(converter.call_args.kwargs['dnd5e_system'], 'synthetic-spells.json')
+
     def test_rename_folder_fields_and_pdf_checkbox_reach_conversion(self):
         report = {'package_title': 'Package title', 'scenes': [
             {'key': 'key', 'id': 'id', 'name': 'Room', 'source_path': 'packs/5e',

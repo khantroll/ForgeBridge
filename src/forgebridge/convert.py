@@ -99,9 +99,11 @@ def _new_destination(destination, package):
 
 def convert(package, destination, *, scene_ids=(), scene_keys=(), profiles=(),
             map_folder=None, notes_folder=None, map_names=None, pdf=None,
-            include_art=False, grid_size=(), squares=()):
+            include_art=False, grid_size=(), squares=(), dnd5e_system=None):
     from forgebridge.fg_convert import is_fg_input, convert_fg
     if is_fg_input(package):
+        if dnd5e_system is not None:
+            raise ValueError('--dnd5e-system applies only to Foundry packages')
         return convert_fg(package, destination, scene_ids=scene_ids, scene_keys=scene_keys, profiles=profiles,
                           map_folder=map_folder, notes_folder=notes_folder, map_names=map_names,
                           include_art=include_art, grid_size=grid_size, squares=squares)
@@ -109,6 +111,10 @@ def convert(package, destination, *, scene_ids=(), scene_keys=(), profiles=(),
         raise ValueError('--grid-size, --squares and --include-art are Fantasy Grounds input options')
     package = Path(package).absolute()
     dest = _new_destination(destination, package)
+    if dnd5e_system is not None:
+        spell_path = Path(dnd5e_system).absolute()
+        if spell_path.is_dir() and dest.resolve().is_relative_to(spell_path.resolve()):
+            raise ValueError('Output must be outside the optional spell source')
     before = fingerprint(package)
     selected_pdf, pdf_loss = pdf_mode(pdf)
     report = {'format': 'forgebridge.conversion', 'version': 1, 'status': 'PASS',
@@ -123,7 +129,12 @@ def convert(package, destination, *, scene_ids=(), scene_keys=(), profiles=(),
               'manual_steps': ['Review combined losses and installation conflicts before player use; labels off',
                                'GIF/FPS setup, manual native fog, audio transcoding and actor/vision/behavior automation remain manual',
                                'Generating files is not runtime validation of this output']}
-    with source_root(package) as (root, rejected), tempfile.TemporaryDirectory(prefix='forgebridge-convert-') as tmp:
+    from forgebridge.spell_source import spell_source, resolve_spells
+    spell_digest = fingerprint(dnd5e_system) if dnd5e_system is not None else None
+    if dnd5e_system is not None and profiles:
+        raise ValueError('External spells require synthesized scenes, not legacy profiles')
+    with source_root(package) as (root, rejected), spell_source(dnd5e_system) as spells, tempfile.TemporaryDirectory(prefix='forgebridge-convert-') as tmp:
+        report['spell_source'] = spells['provenance'] if spells else None
         inventory = inventory_path(root)
         report['package_id'] = inventory['provenance']['package_id']
         rows = [r for r in inventory['documents'] if r.get('document_type') == 'Scene']
@@ -211,8 +222,10 @@ def convert(package, destination, *, scene_ids=(), scene_keys=(), profiles=(),
                                     _parent_adventure_id(row), scene_names['notes_folder'])
                     if campaign_key not in campaign_outputs:
                         ir = read_campaign(root, inventory, row, cache=campaign_cache)
+                        ir = resolve_spells(ir, spells)
                         ir['package_id'] = report['package_id']
-                        campaign_outputs[campaign_key] = campaign_files(ir, root, notes_folder=scene_names['notes_folder'])
+                        campaign_outputs[campaign_key] = campaign_files(ir, root, notes_folder=scene_names['notes_folder'],
+                            spell_root=spells['root'] if spells else None)
                         report['campaign_content'].append(campaign_outputs[campaign_key][1])
                     conversion = build_direct(root, document, row, report['package_id'], folder / 'native-package.zip',
                                               names=scene_names, pdf_pages=selected_pdf == 'pages', campaign=campaign_outputs[campaign_key])
@@ -264,6 +277,8 @@ def convert(package, destination, *, scene_ids=(), scene_keys=(), profiles=(),
             with target.open('xb') as stream: stream.write(data)
         if fingerprint(package) != before:
             raise ValueError('Source package changed during conversion; nothing published')
+        if dnd5e_system is not None and fingerprint(dnd5e_system) != spell_digest:
+            raise ValueError('Optional spell input changed during conversion; nothing published')
         # Revalidate all native inputs after compilation, without re-reading source DBs.
         from forgebridge.scene_profile import _inputs
         for profile, digest, plan in guards:
@@ -306,6 +321,7 @@ def main(argv=None):
     parser.add_argument('--notes-folder', help='Visible notes folder; default same as map folder')
     parser.add_argument('--map-name', action='append', default=[], help='SCENE_KEY=NAME; repeat per scene, or NAME for a single scene')
     parser.add_argument('--pdf', choices=('pages', 'references'), help='Default pages if pypdfium2 imports, otherwise references with a reported loss')
+    parser.add_argument('--dnd5e-system', help='Optional dnd5e system folder/ZIP or standalone spells JSON/NeDB/LevelDB pack; resolve exact spell UUIDs')
     parser.add_argument('--install', action='store_true', help='Explicit add-only installation after building/review checks')
     parser.add_argument('--myassets', help='Actual MyAssets destination; required with --install')
     parser.add_argument('--backup-root', help='Separate existing full-backup directory; required with --install')
@@ -326,7 +342,7 @@ def main(argv=None):
             if not args.out: raise ValueError('Provide --out NEW_DIRECTORY, --install, or --list-scenes')
             report = convert(args.package, args.out, scene_ids=args.scene, scene_keys=args.scene_key, profiles=args.profile,
                              map_folder=args.map_folder, notes_folder=args.notes_folder, map_names=args.map_name, pdf=args.pdf,
-                             include_art=args.include_art, grid_size=args.grid_size, squares=args.squares)
+                             include_art=args.include_art, grid_size=args.grid_size, squares=args.squares, dnd5e_system=args.dnd5e_system)
             if args.install:
                 if report['status'] != 'PASS': raise ValueError('Resolve rejected scenes before installation; outputs retained for review')
                 from forgebridge.installer import install_conversion

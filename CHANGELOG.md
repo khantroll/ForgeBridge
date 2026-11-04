@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- Optional `convert --dnd5e-system` and GUI input resolve exact external dnd5e
+  spell UUIDs to native 5e Spell notes, using the captured schema and styles.
+  Referencing actor/item prose links are rewritten; missing source IDs and
+  unsupported media remain graded losses. System folder/ZIP and standalone
+  JSON/NeDB/LevelDB spells packs are read-only, bounded and fingerprinted.
+
 ## v0.11.0 — 2026-11-03
 
 Fantasy Grounds Unity native maps, the Windows standalone app, and Foundry

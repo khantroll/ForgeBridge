@@ -283,6 +283,39 @@ receipts from v0.9.0, which left empty folders behind); it never deletes files.
 INCOMPLETE receipts require manual review. Restore only reviewed affected backup
 files with Toolkit closed; never Replace All or blind folder synchronization.
 
+## Optional dnd5e compendium spells
+
+World/adventure spell Items already become native 5e Spell notes. To resolve
+links to spells outside the adventure, supply your own matching dnd5e system:
+
+```powershell
+forgebridge convert PACKAGE --scene-key KEY --out NEW_DIR --dnd5e-system "C:\FoundryData\systems\dnd5e"
+```
+
+The GUI has an optional **dnd5e system folder / spells pack** field and browse
+buttons. Leave it empty for the existing package-only workflow. This option is
+for Foundry synthesized scenes, not FG input or legacy calibrated profiles.
+A system folder/ZIP must contain `system.json` with id `dnd5e`. Alternatively,
+select a standalone spells JSON/NeDB (`.db`)/LevelDB pack: that explicitly means
+the legacy `dnd5e.spells` namespace. Bare packs provide no media root, so their
+external images remain manual. System-folder images are read only inside that
+folder; core icons outside it remain losses.
+
+Only exact referenced spell UUIDs (and their referenced spell closure) are
+converted, not every spell in the system. Both `Compendium.dnd5e.spells.ID`
+and `Compendium.dnd5e.spells.Item.ID` forms are supported. There is no name,
+suffix or newer-edition substitution. Actor action/biography and item links
+are rewritten when their exact targets exist. Missing packs/IDs remain
+graded `external-spell` losses and plain-text links. Slot/effect automation is
+not converted. `campaign_content[].spell_source` lists resolved/unresolved
+UUIDs and imported count; hashes/version record provenance, not runtime proof.
+Input changes, ambiguous IDs and unsafe paths are refused. Output must be
+outside both source inputs and is never installed without explicit review.
+
+Count's Manor references Protection from Poison, Spiritual Weapon and Bless
+through three scroll notes. Their system pack is not distributed with this
+repository; providing it is necessary for a real three-spell Toolkit check.
+
 ## Troubleshooting
 
 Foundry campaign content is included automatically for the selected Adventure:
