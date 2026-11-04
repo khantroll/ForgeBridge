@@ -87,12 +87,14 @@ def main(argv=None):
     parser.add_argument('--version', action='version', version='ForgeBridge ' + get_version())
     parser.add_argument('--package', default='')
     parser.add_argument('--out', default='')
+    parser.add_argument('--dnd5e-system', default='')
     args = parser.parse_args(argv)
     # Lazy import: headless CI exercises the controller without creating a window.
     import tkinter as tk
     from tkinter import filedialog, messagebox, simpledialog, ttk
-    app = tk.Tk(); app.title('ForgeBridge ' + get_version() + ' — scene conversion'); app.geometry('900x720')
+    app = tk.Tk(); app.title('ForgeBridge ' + get_version() + ' — scene conversion'); app.geometry('900x860')
     package = tk.StringVar(value=args.package); output = tk.StringVar(value=args.out)
+    spell_input = tk.StringVar(value=args.dnd5e_system)
     map_folder, notes_folder = tk.StringVar(), tk.StringVar()
     pdf_pages = tk.BooleanVar(value=True)
     include_art = tk.BooleanVar(value=False)
@@ -112,6 +114,13 @@ def main(argv=None):
     ttk.Button(buttons, text='Choose ZIP', command=lambda: package.set(filedialog.askopenfilename(filetypes=[('Foundry ZIP', '*.zip')]) or package.get())).pack(side='left')
     ttk.Button(buttons, text='Choose FG module', command=lambda: package.set(filedialog.askopenfilename(
         filetypes=[('Fantasy Grounds module or vault ZIP', '*.mod *.zip *.dat')]) or package.get())).pack(side='left')
+    ttk.Label(panel, text='Optional dnd5e system folder / spells pack (Foundry only)').pack(anchor='w')
+    ttk.Entry(panel, textvariable=spell_input).pack(fill='x')
+    spell_buttons = ttk.Frame(panel); spell_buttons.pack(fill='x')
+    ttk.Button(spell_buttons, text='Choose dnd5e system folder', command=lambda: spell_input.set(
+        filedialog.askdirectory() or spell_input.get())).pack(side='left')
+    ttk.Button(spell_buttons, text='Choose spells pack / system ZIP', command=lambda: spell_input.set(
+        filedialog.askopenfilename(filetypes=[('Spells JSON/NeDB or system ZIP', '*.json *.db *.zip')]) or spell_input.get())).pack(side='left')
     ttk.Label(panel, text='New output folder (must not exist)').pack(anchor='w')
     ttk.Entry(panel, textvariable=output).pack(fill='x')
     ttk.Button(panel, text='Choose where to save output', command=lambda: choose_output()).pack(anchor='w', pady=4)
@@ -233,6 +242,8 @@ def main(argv=None):
         names = {key: value for key, value in renamed.items() if key in selected}
         # Ticked = pages when the PDF renderer is available, else references with a reported loss.
         options = {'pdf': None if pdf_pages.get() else 'references'}
+        if spell_input.get().strip():
+            options['dnd5e_system'] = spell_input.get().strip()
         if state.get('source_type') == 'fantasy_grounds':
             if any(r['status'] in ('NEEDS_GRID', 'ART') and r['key'] not in grids and r['key'] not in across
                    for r in rows if r['key'] in selected):

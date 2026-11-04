@@ -86,7 +86,7 @@ class CampaignBuilder(NoteBuilder):
         return block
 
 
-def campaign_files(ir, package, *, notes_folder):
+def campaign_files(ir, package, *, notes_folder, spell_root=None):
     builder = CampaignBuilder(); files, links, rows, playlists = {}, {}, [], []
     losses = list(ir['losses']); scope = ir['scope']; docs = ir['documents']
     # Revision 1 stat-block/linked-token check can leave edited notes after
@@ -102,11 +102,12 @@ def campaign_files(ir, package, *, notes_folder):
         identity = (doc['kind'], doc['source_path'], doc['adventure_id'], doc['id'])
         paths[identity] = base + hashlib.sha256(json.dumps(identity).encode()).hexdigest()[:20]
         pack_id=doc.get('pack_id') or str(ir.get('package_id',''))+'.'+Path(doc['source_path']).name
-        candidates=[doc['kind']+'.'+doc['id']]
+        candidates=[] if doc.get('external_system') else [doc['kind']+'.'+doc['id']]
+        candidates += doc.get('uuid_aliases', [])
         if doc['adventure_id']:
             candidates.append('Compendium.'+pack_id+'.Adventure.'+doc['adventure_id']+'.'+doc['kind']+'.'+doc['id'])
         else:candidates += ['Compendium.'+pack_id+'.'+doc['kind']+'.'+doc['id'], 'Compendium.'+pack_id+'.'+doc['id']]
-        for alias in candidates:
+        for alias in set(candidates):
             aliases.setdefault(alias, []).append(identity)
     # Only references to successfully emitted notes are exposed below.
     def segments(value):
@@ -127,12 +128,17 @@ def campaign_files(ir, package, *, notes_folder):
         runs=([(label+' ',1,None)] if label else [])+segments(value)
         if italic:runs=[(s,2,link) for s,_,link in runs]
         return builder.rich(runs,size=90 if title else 40,colour='58180D' if title else '000000')
-    def portrait(ref):
+    def portrait(ref, *, external=False):
         if not ref:return None
         try:
             safe, problem=_safe_ref(ref)
             if problem or not safe:raise ValueError('unsafe/remote portrait reference')
-            path=_package_file(Path(package),safe)
+            root = spell_root if external else package
+            if external and safe.startswith('systems/dnd5e/'):
+                safe = safe[len('systems/dnd5e/'):]
+            if root is None:
+                raise ValueError('External spell media root unavailable')
+            path=_package_file(Path(root),safe)
             if path.stat().st_size>32*1024*1024:raise ValueError('portrait exceeds 32 MiB')
             image=path.read_bytes(); key=hashlib.sha256(image).hexdigest()[:20]
             target='MyAssets/Media/Encyclopedia/Images/ForgeBridgeCampaign-'+scope+'/'+key
@@ -200,7 +206,7 @@ def campaign_files(ir, package, *, notes_folder):
             if spell:
                 for key,field,label in [('casting','_castingTimeText','Casting Time'),('range','_rangeText','Range'),('components','_componentsText','Components'),('duration','_durationText','Duration'),('attack_save','_attackSaveText','Attack/Save'),('damage_effect','_damageEffectText','Damage/Effect'),('higher','_higherLevelsText','At Higher Levels')]:m[field]=txt(a[key],label)
             builder.style_block(block,'Spell' if spell else 'Item')
-            fields=[block];image=portrait(a['portrait'])
+            fields=[block];image=portrait(a['portrait'],external=doc.get('external_system',False))
             if image:fields.insert(0,builder.media_field('Item image',image,2))
             counts['spells' if spell else 'items']+=1
             loss('approximate','spell' if spell else 'item','Display text/image only; mechanical activities, effects, formula evaluation and uses are not automated',source_id=doc['id'])
@@ -222,7 +228,7 @@ def campaign_files(ir, package, *, notes_folder):
     check_metadata_references(files)
     files['campaign-source-'+scope+'.json']=json.dumps(ir,ensure_ascii=True,sort_keys=True).encode()
     from collections import Counter
-    return files,{'scope':scope,'native_revision':NATIVE_CAMPAIGN_REVISION,'adventure_id':ir.get('adventure_id'),'counts':{**counts,'notes':len(rows)},'documents':rows,'playlists':playlists,'links':links,'losses':losses,
+    return files,{'scope':scope,'native_revision':NATIVE_CAMPAIGN_REVISION,'adventure_id':ir.get('adventure_id'),'spell_source':ir.get('spell_source'),'counts':{**counts,'notes':len(rows)},'documents':rows,'playlists':playlists,'links':links,'losses':losses,
                   'loss_counts':dict(Counter(l['grade'] for l in losses)),'runtime_validation':'not performed'}
 
 
