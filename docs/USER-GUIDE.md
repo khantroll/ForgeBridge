@@ -173,11 +173,20 @@ Claude's Toolkit check remains required for a new output.
 #### NPCs, items and story
 
 Map conversion does not write these notes. A separate command does, and only
-from text stored in the module:
+from text stored in the module. Output is file-level only; Toolkit check
+pending. Passing tests prove files and receipts, not that notes appear in the
+Toolkit.
 
 ```powershell
 python -m forgebridge.fantasy_grounds "C:/Sources/MyModule.mod" --campaign-out "C:/Conversions/FG-notes"
+python -m forgebridge.fantasy_grounds "C:/Sources/MyModule.mod" --campaign-out "C:/Conversions/FG-notes" --install --myassets "C:/ArkenforgeData/MyAssets" --backup-root "D:/ForgeBridgeBackups"
 ```
+
+`--campaign-out` writes the loose MyAssets tree, `fg-campaign-report.json`, and
+an installable `native-package.zip`. That zip uses the same review, full
+backup, uninstall receipt and `--keep-changed` path as Foundry native packages
+(`forgebridge install --package …` also accepts it). `--install` requires
+`--myassets` and `--backup-root`; Toolkit must stay closed.
 
 What it writes (file-level only, Toolkit check pending):
 

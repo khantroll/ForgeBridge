@@ -510,6 +510,11 @@ def build_campaign(module):
 
 
 def write_campaign(module, destination):
+    """Write loose MyAssets files plus an installable native-package.zip.
+
+    The zip is the same add-only review/install/uninstall receipt path Foundry
+    native packages use. Evidence remains file-level only, Toolkit check pending.
+    """
     destination = Path(destination)
     if destination.exists():
         raise ModuleError('Campaign output already exists: ' + str(destination))
@@ -525,5 +530,30 @@ def write_campaign(module, destination):
         with target.open('xb') as stream:
             stream.write(data)
     report_path = destination / 'fg-campaign-report.json'
+    report_bytes = json.dumps(report, indent=2, ensure_ascii=True).encode()
+    report_path.write_bytes(report_bytes)
+    from forgebridge.native_dependencies import write_archive
+    package = {**files, 'fg-campaign-report.json': report_bytes,
+               'conversion-report.json': json.dumps({
+                   'format': 'forgebridge.fg-campaign', 'version': 1,
+                   'evidence': report.get('evidence'),
+                   'runtime_validation': report.get('runtime_validation'),
+                   'counts': report.get('counts'),
+               }, indent=2).encode()}
+    write_archive(destination / 'native-package.zip', package)
+    report['native_package'] = 'native-package.zip'
+    report_path.write_bytes(json.dumps(report, indent=2, ensure_ascii=True).encode())
+    return report
+
+
+def install_campaign(module, destination, myassets, backup_root):
+    """Build campaign notes then install through the normal add-only path."""
+    report = write_campaign(module, destination)
+    from forgebridge.installer import install
+    package = Path(destination) / 'native-package.zip'
+    installation = install([package], myassets, backup_root)
+    report['installed'] = True
+    report['installation'] = installation
+    report_path = Path(destination) / 'fg-campaign-report.json'
     report_path.write_text(json.dumps(report, indent=2, ensure_ascii=True), encoding='utf-8')
     return report

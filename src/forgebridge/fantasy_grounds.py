@@ -473,13 +473,34 @@ def main(argv=None):
     parser.add_argument('--grid-size', type=float, help='pixels per square, when the module stores none')
     parser.add_argument('--squares', type=float, help='squares across the map width, when the module stores none')
     parser.add_argument('--campaign-out', help='write native 5e notes for NPCs, items and story into a new directory')
+    parser.add_argument('--install', action='store_true',
+                        help='After --campaign-out, install the native-package.zip through the add-only path')
+    parser.add_argument('--myassets', help='Actual MyAssets destination; required with --install')
+    parser.add_argument('--backup-root', help='Separate existing full-backup directory; required with --install')
     args = parser.parse_args(argv)
     try:
-        if args.campaign_out:
-            from forgebridge.fg_campaign import write_campaign
-            report = write_campaign(args.module, args.campaign_out)
-            print(json.dumps({'evidence': report.get('evidence'), 'counts': report.get('counts'),
-                              'losses': report.get('losses'), 'links': report.get('links')}, indent=2))
+        if args.install or args.myassets or args.backup_root or args.campaign_out:
+            if args.install and (not args.myassets or not args.backup_root):
+                raise ModuleError('--install requires --myassets and --backup-root')
+            if not args.install and (args.myassets or args.backup_root):
+                raise ModuleError('Installation destinations require explicit --install')
+            if args.install and not args.campaign_out:
+                import uuid
+                args.campaign_out = str(Path.cwd() / ('ForgeBridge-fg-campaign-' + uuid.uuid4().hex[:10]))
+            if not args.campaign_out:
+                raise ModuleError('Provide --campaign-out, or --install with --myassets and --backup-root')
+            from forgebridge.fg_campaign import write_campaign, install_campaign
+            if args.install:
+                report = install_campaign(args.module, args.campaign_out, args.myassets, args.backup_root)
+            else:
+                report = write_campaign(args.module, args.campaign_out)
+            printed = {'evidence': report.get('evidence'), 'counts': report.get('counts'),
+                       'losses': report.get('losses'), 'links': report.get('links'),
+                       'native_package': report.get('native_package'),
+                       'runtime_validation': report.get('runtime_validation')}
+            if report.get('installation'):
+                printed['installation'] = report['installation']
+            print(json.dumps(printed, indent=2))
             if not args.map:
                 return 0
         if not args.map:
@@ -496,7 +517,7 @@ def main(argv=None):
             json.dump(result['uvtt'], stream)
         print(json.dumps({k: v for k, v in result.items() if k != 'uvtt'}, indent=2))
         return 0
-    except (ModuleError, OSError) as exc:
+    except (ModuleError, OSError, ValueError) as exc:
         print('ERROR: ' + str(exc), file=sys.stderr)
         return 1
 
