@@ -14,7 +14,7 @@ acceptance are separate. Native captures used Windows / Toolkit 0.5.1.18.
 | More systems | NOT STARTED | No system-specific captures beyond dnd5e | Source-specific field mapping and representative native acceptance |
 | Other native menu capabilities | OPEN inventory only | Capture README lists SFX palettes, text/shadow/blur/effects/blocking | Capture minimal controls before implementing each mapping |
 
-Audio result recorded 2026-11-04: silent for both MP3 and OGG (see Music row). Audio is **not** passing.
+Audio result recorded 2026-11-04: original ForgeBridge MP3 and explicitly selected OGG were silent. Jeffrey subsequently confirmed all three Toolkit-imported native controls (WAV, MP3, OGG) audible. This does not pass the repaired ForgeBridge playlist; that remains a separate recheck. See the populated music fixture and repair validation.
 
 Capture/cleanup details and exact failures: see
 `fixtures/arkenforge-native-controls-2026-11-03/README.md` and its manifests.

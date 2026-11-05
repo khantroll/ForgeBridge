@@ -1,5 +1,5 @@
 {
-  "provenance": "Toolkit 0.5.1.18 user playlist fixture drives playlist and ArkenBaseMeta definitions/defaults. Complete ArkenAudioMeta declaration also matches the captured Toolkit-created user-audio class (SFX control, same class as songs with _isSong flag). Neutral defaults only; listing/playback awaits recheck.",
+  "provenance": "Toolkit 0.5.1.18 user playlist/song metadata; populated 2026-11-04 music control confirms two-member ContentItem and Master stem volume initialization. Embedded payload bytes remain original codec files. Playback acceptance is reported separately.",
   "libraries": {
     "2": "Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
   },
@@ -112,18 +112,15 @@
       "name": "ContentItem",
       "names": [
         "_filePath",
-        "_content",
-        "_officialFlag"
+        "_content"
       ],
       "types": [
         1,
-        2,
-        0
+        2
       ],
       "infos": [
         null,
-        null,
-        1
+        null
       ],
       "library_id": 2
     },
@@ -557,8 +554,7 @@
                   }
                 }
               }
-            },
-            "_officialFlag": false
+            }
           }
         }
       }
@@ -596,8 +592,7 @@
               }
             }
           }
-        },
-        "_officialFlag": false
+        }
       }
     },
     "track_info": {

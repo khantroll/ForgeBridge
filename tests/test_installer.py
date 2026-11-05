@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 import subprocess
 import tempfile
+from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
@@ -194,3 +195,21 @@ class InstallerTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'running'): require_toolkit_closed()
         with patch('forgebridge.installer.subprocess.run', side_effect=OSError('inspection denied')):
             with self.assertRaisesRegex(ValueError, 'Cannot verify'): require_toolkit_closed()
+
+    def test_windows_guard_filters_only_candidates_and_still_refuses_unknown_state(self):
+        self.closed.stop()
+        windows = SimpleNamespace(name='nt', environ={'SystemRoot': 'C:/Windows'})
+        with patch('forgebridge.installer.os', windows):
+            for name in ('MastersToolkit.exe', 'MasterToolkit.exe'):
+                result = subprocess.CompletedProcess([], 0, stdout=f'"{name}","123","Console","1","1 K"\n')
+                with patch('forgebridge.installer.subprocess.run', return_value=result) as query:
+                    with self.assertRaisesRegex(ValueError, 'running'): require_toolkit_closed()
+                    self.assertEqual(query.call_args.args[0],
+                        ['tasklist', '/FI', 'IMAGENAME eq Master*', '/FO', 'CSV', '/NH'])
+                    self.assertEqual(query.call_args.kwargs['timeout'], 15)
+            absent = subprocess.CompletedProcess([], 0, stdout='INFO: No tasks are running which match the specified criteria.\n')
+            with patch('forgebridge.installer.subprocess.run', return_value=absent): require_toolkit_closed()
+            with patch('forgebridge.installer.subprocess.run', side_effect=subprocess.TimeoutExpired('tasklist', 15)):
+                with self.assertRaisesRegex(ValueError, 'Cannot verify'): require_toolkit_closed()
+            with patch('forgebridge.installer.subprocess.run', return_value=subprocess.CompletedProcess([], 0, stdout='')):
+                with self.assertRaisesRegex(ValueError, 'Empty process inventory'): require_toolkit_closed()

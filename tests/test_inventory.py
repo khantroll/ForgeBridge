@@ -314,7 +314,7 @@ class InventoryTests(unittest.TestCase):
                     self.assertEqual(path.name, 'installer.py')
                     self.assertEqual(node.func.attr, 'run')
                     self.assertIn(ast.literal_eval(node.args[0]),
-                                  (['tasklist', '/FO', 'CSV', '/NH'], ['ps', '-A', '-o', 'comm=']))
+                                  (['tasklist', '/FI', 'IMAGENAME eq Master*', '/FO', 'CSV', '/NH'], ['ps', '-A', '-o', 'comm=']))
                     keywords = {k.arg: k.value for k in node.keywords}
                     self.assertNotIn('shell', keywords)
                     self.assertEqual(ast.literal_eval(keywords['timeout']), 15)

@@ -1,6 +1,6 @@
 """Schema-built playlists; only locally supplied OGG Vorbis is embedded.
 
-MP3 playback is unverified and no encoder is assumed. Those tracks remain
+Generated MP3 playback is unverified and no encoder is assumed. Those tracks remain
 explicit manual losses, without dangling native song references.
 """
 from copy import deepcopy
@@ -41,6 +41,26 @@ def names(node,name):
 
 def sequence(node, values):
     node.members['_items'].items=list(values);node.members.update(_size=len(values),_version=len(values))
+
+
+def music_track_info(schema, name, path):
+    """Initialize the single Master stem emitted by this writer.
+
+    Toolkit 0.5.1.18's file-import control creates Master at 80 percent.
+    An empty dictionary still advances the playlist timer but has no stem
+    volume. Keep the payload format decision separate from this mixer state.
+    """
+    info = record(schema, 'track_info')
+    info.members.update(_name=name, _songPath=path, _creator='')
+    pair_name = ('System.Collections.Generic.KeyValuePair`2[[System.String, mscorlib, Version=4.0.0.0, '
+                 'Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.Single, mscorlib, '
+                 'Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]')
+    pair_schema = {'name': pair_name, 'names': ['key', 'value'], 'types': [1, 0],
+                   'infos': [None, 11], 'library_id': None}
+    pair = Node(pair_schema, {'key': 'Master', 'value': .8}, inline=True)
+    info.members['_trackVolumes'].members.update(Version=2, HashSize=3,
+        KeyValuePairs=Array([pair], 3, pair_name))
+    return info
 
 
 def vorbis_duration(data):
@@ -100,8 +120,8 @@ def playlist_files(source, package, scope, *, folder='ForgeBridge'):
             sequence(song.members['_tracks'],[audio])
             files[songbase+'.rwfile']=Writer(schema['libraries']).write(song)
             files[songbase+'.rwmeta']=Writer(schema['libraries']).write(songmeta)
-            info=record(schema,'track_info');info.members.update(_name=track_name,_songPath=songbase+'.rwmeta',_creator='')
-            content=record(schema,'content');content.members.update(_filePath=songbase+'.rwmeta',_content=info,_officialFlag=False)
+            info=music_track_info(schema,track_name,songbase+'.rwmeta')
+            content=record(schema,'content');content.members.update(_filePath=songbase+'.rwmeta',_content=info)
             entry=record(schema,'entry');entry.members.update(_order=tracks,_value=content);entries.append(entry);tracks+=1
             songs.append({'source_id':sound.get('_id'),'source':ref,'source_sha256':hashlib.sha256(data).hexdigest(),
                           'native_file':songbase+'.rwfile','native_metadata':songbase+'.rwmeta','duration_seconds':duration,
