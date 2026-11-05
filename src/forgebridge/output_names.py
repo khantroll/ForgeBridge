@@ -45,10 +45,13 @@ def plan_names(rows, package_title=None, *, map_folder=None, notes_folder=None, 
     for row, key in zip(rows, keys):
         folder = sanitize_name(map_folder) if map_folder is not None else default_folder(row, package_title)
         name = sanitize_name(overrides.get(key, row.get('name') or row['id']))
-        if name.casefold() in used:
-            raise ValueError(f'Map name conflict: {name!r} for {used[name.casefold()]} and {key}. '
+        # Collisions are per destination folder; the same scene name in two
+        # adventures is fine when each adventure becomes its own map folder.
+        collision = (folder.casefold(), name.casefold())
+        if collision in used:
+            raise ValueError(f'Map name conflict: {name!r} for {used[collision]} and {key}. '
                              'Rename with --map-name SCENE_KEY=NAME; no hash is added automatically.')
-        used[name.casefold()] = key
+        used[collision] = key
         plans[key] = {'map_folder': folder, 'map_name': name,
                       'notes_folder': sanitize_name(notes_folder) if notes_folder is not None else folder,
                       'map_path': f'MyAssets/Maps/{folder}/{name}.rwmap'}

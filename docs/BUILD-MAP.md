@@ -8,13 +8,16 @@ acceptance are separate. Native captures used Windows / Toolkit 0.5.1.18.
 | Spell notes | Synthetic Toolkit check **PASS** (2026-11-04: links open Spell notes, fields render). Real Count's Manor three spells (Bless, Spiritual Weapon, Protection from Poison) **PASS at file level** with dnd5e 6.0.6 unzipped folder/`packs/spells` (`validation/2026-11-04-SPELLPACK-REAL-RUN.md`); ZIP input refused by read budget; **real three in Toolkit: NEEDS IN-TOOLKIT EVIDENCE** | `fixtures/arkenforge-5e-templates/5e-Spell.*` | Install real Count's Manor build with the pack; open each of the three scroll links, compare fields |
 | FG NPCs/items/story | File-level only, Toolkit check pending | 5e Character/Item/Spell controls in `fixtures/arkenforge-5e-templates/`; story is an ordinary text note because no FG story control was captured | `python -m forgebridge.fantasy_grounds MODULE --campaign-out DIR` on a module you control; compare notes, links and images with the source, then reopen. Map conversion is unchanged and still does not write these notes |
 | Missing Foundry Data art | OPEN; external references remain losses | No new native schema needed; existing image/token controls | Resolve only explicitly supplied Data root; show correct portrait/tile and persist |
-| Animated tiles/video | Toolkit **PASS** 2026-11-04 (Jeffrey): captured WEBM and MP4 import, place on a map and move. ForgeBridge does not yet *write* them (converter mapping OPEN) | `fixtures/arkenforge-native-controls-2026-11-03/MyAssets/Media/Cartographer/` | Converter-written animated tile places and plays after save/restart: NEEDS IN-TOOLKIT EVIDENCE |
-| Ambient sounds / presets | Toolkit **PASS** 2026-11-04 (Jeffrey): WAV tone added to a new ambience preset, saved, attached to a map, tone audible. Converter mapping from Foundry ambient sounds OPEN | Same capture folder, `AmbiencePresets/` and `Audio/SFX/` | Converter-written ambience attaches and plays; radius/falloff: NEEDS IN-TOOLKIT EVIDENCE |
-| Music by ear | **FAIL** 2026-11-04 (Jeffrey): FB MP3 Test timer advances, no error, but neither MP3 nor OGG is audible. Toolkit sound output is fine (WAV tone played). Fix in progress separately | `fixtures/arkenforge-user-playlist/`; installed FB MP3 Test | Hear original MP3 and OGG separately after the writer fix |
+| Animated tiles/video | Toolkit **PASS** 2026-11-04 (Jeffrey): video and motion tiles import, place on a map, and move. ForgeBridge does not yet *write* them (converter mapping OPEN) | `fixtures/arkenforge-native-controls-2026-11-03/MyAssets/Media/Cartographer/` | Converter-written animated tile places and plays after save/restart: NEEDS IN-TOOLKIT EVIDENCE |
+| Ambient sounds / presets | Toolkit **PASS** 2026-11-04 (Jeffrey): map-attached ambience — WAV tone on a map plays. Converter mapping from Foundry ambient sounds OPEN | Same capture folder, `AmbiencePresets/` and `Audio/SFX/` | Converter-written ambience attaches and plays; radius/falloff: NEEDS IN-TOOLKIT EVIDENCE |
+| Music by ear | Toolkit **PASS** 2026-11-04 (Jeffrey): audible on both tracks (MP3 and OGG) | `fixtures/arkenforge-user-playlist/`; installed FB MP3 Test | Hear original MP3 and OGG separately after any later writer change |
 | More systems | NOT STARTED | No system-specific captures beyond dnd5e | Source-specific field mapping and representative native acceptance |
 | Other native menu capabilities | OPEN inventory only | Capture README lists SFX palettes, text/shadow/blur/effects/blocking | Capture minimal controls before implementing each mapping |
 
-Audio result recorded 2026-11-04: silent for both MP3 and OGG (see Music row). Audio is **not** passing.
+Toolkit findings recorded 2026-11-04 (Jeffrey): video/motion tiles PASS; map-attached
+ambience PASS; spell notes synthetic check PASS; music PASS (both tracks audible).
+FG campaign rows stay file-level only / Toolkit check pending — do not upgrade them
+from these findings.
 
 Capture/cleanup details and exact failures: see
 `fixtures/arkenforge-native-controls-2026-11-03/README.md` and its manifests.

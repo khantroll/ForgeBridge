@@ -115,8 +115,10 @@ server or browser is needed.
    optional overrides; default output uses schema-built native synthesis.
 4. Leave Convert PDF handouts into note pages checked for page images, or uncheck
    it to keep references. Build/export and read the source-stage and native-stage
-   loss summary. Duplicate map names require renaming before building; no hash
-   suffix is added. Existing destination map names are shown before installing.
+   loss summary. Duplicate map names in the same map folder require renaming
+   before building; the same scene name in two adventures is fine when each
+   adventure becomes its own folder. No hash suffix is added. Existing
+   destination map names are shown before installing.
 5. Review before using Install reviewed native outputs. Select actual MyAssets
    and a separate existing backup folder; keep Toolkit closed and confirm the
    displayed destination/backup summary. Rejected/UVTT-only results cannot install.
@@ -222,11 +224,14 @@ forgebridge convert PACKAGE --scene-key KEY --out NEW_DIR --map-folder "The Coun
 Map folder defaults per scene to its Adventure name, then package title, then
 ForgeBridge. Notes folder defaults to the same folder. Map name defaults to the
 scene name alone. Repeat --map-name SCENE_KEY=NAME for multiple scenes, or use
---map-name NAME for one scene. Identical scene names across 5e/SA need explicit
-overrides. Map names are unique across a build and must not already exist in the
-destination, including another map folder. Review refuses these clashes and
-suggests renaming; it never silently adds a hash. The add-only installer and
-receipt/keep-changed uninstall rules are unchanged.
+--map-name NAME for one scene. Identical scene names across 5e/SA are allowed
+when each adventure keeps its own folder; they need --map-name (or a rename)
+only when they would land in the same folder — for example with a shared
+--map-folder, or when two scenes already share a folder. Map names must be
+unique within each folder of a build, and must not already exist anywhere in
+the MyAssets library (library-wide, not just per folder). Review refuses these
+clashes and suggests renaming; it never silently adds a hash. The add-only
+installer and receipt/keep-changed uninstall rules are unchanged.
 
 Names strip Windows-invalid punctuation/control characters and trailing dots or
 spaces, must have 1–80 characters, and refuse reserved device names such as CON

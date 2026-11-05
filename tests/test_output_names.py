@@ -36,12 +36,33 @@ class OutputNamingTests(unittest.TestCase):
         self.assertEqual(plan_names([row], map_names=['Single name'])['key']['map_name'], 'Single name')
 
     def test_clashes_refuse_and_explicit_scoped_overrides_resolve_them(self):
+        # Same name in the same folder (no adventure split) still refuses.
         rows = [{'key': '5e', 'id': 'same', 'name': 'Room'}, {'key': 'sa', 'id': 'same', 'name': 'ROOM'}]
         with self.assertRaisesRegex(ValueError, 'Map name conflict.*Rename'): plan_names(rows)
         plans = plan_names(rows, map_names=['5e=Room 5e', 'sa=Room SA'])
         self.assertEqual(plans['sa']['map_name'], 'Room SA')
         for overrides in [['missing=Name'], ['5e=One', '5e=Two'], ['one unscoped name']]:
             with self.assertRaises(ValueError): plan_names(rows, map_names=overrides)
+
+    def test_same_scene_name_in_two_adventures_is_allowed_per_folder(self):
+        rows = [
+            {'key': '5e', 'id': 'same', 'name': "The Count's Manor",
+             'parent_adventure_name': 'adventure-5e'},
+            {'key': 'sa', 'id': 'same', 'name': "The Count's Manor",
+             'parent_adventure_name': 'adventure-sa'},
+        ]
+        plans = plan_names(rows)
+        self.assertEqual(plans['5e']['map_folder'], 'adventure-5e')
+        self.assertEqual(plans['sa']['map_folder'], 'adventure-sa')
+        self.assertEqual(plans['5e']['map_name'], "The Count's Manor")
+        self.assertEqual(plans['sa']['map_name'], "The Count's Manor")
+        # An explicit shared folder merges both copies and must still refuse.
+        with self.assertRaisesRegex(ValueError, 'Map name conflict.*Rename'):
+            plan_names(rows, map_folder='Shared Manor')
+        resolved = plan_names(rows, map_folder='Shared Manor',
+                              map_names=['5e=Manor 5e', 'sa=Manor SA'])
+        self.assertEqual(resolved['5e']['map_name'], 'Manor 5e')
+        self.assertEqual(resolved['sa']['map_name'], 'Manor SA')
 
     def test_pdf_mode_defaults_explicit_modes_and_import_failure_loss(self):
         with patch('forgebridge.convert._pdf_renderer', return_value=object()):
