@@ -400,14 +400,15 @@ tiles and omitted token-link losses. Token portraits use the v0.10 Size/icon
 notes; adding stat links caused note-marker rendering in Toolkit, so actor
 notes remain separate. Review the graded losses before installing. Stat
 blocks are display content, not actor automation. Missing portraits stay manual.
-MP3 tracks require manual OGG Vorbis preparation; ForgeBridge does not use the
-Toolkit's ffmpeg or claim that embedded MP3 plays. New campaign fields, playlists
+Local MP3 and OGG Vorbis tracks are embedded unchanged, retaining their original
+format; no encoder or Toolkit ffmpeg is needed. Jeffrey confirmed native MP3
+and OGG playback in Toolkit 0.5.1.18; each rebuilt playlist still needs listening. New campaign fields, playlists
 and tile placements still require Toolkit acceptance. See
 [native campaign details](NATIVE-CAMPAIGN-CONTENT.md).
 Playlists now use their display-name filenames inside the chosen notes folder
 in `MyAssets/Playlists`, with current Toolkit user metadata. Listing and playback
-await recheck. Corrected generated notes use `Campaign-v2-` filenames; edited
-v1 files kept by uninstall remain preserved and are not overwritten.
+await recheck. Corrected generated notes use `Campaign-v3-` filenames; edited
+v1/v2 files kept by uninstall remain preserved and are not overwritten.
 
 | Symptom | Action |
 | --- | --- |

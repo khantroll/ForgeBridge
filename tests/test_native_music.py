@@ -93,10 +93,32 @@ class NativeMusicTests(unittest.TestCase):
         self.assertEqual(pair.members['key'], 'Master')
         self.assertAlmostEqual(pair.members['value'], .8)
 
-    def test_production_mp3_remains_manual_until_playback_is_confirmed(self):
+    def test_production_mp3_preserves_native_payload_and_extension(self):
+        source = FIXTURE / 'sources/FBMusicControl-MP3.mp3'
+        files, report = playlist_files({'name': 'MP3', 'sounds': [
+            {'path': source.name, 'name': 'MP3'}]}, source.parent, 'test')
+        self.assertEqual((report['tracks'], report['manual_tracks']), (1, 0))
+        reader, root = parsed(files[report['songs'][0]['native_file']])
+        track = objects(reader, 'AudioTrack')[0]
+        self.assertEqual(bytes(track.members['_clipRAW'].items), source.read_bytes())
+        self.assertTrue(track.members['_originalFile'].endswith('.mp3'))
+        self.assertAlmostEqual(root.members['_duration'], 2, delta=.15)
+
+    def test_encoded_audio_paths_resolve_and_traversal_is_refused(self):
         with tempfile.TemporaryDirectory() as tmp:
-            files, report = playlist_files({'name': 'MP3', 'sounds': [
-                {'path': 'FBMusicControl-MP3.mp3'}]}, FIXTURE / 'sources', 'test')
-        self.assertEqual(report['tracks'], 0)
-        self.assertEqual(report['manual_tracks'], 1)
-        self.assertFalse(any(p.endswith('.rwfile') for p in files))
+            root = Path(tmp)
+            raw = (FIXTURE / 'sources/FBMusicControl-MP3.mp3').read_bytes()
+            (root / 'Crypt and Lair.mp3').write_bytes(raw)
+            files, report = playlist_files({'sounds': [
+                {'path': 'Crypt%20and%20Lair.mp3'},
+                {'path': '%2e%2e/secret.mp3'},
+                {'path': 'missing.mp3'}]}, root, 'test')
+        self.assertEqual((report['tracks'], report['manual_tracks']), (1, 2))
+        self.assertTrue(any('Unsafe' in loss['summary'] for loss in report['losses']))
+
+    def test_invalid_mp3_remains_explicit_loss(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp); (root / 'bad.mp3').write_bytes(b'ID3')
+            files, report = playlist_files({'sounds': [{'path': 'bad.mp3'}]}, root, 'test')
+        self.assertEqual((report['tracks'], report['manual_tracks']), (0, 1))
+        self.assertFalse(any(name.endswith('.rwfile') for name in files))

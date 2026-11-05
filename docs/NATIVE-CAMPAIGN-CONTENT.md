@@ -150,11 +150,12 @@ Scene reports separately list static tiles and omitted token-to-actor links.
 - Items/spells: 5e block fields and local images; descriptions are inert text,
   rolls/enrichers become text and resolvable UUIDs become native note links.
 - Playlists: schema-built `.rwpl`/metadata with reachable song pairs for supplied
-  local OGG Vorbis. Original OGG bytes are preserved. MP3 playback is unverified
-  and no encoder is bundled: those tracks are explicitly manual, not embedded
-  under a misleading OGG filename. Toolkit ffmpeg is never used. An all-manual
-  playlist is an empty native playlist plus a loss for every track. Fades, mode,
-  volume, looping and channels remain manual. Playback still needs Toolkit tests.
+  local MP3 or OGG Vorbis. Original encoded bytes and extensions are preserved;
+  no encoder or Toolkit ffmpeg is needed. Native MP3/OGG controls were confirmed
+  audible by Jeffrey on 2026-11-04 in Toolkit 0.5.1.18. Generated playlist entries
+  initialize their Master stem at 80%. Missing, invalid or unsupported tracks
+  remain explicit losses. Fades, mode, source volume, looping and channels
+  remain manual. Each new playlist still needs its own listening check.
   The current Toolkit-made user playlist and user ArkenAudioMeta declarations
   drive metadata, including `_prevPathIfDeleted` and its inherited member.
   Playlists use `MyAssets/Playlists/<notes folder>/<display name>.rwpl`; songs

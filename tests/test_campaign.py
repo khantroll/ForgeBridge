@@ -97,6 +97,20 @@ class CampaignTests(unittest.TestCase):
             self.assertEqual(result['removed'],3);self.assertEqual(len(result['kept_changed']),1)
             self.assertTrue(edited.exists());self.assertEqual((target/'user.txt').read_text(),'keep')
 
+    def test_final_revision_keeps_previous_edited_campaign_note(self):
+        with tempfile.TemporaryDirectory() as tmp, patch('forgebridge.installer.require_toolkit_closed'):
+            root=Path(tmp); assets=root/'MyAssets'; assets.mkdir()
+            files, report=campaign_files(campaign([document('Actor',actor())]),root,notes_folder='Campaign')
+            target=report['links']['Actor.actor']
+            self.assertIn('/Campaign-v3-',target)
+            old=assets/target.replace('MyAssets/','',1).replace('Campaign-v3-','Campaign-v2-')
+            old=old.with_suffix('.rwnote'); old.parent.mkdir(parents=True); old.write_bytes(b'user edit')
+            package=root/'package.zip'; write_archive(package,files)
+            result=install([package],assets,root/'backups')
+            self.assertEqual(result['added'],2)
+            self.assertEqual(old.read_bytes(),b'user edit')
+            self.assertTrue((assets/target.replace('MyAssets/','',1)).exists())
+
     def test_actor_fields_flags_hp_runs_and_empty_lists(self):
         with tempfile.TemporaryDirectory() as tmp:
             files,report=campaign_files(campaign([document('Actor',actor())]),tmp,notes_folder='Campaign')
@@ -158,7 +172,7 @@ class CampaignTests(unittest.TestCase):
             self.assertEqual(len(find(node(files[r['links']['RollTable.t'][:-7]+'.rwnote']),'ArkenNoteFieldRollableTableRow')),2)
             self.assertTrue(any(l.get('formula')=='1d2' and l['grade']=='approximate' for l in r['losses']))
 
-    def test_playlist_mp3_is_manual_and_ogg_bytes_are_preserved(self):
+    def test_invalid_mp3_is_manual_and_ogg_bytes_are_preserved(self):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp);(root/'song.mp3').write_bytes(b'ID3')
             # Bounded synthetic Vorbis identification page (no playback claim).

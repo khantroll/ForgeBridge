@@ -1,13 +1,10 @@
-"""Schema-built playlists; only locally supplied OGG Vorbis is embedded.
-
-Generated MP3 playback is unverified and no encoder is assumed. Those tracks remain
-explicit manual losses, without dangling native song references.
-"""
+"""Schema-built playlists embedding supplied MP3 and OGG Vorbis unchanged."""
 from copy import deepcopy
 import hashlib
 import json
 from pathlib import Path
 import struct
+from urllib.parse import unquote
 
 from forgebridge.native import Node, Array, Writer
 from forgebridge.uvtt import _safe_ref, _package_file
@@ -92,6 +89,35 @@ def vorbis_duration(data):
     return granule/rate
 
 
+def mp3_duration(data):
+    """Bounded MPEG Layer III frame walk; no decoder or external encoder."""
+    offset = 0
+    if data.startswith(b'ID3'):
+        if len(data) < 10 or any(x & 128 for x in data[6:10]):
+            raise ValueError('Invalid MP3 ID3 header')
+        offset = 10 + sum(x << shift for x, shift in zip(data[6:10], (21, 14, 7, 0)))
+        if data[5] & 16: offset += 10
+    total = 0.0; frames = 0
+    while offset < len(data):
+        if data[offset:offset+3] == b'TAG' and len(data)-offset == 128: break
+        if data[offset] == 0 and not any(data[offset:]): break  # encoder padding
+        if offset + 4 > len(data): raise ValueError('Truncated MP3 header')
+        header = int.from_bytes(data[offset:offset+4], 'big')
+        version = (header >> 19) & 3; layer = (header >> 17) & 3
+        bitrate = (header >> 12) & 15; rate = (header >> 10) & 3
+        if header >> 21 != 2047 or version == 1 or layer != 1 or bitrate in (0, 15) or rate == 3:
+            raise ValueError('Invalid/unsupported MP3 Layer III frame')
+        rates = (44100, 48000, 32000)
+        hz = rates[rate] // (1 if version == 3 else 2 if version == 2 else 4)
+        table = (0,32,40,48,56,64,80,96,112,128,160,192,224,256,320) if version == 3 else (0,8,16,24,32,40,48,56,64,80,96,112,128,144,160)
+        size = (144000 if version == 3 else 72000) * table[bitrate] // hz + ((header >> 9) & 1)
+        if offset + size > len(data): raise ValueError('Truncated MP3 frame')
+        total += (1152 if version == 3 else 576) / hz
+        frames += 1; offset += size
+    if frames < 2: raise ValueError('Incomplete MP3 stream')
+    return total
+
+
 def playlist_files(source, package, scope, *, folder='ForgeBridge'):
     schema=json.loads(Path(__file__).with_name('audio-schema.json').read_text(encoding='utf-8'))
     playlist=record(schema,'playlist');meta=record(schema,'playlist_meta')
@@ -105,18 +131,19 @@ def playlist_files(source, package, scope, *, folder='ForgeBridge'):
     for sound in sounds:
         ref=sound.get('path');track_name=str(sound.get('name') or 'Track')
         try:
-            safe,problem=_safe_ref(ref)
+            safe,problem=_safe_ref(unquote(ref) if isinstance(ref,str) else ref)
             if problem or not safe:raise ValueError('Unsafe/missing audio reference')
             path=_package_file(Path(package),safe)
-            if path.suffix.lower()!='.ogg':raise ValueError('MP3/native playback unverified; no bundled encoder demonstrated. Supply OGG Vorbis manually; Toolkit ffmpeg is never used')
+            suffix=path.suffix.lower()
+            if suffix not in ('.mp3','.ogg'):raise ValueError('Only MP3 and OGG Vorbis songs are supported')
             if path.stat().st_size>64*1024*1024:raise ValueError('Audio exceeds 64 MiB')
-            data=path.read_bytes();duration=vorbis_duration(data)
+            data=path.read_bytes();duration=mp3_duration(data) if suffix=='.mp3' else vorbis_duration(data)
             songkey=hashlib.sha256((key+'\0'+str(sound.get('_id',tracks))+'\0').encode()+data).hexdigest()[:20]
             songbase='MyAssets/Audio/Songs/'+folder+'/'+sanitize_name(track_name)
             if songbase+'.rwfile' in files:raise ValueError('Song name conflict; rename source tracks before building: '+track_name)
             song=record(schema,'song');songmeta=record(schema,'song_meta');names(song,track_name);names(songmeta,track_name)
             song.members['_duration']=songmeta.members['_duration']=duration
-            audio=record(schema,'audio_track');audio.members.update(_trackName='Master',_originalFile=songkey+'.ogg',_clipRAW=Array(list(data),0,2),_parentName=track_name)
+            audio=record(schema,'audio_track');audio.members.update(_trackName='Master',_originalFile=songkey+suffix,_clipRAW=Array(list(data),0,2),_parentName=track_name)
             sequence(song.members['_tracks'],[audio])
             files[songbase+'.rwfile']=Writer(schema['libraries']).write(song)
             files[songbase+'.rwmeta']=Writer(schema['libraries']).write(songmeta)
