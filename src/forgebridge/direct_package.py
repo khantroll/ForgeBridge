@@ -90,6 +90,10 @@ def build_direct(package, document, row, package_id, destination, *, names, pdf_
         from forgebridge.native_dependencies import merge_native
         merge_native(files, tile_files)
         report['static_tiles'] = tile_report
+        from forgebridge.native_ambience import add_ambience
+        files[names['map_path']], audio_files, audio_report = add_ambience(files[names['map_path']], scene, package, scope)
+        merge_native(files, audio_files)
+        report['ambient_sounds'] = audio_report
         report['closed_metadata_references'] = check_metadata_references(files)
         report['native_synthesis'] = {**synthesis, 'background': background,
             'schema_version': 1, 'toolkit_reference': '0.5.1.18', 'scope': scope,

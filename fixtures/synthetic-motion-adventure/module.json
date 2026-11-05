@@ -1,0 +1,23 @@
+{
+  "id": "fb-motion-check-owned",
+  "title": "FB Motion Check fixture",
+  "version": "0.0.1",
+  "description": "Owned synthetic scene; no imported scripts.",
+  "relationships": {
+    "systems": [
+      {
+        "id": "dnd5e",
+        "type": "system"
+      }
+    ]
+  },
+  "packs": [
+    {
+      "name": "adventure",
+      "label": "Motion adventure",
+      "path": "packs/adventure.db",
+      "type": "Adventure",
+      "system": "dnd5e"
+    }
+  ]
+}

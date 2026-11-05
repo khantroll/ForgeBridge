@@ -1,0 +1,18 @@
+{
+  "toolkit_version": "0.5.1.18",
+  "retrieved": "2026-11-05",
+  "runtime_evidence": "validation/2026-10-15/VALIDATION.md: 2026-10-16 GIF playback/position/restart",
+  "backup_root": "C:/AMD/fb-backups/forgebridge-da098b9146b74a05bf960de9d54d58a7/MyAssets",
+  "files": [
+    {
+      "name": "forgebridge-signal.rwfile",
+      "bytes": 4059,
+      "sha256": "9ea7a397fb8fb4fd79726f0001231416c2341392ce4fc77c25b1c9bf66489f84"
+    },
+    {
+      "name": "forgebridge-signal.rwmeta",
+      "bytes": 3607,
+      "sha256": "1a824dcad0a74aa10ad62f938f9b0d754ef47b08f39b7de8828efa6eed1fbb5a"
+    }
+  ]
+}
