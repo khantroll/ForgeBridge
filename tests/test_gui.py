@@ -245,6 +245,28 @@ class GuiControllerTests(unittest.TestCase):
             run_headless_gui(scenario)
             installer.assert_not_called()
 
+    def test_rename_after_build_blocks_install_until_rebuild(self):
+        discovered = {'package_title': 'Pack', 'scenes': [
+            {'key': 'one', 'id': 'scene', 'name': 'Room', 'source_path': 'packs/scenes'}]}
+        built = {'status': 'PASS', 'scenes': [{'name': 'Room', 'status': 'BUILT', 'folder': 'scene-001',
+                                             'artifact': 'native-package.zip', 'native_report': {'counts': {}}}]}
+        def scenario(ui):
+            click(ui, 'Discover scenes'); finish_job(ui)
+            ui['list'].selection_set(0); click(ui, 'Build / export'); finish_job(ui)
+            ui['simpledialog'].askstring = lambda *a, **kw: 'Renamed Room'
+            click(ui, 'Rename selected maps')
+            ui['dialogs'].askdirectory = lambda **kwargs: 'fake-directory'
+            click(ui, 'Install reviewed native outputs')
+            self.assertEqual(ui['errors'][-1][0], 'Names changed since this build')
+            self.assertIn('Build / export again', ui['errors'][-1][1])
+            self.assertNotIn('confirmations', ui)
+        with patch('forgebridge.gui.discover', return_value=discovered), patch('forgebridge.gui.convert', return_value=built), \
+                patch('forgebridge.gui.native_outputs', return_value=['test.zip']), \
+                patch('forgebridge.gui.install_outputs') as installer, \
+                patch('forgebridge.gui.review', return_value={'ok': True}):
+            run_headless_gui(scenario)
+            installer.assert_not_called()
+
     def test_summary_distinguishes_manual_source_losses_from_native_output(self):
         text = report_text({'status': 'PASS', 'counts': {'unsupported': 3},
             'scenes': [{'id': 'a', 'name': 'Room', 'status': 'MANUAL', 'folder': 'scene-001',

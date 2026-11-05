@@ -26,6 +26,24 @@ class InstallReviewTests(unittest.TestCase):
             self.assertEqual(result['not_installed'][0]['path'], 'conversion-report.json')
             self.assertEqual(before, {p.relative_to(root): p.read_bytes() for p in root.rglob('*') if p.is_file()})
 
+    def test_existing_map_name_conflict_names_library_file(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp); snapshot = root / 'MyAssets'; snapshot.mkdir()
+            path = 'MyAssets/Maps/Folder/Room.rwmap'
+            package = root / 'scene.zip'
+            archive(package, {path: record(), 'MyAssets/Maps/Folder/Room.rwmeta': record(),
+                              'conversion-report.json':
+                              b'{"output_names":{"map_path":"MyAssets/Maps/Folder/Room.rwmap"}}'})
+            (snapshot / 'Maps/Elsewhere').mkdir(parents=True)
+            (snapshot / 'Maps/Elsewhere/Room.rwmap').write_bytes(b'user map')
+            result = review([package], snapshot)
+            self.assertFalse(result['ok'])
+            detail = next(row['detail'] for row in result['files'] if row['path'] == path)
+            self.assertIn('MyAssets library', detail)
+            self.assertIn('Room.rwmap', detail)
+            self.assertIn('library-wide', detail)
+            self.assertNotIn('another package', detail.casefold())
+
     def test_case_alias_and_parent_file_are_blocked(self):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp); snapshot=root/'MyAssets'; snapshot.mkdir()

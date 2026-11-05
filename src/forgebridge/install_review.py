@@ -103,8 +103,13 @@ def review(packages, snapshot_root):
                 row['status'] = 'identical' if existing == data else 'conflict'
             observed.append((name, row['status'], row.get('snapshot_sha256')))
             if name in named_maps and Path(name).stem.casefold() in existing_maps:
-                row.update(status='conflict', detail='Map name already exists; rename the map before installing.',
-                           existing_maps=existing_maps[Path(name).stem.casefold()])
+                clashes = existing_maps[Path(name).stem.casefold()]
+                existing_name = Path(clashes[0]).name
+                row.update(status='conflict',
+                           detail=('Map name already exists in your MyAssets library (' + existing_name +
+                                   '); names must be unique library-wide, not just per folder. '
+                                   'Rename the map before installing.'),
+                           existing_maps=clashes)
         except (OSError, ValueError) as exc:
             row.update(status='blocked', detail=str(exc))
         rows.append(row)

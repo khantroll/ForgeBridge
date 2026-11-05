@@ -250,6 +250,7 @@ def main(argv=None):
                 messagebox.showerror('Grid required', 'Set Squares across or Pixels per square for each selected uncalibrated map.'); return
             options.update(include_art=include_art.get(), grid_size={k: v for k, v in grids.items() if k in selected},
                            squares={k: v for k, v in across.items() if k in selected})
+        planned = {}
         if not controls:
             try:
                 plans = plan_names([r for r in rows if r['key'] in selected], map_folder=map_folder.get(),
@@ -257,15 +258,35 @@ def main(argv=None):
             except ValueError as exc:
                 messagebox.showerror('Naming conflict or invalid name', str(exc)); return
             options.update(map_folder=map_folder.get(), notes_folder=notes_folder.get(), map_names=names)
+            planned = {key: plan['map_name'] for key, plan in plans.items()}
             display({'chosen_names': list(plans.values())})
         state['build_source'] = source
+        state['built_map_names'] = planned
+        state['built_selected'] = list(selected)
         state['output'] = dest; state['report'] = None; install_button.configure(state='disabled')
         start(lambda: convert(source, dest, scene_keys=selected, profiles=controls, **options), built)
+
+    def names_changed_since_build():
+        """True when Rename selected maps no longer matches names baked into the last build."""
+        baked = state.get('built_map_names') or {}
+        selected = state.get('built_selected') or []
+        if not baked or not selected:
+            return False
+        current = {key: value for key, value in renamed.items() if key in selected}
+        try:
+            plans = plan_names([r for r in rows if r['key'] in selected], map_folder=map_folder.get(),
+                               notes_folder=notes_folder.get(), map_names=current)
+        except ValueError:
+            return True
+        return any(plans[key]['map_name'] != baked[key] for key in baked if key in plans)
 
     def install_selected():
         if state['busy'] or not state['report']: return
         if state.get('build_source') != package.get():
             messagebox.showerror('Source changed', 'Review/build the current source before installing.'); return
+        if names_changed_since_build():
+            messagebox.showerror('Names changed since this build',
+                                 'Names changed since this build — click Build / export again'); return
         report, dest = state['report'], state['output']
         try: packages = native_outputs(report, dest)
         except ValueError as exc:

@@ -94,7 +94,11 @@ class OutputNamingTests(unittest.TestCase):
             (assets / 'Maps/Elsewhere/OUR ROOM.rwmap').write_bytes(b'user map')
             audit = review([root / 'first/scene-001/native-package.zip'], assets)
             self.assertFalse(audit['ok'])
-            self.assertIn('rename', next(r for r in audit['files'] if r['path'].endswith('.rwmap'))['detail'])
+            detail = next(r for r in audit['files'] if r['path'].endswith('.rwmap'))['detail']
+            self.assertIn('MyAssets library', detail)
+            self.assertIn('OUR ROOM.rwmap', detail)
+            self.assertIn('library-wide', detail)
+            self.assertIn('rename', detail.casefold())
             self.assertEqual((assets / 'Maps/Elsewhere/OUR ROOM.rwmap').read_bytes(), b'user map')
 
     def test_pdf_pages_flow_through_default_convert_and_references_stay_explicit(self):
