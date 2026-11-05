@@ -2,6 +2,7 @@
 import math
 import re
 from forgebridge.notes import _plain_text
+from forgebridge.enrichers import display_enrichers
 from forgebridge.dnd5e_derived import armor_class, attacks
 
 ABILITIES = ('str', 'dex', 'con', 'int', 'wis', 'cha')
@@ -11,7 +12,7 @@ XP = [10,25,50,100,200,450,700,1100,1800,2300,2900,3900,5000,5900,7200,8400,1000
 
 
 def text(value):
-    result = _plain_text(str(value or ''))
+    result = display_enrichers(_plain_text(str(value or '')))
     result = re.sub(r'\[\[(.*?)\]\](?:\{([^}]+)\})?', lambda m: m[2] or m[1].removeprefix('/r '), result)
     return result
 
@@ -116,7 +117,7 @@ def actor_ir(actor):
             'vulnerabilities': trait(traits.get('dv')), 'resistances': trait(traits.get('dr')),
             'immunities': trait(traits.get('di')), 'conditions': trait(traits.get('ci')),
             'senses': sensory.strip(', '), 'languages': trait(traits.get('languages'),deduplicate=True),
-            'challenge': challenge, 'proficiency': signed(prof) if number(prof) else 'Unknown',
+            'challenge': challenge, 'proficiency': signed(prof) if number(prof) else '',
             'biography': text(details.get('biography', {}).get('value','')),
             'actions': actions, 'approximations': approximations,
             'derived_values':{'ac':derived_ac,'attacks':derived_attacks,'prose_corrections':changes}}
@@ -135,7 +136,11 @@ def item_ir(item):
         properties=s.get('properties', [])
         components=s.get('components', {})
         if isinstance(components,dict): properties=list(properties or [])+[k for k in ('vocal','somatic','material') if components.get(k)]
-        result.update(type=f'{s.get("level", "?")}-level {s.get("school", "")}',
+        school = s.get('school') or ''
+        school = {'abj':'abjuration','con':'conjuration','div':'divination','enc':'enchantment',
+                  'evo':'evocation','ill':'illusion','nec':'necromancy','trs':'transmutation'}.get(school, school)
+        spell_type = ((school.capitalize() + ' cantrip') if school else 'Cantrip') if s.get('level') == 0 else f'{s.get("level", "?")}-level {school}'
+        result.update(type=spell_type,
             casting=' '.join(str(activation.get(k)) for k in ('cost','value','type') if activation.get(k) not in (None,'')),
             range=value('range'), components=', '.join(properties or []) + (' ('+str(materials.get('value'))+')' if materials.get('value') else ''),
             duration=value('duration'), attack_save=value('save'), damage_effect=value('damage'), higher=text(s.get('higherLevel','')))

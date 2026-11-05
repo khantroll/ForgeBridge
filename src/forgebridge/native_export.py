@@ -13,6 +13,7 @@ import zipfile
 
 from forgebridge.dependencies import UUID_LINK, resolve_dependencies
 from forgebridge.native import NoteBuilder, Writer
+from forgebridge.enrichers import display_enrichers
 
 
 class TextCompiler(HTMLParser):
@@ -64,6 +65,7 @@ class TextCompiler(HTMLParser):
     def handle_data(self, data):
         if self.suppressed:
             return
+        data = display_enrichers(data)
         start = 0
         for match in UUID_LINK.finditer(data):
             self.append(data[start:match.start()])

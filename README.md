@@ -6,7 +6,7 @@ ForgeBridge is an experimental, local migration tool that translates external VT
 
 The current Foundry workflow can build native Arkenforge scene packages directly from supported source data—without requiring an existing Arkenforge map, a manual UVTT import, or per-scene calibration. It preserves available source information and generates explicit reports for anything it cannot convert faithfully.
 
-**Current release:** [v0.11.0](docs/RELEASE-NOTES-v0.11.0.md) · [Windows downloads on GitHub Releases](https://github.com/khantroll/ForgeBridge/releases) · [Operator guide](docs/USER-GUIDE.md) · [Handoff](docs/HANDOFF-2026-11-03.md)
+**Current release:** [v0.12.0](docs/RELEASE-NOTES-v0.12.0.md) · [Windows downloads on GitHub Releases](https://github.com/khantroll/ForgeBridge/releases) · [Operator guide](docs/USER-GUIDE.md) · [Handoff](docs/HANDOFF-2026-11-03.md)
 
 > **Compatibility is limited to tested versions and content.** A successful build is not proof of complete scene or campaign fidelity. Review the conversion report and validate generated maps in Arkenforge before using them in a game.
 
@@ -58,7 +58,7 @@ The current Foundry adapter supports bounded conversion of:
 
 Each build produces a combined `MyAssets` tree, per-scene packages, and readable conversion reports. UVTT output is also available; **UVTT is an interchange option, not the limit of the native converter**.
 
-The Fantasy Grounds Unity adapter converts backgrounds, grids, walls, doors/windows and lights to native maps. Stored grids win; missing grids require an explicit size. Encrypted modules are refused; FG pins, story, actors/items and tokens remain manual.
+The Fantasy Grounds Unity adapter converts backgrounds, grids, walls, doors/windows and lights to native maps. Stored grids win; missing grids require an explicit size. Encrypted modules are refused. The separate FG campaign command converts supported 5e NPC/item/spell/story notes with reviewed add-only installation; map pins and tokens remain manual.
 
 Actor notes contain display statistics, not automation or live token bindings. External art, ambient sounds, animated media/GIF setup, procedural light animation and Foundry fog/vision/exploration remain manual or unsupported. Local MP3/OGG playlist tracks are embedded unchanged; native controls are audibly confirmed, while rebuilt playlists need their own listening checks. Windows executables are unsigned; SmartScreen may warn. See [supported scope and limitations](docs/USER-GUIDE.md#supported--manual--unsupported).
 

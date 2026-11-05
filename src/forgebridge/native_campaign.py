@@ -66,7 +66,7 @@ class CampaignBuilder(NoteBuilder):
         offset = 0
         for value, font, link in runs:
             for char in chars[offset:offset+len(value)]:
-                char.members.update(_size=size, _hexColour='B9CEFF' if link else colour)
+                char.members.update(_size=size, _hexColour='58180D' if link else colour)
                 char.members['_fontSettings'].members['value__'] = font | (1024 if link else 0)
             offset += len(value)
         return result
@@ -176,13 +176,16 @@ def campaign_files(ir, package, *, notes_folder, spell_root=None):
             a=doc['display'];block=builder.block('Character');m=block.members
             values={'_nameText':txt(a['name'],title=True),'_typeText':txt(a['type'],italic=True),'_armorClassText':txt(a['ac'],'Armor Class'),
                     '_hitPointsText':txt('('+a['hp_formula']+')' if a['hp_formula'] else ''),'_speedText':txt(a['speed'],'Speed'),
-                    '_savingThrowsText':txt(a['saves'],'Saving Throws'),'_skillsText':txt(a['skills'],'Skills'),
+                    '_savingThrowsText':txt(a['saves'],'Saving Throws'),'_skillsText':txt(a['skills'],'Skills' if a['skills'] else None),
                     '_damageVulnerabilitiesText':txt(a['vulnerabilities'],'Damage Vulnerabilities'), '_damageResistancesText':txt(a['resistances'],'Damage Resistances'),
                     '_damageImmunitiesText':txt(a['immunities'],'Damage Immunities'),'_conditionImmunitiesText':txt(a['conditions'],'Condition Immunities'),
-                    '_sensesText':txt(a['senses'],'Senses'),'_languagesText':txt(a['languages'],'Languages'),
-                    '_challengeText':txt(a['challenge'],'Challenge'),'_proficiencyBonusText':txt(a['proficiency'],'Proficiency Bonus')}
+                    '_sensesText':txt(a['senses'],'Senses' if a['senses'] else None),'_languagesText':txt(a['languages'],'Languages' if a['languages'] else None),
+                    '_challengeText':txt(a['challenge'],'Challenge'),'_proficiencyBonusText':txt(a['proficiency'],'Proficiency Bonus' if a['proficiency'] else None)}
             values.update({'_'+key+'ValNew':txt(value) for key,value in a['abilities'].items()});m.update(values)
             for key,value in [('_savingThrowsFieldActive',a['saves']),('_damageVulnerabilitiesFieldActive',a['vulnerabilities']),('_damageResistanceFieldActive',a['resistances']),('_damageImmunitiesFieldActive',a['immunities']),('_conditionImmunitiesFieldActive',a['conditions'])]:m[key]=bool(value)
+            for field,value in [('skills',a['skills']),('senses',a['senses']),('languages',a['languages']),('proficiencyBonus',a['proficiency'])]:
+                flag='_'+field+'FieldActive'
+                if flag in m: m[flag]=bool(value)
             tracked=m['_trackedHitPoints'].members
             for suffix,value in [('currentValue',a['hp']),('maxValue',a['hp_max']),('minValue',0)]:
                 tracked['_'+suffix]=float(value) if number(value) else 0.;tracked['_'+suffix+'Str']=str(value) if value is not None else ''
