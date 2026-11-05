@@ -416,8 +416,10 @@ and tile placements still require Toolkit acceptance. See
 [native campaign details](NATIVE-CAMPAIGN-CONTENT.md).
 Playlists now use their display-name filenames inside the chosen notes folder
 in `MyAssets/Playlists`, with current Toolkit user metadata. Listing and playback
-await recheck. Corrected generated notes use `Campaign-v3-` filenames; edited
-v1/v2 files kept by uninstall remain preserved and are not overwritten.
+await recheck. Corrected generated notes use revision-scoped `Campaign-vN-` filenames; edited
+predecessors kept by uninstall remain preserved and are not overwritten. Campaign
+playlist filenames also carry the internal revision while their displayed names
+remain unchanged.
 
 | Symptom | Action |
 | --- | --- |

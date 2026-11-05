@@ -118,13 +118,17 @@ def mp3_duration(data):
     return total
 
 
-def playlist_files(source, package, scope, *, folder='ForgeBridge'):
+def playlist_files(source, package, scope, *, folder='ForgeBridge', revision=None):
     schema=json.loads(Path(__file__).with_name('audio-schema.json').read_text(encoding='utf-8'))
     playlist=record(schema,'playlist');meta=record(schema,'playlist_meta')
     name=sanitize_name(str(source.get('name') or 'Playlist'));folder=sanitize_name(folder)
     names(playlist,name);names(meta,name)
     key=hashlib.sha256((scope+'\0'+str(source.get('_id',source.get('id')))).encode()).hexdigest()[:20]
-    base='MyAssets/Playlists/'+folder+'/'+name
+    if revision is not None and (type(revision) is not int or revision < 1): raise ValueError('Invalid native content revision')
+    # Metadata/root names stay user-facing; version only the owned filename so
+    # Toolkit-rewritten predecessors retained by --keep-changed can coexist.
+    basename=name if revision is None else name+'-v'+str(revision)
+    base='MyAssets/Playlists/'+folder+'/'+basename
     files={};entries=[];losses=[];tracks=0;songs=[]
     sounds=source.get('sounds',[])
     if not isinstance(sounds,list) or len(sounds)>256:raise ValueError('Invalid/oversized playlist')

@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Revision-scoped campaign note and playlist filenames preserve Toolkit-edited
+  predecessors retained by uninstall; displayed playlist names stay unchanged.
+
 ## v0.12.0 — 2026-11-05
 
 - Embed MP3 and OGG Vorbis playlist bytes directly, preserving extensions and

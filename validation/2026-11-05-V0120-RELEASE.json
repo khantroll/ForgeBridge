@@ -1,0 +1,177 @@
+{
+  "evidence": "file-level and release GUI startup only; final Toolkit check pending",
+  "release": {
+    "release_url": "https://github.com/khantroll/ForgeBridge/releases/tag/v0.12.0",
+    "tag": "v0.12.0",
+    "prerelease": true,
+    "zip": "C:\\AMD\\lob-counts_manor-pk-v13\\ForgeBridge\\.test-tmp\\v0.12.0-published-release\\ForgeBridge-0.12.0-windows-x64.zip",
+    "zip_bytes": 27965181,
+    "sha256": "c01efacebf1ac91a307c32c5f9c9a044a870e18cadefff315aed29a71a8161c7"
+  },
+  "release_merge": "f4b57d5f9c30eea75d664012d622d822772e015e",
+  "release_pr": 28,
+  "toolkit_closed": true,
+  "release_gui_window_observed": "ForgeBridge 0.12.0 \u2014 scene conversion",
+  "gui_version_note": "Windowed EXE --version exits 0 without console text; bundle-check, PE metadata and observed title all confirm 0.12.0.",
+  "exe_version_commands": [
+    {
+      "exe": "forgebridge-cli.exe",
+      "args": [
+        "--version"
+      ],
+      "exit": 0
+    },
+    {
+      "exe": "ForgeBridge.exe",
+      "args": [
+        "--version"
+      ],
+      "exit": 0
+    }
+  ],
+  "installs": {
+    "lair": {
+      "status": "PASS",
+      "added": 346,
+      "receipt": "C:\\AMD\\fb-backups\\forgebridge-00a4f9e617f543bfa5386e9d05c4f4c5\\uninstall.json",
+      "backup": "C:\\AMD\\fb-backups\\forgebridge-00a4f9e617f543bfa5386e9d05c4f4c5\\MyAssets",
+      "runtime_validation": "not performed",
+      "all_receipt_hashes_match": true
+    },
+    "fg": {
+      "status": "PASS",
+      "added": 10,
+      "receipt": "C:\\AMD\\fb-backups\\forgebridge-46e90c25552d4dfeb8e87fb9c9ce751a\\uninstall.json",
+      "backup": "C:\\AMD\\fb-backups\\forgebridge-46e90c25552d4dfeb8e87fb9c9ce751a\\MyAssets",
+      "runtime_validation": "not performed",
+      "all_receipt_hashes_match": true
+    }
+  },
+  "uninstalls": {
+    "lair": {
+      "status": "PASS",
+      "removed": 339,
+      "kept_changed": [
+        "MyAssets/Encyclopedia/Notes/FB Campaign Check/Campaign-v3-edfc87a75fc39f64264e-1c63c260aa4541a5266c.rwnote",
+        "MyAssets/Encyclopedia/Notes/FB Campaign Check/Campaign-v3-edfc87a75fc39f64264e-29d403f6f225971d1438.rwnote",
+        "MyAssets/Encyclopedia/Notes/FB Campaign Check/Campaign-v3-edfc87a75fc39f64264e-5e1624470ca56e14538d.rwnote",
+        "MyAssets/Encyclopedia/Notes/FB Campaign Check/Campaign-v3-edfc87a75fc39f64264e-758e342163a7defeffd1.rwnote",
+        "MyAssets/Encyclopedia/Notes/FB Campaign Check/Campaign-v3-edfc87a75fc39f64264e-9afc27013e254842cd54.rwnote",
+        "MyAssets/Encyclopedia/Notes/FB Campaign Check/Campaign-v3-edfc87a75fc39f64264e-e1a06ea134cf95c9e7a0.rwnote",
+        "MyAssets/Playlists/FB Campaign Check/Ambient.rwpl"
+      ],
+      "removed_empty_folders": 47,
+      "backup_retained": true
+    },
+    "fg": {
+      "status": "PASS",
+      "removed": 6,
+      "kept_changed": [
+        "MyAssets/Encyclopedia/Notes/FB FG Notes Check/Campaign-v2-13ccdcab23902fdd1fdd-48de0e6d5640e6eccd37.rwnote",
+        "MyAssets/Encyclopedia/Notes/FB FG Notes Check/Campaign-v2-13ccdcab23902fdd1fdd-70b0c9fba478b414e6f4.rwnote",
+        "MyAssets/Encyclopedia/Notes/FB FG Notes Check/Campaign-v2-13ccdcab23902fdd1fdd-75f7204bd459aa55d161.rwnote",
+        "MyAssets/Encyclopedia/Notes/FB FG Notes Check/Campaign-v2-13ccdcab23902fdd1fdd-91d0d68a909dfd8c2623.rwnote"
+      ],
+      "removed_empty_folders": 1,
+      "backup_retained": true
+    }
+  },
+  "retained_files_unchanged": [
+    {
+      "path": "MyAssets/Encyclopedia/Notes/FB Campaign Check/Campaign-v3-edfc87a75fc39f64264e-1c63c260aa4541a5266c.rwnote",
+      "sha256": "9741be1c9a40c2f1b0094692b58047d24e37878268d29282cee634a4ff35379c"
+    },
+    {
+      "path": "MyAssets/Encyclopedia/Notes/FB Campaign Check/Campaign-v3-edfc87a75fc39f64264e-29d403f6f225971d1438.rwnote",
+      "sha256": "9edeef6de301f28c4a98d31818a949d8c744524ff150491408b454988e0ed99c"
+    },
+    {
+      "path": "MyAssets/Encyclopedia/Notes/FB Campaign Check/Campaign-v3-edfc87a75fc39f64264e-5e1624470ca56e14538d.rwnote",
+      "sha256": "9b8aa660ba76b1a27e6c2d7e2218bea5409833d3742a04397128341fc86ce61b"
+    },
+    {
+      "path": "MyAssets/Encyclopedia/Notes/FB Campaign Check/Campaign-v3-edfc87a75fc39f64264e-758e342163a7defeffd1.rwnote",
+      "sha256": "7c061ac56898b6aa0e092ae830bbe84734078ad22d724d38923fda330539eb10"
+    },
+    {
+      "path": "MyAssets/Encyclopedia/Notes/FB Campaign Check/Campaign-v3-edfc87a75fc39f64264e-9afc27013e254842cd54.rwnote",
+      "sha256": "e2acea8b52ddd17677e6a9a28c7935d5a794369e08f99aa273bcf6238ef3f59e"
+    },
+    {
+      "path": "MyAssets/Encyclopedia/Notes/FB Campaign Check/Campaign-v3-edfc87a75fc39f64264e-e1a06ea134cf95c9e7a0.rwnote",
+      "sha256": "a26f24efea02f2270041d5128153c7379b85f331004375f8f577869bef0f29e9"
+    },
+    {
+      "path": "MyAssets/Playlists/FB Campaign Check/Ambient.rwpl",
+      "sha256": "ae1acd4f208c3f74bec6bc444dd29280b1c50920720bdf7f041b3bc33a345880"
+    },
+    {
+      "path": "MyAssets/Encyclopedia/Notes/FB FG Notes Check/Campaign-v2-13ccdcab23902fdd1fdd-48de0e6d5640e6eccd37.rwnote",
+      "sha256": "2f327a96bca01d50b31d1d5df77128cf8303fd35c5f3c3242f06cb6fe4598d11"
+    },
+    {
+      "path": "MyAssets/Encyclopedia/Notes/FB FG Notes Check/Campaign-v2-13ccdcab23902fdd1fdd-70b0c9fba478b414e6f4.rwnote",
+      "sha256": "c4c5374cbda98ec0a9c05d8505125e691948d07558ebdedc9d1e7390951e653a"
+    },
+    {
+      "path": "MyAssets/Encyclopedia/Notes/FB FG Notes Check/Campaign-v2-13ccdcab23902fdd1fdd-75f7204bd459aa55d161.rwnote",
+      "sha256": "667c42468a2d4958e1b73b79ec9bafd464f5930048a02da296cf80583e5e9062"
+    },
+    {
+      "path": "MyAssets/Encyclopedia/Notes/FB FG Notes Check/Campaign-v2-13ccdcab23902fdd1fdd-91d0d68a909dfd8c2623.rwnote",
+      "sha256": "43327c34549d44ffae8c3ed641fb09d1f0d8513349ce4f08a2fc91d9a29567d2"
+    }
+  ],
+  "lair_file_checks": {
+    "Boris the Vampire": {
+      "_skillsText": "Skills Perception +3, Stealth +7",
+      "_sensesText": "Senses darkvision 60 ft",
+      "_languagesText": "Languages common",
+      "_proficiencyBonusText": "Proficiency Bonus +2"
+    },
+    "Spell Scroll Protection from Poison": {
+      "no_raw_reference": true,
+      "contains_poisoned": false,
+      "linked_characters": 22,
+      "link_colour": "58180D"
+    },
+    "Protection from Poison": {
+      "no_raw_reference": true,
+      "contains_poisoned": true,
+      "linked_characters": 0,
+      "link_colour": null
+    },
+    "Ambient": {
+      "internal_file": "MyAssets/Playlists/FB Campaign Check/Ambient-v4.rwpl",
+      "tracks": [
+        "Manor",
+        "Crypt And Lair",
+        "Forest"
+      ],
+      "tracks_count": 3
+    },
+    "output_names": {
+      "map_folder": "FB Campaign Check",
+      "map_name": "Count's Lair",
+      "notes_folder": "FB Campaign Check",
+      "map_path": "MyAssets/Maps/FB Campaign Check/Count's Lair.rwmap"
+    }
+  },
+  "fg_file_checks": {
+    "FB FG Goblin": {
+      "_skillsText": "",
+      "_sensesText": "",
+      "_languagesText": "",
+      "_proficiencyBonusText": ""
+    },
+    "FB FG Light": {
+      "type": "Evocation cantrip"
+    }
+  },
+  "tests": {
+    "run": 326,
+    "passed": 322,
+    "windows_symlink_skipped": 4
+  },
+  "native_campaign_revision": 4
+}

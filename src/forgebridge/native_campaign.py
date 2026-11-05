@@ -17,7 +17,7 @@ from forgebridge.scene_records import asset_templates
 from forgebridge.uvtt import _safe_ref, _package_file
 from forgebridge.validate import InventoryFatal
 
-NATIVE_CAMPAIGN_REVISION = 3
+NATIVE_CAMPAIGN_REVISION = 4
 
 
 class CampaignBuilder(NoteBuilder):
@@ -222,7 +222,7 @@ def campaign_files(ir, package, *, notes_folder, spell_root=None):
             if image:fields.insert(0,builder.media_field('Image',image,2))
         elif kind=='Playlist':
             from forgebridge.native_audio import playlist_files
-            audio,audit=playlist_files(p,package,scope,folder=notes_folder)
+            audio,audit=playlist_files(p,package,scope,folder=notes_folder,revision=NATIVE_CAMPAIGN_REVISION)
             files.update(audio);counts['playlists']+=audit['playlists'];counts['tracks']+=audit['tracks'];counts['manual_tracks']+=audit['manual_tracks'];losses.extend(audit['losses']);playlists.append(audit)
             continue
         else:continue

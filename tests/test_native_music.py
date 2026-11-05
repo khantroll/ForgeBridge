@@ -122,3 +122,22 @@ class NativeMusicTests(unittest.TestCase):
             files, report = playlist_files({'sounds': [{'path': 'bad.mp3'}]}, root, 'test')
         self.assertEqual((report['tracks'], report['manual_tracks']), (0, 1))
         self.assertFalse(any(name.endswith('.rwfile') for name in files))
+
+    def test_playlist_revision_preserves_edited_predecessor_and_display_name(self):
+        from unittest.mock import patch
+        from forgebridge.native_dependencies import write_archive
+        from forgebridge.installer import install
+        with tempfile.TemporaryDirectory() as tmp, patch('forgebridge.installer.require_toolkit_closed'):
+            root=Path(tmp); assets=root/'MyAssets'; old=assets/'Playlists/Test/Ambient.rwpl'
+            old.parent.mkdir(parents=True); old.write_bytes(b'edited old playlist')
+            files, report=playlist_files({'name':'Ambient','sounds':[]},root,'scope',folder='Test',revision=4)
+            self.assertEqual(report['playlist'],'MyAssets/Playlists/Test/Ambient-v4.rwpl')
+            playlist=parsed(files[report['playlist']])[1]
+            metadata=parsed(files[report['playlist'][:-5]+'.rwmeta'])[1]
+            for value in (playlist,metadata):
+                values=[v for k,v in value.members.items() if k.split('+')[-1]=='_name']
+                self.assertTrue(values); self.assertTrue(all(v=='Ambient' for v in values))
+            package=root/'native.zip'; write_archive(package,files)
+            result=install([package],assets,root/'backups')
+            self.assertEqual(result['added'],2)
+            self.assertEqual(old.read_bytes(),b'edited old playlist')

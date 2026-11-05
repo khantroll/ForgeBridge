@@ -102,8 +102,8 @@ class CampaignTests(unittest.TestCase):
             root=Path(tmp); assets=root/'MyAssets'; assets.mkdir()
             files, report=campaign_files(campaign([document('Actor',actor())]),root,notes_folder='Campaign')
             target=report['links']['Actor.actor']
-            self.assertIn('/Campaign-v3-',target)
-            old=assets/target.replace('MyAssets/','',1).replace('Campaign-v3-','Campaign-v2-')
+            self.assertIn('/Campaign-v4-',target)
+            old=assets/target.replace('MyAssets/','',1).replace('Campaign-v4-','Campaign-v3-')
             old=old.with_suffix('.rwnote'); old.parent.mkdir(parents=True); old.write_bytes(b'user edit')
             package=root/'package.zip'; write_archive(package,files)
             result=install([package],assets,root/'backups')
