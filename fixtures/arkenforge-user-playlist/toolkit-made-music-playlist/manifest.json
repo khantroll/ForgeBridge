@@ -1,0 +1,563 @@
+{
+  "toolkit_version": "0.5.1.18",
+  "created": "2026-11-04",
+  "copied_with_toolkit_closed": "2026-11-05",
+  "files": [
+    {
+      "path": "MyAssets/Audio/Songs/Quick Import/FB Native Music Control/FBMusicControl-MP3.rwfile",
+      "size": 9707,
+      "sha256": "e7d8ca8e1541636a025746d8e26b91c6047b7dbe617f452679f369a55c0a40b2",
+      "classes": [
+        "2187ddaa167e5312",
+        "cc7f512b8a7fe245",
+        "579b6eab44e882cc",
+        "78b558b43fd8b1c3"
+      ]
+    },
+    {
+      "path": "MyAssets/Audio/Songs/Quick Import/FB Native Music Control/FBMusicControl-MP3.rwmeta",
+      "size": 2030,
+      "sha256": "59e7a4d875c8d7d0813a00bd64e15a3b9c31e597abb9cb8afcce9b6dc3918cfe",
+      "classes": [
+        "e6b0fd6d48ee2f39",
+        "cc7f512b8a7fe245"
+      ]
+    },
+    {
+      "path": "MyAssets/Audio/Songs/Quick Import/FB Native Music Control/FBMusicControl-OGG.rwfile",
+      "size": 7596,
+      "sha256": "43e65eaf71a743d6edb84011cbde7e2cf385b4d9b6fddc2d3b6bc23e2d3c4297",
+      "classes": [
+        "2187ddaa167e5312",
+        "cc7f512b8a7fe245",
+        "579b6eab44e882cc",
+        "78b558b43fd8b1c3"
+      ]
+    },
+    {
+      "path": "MyAssets/Audio/Songs/Quick Import/FB Native Music Control/FBMusicControl-OGG.rwmeta",
+      "size": 2030,
+      "sha256": "bd38a2fa9e5bd6f2407ba2ed7643df2a6f2d22543f7eb78cae1b7301ee08f00e",
+      "classes": [
+        "e6b0fd6d48ee2f39",
+        "cc7f512b8a7fe245"
+      ]
+    },
+    {
+      "path": "MyAssets/Audio/Songs/Quick Import/FB Native Music Control/FBReference-tone.rwfile",
+      "size": 89466,
+      "sha256": "3e71dcf0be6fe5f978e7a0d65fb27d3c4f2df7db2048fcd63ec60b430a43e85f",
+      "classes": [
+        "2187ddaa167e5312",
+        "cc7f512b8a7fe245",
+        "579b6eab44e882cc",
+        "78b558b43fd8b1c3"
+      ]
+    },
+    {
+      "path": "MyAssets/Audio/Songs/Quick Import/FB Native Music Control/FBReference-tone.rwmeta",
+      "size": 2028,
+      "sha256": "90d079062cacfdf5fb92ac3edfe25c5457fde24938753598c678b636f60474c4",
+      "classes": [
+        "e6b0fd6d48ee2f39",
+        "cc7f512b8a7fe245"
+      ]
+    },
+    {
+      "path": "MyAssets/Playlists/FB Native Music Control.rwmeta",
+      "size": 1807,
+      "sha256": "2ecd98fd41b707409b6510ec7c312982df20fb593ac0a7fce77822eb790468de",
+      "classes": [
+        "a571f2d4f51c9eff",
+        "cc7f512b8a7fe245"
+      ]
+    },
+    {
+      "path": "MyAssets/Playlists/FB Native Music Control.rwpl",
+      "size": 5349,
+      "sha256": "28f578e9196e6d73c51cee09393682bcabd2cb05991a792fe02dc235f5bd17e9",
+      "classes": [
+        "bc865262faff1288",
+        "af69faf52198fafe",
+        "cc7f512b8a7fe245",
+        "accea216927404e6",
+        "7a5804e111ae3def",
+        "1c56cbf4ca821e58",
+        "f193da816e600fd8",
+        "2f163b478e1e2af0",
+        "cf8b9117ece6bc16",
+        "58f152a0ab0c45b5"
+      ]
+    }
+  ],
+  "class_definitions": {
+    "2187ddaa167e5312": {
+      "name": "ArkenAudio",
+      "names": [
+        "_name",
+        "_pack",
+        "_creator",
+        "_album",
+        "_category",
+        "_duration",
+        "_isSong",
+        "_orderValue",
+        "_tags",
+        "_artists",
+        "_tracks"
+      ],
+      "types": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        3,
+        3,
+        3
+      ],
+      "infos": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        11,
+        1,
+        8,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        "System.Collections.Generic.List`1[[AudioTrack, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]"
+      ],
+      "library_id": 2
+    },
+    "cc7f512b8a7fe245": {
+      "name": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+      "names": [
+        "_items",
+        "_size",
+        "_version"
+      ],
+      "types": [
+        6,
+        0,
+        0
+      ],
+      "infos": [
+        null,
+        8,
+        8
+      ],
+      "library_id": null
+    },
+    "579b6eab44e882cc": {
+      "name": "System.Collections.Generic.List`1[[AudioTrack, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+      "names": [
+        "_items",
+        "_size",
+        "_version"
+      ],
+      "types": [
+        4,
+        0,
+        0
+      ],
+      "infos": [
+        {
+          "name": "AudioTrack[]",
+          "library_id": 2
+        },
+        8,
+        8
+      ],
+      "library_id": null
+    },
+    "78b558b43fd8b1c3": {
+      "name": "AudioTrack",
+      "names": [
+        "_trackName",
+        "_originalFile",
+        "_clipRAW",
+        "_parentName"
+      ],
+      "types": [
+        1,
+        1,
+        7,
+        1
+      ],
+      "infos": [
+        null,
+        null,
+        2,
+        null
+      ],
+      "library_id": 2
+    },
+    "e6b0fd6d48ee2f39": {
+      "name": "ArkenAudioMeta",
+      "names": [
+        "_artists",
+        "_album",
+        "_category",
+        "_duration",
+        "_isSong",
+        "_orderValue",
+        "_name",
+        "_pack",
+        "_creator",
+        "_genre",
+        "_subgenre",
+        "_tags",
+        "_starred",
+        "_hideFromView",
+        "_includedWorldPaths",
+        "_official",
+        "_prevPathIfDeleted",
+        "_links",
+        "ArkenBaseMeta+_name",
+        "ArkenBaseMeta+_pack",
+        "ArkenBaseMeta+_creator",
+        "ArkenBaseMeta+_genre",
+        "ArkenBaseMeta+_subgenre",
+        "ArkenBaseMeta+_tags",
+        "ArkenBaseMeta+_starred",
+        "ArkenBaseMeta+_hideFromView",
+        "ArkenBaseMeta+_includedWorldPaths",
+        "ArkenBaseMeta+_official",
+        "ArkenBaseMeta+_prevPathIfDeleted",
+        "ArkenBaseMeta+_links",
+        "LinkableContent+_links"
+      ],
+      "types": [
+        3,
+        1,
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        3,
+        0,
+        0,
+        3,
+        0,
+        1,
+        3,
+        1,
+        1,
+        1,
+        1,
+        1,
+        3,
+        0,
+        0,
+        3,
+        0,
+        1,
+        3,
+        3
+      ],
+      "infos": [
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        null,
+        null,
+        11,
+        1,
+        8,
+        null,
+        null,
+        null,
+        null,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        1,
+        1,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        1,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        null,
+        null,
+        null,
+        null,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        1,
+        1,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        1,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"
+      ],
+      "library_id": 2
+    },
+    "a571f2d4f51c9eff": {
+      "name": "ArkenPlaylistMeta",
+      "names": [
+        "_name",
+        "_pack",
+        "_creator",
+        "_genre",
+        "_subgenre",
+        "_tags",
+        "_starred",
+        "_hideFromView",
+        "_includedWorldPaths",
+        "_official",
+        "_prevPathIfDeleted",
+        "_links",
+        "ArkenBaseMeta+_name",
+        "ArkenBaseMeta+_pack",
+        "ArkenBaseMeta+_creator",
+        "ArkenBaseMeta+_genre",
+        "ArkenBaseMeta+_subgenre",
+        "ArkenBaseMeta+_tags",
+        "ArkenBaseMeta+_starred",
+        "ArkenBaseMeta+_hideFromView",
+        "ArkenBaseMeta+_includedWorldPaths",
+        "ArkenBaseMeta+_official",
+        "ArkenBaseMeta+_prevPathIfDeleted",
+        "ArkenBaseMeta+_links",
+        "LinkableContent+_links"
+      ],
+      "types": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        3,
+        0,
+        0,
+        3,
+        0,
+        1,
+        3,
+        1,
+        1,
+        1,
+        1,
+        1,
+        3,
+        0,
+        0,
+        3,
+        0,
+        1,
+        3,
+        3
+      ],
+      "infos": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        1,
+        1,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        1,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        null,
+        null,
+        null,
+        null,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        1,
+        1,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        1,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"
+      ],
+      "library_id": 2
+    },
+    "bc865262faff1288": {
+      "name": "ArkenPlaylist",
+      "names": [
+        "_name",
+        "_pack",
+        "_creator",
+        "_songs",
+        "_links",
+        "LinkableContent+_links"
+      ],
+      "types": [
+        1,
+        1,
+        1,
+        4,
+        3,
+        3
+      ],
+      "infos": [
+        null,
+        null,
+        null,
+        {
+          "name": "KVPOrderedList`1[[ContentItem, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+          "library_id": 2
+        },
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"
+      ],
+      "library_id": 2
+    },
+    "af69faf52198fafe": {
+      "name": "KVPOrderedList`1[[ContentItem, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+      "names": [
+        "_entries"
+      ],
+      "types": [
+        3
+      ],
+      "infos": [
+        "System.Collections.Generic.List`1[[KVPOrderedList`1+KVPEntry`1[[ContentItem, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[ContentItem, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]"
+      ],
+      "library_id": 2
+    },
+    "accea216927404e6": {
+      "name": "System.Collections.Generic.List`1[[KVPOrderedList`1+KVPEntry`1[[ContentItem, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[ContentItem, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+      "names": [
+        "_items",
+        "_size",
+        "_version"
+      ],
+      "types": [
+        4,
+        0,
+        0
+      ],
+      "infos": [
+        {
+          "name": "KVPOrderedList`1+KVPEntry`1[[ContentItem, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[ContentItem, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]][]",
+          "library_id": 2
+        },
+        8,
+        8
+      ],
+      "library_id": null
+    },
+    "7a5804e111ae3def": {
+      "name": "KVPOrderedList`1+KVPEntry`1[[ContentItem, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[ContentItem, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+      "names": [
+        "_order",
+        "_value"
+      ],
+      "types": [
+        0,
+        4
+      ],
+      "infos": [
+        8,
+        {
+          "name": "ContentItem",
+          "library_id": 2
+        }
+      ],
+      "library_id": 2
+    },
+    "1c56cbf4ca821e58": {
+      "name": "ContentItem",
+      "names": [
+        "_filePath",
+        "_content"
+      ],
+      "types": [
+        1,
+        2
+      ],
+      "infos": [
+        null,
+        null
+      ],
+      "library_id": 2
+    },
+    "f193da816e600fd8": {
+      "name": "MusicTrackInfo",
+      "names": [
+        "_name",
+        "_artists",
+        "_songPath",
+        "_pack",
+        "_creator",
+        "_trackVolumes"
+      ],
+      "types": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        3
+      ],
+      "infos": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        "System.Collections.Generic.Dictionary`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"
+      ],
+      "library_id": 2
+    },
+    "2f163b478e1e2af0": {
+      "name": "System.Collections.Generic.Dictionary`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+      "names": [
+        "Version",
+        "Comparer",
+        "HashSize",
+        "KeyValuePairs"
+      ],
+      "types": [
+        0,
+        3,
+        0,
+        3
+      ],
+      "infos": [
+        8,
+        "System.Collections.Generic.GenericEqualityComparer`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        8,
+        "System.Collections.Generic.KeyValuePair`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]][]"
+      ],
+      "library_id": null
+    },
+    "cf8b9117ece6bc16": {
+      "name": "System.Collections.Generic.GenericEqualityComparer`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+      "names": [],
+      "types": [],
+      "infos": [],
+      "library_id": null
+    },
+    "58f152a0ab0c45b5": {
+      "name": "System.Collections.Generic.KeyValuePair`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+      "names": [
+        "key",
+        "value"
+      ],
+      "types": [
+        1,
+        0
+      ],
+      "infos": [
+        null,
+        11
+      ],
+      "library_id": null
+    }
+  }
+}

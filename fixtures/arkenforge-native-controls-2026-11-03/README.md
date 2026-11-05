@@ -62,3 +62,13 @@ Other visible native menu capabilities not captured/converted here: SFX
 palettes; asset text, shadows, flat colour and blur; per-asset effects; native
 vision/movement/sound blocking and ambience timing. Menu presence alone is
 not runtime validation of any ForgeBridge mapping.
+
+## Later human observation — 2026-11-04
+
+Jeffrey reports that these motion/video assets import, place and move correctly,
+and that the WAV tone plays when attached to a map. These human results supersede
+the open native-operation checks above, while retaining the earlier agent's
+exact failed workflow as history. They do not establish automatic Foundry
+animated-media/ambient-sound conversion, radius/falloff equivalence or restart
+persistence. Jeffrey also confirmed the synthetic spell notes work. The remaining
+audio failure is music playlists; MP3 and an explicitly selected OGG were silent.

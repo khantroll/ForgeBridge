@@ -47,7 +47,10 @@ def require_toolkit_closed():
     """Read-only process inspection, fail closed if inspection is unavailable."""
     try:
         if os.name == 'nt':
-            result = subprocess.run(['tasklist', '/FO', 'CSV', '/NH'], capture_output=True,
+            # Only Toolkit candidates are relevant. Full tasklist enumeration
+            # can stall on unrelated processes even when this filtered query
+            # succeeds. Keep the same name checks and fail-closed timeout below.
+            result = subprocess.run(['tasklist', '/FI', 'IMAGENAME eq Master*', '/FO', 'CSV', '/NH'], capture_output=True,
                                     text=True, check=True, timeout=15,
                                     executable=str(Path(os.environ.get('SystemRoot', 'C:/Windows')) / 'System32/tasklist.exe'))
             names = [row[0] for row in csv.reader(io.StringIO(result.stdout)) if row]
