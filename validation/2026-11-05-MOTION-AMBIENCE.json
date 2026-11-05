@@ -190,9 +190,10 @@
     "backup_retained": true
   },
   "tests": {
-    "run": 337,
-    "passed": 333,
+    "run": 338,
+    "passed": 334,
     "windows_symlink_skipped": 4,
-    "targeted_motion_tests": 11
-  }
+    "targeted_motion_tests": 12
+  },
+  "current_fixture_regenerates_installed_native_bytes": true
 }

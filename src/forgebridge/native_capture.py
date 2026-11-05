@@ -355,6 +355,7 @@ def capture_saved(asset_root, primary, destination, closed=False, role='scene-ge
         if sum(map(len, files.values())) > 256 * 1024 * 1024:
             raise ValueError('Saved snapshot exceeds byte limit')
         pending.extend(native_references(data, name))
+        if name.endswith('.rwamb'):pending.append(name[:-6]+'.rwmeta')
         if name.endswith('.rwmeta'):
             pending.extend(name[:-7] + ext for ext in ('.rwmap', '.rwnote', '.rwfile', '.rwpl', '.rwamb')
                            if source(name[:-7] + ext).is_file())

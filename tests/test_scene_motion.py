@@ -169,3 +169,17 @@ class SceneMotionTests(unittest.TestCase):
         with self.assertRaises(ValueError):Writer({}).write(Array(payload,0,2))
         data=Writer({},max_items=64000000).write(Array(payload,0,2))
         reader=Reader(data,max_items=64000000);graph=reader.read();self.assertEqual(reader.objects[graph['root_id']]['bytes'],payload)
+
+    def test_saved_map_capture_keeps_ambience_metadata_and_original_bytes(self):
+        from forgebridge.native_capture import capture_saved
+        data, files, audit=add_ambience(blank_map(),SCENE,FIXTURE,'snapshot')
+        files.update({'MyAssets/Maps/Control.rwmap':data,'MyAssets/Maps/Control.rwmeta':encode(scene_record('map_meta'))})
+        with tempfile.TemporaryDirectory() as tmp, patch('forgebridge.native_capture._toolkit_closed') as closed:
+            root=Path(tmp); assets=root/'MyAssets'; assets.mkdir()
+            for name, payload in files.items():
+                target=root/name;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(payload)
+            result=capture_saved(assets,'MyAssets/Maps/Control.rwmap',root/'bundle',closed=True)
+            self.assertEqual(closed.call_count,3)
+            self.assertEqual({row['path'] for row in result['files']},set(files))
+            self.assertEqual(read_package(root/'bundle/native.zip'),files)
+            self.assertEqual({name:(root/name).read_bytes() for name in files},files)

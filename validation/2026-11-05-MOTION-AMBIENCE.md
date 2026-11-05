@@ -54,11 +54,13 @@ Production needs no installed/exported templates or locally patched dependency.
 
 ## Automated checks
 
-Windows full suite **337 run, 333 passed, four Windows symlink privilege skips**.
-Eleven new motion tests cover typed controls, exact embedded bytes, codec refusal,
+Windows full suite **338 run, 334 passed, four Windows symlink privilege skips**.
+Twelve new motion tests cover typed controls, exact embedded bytes, codec refusal,
 frames/timing, category, rotation/hidden/size, different grid/origin, radius/volume,
 repeated texture deduplication and unique placements, dependency closure, fake
-MyAssets install/uninstall, and opt-in bounded opaque-byte serialization.
+MyAssets install/uninstall, opt-in bounded opaque-byte serialization, and saved-map
+capture retaining both preset metadata and all original bytes with three closed-
+Toolkit checks (mocked only for the synthetic test).
 
 The native GIF placement comparison caught a static-category mismatch not caught
 by the first asset-only test; it was corrected to the observed category 1 and the
@@ -77,7 +79,8 @@ Package SHA-256:
 
 Toolkit was closed for install and verification; never launched or killed.
 Install exit **0**, **20 files added**, all hashes match receipt and package.
-The two embedded audio payloads independently match source hashes.
+The two embedded audio payloads independently match source hashes. Rebuilding
+the current owned fixture regenerates all 20 installed native files byte-for-byte.
 Receipt:
 `C:/AMD/fb-backups/forgebridge-16852577584e4b8da79ac51f49891612/uninstall.json`.
 Backup:
