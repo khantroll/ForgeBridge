@@ -213,6 +213,10 @@ def campaign_files(ir, package, *, notes_folder, spell_root=None):
             if image:fields.insert(0,builder.media_field('Item image',image,2))
             counts['spells' if spell else 'items']+=1
             loss('approximate','spell' if spell else 'item','Display text/image only; mechanical activities, effects, formula evaluation and uses are not automated',source_id=doc['id'])
+        elif kind=='Story':
+            fields=[builder.text_field('Story',[(s,link) for s,font,link in segments(p.get('text') or '')],1)]
+            image=portrait(p.get('image'))
+            if image:fields.insert(0,builder.media_field('Image',image,2))
         elif kind=='Playlist':
             from forgebridge.native_audio import playlist_files
             audio,audit=playlist_files(p,package,scope,folder=notes_folder)
