@@ -17,7 +17,7 @@ from forgebridge.scene_records import asset_templates
 from forgebridge.uvtt import _safe_ref, _package_file
 from forgebridge.validate import InventoryFatal
 
-NATIVE_CAMPAIGN_REVISION = 2
+NATIVE_CAMPAIGN_REVISION = 3
 
 
 class CampaignBuilder(NoteBuilder):
@@ -92,7 +92,7 @@ def campaign_files(ir, package, *, notes_folder, spell_root=None):
     # Revision 1 stat-block/linked-token check can leave edited notes after
     # --keep-changed. A visible revision in generated filenames preserves those
     # user edits instead of requiring overwrites or silently repinning identity.
-    base = 'MyAssets/Encyclopedia/Notes/' + notes_folder + '/Campaign-v2-' + scope + '-'
+    base = 'MyAssets/Encyclopedia/Notes/' + notes_folder + '/Campaign-v' + str(NATIVE_CAMPAIGN_REVISION) + '-' + scope + '-'
     paths = {}
     aliases = {}
     def loss(grade, feature, summary, **details): losses.append(dict(grade=grade, feature=feature, summary=summary, **details))

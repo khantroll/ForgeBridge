@@ -1,0 +1,150 @@
+{
+  "fg": {
+    "receipt": "C:/AMD/fb-backups/forgebridge-1acd031c51ab414e9fe08b43c8bae6bf/uninstall.json",
+    "added": 10,
+    "state": "COMPLETE",
+    "all_installed_hashes_match": true,
+    "backup": "C:\\AMD\\fb-backups\\forgebridge-1acd031c51ab414e9fe08b43c8bae6bf\\MyAssets"
+  },
+  "lair": {
+    "receipt": "C:/AMD/fb-backups/forgebridge-8237ff77aa114e42935c3eea5c98b63c/uninstall.json",
+    "added": 346,
+    "state": "COMPLETE",
+    "all_installed_hashes_match": true,
+    "backup": "C:\\AMD\\fb-backups\\forgebridge-8237ff77aa114e42935c3eea5c98b63c\\MyAssets"
+  },
+  "evidence": "file-level only; final Toolkit checks pending",
+  "toolkit_reference": "0.5.1.18",
+  "fg_branch": "feature/fg-campaign-install",
+  "fg_commit": "683d1e484c0d54063136350cc3b5d59c527cab92",
+  "fg_counts": {
+    "tables": 0,
+    "actors": 1,
+    "items": 1,
+    "spells": 1,
+    "playlists": 0,
+    "tracks": 0,
+    "manual_tracks": 0,
+    "notes": 4,
+    "stories": 1
+  },
+  "fg_documents": [
+    {
+      "name": "FB FG Goblin",
+      "target": "MyAssets/Encyclopedia/Notes/FB FG Notes Check/Campaign-v2-13ccdcab23902fdd1fdd-75f7204bd459aa55d161.rwmeta"
+    },
+    {
+      "name": "FB FG Potion",
+      "target": "MyAssets/Encyclopedia/Notes/FB FG Notes Check/Campaign-v2-13ccdcab23902fdd1fdd-91d0d68a909dfd8c2623.rwmeta"
+    },
+    {
+      "name": "FB FG Light",
+      "target": "MyAssets/Encyclopedia/Notes/FB FG Notes Check/Campaign-v2-13ccdcab23902fdd1fdd-70b0c9fba478b414e6f4.rwmeta"
+    },
+    {
+      "name": "FB FG Room",
+      "target": "MyAssets/Encyclopedia/Notes/FB FG Notes Check/Campaign-v2-13ccdcab23902fdd1fdd-48de0e6d5640e6eccd37.rwmeta"
+    }
+  ],
+  "fg_module_sha256": "3a09ab50791751426f0529b2a72a383d976095b36b5627a7c4b91ae998d5de2d",
+  "fg_package_sha256": "4514161e31e8787ce20aaa83fe0117454f6349a004f751855832de87298a4e54",
+  "lair_package_sha256": "402118b73a4f101d0e8bd62b0a9d3863ff02d647c7f95a7e5921fc04105ee3f8",
+  "output_names": {
+    "map_folder": "FB Campaign Check",
+    "map_name": "Count's Lair",
+    "notes_folder": "FB Campaign Check",
+    "map_path": "MyAssets/Maps/FB Campaign Check/Count's Lair.rwmap"
+  },
+  "campaign_counts": {
+    "tables": 3,
+    "actors": 18,
+    "items": 17,
+    "spells": 3,
+    "playlists": 1,
+    "tracks": 3,
+    "manual_tracks": 0,
+    "notes": 41
+  },
+  "audio_byte_checks": [
+    {
+      "song": "Manor",
+      "bytes": 1307870,
+      "sha256": "91c4e5540cfaf3464304a648b35a13d939d0754aa5090bf9c26d53abb82c2bf7",
+      "payload_preserved": true
+    },
+    {
+      "song": "Crypt And Lair",
+      "bytes": 1208290,
+      "sha256": "4e77a7a0717560718c79660e525b71ed37399e863a8a0e27bdcb15d27585ef04",
+      "payload_preserved": true
+    },
+    {
+      "song": "Forest",
+      "bytes": 1335593,
+      "sha256": "3b078e449bb084185cab382f4584ebd12167f7533c582b25f859518623db2049",
+      "payload_preserved": true
+    }
+  ],
+  "scrolls": [
+    {
+      "kind": "Item",
+      "source_id": "KHc9Nbaz1TL2PPu6",
+      "source_path": "packs/adventure-5e",
+      "adventure_id": "N63YevXMYeDZPCMh",
+      "target": "MyAssets/Encyclopedia/Notes/FB Campaign Check/Campaign-v3-edfc87a75fc39f64264e-1c63c260aa4541a5266c.rwmeta",
+      "name": "Spell Scroll Protection from Poison"
+    },
+    {
+      "kind": "Item",
+      "source_id": "Daa9RJFocgPSFrWy",
+      "source_path": "packs/adventure-5e",
+      "adventure_id": "N63YevXMYeDZPCMh",
+      "target": "MyAssets/Encyclopedia/Notes/FB Campaign Check/Campaign-v3-edfc87a75fc39f64264e-9afc27013e254842cd54.rwmeta",
+      "name": "Spell Scroll Spiritual Weapon"
+    },
+    {
+      "kind": "Item",
+      "source_id": "ZW8GOH5ug7seFQCj",
+      "source_path": "packs/adventure-5e",
+      "adventure_id": "N63YevXMYeDZPCMh",
+      "target": "MyAssets/Encyclopedia/Notes/FB Campaign Check/Campaign-v3-edfc87a75fc39f64264e-5e1624470ca56e14538d.rwmeta",
+      "name": "Spell Scroll: Bless"
+    }
+  ],
+  "spells": [
+    {
+      "kind": "Item",
+      "source_id": "8dzaICjGy6mTUaUr",
+      "source_path": "dnd5e-system/spells",
+      "adventure_id": null,
+      "target": "MyAssets/Encyclopedia/Notes/FB Campaign Check/Campaign-v3-edfc87a75fc39f64264e-758e342163a7defeffd1.rwmeta",
+      "name": "Bless"
+    },
+    {
+      "kind": "Item",
+      "source_id": "JbxsYXxSOTZbf9I0",
+      "source_path": "dnd5e-system/spells",
+      "adventure_id": null,
+      "target": "MyAssets/Encyclopedia/Notes/FB Campaign Check/Campaign-v3-edfc87a75fc39f64264e-e1a06ea134cf95c9e7a0.rwmeta",
+      "name": "Spiritual Weapon"
+    },
+    {
+      "kind": "Item",
+      "source_id": "MAxM77CDUu8dgIRQ",
+      "source_path": "dnd5e-system/spells",
+      "adventure_id": null,
+      "target": "MyAssets/Encyclopedia/Notes/FB Campaign Check/Campaign-v3-edfc87a75fc39f64264e-29d403f6f225971d1438.rwmeta",
+      "name": "Protection from Poison"
+    }
+  ],
+  "preserved_edited_boris": {
+    "path": "MyAssets/Encyclopedia/Notes/FB Campaign Check/Campaign-v2-edfc87a75fc39f64264e-7160079c8c68016e7452.rwnote",
+    "sha256": "d0bb19d81e570245c66a04494c6267cc9ee535fd3b743d2b2924c1d1289c9366"
+  },
+  "tests": {
+    "full_run": 312,
+    "passed": 308,
+    "skipped": 4,
+    "fg_branch_focused": 8
+  }
+}

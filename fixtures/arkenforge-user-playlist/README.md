@@ -21,3 +21,13 @@ No user name, audio bytes or other content is copied. Its serialized class is
 control, True for generated songs). This checks the complete audio metadata
 declaration, not just an assumed addition of the playlist's new base fields.
 Playback and Content Library listing still require the Toolkit recheck.
+
+## Populated music control, 2026-11-04/05
+
+See `toolkit-made-music-playlist/` for the later populated native playlist,
+three synthetic source formats and exact song/metadata files. Jeffrey confirmed
+all three native controls audible. These establish an initialized `Master: 0.8`
+stem mixer and the current two-member ContentItem layout; the earlier empty
+playlist/SFX-only comparison did not cover either populated song mixer state or
+the complete music import round trip. Generated-playlist listening remains a
+separate acceptance check.

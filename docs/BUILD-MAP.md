@@ -10,11 +10,11 @@ acceptance are separate. Native captures used Windows / Toolkit 0.5.1.18.
 | Missing Foundry Data art | OPEN; external references remain losses | No new native schema needed; existing image/token controls | Resolve only explicitly supplied Data root; show correct portrait/tile and persist |
 | Animated tiles/video | Toolkit **PASS** 2026-11-04 (Jeffrey): captured WEBM and MP4 import, place on a map and move. ForgeBridge does not yet *write* them (converter mapping OPEN) | `fixtures/arkenforge-native-controls-2026-11-03/MyAssets/Media/Cartographer/` | Converter-written animated tile places and plays after save/restart: NEEDS IN-TOOLKIT EVIDENCE |
 | Ambient sounds / presets | Toolkit **PASS** 2026-11-04 (Jeffrey): WAV tone added to a new ambience preset, saved, attached to a map, tone audible. Converter mapping from Foundry ambient sounds OPEN | Same capture folder, `AmbiencePresets/` and `Audio/SFX/` | Converter-written ambience attaches and plays; radius/falloff: NEEDS IN-TOOLKIT EVIDENCE |
-| Music by ear | **FAIL** 2026-11-04 (Jeffrey): FB MP3 Test timer advances, no error, but neither MP3 nor OGG is audible. Toolkit sound output is fine (WAV tone played). Fix in progress separately | `fixtures/arkenforge-user-playlist/`; installed FB MP3 Test | Hear original MP3 and OGG separately after the writer fix |
+| Music by ear | Native embedded MP3/OGG controls **PASS** 2026-11-04 (Jeffrey). Production embeds MP3 and OGG unchanged with Master 80%; final Ambient package check pending | `fixtures/arkenforge-user-playlist/toolkit-made-music-playlist/`; `validation/2026-11-05-MUSIC.md` | Hear each of the three rebuilt Ambient tracks separately |
 | More systems | NOT STARTED | No system-specific captures beyond dnd5e | Source-specific field mapping and representative native acceptance |
 | Other native menu capabilities | OPEN inventory only | Capture README lists SFX palettes, text/shadow/blur/effects/blocking | Capture minimal controls before implementing each mapping |
 
-Audio result recorded 2026-11-04: silent for both MP3 and OGG (see Music row). Audio is **not** passing.
+Audio result recorded 2026-11-04: original ForgeBridge MP3 and explicitly selected OGG were silent. Jeffrey subsequently confirmed all three Toolkit-imported native controls (WAV, MP3, OGG) audible. This does not pass the repaired ForgeBridge playlist; that remains a separate recheck. See the populated music fixture and repair validation.
 
 Capture/cleanup details and exact failures: see
 `fixtures/arkenforge-native-controls-2026-11-03/README.md` and its manifests.
@@ -22,3 +22,7 @@ The four specifically approved FBCapture test objects were deleted. Retirement
 script dry run/Apply is BLOCKED because the existing script is unavailable;
 uninstall receipts and unrelated content were retained. No broad cleanup was
 substituted. Bounded fog/profile-player checks retain their prior pending status.
+
+## Final trial audio build — 2026-11-05
+
+Jeffrey confirms MP3 embedded unchanged in a native song is audible in Toolkit 0.5.1.18 (2026-11-04). Production now embeds MP3 and OGG Vorbis bytes directly, retaining each extension and initializing Master at 80%. URL-encoded package audio paths are decoded and revalidated before contained lookup. No Toolkit encoder is required. The rebuilt Ambient playlist still needs its own Toolkit check; missing package tracks remain explicit losses.

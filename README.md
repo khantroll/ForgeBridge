@@ -60,7 +60,7 @@ Each build produces a combined `MyAssets` tree, per-scene packages, and readable
 
 The Fantasy Grounds Unity adapter converts backgrounds, grids, walls, doors/windows and lights to native maps. Stored grids win; missing grids require an explicit size. Encrypted modules are refused; FG pins, story, actors/items and tokens remain manual.
 
-Actor notes contain display statistics, not automation or live token bindings. MP3 tracks, external art, ambient sounds, animated media/GIF setup, procedural light animation and Foundry fog/vision/exploration remain manual or unsupported. Audible MP3/OGG playback is not yet confirmed by ear. Windows executables are unsigned; SmartScreen may warn. See [supported scope and limitations](docs/USER-GUIDE.md#supported--manual--unsupported).
+Actor notes contain display statistics, not automation or live token bindings. External art, ambient sounds, animated media/GIF setup, procedural light animation and Foundry fog/vision/exploration remain manual or unsupported. Local MP3/OGG playlist tracks are embedded unchanged; native controls are audibly confirmed, while rebuilt playlists need their own listening checks. Windows executables are unsigned; SmartScreen may warn. See [supported scope and limitations](docs/USER-GUIDE.md#supported--manual--unsupported).
 
 ## Some spells need the free dnd5e system download
 

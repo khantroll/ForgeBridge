@@ -1,0 +1,2441 @@
+{
+  "toolkit_version": "0.5.1.18",
+  "native_control_audible": "Jeffrey confirmed all three WAV/MP3/OGG controls on 2026-11-04",
+  "prior_written_ogg": "Jeffrey confirmed silence after explicit second-track selection",
+  "payload_policy": "Encoded bytes unchanged; no .ogg/.mp3/.wav sidecar exists beside any captured native song",
+  "repaired_package_sha256": "b4a10a6dd036f7118c03c1978497071431c08a64bb2b051784411a6eff44498c",
+  "comparison": [
+    {
+      "path": "MyAssets/Audio/Songs/FB Campaign Check/FB MP3 Test - MP3 original.rwfile",
+      "old": {
+        "sha256": "e82b233eaee5521ec8e13ec3b99027fa375906a0205a7b9f205e53920b3be1fc",
+        "bytes": 1209530,
+        "classes": [
+          "2187ddaa167e5312",
+          "cc7f512b8a7fe245",
+          "579b6eab44e882cc",
+          "78b558b43fd8b1c3"
+        ],
+        "fields": [
+          {
+            "class": "ArkenAudio",
+            "members": {
+              "_name": "FB MP3 Test - MP3 original",
+              "_pack": "",
+              "_creator": "",
+              "_album": null,
+              "_category": null,
+              "_duration": 61.04090881347656,
+              "_isSong": true,
+              "_orderValue": 0,
+              "_tags": {
+                "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                "members": {
+                  "_items": {
+                    "array_length": [
+                      0
+                    ]
+                  },
+                  "_size": 0,
+                  "_version": 0
+                }
+              },
+              "_artists": {
+                "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                "members": {
+                  "_items": {
+                    "array_length": [
+                      0
+                    ]
+                  },
+                  "_size": 0,
+                  "_version": 0
+                }
+              },
+              "_tracks": {
+                "class": "System.Collections.Generic.List`1[[AudioTrack, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+                "members": {
+                  "_items": {
+                    "array_length": [
+                      1
+                    ]
+                  },
+                  "_size": 1,
+                  "_version": 1
+                }
+              }
+            }
+          },
+          {
+            "class": "AudioTrack",
+            "members": {
+              "_trackName": "Master",
+              "_originalFile": "Crypt and Lair.mp3",
+              "_clipRAW": {
+                "length": 1208290,
+                "sha256": "4e77a7a0717560718c79660e525b71ed37399e863a8a0e27bdcb15d27585ef04",
+                "header_hex": "49443303000000000042545045310000"
+              },
+              "_parentName": "FB MP3 Test - MP3 original"
+            }
+          }
+        ],
+        "stem_pairs": []
+      },
+      "repaired": {
+        "sha256": "e82b233eaee5521ec8e13ec3b99027fa375906a0205a7b9f205e53920b3be1fc",
+        "bytes": 1209530,
+        "classes": [
+          "2187ddaa167e5312",
+          "cc7f512b8a7fe245",
+          "579b6eab44e882cc",
+          "78b558b43fd8b1c3"
+        ],
+        "fields": [
+          {
+            "class": "ArkenAudio",
+            "members": {
+              "_name": "FB MP3 Test - MP3 original",
+              "_pack": "",
+              "_creator": "",
+              "_album": null,
+              "_category": null,
+              "_duration": 61.04090881347656,
+              "_isSong": true,
+              "_orderValue": 0,
+              "_tags": {
+                "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                "members": {
+                  "_items": {
+                    "array_length": [
+                      0
+                    ]
+                  },
+                  "_size": 0,
+                  "_version": 0
+                }
+              },
+              "_artists": {
+                "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                "members": {
+                  "_items": {
+                    "array_length": [
+                      0
+                    ]
+                  },
+                  "_size": 0,
+                  "_version": 0
+                }
+              },
+              "_tracks": {
+                "class": "System.Collections.Generic.List`1[[AudioTrack, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+                "members": {
+                  "_items": {
+                    "array_length": [
+                      1
+                    ]
+                  },
+                  "_size": 1,
+                  "_version": 1
+                }
+              }
+            }
+          },
+          {
+            "class": "AudioTrack",
+            "members": {
+              "_trackName": "Master",
+              "_originalFile": "Crypt and Lair.mp3",
+              "_clipRAW": {
+                "length": 1208290,
+                "sha256": "4e77a7a0717560718c79660e525b71ed37399e863a8a0e27bdcb15d27585ef04",
+                "header_hex": "49443303000000000042545045310000"
+              },
+              "_parentName": "FB MP3 Test - MP3 original"
+            }
+          }
+        ],
+        "stem_pairs": []
+      },
+      "file_bytes_unchanged": true
+    },
+    {
+      "path": "MyAssets/Audio/Songs/FB Campaign Check/FB MP3 Test - MP3 original.rwmeta",
+      "old": {
+        "sha256": "308479f318e62405c357f91a4e753b0b743a23445e4a4206109b503a13e5424b",
+        "bytes": 2044,
+        "classes": [
+          "e6b0fd6d48ee2f39",
+          "cc7f512b8a7fe245"
+        ],
+        "fields": [
+          {
+            "class": "ArkenAudioMeta",
+            "members": {
+              "_artists": {
+                "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                "members": {
+                  "_items": {
+                    "array_length": [
+                      0
+                    ]
+                  },
+                  "_size": 0,
+                  "_version": 0
+                }
+              },
+              "_album": null,
+              "_category": null,
+              "_duration": 61.04090881347656,
+              "_isSong": true,
+              "_orderValue": 0,
+              "_name": "FB MP3 Test - MP3 original",
+              "_pack": "",
+              "_creator": "",
+              "_genre": "",
+              "_subgenre": "",
+              "_tags": {
+                "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                "members": {
+                  "_items": {
+                    "array_length": [
+                      0
+                    ]
+                  },
+                  "_size": 0,
+                  "_version": 0
+                }
+              },
+              "_starred": false,
+              "_hideFromView": false,
+              "_includedWorldPaths": null,
+              "_official": false,
+              "_prevPathIfDeleted": null,
+              "_links": {
+                "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                "members": {
+                  "_items": {
+                    "array_length": [
+                      0
+                    ]
+                  },
+                  "_size": 0,
+                  "_version": 0
+                }
+              },
+              "ArkenBaseMeta+_name": "FB MP3 Test - MP3 original",
+              "ArkenBaseMeta+_pack": "",
+              "ArkenBaseMeta+_creator": "",
+              "ArkenBaseMeta+_genre": "",
+              "ArkenBaseMeta+_subgenre": "",
+              "ArkenBaseMeta+_tags": {
+                "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                "members": {
+                  "_items": {
+                    "array_length": [
+                      0
+                    ]
+                  },
+                  "_size": 0,
+                  "_version": 0
+                }
+              },
+              "ArkenBaseMeta+_starred": false,
+              "ArkenBaseMeta+_hideFromView": false,
+              "ArkenBaseMeta+_includedWorldPaths": null,
+              "ArkenBaseMeta+_official": false,
+              "ArkenBaseMeta+_prevPathIfDeleted": null,
+              "ArkenBaseMeta+_links": {
+                "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                "members": {
+                  "_items": {
+                    "array_length": [
+                      0
+                    ]
+                  },
+                  "_size": 0,
+                  "_version": 0
+                }
+              },
+              "LinkableContent+_links": {
+                "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                "members": {
+                  "_items": {
+                    "array_length": [
+                      0
+                    ]
+                  },
+                  "_size": 0,
+                  "_version": 0
+                }
+              }
+            }
+          }
+        ],
+        "stem_pairs": []
+      },
+      "repaired": {
+        "sha256": "308479f318e62405c357f91a4e753b0b743a23445e4a4206109b503a13e5424b",
+        "bytes": 2044,
+        "classes": [
+          "e6b0fd6d48ee2f39",
+          "cc7f512b8a7fe245"
+        ],
+        "fields": [
+          {
+            "class": "ArkenAudioMeta",
+            "members": {
+              "_artists": {
+                "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                "members": {
+                  "_items": {
+                    "array_length": [
+                      0
+                    ]
+                  },
+                  "_size": 0,
+                  "_version": 0
+                }
+              },
+              "_album": null,
+              "_category": null,
+              "_duration": 61.04090881347656,
+              "_isSong": true,
+              "_orderValue": 0,
+              "_name": "FB MP3 Test - MP3 original",
+              "_pack": "",
+              "_creator": "",
+              "_genre": "",
+              "_subgenre": "",
+              "_tags": {
+                "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                "members": {
+                  "_items": {
+                    "array_length": [
+                      0
+                    ]
+                  },
+                  "_size": 0,
+                  "_version": 0
+                }
+              },
+              "_starred": false,
+              "_hideFromView": false,
+              "_includedWorldPaths": null,
+              "_official": false,
+              "_prevPathIfDeleted": null,
+              "_links": {
+                "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                "members": {
+                  "_items": {
+                    "array_length": [
+                      0
+                    ]
+                  },
+                  "_size": 0,
+                  "_version": 0
+                }
+              },
+              "ArkenBaseMeta+_name": "FB MP3 Test - MP3 original",
+              "ArkenBaseMeta+_pack": "",
+              "ArkenBaseMeta+_creator": "",
+              "ArkenBaseMeta+_genre": "",
+              "ArkenBaseMeta+_subgenre": "",
+              "ArkenBaseMeta+_tags": {
+                "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                "members": {
+                  "_items": {
+                    "array_length": [
+                      0
+                    ]
+                  },
+                  "_size": 0,
+                  "_version": 0
+                }
+              },
+              "ArkenBaseMeta+_starred": false,
+              "ArkenBaseMeta+_hideFromView": false,
+              "ArkenBaseMeta+_includedWorldPaths": null,
+              "ArkenBaseMeta+_official": false,
+              "ArkenBaseMeta+_prevPathIfDeleted": null,
+              "ArkenBaseMeta+_links": {
+                "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                "members": {
+                  "_items": {
+                    "array_length": [
+                      0
+                    ]
+                  },
+                  "_size": 0,
+                  "_version": 0
+                }
+              },
+              "LinkableContent+_links": {
+                "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                "members": {
+                  "_items": {
+                    "array_length": [
+                      0
+                    ]
+                  },
+                  "_size": 0,
+                  "_version": 0
+                }
+              }
+            }
+          }
+        ],
+        "stem_pairs": []
+      },
+      "file_bytes_unchanged": true
+    },
+    {
+      "path": "MyAssets/Audio/Songs/FB Campaign Check/FB MP3 Test - OGG Vorbis converted.rwfile",
+      "old": {
+        "sha256": "eb3fe637335dea22901bed24636f2fcf49ba33c565e550d4be4bec7b9ee57b2c",
+        "bytes": 775328,
+        "classes": [
+          "2187ddaa167e5312",
+          "cc7f512b8a7fe245",
+          "579b6eab44e882cc",
+          "78b558b43fd8b1c3"
+        ],
+        "fields": [
+          {
+            "class": "ArkenAudio",
+            "members": {
+              "_name": "FB MP3 Test - OGG Vorbis converted",
+              "_pack": "",
+              "_creator": "",
+              "_album": null,
+              "_category": null,
+              "_duration": 61.04090881347656,
+              "_isSong": true,
+              "_orderValue": 0,
+              "_tags": {
+                "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                "members": {
+                  "_items": {
+                    "array_length": [
+                      0
+                    ]
+                  },
+                  "_size": 0,
+                  "_version": 0
+                }
+              },
+              "_artists": {
+                "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                "members": {
+                  "_items": {
+                    "array_length": [
+                      0
+                    ]
+                  },
+                  "_size": 0,
+                  "_version": 0
+                }
+              },
+              "_tracks": {
+                "class": "System.Collections.Generic.List`1[[AudioTrack, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+                "members": {
+                  "_items": {
+                    "array_length": [
+                      1
+                    ]
+                  },
+                  "_size": 1,
+                  "_version": 1
+                }
+              }
+            }
+          },
+          {
+            "class": "AudioTrack",
+            "members": {
+              "_trackName": "Master",
+              "_originalFile": "Crypt and Lair.ogg",
+              "_clipRAW": {
+                "length": 774080,
+                "sha256": "b5e1fcf41c0a9160a819155ce9ce33053778af9bce517f59b7e79a36b77a27d6",
+                "header_hex": "4f67675300020000000000000000b8c0"
+              },
+              "_parentName": "FB MP3 Test - OGG Vorbis converted"
+            }
+          }
+        ],
+        "stem_pairs": []
+      },
+      "repaired": {
+        "sha256": "eb3fe637335dea22901bed24636f2fcf49ba33c565e550d4be4bec7b9ee57b2c",
+        "bytes": 775328,
+        "classes": [
+          "2187ddaa167e5312",
+          "cc7f512b8a7fe245",
+          "579b6eab44e882cc",
+          "78b558b43fd8b1c3"
+        ],
+        "fields": [
+          {
+            "class": "ArkenAudio",
+            "members": {
+              "_name": "FB MP3 Test - OGG Vorbis converted",
+              "_pack": "",
+              "_creator": "",
+              "_album": null,
+              "_category": null,
+              "_duration": 61.04090881347656,
+              "_isSong": true,
+              "_orderValue": 0,
+              "_tags": {
+                "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                "members": {
+                  "_items": {
+                    "array_length": [
+                      0
+                    ]
+                  },
+                  "_size": 0,
+                  "_version": 0
+                }
+              },
+              "_artists": {
+                "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                "members": {
+                  "_items": {
+                    "array_length": [
+                      0
+                    ]
+                  },
+                  "_size": 0,
+                  "_version": 0
+                }
+              },
+              "_tracks": {
+                "class": "System.Collections.Generic.List`1[[AudioTrack, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+                "members": {
+                  "_items": {
+                    "array_length": [
+                      1
+                    ]
+                  },
+                  "_size": 1,
+                  "_version": 1
+                }
+              }
+            }
+          },
+          {
+            "class": "AudioTrack",
+            "members": {
+              "_trackName": "Master",
+              "_originalFile": "Crypt and Lair.ogg",
+              "_clipRAW": {
+                "length": 774080,
+                "sha256": "b5e1fcf41c0a9160a819155ce9ce33053778af9bce517f59b7e79a36b77a27d6",
+                "header_hex": "4f67675300020000000000000000b8c0"
+              },
+              "_parentName": "FB MP3 Test - OGG Vorbis converted"
+            }
+          }
+        ],
+        "stem_pairs": []
+      },
+      "file_bytes_unchanged": true
+    },
+    {
+      "path": "MyAssets/Audio/Songs/FB Campaign Check/FB MP3 Test - OGG Vorbis converted.rwmeta",
+      "old": {
+        "sha256": "171041a0b31266a04c0c92390d69ad6f35538773c553d2162f39f3668d32530d",
+        "bytes": 2052,
+        "classes": [
+          "e6b0fd6d48ee2f39",
+          "cc7f512b8a7fe245"
+        ],
+        "fields": [
+          {
+            "class": "ArkenAudioMeta",
+            "members": {
+              "_artists": {
+                "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                "members": {
+                  "_items": {
+                    "array_length": [
+                      0
+                    ]
+                  },
+                  "_size": 0,
+                  "_version": 0
+                }
+              },
+              "_album": null,
+              "_category": null,
+              "_duration": 61.04090881347656,
+              "_isSong": true,
+              "_orderValue": 0,
+              "_name": "FB MP3 Test - OGG Vorbis converted",
+              "_pack": "",
+              "_creator": "",
+              "_genre": "",
+              "_subgenre": "",
+              "_tags": {
+                "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                "members": {
+                  "_items": {
+                    "array_length": [
+                      0
+                    ]
+                  },
+                  "_size": 0,
+                  "_version": 0
+                }
+              },
+              "_starred": false,
+              "_hideFromView": false,
+              "_includedWorldPaths": null,
+              "_official": false,
+              "_prevPathIfDeleted": null,
+              "_links": {
+                "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                "members": {
+                  "_items": {
+                    "array_length": [
+                      0
+                    ]
+                  },
+                  "_size": 0,
+                  "_version": 0
+                }
+              },
+              "ArkenBaseMeta+_name": "FB MP3 Test - OGG Vorbis converted",
+              "ArkenBaseMeta+_pack": "",
+              "ArkenBaseMeta+_creator": "",
+              "ArkenBaseMeta+_genre": "",
+              "ArkenBaseMeta+_subgenre": "",
+              "ArkenBaseMeta+_tags": {
+                "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                "members": {
+                  "_items": {
+                    "array_length": [
+                      0
+                    ]
+                  },
+                  "_size": 0,
+                  "_version": 0
+                }
+              },
+              "ArkenBaseMeta+_starred": false,
+              "ArkenBaseMeta+_hideFromView": false,
+              "ArkenBaseMeta+_includedWorldPaths": null,
+              "ArkenBaseMeta+_official": false,
+              "ArkenBaseMeta+_prevPathIfDeleted": null,
+              "ArkenBaseMeta+_links": {
+                "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                "members": {
+                  "_items": {
+                    "array_length": [
+                      0
+                    ]
+                  },
+                  "_size": 0,
+                  "_version": 0
+                }
+              },
+              "LinkableContent+_links": {
+                "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                "members": {
+                  "_items": {
+                    "array_length": [
+                      0
+                    ]
+                  },
+                  "_size": 0,
+                  "_version": 0
+                }
+              }
+            }
+          }
+        ],
+        "stem_pairs": []
+      },
+      "repaired": {
+        "sha256": "171041a0b31266a04c0c92390d69ad6f35538773c553d2162f39f3668d32530d",
+        "bytes": 2052,
+        "classes": [
+          "e6b0fd6d48ee2f39",
+          "cc7f512b8a7fe245"
+        ],
+        "fields": [
+          {
+            "class": "ArkenAudioMeta",
+            "members": {
+              "_artists": {
+                "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                "members": {
+                  "_items": {
+                    "array_length": [
+                      0
+                    ]
+                  },
+                  "_size": 0,
+                  "_version": 0
+                }
+              },
+              "_album": null,
+              "_category": null,
+              "_duration": 61.04090881347656,
+              "_isSong": true,
+              "_orderValue": 0,
+              "_name": "FB MP3 Test - OGG Vorbis converted",
+              "_pack": "",
+              "_creator": "",
+              "_genre": "",
+              "_subgenre": "",
+              "_tags": {
+                "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                "members": {
+                  "_items": {
+                    "array_length": [
+                      0
+                    ]
+                  },
+                  "_size": 0,
+                  "_version": 0
+                }
+              },
+              "_starred": false,
+              "_hideFromView": false,
+              "_includedWorldPaths": null,
+              "_official": false,
+              "_prevPathIfDeleted": null,
+              "_links": {
+                "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                "members": {
+                  "_items": {
+                    "array_length": [
+                      0
+                    ]
+                  },
+                  "_size": 0,
+                  "_version": 0
+                }
+              },
+              "ArkenBaseMeta+_name": "FB MP3 Test - OGG Vorbis converted",
+              "ArkenBaseMeta+_pack": "",
+              "ArkenBaseMeta+_creator": "",
+              "ArkenBaseMeta+_genre": "",
+              "ArkenBaseMeta+_subgenre": "",
+              "ArkenBaseMeta+_tags": {
+                "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                "members": {
+                  "_items": {
+                    "array_length": [
+                      0
+                    ]
+                  },
+                  "_size": 0,
+                  "_version": 0
+                }
+              },
+              "ArkenBaseMeta+_starred": false,
+              "ArkenBaseMeta+_hideFromView": false,
+              "ArkenBaseMeta+_includedWorldPaths": null,
+              "ArkenBaseMeta+_official": false,
+              "ArkenBaseMeta+_prevPathIfDeleted": null,
+              "ArkenBaseMeta+_links": {
+                "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                "members": {
+                  "_items": {
+                    "array_length": [
+                      0
+                    ]
+                  },
+                  "_size": 0,
+                  "_version": 0
+                }
+              },
+              "LinkableContent+_links": {
+                "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                "members": {
+                  "_items": {
+                    "array_length": [
+                      0
+                    ]
+                  },
+                  "_size": 0,
+                  "_version": 0
+                }
+              }
+            }
+          }
+        ],
+        "stem_pairs": []
+      },
+      "file_bytes_unchanged": true
+    },
+    {
+      "path": "MyAssets/Playlists/FB Campaign Check/FB MP3 Test.rwpl",
+      "old": {
+        "sha256": "ebb97442678196516c5654739383d841c8fcd164bf6c1d4c717eb5c7316430b0",
+        "bytes": 3861,
+        "classes": [
+          "bc865262faff1288",
+          "af69faf52198fafe",
+          "cc7f512b8a7fe245",
+          "accea216927404e6",
+          "7a5804e111ae3def",
+          "75a8720accb6dc68",
+          "f193da816e600fd8",
+          "2f163b478e1e2af0",
+          "cf8b9117ece6bc16"
+        ],
+        "fields": [
+          {
+            "class": "ContentItem",
+            "members": {
+              "_filePath": "MyAssets/Audio/Songs/FB Campaign Check/FB MP3 Test - MP3 original.rwmeta",
+              "_content": {
+                "class": "MusicTrackInfo",
+                "members": {
+                  "_name": "FB MP3 Test - MP3 original",
+                  "_artists": "",
+                  "_songPath": "MyAssets/Audio/Songs/FB Campaign Check/FB MP3 Test - MP3 original.rwmeta",
+                  "_pack": "",
+                  "_creator": "",
+                  "_trackVolumes": {
+                    "class": "System.Collections.Generic.Dictionary`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                    "members": {
+                      "Version": 0,
+                      "Comparer": {
+                        "class": "System.Collections.Generic.GenericEqualityComparer`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                        "members": {}
+                      },
+                      "HashSize": 0,
+                      "KeyValuePairs": null
+                    }
+                  }
+                }
+              },
+              "_officialFlag": false
+            }
+          },
+          {
+            "class": "ContentItem",
+            "members": {
+              "_filePath": "MyAssets/Audio/Songs/FB Campaign Check/FB MP3 Test - OGG Vorbis converted.rwmeta",
+              "_content": {
+                "class": "MusicTrackInfo",
+                "members": {
+                  "_name": "FB MP3 Test - OGG Vorbis converted",
+                  "_artists": "",
+                  "_songPath": "MyAssets/Audio/Songs/FB Campaign Check/FB MP3 Test - OGG Vorbis converted.rwmeta",
+                  "_pack": "",
+                  "_creator": "",
+                  "_trackVolumes": {
+                    "class": "System.Collections.Generic.Dictionary`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                    "members": {
+                      "Version": 0,
+                      "Comparer": {
+                        "class": "System.Collections.Generic.GenericEqualityComparer`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                        "members": {}
+                      },
+                      "HashSize": 0,
+                      "KeyValuePairs": null
+                    }
+                  }
+                }
+              },
+              "_officialFlag": false
+            }
+          },
+          {
+            "class": "MusicTrackInfo",
+            "members": {
+              "_name": "FB MP3 Test - MP3 original",
+              "_artists": "",
+              "_songPath": "MyAssets/Audio/Songs/FB Campaign Check/FB MP3 Test - MP3 original.rwmeta",
+              "_pack": "",
+              "_creator": "",
+              "_trackVolumes": {
+                "class": "System.Collections.Generic.Dictionary`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                "members": {
+                  "Version": 0,
+                  "Comparer": {
+                    "class": "System.Collections.Generic.GenericEqualityComparer`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                    "members": {}
+                  },
+                  "HashSize": 0,
+                  "KeyValuePairs": null
+                }
+              }
+            }
+          },
+          {
+            "class": "MusicTrackInfo",
+            "members": {
+              "_name": "FB MP3 Test - OGG Vorbis converted",
+              "_artists": "",
+              "_songPath": "MyAssets/Audio/Songs/FB Campaign Check/FB MP3 Test - OGG Vorbis converted.rwmeta",
+              "_pack": "",
+              "_creator": "",
+              "_trackVolumes": {
+                "class": "System.Collections.Generic.Dictionary`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                "members": {
+                  "Version": 0,
+                  "Comparer": {
+                    "class": "System.Collections.Generic.GenericEqualityComparer`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                    "members": {}
+                  },
+                  "HashSize": 0,
+                  "KeyValuePairs": null
+                }
+              }
+            }
+          }
+        ],
+        "stem_pairs": []
+      },
+      "repaired": {
+        "sha256": "46216b11757b0c6fa88aa0efcb6ef3861ea0ac008fc32495680edbb63d83011f",
+        "bytes": 4627,
+        "classes": [
+          "bc865262faff1288",
+          "af69faf52198fafe",
+          "cc7f512b8a7fe245",
+          "accea216927404e6",
+          "7a5804e111ae3def",
+          "1c56cbf4ca821e58",
+          "f193da816e600fd8",
+          "2f163b478e1e2af0",
+          "cf8b9117ece6bc16",
+          "58f152a0ab0c45b5"
+        ],
+        "fields": [
+          {
+            "class": "ContentItem",
+            "members": {
+              "_filePath": "MyAssets/Audio/Songs/FB Campaign Check/FB MP3 Test - MP3 original.rwmeta",
+              "_content": {
+                "class": "MusicTrackInfo",
+                "members": {
+                  "_name": "FB MP3 Test - MP3 original",
+                  "_artists": "",
+                  "_songPath": "MyAssets/Audio/Songs/FB Campaign Check/FB MP3 Test - MP3 original.rwmeta",
+                  "_pack": "",
+                  "_creator": "",
+                  "_trackVolumes": {
+                    "class": "System.Collections.Generic.Dictionary`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                    "members": {
+                      "Version": 2,
+                      "Comparer": {
+                        "class": "System.Collections.Generic.GenericEqualityComparer`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                        "members": {}
+                      },
+                      "HashSize": 3,
+                      "KeyValuePairs": {
+                        "array_length": [
+                          1
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "class": "ContentItem",
+            "members": {
+              "_filePath": "MyAssets/Audio/Songs/FB Campaign Check/FB MP3 Test - OGG Vorbis converted.rwmeta",
+              "_content": {
+                "class": "MusicTrackInfo",
+                "members": {
+                  "_name": "FB MP3 Test - OGG Vorbis converted",
+                  "_artists": "",
+                  "_songPath": "MyAssets/Audio/Songs/FB Campaign Check/FB MP3 Test - OGG Vorbis converted.rwmeta",
+                  "_pack": "",
+                  "_creator": "",
+                  "_trackVolumes": {
+                    "class": "System.Collections.Generic.Dictionary`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                    "members": {
+                      "Version": 2,
+                      "Comparer": {
+                        "class": "System.Collections.Generic.GenericEqualityComparer`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                        "members": {}
+                      },
+                      "HashSize": 3,
+                      "KeyValuePairs": {
+                        "array_length": [
+                          1
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "class": "MusicTrackInfo",
+            "members": {
+              "_name": "FB MP3 Test - MP3 original",
+              "_artists": "",
+              "_songPath": "MyAssets/Audio/Songs/FB Campaign Check/FB MP3 Test - MP3 original.rwmeta",
+              "_pack": "",
+              "_creator": "",
+              "_trackVolumes": {
+                "class": "System.Collections.Generic.Dictionary`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                "members": {
+                  "Version": 2,
+                  "Comparer": {
+                    "class": "System.Collections.Generic.GenericEqualityComparer`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                    "members": {}
+                  },
+                  "HashSize": 3,
+                  "KeyValuePairs": {
+                    "array_length": [
+                      1
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "class": "MusicTrackInfo",
+            "members": {
+              "_name": "FB MP3 Test - OGG Vorbis converted",
+              "_artists": "",
+              "_songPath": "MyAssets/Audio/Songs/FB Campaign Check/FB MP3 Test - OGG Vorbis converted.rwmeta",
+              "_pack": "",
+              "_creator": "",
+              "_trackVolumes": {
+                "class": "System.Collections.Generic.Dictionary`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                "members": {
+                  "Version": 2,
+                  "Comparer": {
+                    "class": "System.Collections.Generic.GenericEqualityComparer`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                    "members": {}
+                  },
+                  "HashSize": 3,
+                  "KeyValuePairs": {
+                    "array_length": [
+                      1
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "stem_pairs": [
+          {
+            "key": "Master",
+            "value": 0.800000011920929
+          },
+          {
+            "key": "Master",
+            "value": 0.800000011920929
+          }
+        ]
+      },
+      "file_bytes_unchanged": false
+    },
+    {
+      "path": "MyAssets/Playlists/FB Campaign Check/FB MP3 Test.rwmeta",
+      "old": {
+        "sha256": "6251cc9b8f681a840e82622223822d379a982724d85af9ab580a3c422b47786f",
+        "bytes": 1801,
+        "classes": [
+          "a571f2d4f51c9eff",
+          "cc7f512b8a7fe245"
+        ],
+        "fields": [],
+        "stem_pairs": []
+      },
+      "repaired": {
+        "sha256": "6251cc9b8f681a840e82622223822d379a982724d85af9ab580a3c422b47786f",
+        "bytes": 1801,
+        "classes": [
+          "a571f2d4f51c9eff",
+          "cc7f512b8a7fe245"
+        ],
+        "fields": [],
+        "stem_pairs": []
+      },
+      "file_bytes_unchanged": true
+    }
+  ],
+  "native_controls": [
+    {
+      "path": "MyAssets/Audio/Songs/Quick Import/FB Native Music Control/FBMusicControl-MP3.rwfile",
+      "sha256": "e7d8ca8e1541636a025746d8e26b91c6047b7dbe617f452679f369a55c0a40b2",
+      "bytes": 9707,
+      "classes": [
+        "2187ddaa167e5312",
+        "cc7f512b8a7fe245",
+        "579b6eab44e882cc",
+        "78b558b43fd8b1c3"
+      ],
+      "fields": [
+        {
+          "class": "ArkenAudio",
+          "members": {
+            "_name": "FBMusicControl-MP3",
+            "_pack": "",
+            "_creator": "",
+            "_album": null,
+            "_category": null,
+            "_duration": 1.222000002861023,
+            "_isSong": true,
+            "_orderValue": 0,
+            "_tags": {
+              "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+              "members": {
+                "_items": {
+                  "array_length": [
+                    0
+                  ]
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_artists": {
+              "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+              "members": {
+                "_items": {
+                  "array_length": [
+                    0
+                  ]
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_tracks": {
+              "class": "System.Collections.Generic.List`1[[AudioTrack, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+              "members": {
+                "_items": {
+                  "array_length": [
+                    4
+                  ]
+                },
+                "_size": 1,
+                "_version": 1
+              }
+            }
+          }
+        },
+        {
+          "class": "AudioTrack",
+          "members": {
+            "_trackName": "Master",
+            "_originalFile": "FBMusicControl-MP3.mp3",
+            "_clipRAW": {
+              "length": 8481,
+              "sha256": "dd1e28cab8113080943df0c21c2c33bf13b07d8b459ae7f22ff2783633498223",
+              "header_hex": "49443304000000000022545353450000"
+            },
+            "_parentName": "FBMusicControl-MP3"
+          }
+        }
+      ],
+      "stem_pairs": []
+    },
+    {
+      "path": "MyAssets/Audio/Songs/Quick Import/FB Native Music Control/FBMusicControl-MP3.rwmeta",
+      "sha256": "59e7a4d875c8d7d0813a00bd64e15a3b9c31e597abb9cb8afcce9b6dc3918cfe",
+      "bytes": 2030,
+      "classes": [
+        "e6b0fd6d48ee2f39",
+        "cc7f512b8a7fe245"
+      ],
+      "fields": [
+        {
+          "class": "ArkenAudioMeta",
+          "members": {
+            "_artists": {
+              "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+              "members": {
+                "_items": {
+                  "array_length": [
+                    0
+                  ]
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_album": null,
+            "_category": null,
+            "_duration": 1.222000002861023,
+            "_isSong": true,
+            "_orderValue": 0,
+            "_name": "FBMusicControl-MP3",
+            "_pack": "",
+            "_creator": "",
+            "_genre": "",
+            "_subgenre": "",
+            "_tags": {
+              "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+              "members": {
+                "_items": {
+                  "array_length": [
+                    0
+                  ]
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_starred": false,
+            "_hideFromView": false,
+            "_includedWorldPaths": null,
+            "_official": false,
+            "_prevPathIfDeleted": null,
+            "_links": {
+              "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+              "members": {
+                "_items": {
+                  "array_length": [
+                    0
+                  ]
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "ArkenBaseMeta+_name": "FBMusicControl-MP3",
+            "ArkenBaseMeta+_pack": "",
+            "ArkenBaseMeta+_creator": "",
+            "ArkenBaseMeta+_genre": "",
+            "ArkenBaseMeta+_subgenre": "",
+            "ArkenBaseMeta+_tags": {
+              "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+              "members": {
+                "_items": {
+                  "array_length": [
+                    0
+                  ]
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "ArkenBaseMeta+_starred": false,
+            "ArkenBaseMeta+_hideFromView": false,
+            "ArkenBaseMeta+_includedWorldPaths": null,
+            "ArkenBaseMeta+_official": false,
+            "ArkenBaseMeta+_prevPathIfDeleted": null,
+            "ArkenBaseMeta+_links": {
+              "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+              "members": {
+                "_items": {
+                  "array_length": [
+                    0
+                  ]
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "LinkableContent+_links": {
+              "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+              "members": {
+                "_items": {
+                  "array_length": [
+                    0
+                  ]
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            }
+          }
+        }
+      ],
+      "stem_pairs": []
+    },
+    {
+      "path": "MyAssets/Audio/Songs/Quick Import/FB Native Music Control/FBMusicControl-OGG.rwfile",
+      "sha256": "43e65eaf71a743d6edb84011cbde7e2cf385b4d9b6fddc2d3b6bc23e2d3c4297",
+      "bytes": 7596,
+      "classes": [
+        "2187ddaa167e5312",
+        "cc7f512b8a7fe245",
+        "579b6eab44e882cc",
+        "78b558b43fd8b1c3"
+      ],
+      "fields": [
+        {
+          "class": "ArkenAudio",
+          "members": {
+            "_name": "FBMusicControl-OGG",
+            "_pack": "",
+            "_creator": "",
+            "_album": null,
+            "_category": null,
+            "_duration": 2.0,
+            "_isSong": true,
+            "_orderValue": 0,
+            "_tags": {
+              "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+              "members": {
+                "_items": {
+                  "array_length": [
+                    0
+                  ]
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_artists": {
+              "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+              "members": {
+                "_items": {
+                  "array_length": [
+                    0
+                  ]
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_tracks": {
+              "class": "System.Collections.Generic.List`1[[AudioTrack, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+              "members": {
+                "_items": {
+                  "array_length": [
+                    4
+                  ]
+                },
+                "_size": 1,
+                "_version": 1
+              }
+            }
+          }
+        },
+        {
+          "class": "AudioTrack",
+          "members": {
+            "_trackName": "Master",
+            "_originalFile": "FBMusicControl-OGG.ogg",
+            "_clipRAW": {
+              "length": 6370,
+              "sha256": "6df2a341b3229f659039dbc49735564dec005b76678b5ccbd0aa8f0d28a51c12",
+              "header_hex": "4f6767530002000000000000000013fd"
+            },
+            "_parentName": "FBMusicControl-OGG"
+          }
+        }
+      ],
+      "stem_pairs": []
+    },
+    {
+      "path": "MyAssets/Audio/Songs/Quick Import/FB Native Music Control/FBMusicControl-OGG.rwmeta",
+      "sha256": "bd38a2fa9e5bd6f2407ba2ed7643df2a6f2d22543f7eb78cae1b7301ee08f00e",
+      "bytes": 2030,
+      "classes": [
+        "e6b0fd6d48ee2f39",
+        "cc7f512b8a7fe245"
+      ],
+      "fields": [
+        {
+          "class": "ArkenAudioMeta",
+          "members": {
+            "_artists": {
+              "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+              "members": {
+                "_items": {
+                  "array_length": [
+                    0
+                  ]
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_album": null,
+            "_category": null,
+            "_duration": 2.0,
+            "_isSong": true,
+            "_orderValue": 0,
+            "_name": "FBMusicControl-OGG",
+            "_pack": "",
+            "_creator": "",
+            "_genre": "",
+            "_subgenre": "",
+            "_tags": {
+              "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+              "members": {
+                "_items": {
+                  "array_length": [
+                    0
+                  ]
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_starred": false,
+            "_hideFromView": false,
+            "_includedWorldPaths": null,
+            "_official": false,
+            "_prevPathIfDeleted": null,
+            "_links": {
+              "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+              "members": {
+                "_items": {
+                  "array_length": [
+                    0
+                  ]
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "ArkenBaseMeta+_name": "FBMusicControl-OGG",
+            "ArkenBaseMeta+_pack": "",
+            "ArkenBaseMeta+_creator": "",
+            "ArkenBaseMeta+_genre": "",
+            "ArkenBaseMeta+_subgenre": "",
+            "ArkenBaseMeta+_tags": {
+              "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+              "members": {
+                "_items": {
+                  "array_length": [
+                    0
+                  ]
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "ArkenBaseMeta+_starred": false,
+            "ArkenBaseMeta+_hideFromView": false,
+            "ArkenBaseMeta+_includedWorldPaths": null,
+            "ArkenBaseMeta+_official": false,
+            "ArkenBaseMeta+_prevPathIfDeleted": null,
+            "ArkenBaseMeta+_links": {
+              "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+              "members": {
+                "_items": {
+                  "array_length": [
+                    0
+                  ]
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "LinkableContent+_links": {
+              "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+              "members": {
+                "_items": {
+                  "array_length": [
+                    0
+                  ]
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            }
+          }
+        }
+      ],
+      "stem_pairs": []
+    },
+    {
+      "path": "MyAssets/Audio/Songs/Quick Import/FB Native Music Control/FBReference-tone.rwfile",
+      "sha256": "3e71dcf0be6fe5f978e7a0d65fb27d3c4f2df7db2048fcd63ec60b430a43e85f",
+      "bytes": 89466,
+      "classes": [
+        "2187ddaa167e5312",
+        "cc7f512b8a7fe245",
+        "579b6eab44e882cc",
+        "78b558b43fd8b1c3"
+      ],
+      "fields": [
+        {
+          "class": "ArkenAudio",
+          "members": {
+            "_name": "FBReference-tone",
+            "_pack": "",
+            "_creator": "",
+            "_album": null,
+            "_category": null,
+            "_duration": 2.0,
+            "_isSong": true,
+            "_orderValue": 0,
+            "_tags": {
+              "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+              "members": {
+                "_items": {
+                  "array_length": [
+                    0
+                  ]
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_artists": {
+              "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+              "members": {
+                "_items": {
+                  "array_length": [
+                    0
+                  ]
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_tracks": {
+              "class": "System.Collections.Generic.List`1[[AudioTrack, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+              "members": {
+                "_items": {
+                  "array_length": [
+                    4
+                  ]
+                },
+                "_size": 1,
+                "_version": 1
+              }
+            }
+          }
+        },
+        {
+          "class": "AudioTrack",
+          "members": {
+            "_trackName": "Master",
+            "_originalFile": "FBReference-tone.wav",
+            "_clipRAW": {
+              "length": 88244,
+              "sha256": "b8b008a6b6e8e6f0aa118203e7a09274645def9084cb08d215db796cb55a8d26",
+              "header_hex": "52494646ac58010057415645666d7420"
+            },
+            "_parentName": "FBReference-tone"
+          }
+        }
+      ],
+      "stem_pairs": []
+    },
+    {
+      "path": "MyAssets/Audio/Songs/Quick Import/FB Native Music Control/FBReference-tone.rwmeta",
+      "sha256": "90d079062cacfdf5fb92ac3edfe25c5457fde24938753598c678b636f60474c4",
+      "bytes": 2028,
+      "classes": [
+        "e6b0fd6d48ee2f39",
+        "cc7f512b8a7fe245"
+      ],
+      "fields": [
+        {
+          "class": "ArkenAudioMeta",
+          "members": {
+            "_artists": {
+              "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+              "members": {
+                "_items": {
+                  "array_length": [
+                    0
+                  ]
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_album": null,
+            "_category": null,
+            "_duration": 2.0,
+            "_isSong": true,
+            "_orderValue": 0,
+            "_name": "FBReference-tone",
+            "_pack": "",
+            "_creator": "",
+            "_genre": "",
+            "_subgenre": "",
+            "_tags": {
+              "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+              "members": {
+                "_items": {
+                  "array_length": [
+                    0
+                  ]
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "_starred": false,
+            "_hideFromView": false,
+            "_includedWorldPaths": null,
+            "_official": false,
+            "_prevPathIfDeleted": null,
+            "_links": {
+              "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+              "members": {
+                "_items": {
+                  "array_length": [
+                    0
+                  ]
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "ArkenBaseMeta+_name": "FBReference-tone",
+            "ArkenBaseMeta+_pack": "",
+            "ArkenBaseMeta+_creator": "",
+            "ArkenBaseMeta+_genre": "",
+            "ArkenBaseMeta+_subgenre": "",
+            "ArkenBaseMeta+_tags": {
+              "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+              "members": {
+                "_items": {
+                  "array_length": [
+                    0
+                  ]
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "ArkenBaseMeta+_starred": false,
+            "ArkenBaseMeta+_hideFromView": false,
+            "ArkenBaseMeta+_includedWorldPaths": null,
+            "ArkenBaseMeta+_official": false,
+            "ArkenBaseMeta+_prevPathIfDeleted": null,
+            "ArkenBaseMeta+_links": {
+              "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+              "members": {
+                "_items": {
+                  "array_length": [
+                    0
+                  ]
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            },
+            "LinkableContent+_links": {
+              "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+              "members": {
+                "_items": {
+                  "array_length": [
+                    0
+                  ]
+                },
+                "_size": 0,
+                "_version": 0
+              }
+            }
+          }
+        }
+      ],
+      "stem_pairs": []
+    },
+    {
+      "path": "MyAssets/Playlists/FB Native Music Control.rwmeta",
+      "sha256": "2ecd98fd41b707409b6510ec7c312982df20fb593ac0a7fce77822eb790468de",
+      "bytes": 1807,
+      "classes": [
+        "a571f2d4f51c9eff",
+        "cc7f512b8a7fe245"
+      ],
+      "fields": [],
+      "stem_pairs": []
+    },
+    {
+      "path": "MyAssets/Playlists/FB Native Music Control.rwpl",
+      "sha256": "28f578e9196e6d73c51cee09393682bcabd2cb05991a792fe02dc235f5bd17e9",
+      "bytes": 5349,
+      "classes": [
+        "bc865262faff1288",
+        "af69faf52198fafe",
+        "cc7f512b8a7fe245",
+        "accea216927404e6",
+        "7a5804e111ae3def",
+        "1c56cbf4ca821e58",
+        "f193da816e600fd8",
+        "2f163b478e1e2af0",
+        "cf8b9117ece6bc16",
+        "58f152a0ab0c45b5"
+      ],
+      "fields": [
+        {
+          "class": "ContentItem",
+          "members": {
+            "_filePath": "MyAssets/Audio/Songs/Quick Import/FB Native Music Control/FBReference-tone.rwmeta",
+            "_content": {
+              "class": "MusicTrackInfo",
+              "members": {
+                "_name": "FBReference-tone",
+                "_artists": "",
+                "_songPath": "MyAssets/Audio/Songs/Quick Import/FB Native Music Control/FBReference-tone.rwmeta",
+                "_pack": "",
+                "_creator": "",
+                "_trackVolumes": {
+                  "class": "System.Collections.Generic.Dictionary`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                  "members": {
+                    "Version": 3,
+                    "Comparer": {
+                      "class": "System.Collections.Generic.GenericEqualityComparer`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                      "members": {}
+                    },
+                    "HashSize": 3,
+                    "KeyValuePairs": {
+                      "array_length": [
+                        1
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "class": "ContentItem",
+          "members": {
+            "_filePath": "MyAssets/Audio/Songs/Quick Import/FB Native Music Control/FBMusicControl-MP3.rwmeta",
+            "_content": {
+              "class": "MusicTrackInfo",
+              "members": {
+                "_name": "FBMusicControl-MP3",
+                "_artists": "",
+                "_songPath": "MyAssets/Audio/Songs/Quick Import/FB Native Music Control/FBMusicControl-MP3.rwmeta",
+                "_pack": "",
+                "_creator": "",
+                "_trackVolumes": {
+                  "class": "System.Collections.Generic.Dictionary`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                  "members": {
+                    "Version": 2,
+                    "Comparer": {
+                      "class": "System.Collections.Generic.GenericEqualityComparer`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                      "members": {}
+                    },
+                    "HashSize": 3,
+                    "KeyValuePairs": {
+                      "array_length": [
+                        1
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "class": "ContentItem",
+          "members": {
+            "_filePath": "MyAssets/Audio/Songs/Quick Import/FB Native Music Control/FBMusicControl-OGG.rwmeta",
+            "_content": {
+              "class": "MusicTrackInfo",
+              "members": {
+                "_name": "FBMusicControl-OGG",
+                "_artists": "",
+                "_songPath": "MyAssets/Audio/Songs/Quick Import/FB Native Music Control/FBMusicControl-OGG.rwmeta",
+                "_pack": "",
+                "_creator": "",
+                "_trackVolumes": {
+                  "class": "System.Collections.Generic.Dictionary`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                  "members": {
+                    "Version": 2,
+                    "Comparer": {
+                      "class": "System.Collections.Generic.GenericEqualityComparer`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                      "members": {}
+                    },
+                    "HashSize": 3,
+                    "KeyValuePairs": {
+                      "array_length": [
+                        1
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "class": "MusicTrackInfo",
+          "members": {
+            "_name": "FBReference-tone",
+            "_artists": "",
+            "_songPath": "MyAssets/Audio/Songs/Quick Import/FB Native Music Control/FBReference-tone.rwmeta",
+            "_pack": "",
+            "_creator": "",
+            "_trackVolumes": {
+              "class": "System.Collections.Generic.Dictionary`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+              "members": {
+                "Version": 3,
+                "Comparer": {
+                  "class": "System.Collections.Generic.GenericEqualityComparer`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                  "members": {}
+                },
+                "HashSize": 3,
+                "KeyValuePairs": {
+                  "array_length": [
+                    1
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "class": "MusicTrackInfo",
+          "members": {
+            "_name": "FBMusicControl-MP3",
+            "_artists": "",
+            "_songPath": "MyAssets/Audio/Songs/Quick Import/FB Native Music Control/FBMusicControl-MP3.rwmeta",
+            "_pack": "",
+            "_creator": "",
+            "_trackVolumes": {
+              "class": "System.Collections.Generic.Dictionary`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+              "members": {
+                "Version": 2,
+                "Comparer": {
+                  "class": "System.Collections.Generic.GenericEqualityComparer`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                  "members": {}
+                },
+                "HashSize": 3,
+                "KeyValuePairs": {
+                  "array_length": [
+                    1
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "class": "MusicTrackInfo",
+          "members": {
+            "_name": "FBMusicControl-OGG",
+            "_artists": "",
+            "_songPath": "MyAssets/Audio/Songs/Quick Import/FB Native Music Control/FBMusicControl-OGG.rwmeta",
+            "_pack": "",
+            "_creator": "",
+            "_trackVolumes": {
+              "class": "System.Collections.Generic.Dictionary`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+              "members": {
+                "Version": 2,
+                "Comparer": {
+                  "class": "System.Collections.Generic.GenericEqualityComparer`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                  "members": {}
+                },
+                "HashSize": 3,
+                "KeyValuePairs": {
+                  "array_length": [
+                    1
+                  ]
+                }
+              }
+            }
+          }
+        }
+      ],
+      "stem_pairs": [
+        {
+          "key": "Master",
+          "value": 0.800000011920929
+        },
+        {
+          "key": "Master",
+          "value": 0.800000011920929
+        },
+        {
+          "key": "Master",
+          "value": 0.800000011920929
+        }
+      ]
+    }
+  ],
+  "codec_probes": [
+    {
+      "file": "FBMusicControl-MP3.mp3",
+      "exit_code": 0,
+      "input_description": [
+        "Input #0, mp3, from 'fixtures\\arkenforge-user-playlist\\toolkit-made-music-playlist\\sources\\FBMusicControl-MP3.mp3':",
+        "Duration: 00:00:02.00, start: 0.050113, bitrate: 33 kb/s",
+        "Stream #0:0: Audio: mp3 (mp3float), 22050 Hz, mono, fltp, 32 kb/s, start 0.050113",
+        "Stream #0:0: Audio: pcm_s16le, 22050 Hz, mono, s16, 352 kb/s"
+      ]
+    },
+    {
+      "file": "FBMusicControl-OGG.ogg",
+      "exit_code": 0,
+      "input_description": [
+        "Input #0, ogg, from 'fixtures\\arkenforge-user-playlist\\toolkit-made-music-playlist\\sources\\FBMusicControl-OGG.ogg':",
+        "Duration: 00:00:02.00, start: 0.000000, bitrate: 25 kb/s",
+        "Stream #0:0: Audio: vorbis, 22050 Hz, mono, fltp, 40 kb/s",
+        "Stream #0:0: Audio: pcm_s16le, 22050 Hz, mono, s16, 352 kb/s"
+      ]
+    },
+    {
+      "file": "Crypt and Lair.mp3",
+      "exit_code": 0,
+      "input_description": [
+        "Input #0, mp3, from 'C:\\AMD\\lob-counts_manor-pk-v13\\ForgeBridge\\lob-counts_manor-pk-v13\\assets\\playlist\\Crypt and Lair.mp3':",
+        "Duration: 00:01:01.04, start: 0.025057, bitrate: 158 kb/s",
+        "Stream #0:0: Audio: mp3 (mp3float), 44100 Hz, stereo, fltp, 158 kb/s, start 0.025057",
+        "Stream #0:0: Audio: pcm_s16le, 44100 Hz, stereo, s16, 1411 kb/s"
+      ]
+    },
+    {
+      "file": "Crypt and Lair.ogg",
+      "exit_code": 0,
+      "input_description": [
+        "Input #0, ogg, from 'C:\\AMD\\fb-audio-playback-recheck-2026-11-03\\Crypt and Lair.ogg':",
+        "Duration: 00:01:01.04, start: 0.000000, bitrate: 101 kb/s",
+        "Stream #0:0: Audio: vorbis, 44100 Hz, stereo, fltp, 128 kb/s",
+        "Stream #0:0: Audio: pcm_s16le, 44100 Hz, stereo, s16, 1411 kb/s"
+      ]
+    }
+  ],
+  "runtime_after_repair": "pending Jeffrey recheck",
+  "installed_package": "C:\\AMD\\fb-audio-mixer-recheck-2026-11-05\\native-package-preserve-edits.zip",
+  "installed_package_sha256": "497c9c4da16066f85242756dab14d739385e8f2d692813c70b9f99781ba717d0",
+  "installation": {
+    "status": "PASS",
+    "added": 6,
+    "receipt": "C:\\AMD\\fb-backups\\forgebridge-c1639eb8b99442919f5fe5c529d5d547\\uninstall.json",
+    "backup": "C:\\AMD\\fb-backups\\forgebridge-c1639eb8b99442919f5fe5c529d5d547\\MyAssets",
+    "runtime_validation": "not performed"
+  },
+  "uninstall": {
+    "status": "PASS",
+    "removed": 5,
+    "kept_changed": [
+      "MyAssets/Playlists/FB Campaign Check/FB MP3 Test.rwpl"
+    ],
+    "removed_empty_folders": 1,
+    "backup_retained": true
+  },
+  "installed_byte_checks": [
+    {
+      "path": "MyAssets/Audio/Songs/FB Campaign Check/FB MP3 Test - MP3 original.rwfile",
+      "sha256": "e82b233eaee5521ec8e13ec3b99027fa375906a0205a7b9f205e53920b3be1fc"
+    },
+    {
+      "path": "MyAssets/Audio/Songs/FB Campaign Check/FB MP3 Test - MP3 original.rwmeta",
+      "sha256": "308479f318e62405c357f91a4e753b0b743a23445e4a4206109b503a13e5424b"
+    },
+    {
+      "path": "MyAssets/Audio/Songs/FB Campaign Check/FB MP3 Test - OGG Vorbis converted.rwfile",
+      "sha256": "eb3fe637335dea22901bed24636f2fcf49ba33c565e550d4be4bec7b9ee57b2c"
+    },
+    {
+      "path": "MyAssets/Audio/Songs/FB Campaign Check/FB MP3 Test - OGG Vorbis converted.rwmeta",
+      "sha256": "171041a0b31266a04c0c92390d69ad6f35538773c553d2162f39f3668d32530d"
+    },
+    {
+      "path": "MyAssets/Playlists/FB Audio Recheck 2026-11-05/FB MP3 Test.rwmeta",
+      "sha256": "6251cc9b8f681a840e82622223822d379a982724d85af9ab580a3c422b47786f"
+    },
+    {
+      "path": "MyAssets/Playlists/FB Audio Recheck 2026-11-05/FB MP3 Test.rwpl",
+      "sha256": "46216b11757b0c6fa88aa0efcb6ef3861ea0ac008fc32495680edbb63d83011f"
+    }
+  ],
+  "guard_diagnostic": {
+    "closed_guard": "REFUSED",
+    "elapsed_seconds": 15.05555019993335,
+    "error": "Cannot verify Toolkit is closed; installation refused",
+    "cause": "TimeoutExpired(['tasklist', '/FO', 'CSV', '/NH'], 15)"
+  },
+  "class_definitions": {
+    "2187ddaa167e5312": {
+      "name": "ArkenAudio",
+      "names": [
+        "_name",
+        "_pack",
+        "_creator",
+        "_album",
+        "_category",
+        "_duration",
+        "_isSong",
+        "_orderValue",
+        "_tags",
+        "_artists",
+        "_tracks"
+      ],
+      "types": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        3,
+        3,
+        3
+      ],
+      "infos": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        11,
+        1,
+        8,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        "System.Collections.Generic.List`1[[AudioTrack, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]"
+      ],
+      "library_id": 2
+    },
+    "cc7f512b8a7fe245": {
+      "name": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+      "names": [
+        "_items",
+        "_size",
+        "_version"
+      ],
+      "types": [
+        6,
+        0,
+        0
+      ],
+      "infos": [
+        null,
+        8,
+        8
+      ],
+      "library_id": null
+    },
+    "579b6eab44e882cc": {
+      "name": "System.Collections.Generic.List`1[[AudioTrack, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+      "names": [
+        "_items",
+        "_size",
+        "_version"
+      ],
+      "types": [
+        4,
+        0,
+        0
+      ],
+      "infos": [
+        {
+          "name": "AudioTrack[]",
+          "library_id": 2
+        },
+        8,
+        8
+      ],
+      "library_id": null
+    },
+    "78b558b43fd8b1c3": {
+      "name": "AudioTrack",
+      "names": [
+        "_trackName",
+        "_originalFile",
+        "_clipRAW",
+        "_parentName"
+      ],
+      "types": [
+        1,
+        1,
+        7,
+        1
+      ],
+      "infos": [
+        null,
+        null,
+        2,
+        null
+      ],
+      "library_id": 2
+    },
+    "e6b0fd6d48ee2f39": {
+      "name": "ArkenAudioMeta",
+      "names": [
+        "_artists",
+        "_album",
+        "_category",
+        "_duration",
+        "_isSong",
+        "_orderValue",
+        "_name",
+        "_pack",
+        "_creator",
+        "_genre",
+        "_subgenre",
+        "_tags",
+        "_starred",
+        "_hideFromView",
+        "_includedWorldPaths",
+        "_official",
+        "_prevPathIfDeleted",
+        "_links",
+        "ArkenBaseMeta+_name",
+        "ArkenBaseMeta+_pack",
+        "ArkenBaseMeta+_creator",
+        "ArkenBaseMeta+_genre",
+        "ArkenBaseMeta+_subgenre",
+        "ArkenBaseMeta+_tags",
+        "ArkenBaseMeta+_starred",
+        "ArkenBaseMeta+_hideFromView",
+        "ArkenBaseMeta+_includedWorldPaths",
+        "ArkenBaseMeta+_official",
+        "ArkenBaseMeta+_prevPathIfDeleted",
+        "ArkenBaseMeta+_links",
+        "LinkableContent+_links"
+      ],
+      "types": [
+        3,
+        1,
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        3,
+        0,
+        0,
+        3,
+        0,
+        1,
+        3,
+        1,
+        1,
+        1,
+        1,
+        1,
+        3,
+        0,
+        0,
+        3,
+        0,
+        1,
+        3,
+        3
+      ],
+      "infos": [
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        null,
+        null,
+        11,
+        1,
+        8,
+        null,
+        null,
+        null,
+        null,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        1,
+        1,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        1,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        null,
+        null,
+        null,
+        null,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        1,
+        1,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        1,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"
+      ],
+      "library_id": 2
+    },
+    "bc865262faff1288": {
+      "name": "ArkenPlaylist",
+      "names": [
+        "_name",
+        "_pack",
+        "_creator",
+        "_songs",
+        "_links",
+        "LinkableContent+_links"
+      ],
+      "types": [
+        1,
+        1,
+        1,
+        4,
+        3,
+        3
+      ],
+      "infos": [
+        null,
+        null,
+        null,
+        {
+          "name": "KVPOrderedList`1[[ContentItem, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+          "library_id": 2
+        },
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"
+      ],
+      "library_id": 2
+    },
+    "af69faf52198fafe": {
+      "name": "KVPOrderedList`1[[ContentItem, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+      "names": [
+        "_entries"
+      ],
+      "types": [
+        3
+      ],
+      "infos": [
+        "System.Collections.Generic.List`1[[KVPOrderedList`1+KVPEntry`1[[ContentItem, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[ContentItem, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]"
+      ],
+      "library_id": 2
+    },
+    "accea216927404e6": {
+      "name": "System.Collections.Generic.List`1[[KVPOrderedList`1+KVPEntry`1[[ContentItem, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[ContentItem, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+      "names": [
+        "_items",
+        "_size",
+        "_version"
+      ],
+      "types": [
+        4,
+        0,
+        0
+      ],
+      "infos": [
+        {
+          "name": "KVPOrderedList`1+KVPEntry`1[[ContentItem, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[ContentItem, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]][]",
+          "library_id": 2
+        },
+        8,
+        8
+      ],
+      "library_id": null
+    },
+    "7a5804e111ae3def": {
+      "name": "KVPOrderedList`1+KVPEntry`1[[ContentItem, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[ContentItem, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+      "names": [
+        "_order",
+        "_value"
+      ],
+      "types": [
+        0,
+        4
+      ],
+      "infos": [
+        8,
+        {
+          "name": "ContentItem",
+          "library_id": 2
+        }
+      ],
+      "library_id": 2
+    },
+    "75a8720accb6dc68": {
+      "name": "ContentItem",
+      "names": [
+        "_filePath",
+        "_content",
+        "_officialFlag"
+      ],
+      "types": [
+        1,
+        2,
+        0
+      ],
+      "infos": [
+        null,
+        null,
+        1
+      ],
+      "library_id": 2
+    },
+    "f193da816e600fd8": {
+      "name": "MusicTrackInfo",
+      "names": [
+        "_name",
+        "_artists",
+        "_songPath",
+        "_pack",
+        "_creator",
+        "_trackVolumes"
+      ],
+      "types": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        3
+      ],
+      "infos": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        "System.Collections.Generic.Dictionary`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"
+      ],
+      "library_id": 2
+    },
+    "2f163b478e1e2af0": {
+      "name": "System.Collections.Generic.Dictionary`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+      "names": [
+        "Version",
+        "Comparer",
+        "HashSize",
+        "KeyValuePairs"
+      ],
+      "types": [
+        0,
+        3,
+        0,
+        3
+      ],
+      "infos": [
+        8,
+        "System.Collections.Generic.GenericEqualityComparer`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        8,
+        "System.Collections.Generic.KeyValuePair`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]][]"
+      ],
+      "library_id": null
+    },
+    "cf8b9117ece6bc16": {
+      "name": "System.Collections.Generic.GenericEqualityComparer`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+      "names": [],
+      "types": [],
+      "infos": [],
+      "library_id": null
+    },
+    "1c56cbf4ca821e58": {
+      "name": "ContentItem",
+      "names": [
+        "_filePath",
+        "_content"
+      ],
+      "types": [
+        1,
+        2
+      ],
+      "infos": [
+        null,
+        null
+      ],
+      "library_id": 2
+    },
+    "58f152a0ab0c45b5": {
+      "name": "System.Collections.Generic.KeyValuePair`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+      "names": [
+        "key",
+        "value"
+      ],
+      "types": [
+        1,
+        0
+      ],
+      "infos": [
+        null,
+        11
+      ],
+      "library_id": null
+    },
+    "a571f2d4f51c9eff": {
+      "name": "ArkenPlaylistMeta",
+      "names": [
+        "_name",
+        "_pack",
+        "_creator",
+        "_genre",
+        "_subgenre",
+        "_tags",
+        "_starred",
+        "_hideFromView",
+        "_includedWorldPaths",
+        "_official",
+        "_prevPathIfDeleted",
+        "_links",
+        "ArkenBaseMeta+_name",
+        "ArkenBaseMeta+_pack",
+        "ArkenBaseMeta+_creator",
+        "ArkenBaseMeta+_genre",
+        "ArkenBaseMeta+_subgenre",
+        "ArkenBaseMeta+_tags",
+        "ArkenBaseMeta+_starred",
+        "ArkenBaseMeta+_hideFromView",
+        "ArkenBaseMeta+_includedWorldPaths",
+        "ArkenBaseMeta+_official",
+        "ArkenBaseMeta+_prevPathIfDeleted",
+        "ArkenBaseMeta+_links",
+        "LinkableContent+_links"
+      ],
+      "types": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        3,
+        0,
+        0,
+        3,
+        0,
+        1,
+        3,
+        1,
+        1,
+        1,
+        1,
+        1,
+        3,
+        0,
+        0,
+        3,
+        0,
+        1,
+        3,
+        3
+      ],
+      "infos": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        1,
+        1,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        1,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        null,
+        null,
+        null,
+        null,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        1,
+        1,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        1,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"
+      ],
+      "library_id": 2
+    }
+  }
+}

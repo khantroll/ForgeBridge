@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Fixed native music playlist stem initialization: generated single-stem songs
+  now receive the Toolkit user-import default `Master` volume (80%) instead of
+  an empty mixer dictionary. User ContentItem records use the current two-field
+  schema. Payload bytes/codec are preserved; MP3 and OGG Vorbis are now embedded directly after native playback confirmation.
+  Encoded local audio paths resolve safely; final-check campaign notes use a new
+  internal revision so kept edited predecessors are not overwritten.
+
 - Optional `convert --dnd5e-system` and GUI input resolve exact external dnd5e
   spell UUIDs to native 5e Spell notes, using the captured schema and styles.
   Referencing actor/item prose links are rewritten; missing source IDs and
