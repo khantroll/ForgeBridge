@@ -10,11 +10,11 @@ from forgebridge.native_map import clone
 from forgebridge.nrbf import Reader
 from forgebridge.native_scene import background_asset, UNITS_PER_GRID, _set
 from forgebridge.scene_records import record, asset_templates
-from forgebridge.uvtt import _square_grid, _scene_origin, _safe_ref, _package_file
+from forgebridge.uvtt import _square_grid, _scene_origin, open_art
 from forgebridge.validate import InventoryFatal
 
 
-def add_tiles(data, scene, package, scope):
+def add_tiles(data, scene, package, scope, foundry_data=None):
     reader=Reader(data);graph=reader.read();root=clone(reader,graph['root_id'])
     collection=root.members['_tiles'].members
     items=collection['_items'].items[:collection['_size']]
@@ -25,9 +25,7 @@ def add_tiles(data, scene, package, scope):
     for index,tile in sorted(enumerate(source),key=lambda pair:pair[1].get('sort',0)):
         ref=tile.get('texture',{}).get('src') or tile.get('img')
         try:
-            safe,problem=_safe_ref(ref)
-            if problem or not safe:raise ValueError('Unsafe/missing tile texture')
-            path=_package_file(Path(package),safe)
+            path=open_art(package, ref, foundry_data)
             if path.suffix.lower() in ('.webm','.mp4','.gif','.m4v','.mov'):raise ValueError('Animated/video tile remains manual')
             if path.stat().st_size>32*1024*1024:raise ValueError('Tile exceeds 32 MiB')
             image=path.read_bytes()

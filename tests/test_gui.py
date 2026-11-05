@@ -111,6 +111,18 @@ class GuiControllerTests(unittest.TestCase):
             run_headless_gui(scenario)
             self.assertEqual(converter.call_args.kwargs['dnd5e_system'], 'synthetic-spells.json')
 
+    def test_foundry_data_folder_reaches_worker_when_set(self):
+        report = {'scenes': [{'key': 'key', 'id': 'id', 'name': 'Room', 'source_path': 'packs/scenes'}]}
+        def scenario(ui):
+            click(ui, 'Discover scenes'); finish_job(ui)
+            field = ui['fields']['Optional Foundry Data folder (read-only)']
+            self.assertEqual(field.get(), '')
+            field.set('C:/Foundry/Data')
+            ui['list'].selection_set(0); click(ui, 'Build / export')
+        with patch('forgebridge.gui.discover', return_value=report), patch('forgebridge.gui.convert') as converter:
+            run_headless_gui(scenario)
+            self.assertEqual(converter.call_args.kwargs['foundry_data'], 'C:/Foundry/Data')
+
     def test_rename_folder_fields_and_pdf_checkbox_reach_conversion(self):
         report = {'package_title': 'Package title', 'scenes': [
             {'key': 'key', 'id': 'id', 'name': 'Room', 'source_path': 'packs/5e',

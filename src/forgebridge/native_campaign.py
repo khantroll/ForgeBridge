@@ -14,7 +14,7 @@ from forgebridge.dependencies import UUID_LINK
 from forgebridge.campaign_dnd5e import text, number
 from forgebridge.native_scene import background_asset
 from forgebridge.scene_records import asset_templates
-from forgebridge.uvtt import _safe_ref, _package_file
+from forgebridge.uvtt import _safe_ref, _package_file, open_art
 from forgebridge.validate import InventoryFatal
 
 NATIVE_CAMPAIGN_REVISION = 4
@@ -86,7 +86,7 @@ class CampaignBuilder(NoteBuilder):
         return block
 
 
-def campaign_files(ir, package, *, notes_folder, spell_root=None):
+def campaign_files(ir, package, *, notes_folder, spell_root=None, foundry_data=None):
     builder = CampaignBuilder(); files, links, rows, playlists = {}, {}, [], []
     losses = list(ir['losses']); scope = ir['scope']; docs = ir['documents']
     # Revision 1 stat-block/linked-token check can leave edited notes after
@@ -134,14 +134,17 @@ def campaign_files(ir, package, *, notes_folder, spell_root=None):
     def portrait(ref, *, external=False):
         if not ref:return None
         try:
-            safe, problem=_safe_ref(ref)
-            if problem or not safe:raise ValueError('unsafe/remote portrait reference')
-            root = spell_root if external else package
-            if external and safe.startswith('systems/dnd5e/'):
-                safe = safe[len('systems/dnd5e/'):]
-            if root is None:
-                raise ValueError('External spell media root unavailable')
-            path=_package_file(Path(root),safe)
+            if external:
+                safe, problem=_safe_ref(ref)
+                if problem or not safe:raise ValueError('unsafe/remote portrait reference')
+                root = spell_root
+                if safe.startswith('systems/dnd5e/'):
+                    safe = safe[len('systems/dnd5e/'):]
+                if root is None:
+                    raise ValueError('External spell media root unavailable')
+                path=_package_file(Path(root),safe)
+            else:
+                path=open_art(package, ref, foundry_data)
             if path.stat().st_size>32*1024*1024:raise ValueError('portrait exceeds 32 MiB')
             image=path.read_bytes(); key=hashlib.sha256(image).hexdigest()[:20]
             target='MyAssets/Media/Encyclopedia/Images/ForgeBridgeCampaign-'+scope+'/'+key
