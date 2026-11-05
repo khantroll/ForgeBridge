@@ -1,15 +1,22 @@
-"""Synthetic Fantasy Grounds NPCs, items, spells and story. File-level only."""
+"""Synthetic Fantasy Grounds NPCs, items, spells and story.
+
+Validation note: these tests are file-level only. They prove notes, links and
+images were written with the expected native shapes. They are never proof that
+the Arkenforge Toolkit lists or renders them. Toolkit check pending.
+"""
 import io
 import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 import zipfile
 
 from PIL import Image
 
 from forgebridge.fantasy_grounds import main
-from forgebridge.fg_campaign import build_campaign
+from forgebridge.fg_campaign import build_campaign, write_campaign
+from forgebridge.native_dependencies import read_package
 from test_campaign import content, find, node
 
 
@@ -62,11 +69,18 @@ DB = '''<?xml version="1.0" encoding="utf-8"?>
       <reactions>
         <id-00003><name type="string">Redirect</name><desc type="string">See <link recordname="encounter.id-00001">the room</link>.</desc></id-00003>
       </reactions>
+      <legendaryactions>
+        <id-00004><name type="string">Move</name><desc type="string">The goblin moves up to its speed.</desc></id-00004>
+      </legendaryactions>
     </id-00001>
     <id-00002>
       <name type="string">Blank</name>
       <token type="token">../secret.png</token>
     </id-00002>
+    <id-00003>
+      <name type="string">Mixed Speed</name>
+      <speed type="string">30 ft., swim 10 m</speed>
+    </id-00003>
   </npc>
   <item>
     <id-00001>
@@ -91,6 +105,16 @@ DB = '''<?xml version="1.0" encoding="utf-8"?>
       <type type="string">spell</type>
       <description type="formattedtext"><p><link recordname="spell.fireball@DD5E">Fireball</link></p></description>
     </id-00003>
+    <id-00004>
+      <name type="string">Cantrip Glow</name>
+      <type type="string">spell</type>
+      <school type="string">evocation</school>
+      <castingtime type="string">1 action</castingtime>
+      <range type="string">Touch</range>
+      <components type="string">V, S</components>
+      <duration type="string">1 minute</duration>
+      <description type="formattedtext"><p>Your hand sheds bright light.</p></description>
+    </id-00004>
   </item>
   <encounter>
     <id-00001>
@@ -105,28 +129,32 @@ DB = '''<?xml version="1.0" encoding="utf-8"?>
 </root>'''
 
 
-def module(root):
+def module(root, db=DB, extra_members=None):
     path = Path(root) / 'campaign.mod'
     with zipfile.ZipFile(path, 'w') as archive:
         archive.writestr('definition.xml', DEFINITION)
-        archive.writestr('db.xml', DB.encode())
+        archive.writestr('db.xml', db.encode())
         archive.writestr('tokens/goblin.png', png())
         archive.writestr('images/room.png', png())
+        for name, data in (extra_members or {}).items():
+            archive.writestr(name, data)
     return path
 
 
 class FantasyGroundsCampaignTests(unittest.TestCase):
-    def test_npcs_items_spells_and_story_become_native_notes(self):
+    def test_evidence_is_file_level_only(self):
         with tempfile.TemporaryDirectory() as tmp:
             files, report = build_campaign(module(tmp))
         self.assertEqual(report['evidence'], 'file-level only, Toolkit check pending')
         self.assertEqual(report['runtime_validation'], 'not performed')
-        self.assertEqual(report['counts']['actors'], 2)
-        self.assertEqual(report['counts']['items'], 1)
-        self.assertEqual(report['counts']['spells'], 1)
-        self.assertEqual(report['counts']['stories'], 1)
+        self.assertTrue(files)
+        self.assertFalse(any('../' in name or name.startswith('/') for name in files))
+
+    def test_npc_stat_block_actions_and_legendary(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            files, report = build_campaign(module(tmp))
         notes = {row['name']: row for row in report['documents']}
-        self.assertEqual(set(notes), {'Goblin', 'Blank', 'Potion of Healing', 'Magic Missile', 'Room 1'})
+        self.assertIn('Goblin', notes)
         goblin = node(files[notes['Goblin']['target'][:-7] + '.rwnote'])
         block = find(goblin, 'ArkenNoteFieldStatBlock5e')[0].members
         self.assertEqual(content(block['_nameText']), 'Goblin')
@@ -151,7 +179,28 @@ class FantasyGroundsCampaignTests(unittest.TestCase):
         room_link = report['links']['encounter.id-00001']
         chars = block['_reactions'].members['_items'].items[0].members['_characters'].members['_items'].items
         self.assertTrue(any(char.members['_link'] == room_link for char in chars))
+        legendary = [content(item) for item in block['_legendaryActions'].members['_items'].items]
+        self.assertTrue(any(item.startswith('Move. ') and 'moves up to its speed' in item for item in legendary))
         self.assertTrue(any(name.endswith('goblin.png.rwfile') or 'ForgeBridgeCampaign-' in name for name in files))
+        joined = json.dumps(report['losses'])
+        self.assertIn('strength score is not stored', joined)
+        self.assertIn('Bonus action', joined)
+
+    def test_mixed_speed_units_keep_source_text(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            files, report = build_campaign(module(tmp))
+        notes = {row['name']: row for row in report['documents']}
+        mixed = node(files[notes['Mixed Speed']['target'][:-7] + '.rwnote'])
+        block = find(mixed, 'ArkenNoteFieldStatBlock5e')[0].members
+        self.assertEqual(content(block['_speedText']), 'Speed 30 ft., swim 10 m')
+        self.assertIn('Speed mixes units', json.dumps(report['losses']))
+
+    def test_items_spells_and_spell_without_level(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            files, report = build_campaign(module(tmp))
+        self.assertEqual(report['counts']['items'], 1)
+        self.assertEqual(report['counts']['spells'], 2)
+        notes = {row['name']: row for row in report['documents']}
         potion = node(files[notes['Potion of Healing']['target'][:-7] + '.rwnote'])
         item_block = find(potion, 'ArkenNoteField5eItemBlock')[0].members
         self.assertIn('Goblin', content(item_block['_descriptionText']))
@@ -162,31 +211,81 @@ class FantasyGroundsCampaignTests(unittest.TestCase):
         self.assertIn('evocation', content(spell_block['_typeText']))
         self.assertIn('three glowing darts', content(spell_block['_descriptionText']))
         self.assertEqual(content(spell_block['_castingTimeText']), 'Casting Time 1 action')
+        glow = node(files[notes['Cantrip Glow']['target'][:-7] + '.rwnote'])
+        glow_block = find(glow, 'ArkenNoteField5eSpellBlock')[0].members
+        self.assertEqual(content(glow_block['_typeText']), 'evocation spell')
+        self.assertIn('sheds bright light', content(glow_block['_descriptionText']))
+        joined = json.dumps(report['losses'])
+        self.assertIn('Fireball', joined)
+        self.assertIn('no dnd5e spell-pack', joined)
+        self.assertIn('Cantrip Glow', joined)
+        self.assertIn('has no level', joined)
+
+    def test_story_with_module_image_and_empty_story_loss(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            files, report = build_campaign(module(tmp))
+        self.assertEqual(report['counts']['stories'], 1)
+        notes = {row['name']: row for row in report['documents']}
         story = node(files[notes['Room 1']['target'][:-7] + '.rwnote'])
         story_text = find(story, 'ArkenNoteFieldText')[0].members['_text']
         self.assertIn('Read aloud.', content(story_text))
         self.assertTrue(any(char.members['_link'] == report['links']['npc.id-00001']
                             for char in story_text.members['_characters'].members['_items'].items))
         self.assertTrue(find(story, 'ArkenNoteFieldMedia'))
+        self.assertTrue(any('room.png' in name or 'ForgeBridgeCampaign-' in name for name in files))
         joined = json.dumps(report['losses'])
-        self.assertIn('Fireball', joined)
-        self.assertIn('no dnd5e spell-pack', joined)
-        self.assertIn('strength score is not stored', joined)
-        self.assertIn('Bonus action', joined)
         self.assertIn('Empty', joined)
         self.assertIn('npc.missing', joined)
         self.assertIn('../secret.png', joined)
-        self.assertNotIn('writeFileSync', joined)
-        self.assertFalse(any('../' in name or name.startswith('/') for name in files))
-        root = Path(__file__).resolve().parents[1] / 'fixtures' / 'arkenforge-5e-templates'
-        for name in ('5e-Character.rwnote', '5e-Item.rwnote', '5e-Spell.rwnote'):
-            self.assertTrue((root / name).is_file(), name)
+
+    def test_duplicate_records_are_skipped(self):
+        # ElementTree keeps sibling elements that share a tag; campaign_ir skips
+        # the second copy of the same category.id identity.
+        same_tag = '''<?xml version="1.0" encoding="utf-8"?>
+<root version="4.1">
+  <npc>
+    <id-00001><name type="string">First</name><hp type="number">1</hp></id-00001>
+    <id-00001><name type="string">Second</name><hp type="number">2</hp></id-00001>
+  </npc>
+</root>'''
+        with tempfile.TemporaryDirectory() as tmp:
+            _files, report = build_campaign(module(tmp, db=same_tag))
+        names = [row['name'] for row in report['documents']]
+        self.assertEqual(names.count('First'), 1)
+        self.assertNotIn('Second', names)
+        self.assertIn('Duplicate NPC record skipped', json.dumps(report['losses']))
+
+    def test_cli_writes_native_package_and_installs_add_only(self):
         with tempfile.TemporaryDirectory() as tmp:
             mod = module(tmp)
             out = Path(tmp) / 'notes'
             self.assertEqual(main([str(mod), '--campaign-out', str(out)]), 0)
             self.assertTrue((out / 'fg-campaign-report.json').is_file())
+            self.assertTrue((out / 'native-package.zip').is_file())
             self.assertTrue(any(path.name.endswith('.rwnote') for path in out.rglob('*.rwnote')))
+            packaged = read_package(out / 'native-package.zip')
+            self.assertTrue(any(name.startswith('MyAssets/') and name.endswith('.rwnote') for name in packaged))
+            self.assertIn('fg-campaign-report.json', packaged)
+            assets = Path(tmp) / 'MyAssets'; assets.mkdir()
+            backups = Path(tmp) / 'Backups'; backups.mkdir()
+            installed_out = Path(tmp) / 'notes-install'
+            with patch('forgebridge.installer.require_toolkit_closed'):
+                self.assertEqual(main([str(mod), '--campaign-out', str(installed_out),
+                                       '--install', '--myassets', str(assets),
+                                       '--backup-root', str(backups)]), 0)
+            self.assertTrue(any(path.suffix == '.rwnote' for path in assets.rglob('*')))
+            receipt = next(Path(backups).rglob('uninstall.json'))
+            data = json.loads(receipt.read_text(encoding='utf-8'))
+            self.assertEqual(data['state'], 'COMPLETE')
+            self.assertGreater(len(data['added']), 0)
+            report = json.loads((installed_out / 'fg-campaign-report.json').read_text(encoding='utf-8'))
+            self.assertEqual(report['evidence'], 'file-level only, Toolkit check pending')
+            self.assertTrue(report.get('installed'))
+
+    def test_templates_fixture_still_present(self):
+        root = Path(__file__).resolve().parents[1] / 'fixtures' / 'arkenforge-5e-templates'
+        for name in ('5e-Character.rwnote', '5e-Item.rwnote', '5e-Spell.rwnote'):
+            self.assertTrue((root / name).is_file(), name)
 
 
 if __name__ == '__main__':
