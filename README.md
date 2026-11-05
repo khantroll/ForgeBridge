@@ -127,7 +127,7 @@ For implementation evidence, acceptance boundaries, known blockers, and the curr
 ## Documentation
 
 - [Operator guide](docs/USER-GUIDE.md) — installation, GUI/CLI use, output review, safe install, and recovery.
-- [v0.11.0 release notes](docs/RELEASE-NOTES-v0.11.0.md) — tested release scope and known limitations ([v0.9.0](docs/RELEASE-NOTES-v0.9.0.md); [changelog](CHANGELOG.md)).
+- [v0.12.0 release notes](docs/RELEASE-NOTES-v0.12.0.md) — tested release scope and known limitations ([v0.9.0](docs/RELEASE-NOTES-v0.9.0.md); [changelog](CHANGELOG.md)).
 - [Handoff](docs/HANDOFF-2026-11-03.md) — release sequence and owners; STATUS and NEXT-STEPS are historical.
 - [Acceptance matrix](docs/ACCEPTANCE-MATRIX.md) — evidence and boundaries of validated behavior.
 - [Scene profiles](docs/SCENE-PROFILES.md), [batch builds](docs/SCENE-BATCH.md), and [native capture](docs/NATIVE-CAPTURE.md) — advanced workflows.

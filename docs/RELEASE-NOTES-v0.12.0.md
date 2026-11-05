@@ -71,6 +71,8 @@ checks; **no new Toolkit runtime validation is claimed for them**:
 - The accepted host-specific Windows LevelDB replacement limitation remains;
   no blind retries or error suppression were introduced.
 
-Linux/Windows full tests and Windows executable build/smoke are release gates.
+Local Windows full suite: **325 run, 321 passed, four Windows symlink privilege
+skips**. Six new display regressions pass. Linux/Windows full tests and Windows
+executable build/smoke are release gates.
 See the release PR for totals and CI results. The tag workflow attaches the ZIP,
 which is checked from a clean extraction before reporting release completion.
