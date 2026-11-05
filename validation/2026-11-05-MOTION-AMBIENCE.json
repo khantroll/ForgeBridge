@@ -5,13 +5,13 @@
   "installation": {
     "status": "PASS",
     "added": 20,
-    "receipt": "C:\\AMD\\fb-backups\\forgebridge-16852577584e4b8da79ac51f49891612\\uninstall.json",
-    "backup": "C:\\AMD\\fb-backups\\forgebridge-16852577584e4b8da79ac51f49891612\\MyAssets",
+    "receipt": "C:\\AMD\\fb-backups\\forgebridge-0ff050e03cc0426dbe69e04be3cb438c\\uninstall.json",
+    "backup": "C:\\AMD\\fb-backups\\forgebridge-0ff050e03cc0426dbe69e04be3cb438c\\MyAssets",
     "runtime_validation": "not performed"
   },
   "all_installed_hashes_match": true,
-  "package": "C:\\AMD\\fb-motion-check-reviewed-2026-11-05\\scene-001\\native-package.zip",
-  "package_sha256": "dd314078762e8546e8610ed837f09e8f3e7d4fbc6058a8c2e1700bb60911aa66",
+  "package": "C:\\AMD\\fb-motion-check-handoff-2026-11-05\\scene-001\\native-package.zip",
+  "package_sha256": "ab061dae455eaa9455901821e5338fbe44c20869260ece6da4d9c7f3405e7437",
   "native_files": 20,
   "map_reachable_files": 16,
   "independent_notes": [
@@ -195,5 +195,13 @@
     "windows_symlink_skipped": 4,
     "targeted_motion_tests": 12
   },
-  "current_fixture_regenerates_installed_native_bytes": true
+  "current_fixture_regenerates_installed_native_bytes": true,
+  "reviewed_candidate_uninstall": {
+    "status": "PASS",
+    "removed": 20,
+    "kept_changed": [],
+    "removed_empty_folders": 5,
+    "backup_retained": true
+  },
+  "video_variant_names_initialized": true
 }

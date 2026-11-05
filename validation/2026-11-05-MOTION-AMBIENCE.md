@@ -73,18 +73,18 @@ correction, not an observed Toolkit conversion failure. Nothing was deleted by h
 
 Owned source Adventure: **fixtures/synthetic-motion-adventure/**. No commercial
 assets, imported scripts, external art or original user campaigns are involved.
-Final build: `C:/AMD/fb-motion-check-reviewed-2026-11-05/scene-001/native-package.zip`.
+Final build: `C:/AMD/fb-motion-check-handoff-2026-11-05/scene-001/native-package.zip`.
 Package SHA-256:
-`dd314078762e8546e8610ed837f09e8f3e7d4fbc6058a8c2e1700bb60911aa66`.
+`ab061dae455eaa9455901821e5338fbe44c20869260ece6da4d9c7f3405e7437`.
 
 Toolkit was closed for install and verification; never launched or killed.
 Install exit **0**, **20 files added**, all hashes match receipt and package.
 The two embedded audio payloads independently match source hashes. Rebuilding
 the current owned fixture regenerates all 20 installed native files byte-for-byte.
 Receipt:
-`C:/AMD/fb-backups/forgebridge-16852577584e4b8da79ac51f49891612/uninstall.json`.
+`C:/AMD/fb-backups/forgebridge-0ff050e03cc0426dbe69e04be3cb438c/uninstall.json`.
 Backup:
-`C:/AMD/fb-backups/forgebridge-16852577584e4b8da79ac51f49891612/MyAssets`.
+`C:/AMD/fb-backups/forgebridge-0ff050e03cc0426dbe69e04be3cb438c/MyAssets`.
 Machine-readable values, native coordinates and remaining losses are in the
 adjacent JSON. Existing check packages and user content were not uninstalled.
 
@@ -121,3 +121,5 @@ player output is not required to begin these GM/map checks.
 Do not mark player visibility, fog, procedural light animation or actor automation
 passed from these checks. Labels remain off; background words/rings are baked
 fixture art, not native labels. Do not merge this PR before the requested review.
+
+Final metadata review also found blank video variant names; the writer now initializes both inherited names and tile names, with a regression assertion. This file-level correction refreshed only the isolated candidate through its receipt (20 removed, no changed files retained). All 20 final installed files match both receipt hashes and package bytes. Generated playback remains pending.

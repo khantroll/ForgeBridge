@@ -35,6 +35,9 @@ def motion_asset(data,suffix,name):
         asset,meta=record('video_asset'),record('video_meta')
         asset.members['_content'].members.update(_rawFile=Array(data,0,2),_originalFile=hashlib.sha256(data).hexdigest()[:20]+suffix)
         preset=record('video_preset')
+        names(preset,name)
+        for key in preset.members:
+            if key.split('+')[-1]=='_tileName':preset.members[key]=name
         variations=meta.members['_variations'].members
         variations['_items'].items=[preset];variations.update(_size=1,_version=1)
         info={'kind':'video','codec':codec,'width':width,'height':height,'bytes_preserved':True}

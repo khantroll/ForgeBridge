@@ -42,7 +42,10 @@ class SceneMotionTests(unittest.TestCase):
             self.assertEqual(preset.schema['name'],'ArkenTilePresetVideo')
             self.assertTrue(preset.members['_videoPlaying']);self.assertTrue(preset.members['_loop'])
             self.assertFalse(preset.members['_soundEnabled'])
-            self.assertEqual(parsed(meta)[1].members['_tileCategory'].members['value__'],2)
+            metadata=parsed(meta)[1]
+            self.assertEqual(metadata.members['_tileCategory'].members['value__'],2)
+            variant=metadata.members['_variations'].members['_items'].items[0]
+            self.assertTrue(all(v=='Motion' for k,v in variant.members.items() if k.split('+')[-1] in ('_name','_tileName')))
             self.assertTrue(losses)
 
     def test_gif_frames_and_timing_preserved_with_position_rotation_hidden(self):
