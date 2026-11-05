@@ -11,4 +11,4 @@ def get_version():
         try:
             return json.loads(Path(__file__).with_name('build-info.json').read_text(encoding='utf-8'))['version']
         except (OSError, ValueError, KeyError):
-            return '0.11.0'
+            return '0.12.0'

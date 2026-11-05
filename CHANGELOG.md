@@ -2,6 +2,25 @@
 
 ## Unreleased
 
+## v0.12.0 — 2026-11-05
+
+- Embed MP3 and OGG Vorbis playlist bytes directly, preserving extensions and
+  initializing the Master stem; safely resolve encoded local audio paths.
+  Count's Manor Ambient's three tracks were heard in Toolkit 0.5.1.18.
+- Resolve optional dnd5e spell-pack links into 5e Spell notes; the three Count's
+  Manor scroll links were checked in Toolkit.
+- Fantasy Grounds NPC/item/spell/story notes have native packages, add-only
+  install, backups and uninstall receipts; representative notes/images/links
+  were checked in Toolkit. Encrypted modules remain refused.
+- Refuse GUI install after map names change until rebuilding. Map names stay
+  unique across the whole MyAssets library.
+- File-level display fixes: flatten Foundry @/& enrichers to inert labels,
+  use dark links on 5e parchment blocks, omit empty Skills/Senses/Languages and
+  unknown proficiency, and label level-zero spells as school + cantrip.
+  These display changes have regression coverage, not a new Toolkit check.
+- Windows standalone GUI/CLI ZIP built and smoke-tested without Python on PATH.
+
+
 - Fixed native music playlist stem initialization: generated single-stem songs
   now receive the Toolkit user-import default `Master` volume (80%) instead of
   an empty mixer dictionary. User ContentItem records use the current two-field

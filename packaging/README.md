@@ -5,7 +5,7 @@ Use Windows x64 Python in an isolated environment. CI uses Python 3.13.
 ```powershell
 py -3.13 -m venv .build-venv
 .\packaging\build_windows.ps1 -Python .\.build-venv\Scripts\python.exe
-.\.build-venv\Scripts\python.exe packaging/smoke_windows.py --zip dist/windows/ForgeBridge-0.11.0-windows-x64.zip --fixture fixtures/synthetic-module --out .test-tmp/frozen-smoke
+.\.build-venv\Scripts\python.exe packaging/smoke_windows.py --zip dist/windows/ForgeBridge-0.12.0-windows-x64.zip --fixture fixtures/synthetic-module --out .test-tmp/frozen-smoke
 ```
 
 The script installs the project and pinned PyInstaller into the chosen
