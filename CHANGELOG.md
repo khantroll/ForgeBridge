@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Combine Fantasy Grounds maps, campaign notes, room pins and portrait tokens
+  through the normal convert/GUI/review/install flow; explicit notes-only mode.
+- Read nested/category FG and SRD records, formatted block text and qualified
+  links; preserve string stats and non-5e source attacks without invented 5e rules.
+  Missing grids/art and portrait-safe omitted NPC bindings remain reported limits.
+
+
 - Revision-scoped campaign note and playlist filenames preserve Toolkit-edited
   predecessors retained by uninstall; displayed playlist names stay unchanged.
 

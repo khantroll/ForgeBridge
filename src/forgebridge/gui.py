@@ -50,6 +50,10 @@ def report_text(value):
             module = value.get('module_definition', {})
             lines.append('Fantasy Grounds module: ' + str(module.get('displayname') or module.get('name')))
             if value.get('hidden_art'): lines.append(f"Artwork hidden: {value['hidden_art']} (Include artwork to list it)")
+        if value.get('combined_artifact'):
+            lines.append('Combined maps + campaign notes package: ' + value['combined_artifact'])
+        for image in value.get('unbuilt_images', []):
+            lines.append('Image not built as map: ' + image['name'] + ' — ' + image.get('reason', image['status']))
         if value.get('pdf_mode'):
             lines.append('PDF mode: ' + value['pdf_mode'])
         if value.get('pdf_mode_loss'):
@@ -72,6 +76,8 @@ def report_text(value):
             if scene.get('native_report'):
                 records = scene['native_report'].get('native_synthesis', {}).get('records')
                 if records: lines.append('Native records: ' + ', '.join(f'{k}: {v}' for k, v in records.items()))
+                placement = scene['native_report'].get('placements')
+                if placement: lines.append(f"Pins: {len(placement['markers'])}; tokens: {len(placement['tokens'])}; rejected: {len(placement['rejected_tokens'])}")
                 if scene['native_report'].get('output_names'):
                     names = scene['native_report']['output_names']
                     lines.append(f"Map: {names['map_path']}\nNotes folder: {names['notes_folder']}")
@@ -165,12 +171,14 @@ def main(argv=None):
         rows[:] = populate_scenes(scenes, report); state['source'] = source
         state['source_type'] = report.get('source_type')
         renamed.clear(); grids.clear(); across.clear()
-        if rows:
-            try: folder = default_folder(rows[0], report.get('package_title'))
+        if rows or report.get('source_type') == 'fantasy_grounds':
+            try: folder = default_folder(rows[0] if rows else {}, report.get('package_title'))
             except ValueError as exc:
                 folder = ''; messagebox.showerror('Folder name needs attention', str(exc))
             map_folder.set(folder); notes_folder.set(folder)
         status.set(f'{len(rows)} scenes found. Select the scenes to convert, then choose an output folder.')
+        if report.get('source_type') == 'fantasy_grounds':
+            status.set('FG campaign notes included. Select maps to convert, or leave selection empty for notes only. Choose a new output folder.')
         display(report)
 
     def rename_selected(event=None):
@@ -236,7 +244,7 @@ def main(argv=None):
         if state['source'] != package.get():
             messagebox.showerror('Rediscover scenes', 'The package changed; click Discover first.'); return
         selected = [rows[i]['key'] for i in scenes.curselection()]
-        if not selected or not output.get():
+        if (not selected and state.get('source_type') != 'fantasy_grounds') or not output.get():
             messagebox.showerror('Selection required', 'Choose scenes and a new output folder.'); return
         source, dest, controls = package.get(), output.get(), list(profiles)
         names = {key: value for key, value in renamed.items() if key in selected}
@@ -248,6 +256,7 @@ def main(argv=None):
             if any(r['status'] in ('NEEDS_GRID', 'ART') and r['key'] not in grids and r['key'] not in across
                    for r in rows if r['key'] in selected):
                 messagebox.showerror('Grid required', 'Set Squares across or Pixels per square for each selected uncalibrated map.'); return
+            options['notes_only'] = not selected
             options.update(include_art=include_art.get(), grid_size={k: v for k, v in grids.items() if k in selected},
                            squares={k: v for k, v in across.items() if k in selected})
         planned = {}

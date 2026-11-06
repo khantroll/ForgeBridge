@@ -99,14 +99,15 @@ def _new_destination(destination, package):
 
 def convert(package, destination, *, scene_ids=(), scene_keys=(), profiles=(),
             map_folder=None, notes_folder=None, map_names=None, pdf=None,
-            include_art=False, grid_size=(), squares=(), dnd5e_system=None):
+            include_art=False, grid_size=(), squares=(), dnd5e_system=None, notes_only=False):
     from forgebridge.fg_convert import is_fg_input, convert_fg
     if is_fg_input(package):
         if dnd5e_system is not None:
             raise ValueError('--dnd5e-system applies only to Foundry packages')
         return convert_fg(package, destination, scene_ids=scene_ids, scene_keys=scene_keys, profiles=profiles,
                           map_folder=map_folder, notes_folder=notes_folder, map_names=map_names,
-                          include_art=include_art, grid_size=grid_size, squares=squares)
+                          include_art=include_art, grid_size=grid_size, squares=squares, notes_only=notes_only)
+    if notes_only: raise ValueError('--notes-only applies only to Fantasy Grounds modules')
     if grid_size or squares or include_art:
         raise ValueError('--grid-size, --squares and --include-art are Fantasy Grounds input options')
     package = Path(package).absolute()
@@ -314,6 +315,7 @@ def main(argv=None):
     parser.add_argument('--scene', action='append', default=[])
     parser.add_argument('--scene-key', action='append', default=[])
     parser.add_argument('--profile', action='append', default=[])
+    parser.add_argument('--notes-only', action='store_true', help='FG campaign notes only; do not build any maps')
     parser.add_argument('--include-art', action='store_true', help='Include FG artwork records in discovery/selection')
     parser.add_argument('--grid-size', action='append', default=[], help='FG KEY=PX, or PX for one selected map without stored grid size')
     parser.add_argument('--squares', action='append', default=[], help='FG KEY=N squares across, or N for one selected map without stored grid size')
@@ -342,7 +344,7 @@ def main(argv=None):
             if not args.out: raise ValueError('Provide --out NEW_DIRECTORY, --install, or --list-scenes')
             report = convert(args.package, args.out, scene_ids=args.scene, scene_keys=args.scene_key, profiles=args.profile,
                              map_folder=args.map_folder, notes_folder=args.notes_folder, map_names=args.map_name, pdf=args.pdf,
-                             include_art=args.include_art, grid_size=args.grid_size, squares=args.squares, dnd5e_system=args.dnd5e_system)
+                             include_art=args.include_art, grid_size=args.grid_size, squares=args.squares, dnd5e_system=args.dnd5e_system, notes_only=args.notes_only)
             if args.install:
                 if report['status'] != 'PASS': raise ValueError('Resolve rejected scenes before installation; outputs retained for review')
                 from forgebridge.installer import install_conversion

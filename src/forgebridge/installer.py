@@ -27,6 +27,12 @@ def native_outputs(report, output):
         raise ValueError('Resolve rejected scenes before installing this conversion')
     root = Path(output).absolute()
     result = []
+    if report.get('source_type') == 'fantasy_grounds' and report.get('combined_artifact'):
+        candidate = root / report['combined_artifact']
+        if (not candidate.resolve().is_relative_to(root.resolve()) or not candidate.is_file()
+                or any(_linked(p) for p in (candidate,*candidate.parents))):
+            raise ValueError('Combined native output is missing or unsafe')
+        return [candidate]
     for scene in report.get('scenes', []):
         if scene.get('status') != 'BUILT': continue
         candidate = root / scene['folder'] / scene['artifact']

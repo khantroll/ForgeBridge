@@ -1,0 +1,14 @@
+<root version="4.1">
+<npc><category name="Owned"><id-watcher><name>FB FG Watcher</name><ac type="number">16</ac><actext>(natural armor)</actext><hp type="string">22 (4d8 + 4)</hp><speed>30 ft., fly 40 ft. (hover)</speed>
+<abilities><strength><score>16</score></strength><dexterity><score>12</score></dexterity><constitution><score>12</score></constitution><intelligence><score>10</score></intelligence><wisdom><score>14</score></wisdom><charisma><score>8</score></charisma></abilities>
+<savingthrows>Con +3, Wis +4</savingthrows><skills>Perception +4</skills><languages>Common, common</languages><senses>darkvision 60 ft.</senses><cr>2</cr><xp>450</xp><token>tokens/watcher.png@FB FG Owned Adventure</token><damageimmunities>poison</damageimmunities>
+<actions><id-a><name>Claw</name><desc>Melee Weapon Attack: +5 to hit. Hit: 7 slashing.</desc></id-a><id-b><name>Look</name><desc>See the room.</desc></id-b></actions>
+<traits><id-a><name>Still</name><desc>Remains still.</desc></id-a></traits><legendaryactions><id-a><name>Shift</name><desc>Moves 10 ft.</desc></id-a></legendaryactions>
+<text type="formattedtext"><p>A synthetic creature.</p><link class="encounter" recordname="encounter.room@FB FG Owned Adventure">Room</link></text></id-watcher></category></npc>
+<item><category><id-item><name>FB FG Copper Key</name><type>Wondrous item</type><description type="formattedtext"><p>Opens the <link recordname="encounter.room">room</link>.</p></description><cost>1 gp</cost></id-item></category></item>
+<spell><id-spell><name>FB FG Spark</name><school>evocation</school><level>0</level><castingtime>1 action</castingtime><range>30 ft.</range><duration>Instantaneous</duration><components>V, S</components><description type="formattedtext"><p>A harmless spark.</p></description></id-spell></spell>
+<encounter><category><room><name>FB FG Room</name><text type="formattedtext"><p>First paragraph.</p><p>Second paragraph.</p><list><li>One</li><li>Two</li></list><frame>Read aloud.</frame><linklist><link class="npc" recordname="npc.id-watcher@FB FG Owned Adventure">Watcher</link><link class="item" recordname="item.id-item">Key</link></linklist></text></room></category></encounter>
+<image><category><map><name>FB FG Owned Map</name><image type="image"><bitmap>images/map.png</bitmap><gridsize>100,100</gridsize><grid>on</grid>
+<shortcuts><shortcut><id>room-pin</id><x>0</x><y>0</y><class>encounter</class><recordname>encounter.room</recordname></shortcut></shortcuts>
+<tokens><token><id>watcher</id><name>Watcher token</name><x>100</x><y>-50</y><size>2</size><rotation>90</rotation><visibility>hidden</visibility><prototype>tokens/watcher.png@FB FG Owned Adventure</prototype><recordname>npc.id-watcher</recordname></token><token><id>second</id><name>Second watcher</name><x>-100</x><y>50</y><size>1</size><prototype>tokens/watcher.png</prototype><recordname>npc.id-watcher</recordname></token></tokens>
+</image></map></category></image></root>

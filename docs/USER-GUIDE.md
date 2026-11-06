@@ -435,3 +435,21 @@ remain unchanged.
 
 Runtime checks belong to Claude; see ACCEPTANCE-MATRIX.md and his direct-map
 note. This guide adds no Toolkit observations or M1 acceptance claims.
+
+### Fantasy Grounds maps and campaign notes together
+
+Run `forgebridge convert "My Adventure.mod" --out "C:/Conversions/Adventure-01"`
+to build its NPC/item/spell/story notes alongside selected calibrated maps. The
+root `native-package.zip` is the coherent installable output. Use the existing
+`--map-folder`, `--notes-folder`, `--map-name`, review and add-only `--install`
+options. `--notes-only` writes notes without maps. In the GUI, discover the module,
+select maps (or leave the selection empty for campaign notes only), set any
+missing grids, choose a new output folder and build; review losses before install.
+
+Pins link to converted stories when their record and coordinates are supported.
+Placed tokens retain available module portraits; their NPC-note targets are
+listed in the report, but automatic NPC links are omitted to preserve portraits.
+Images without grids become note attachments; ForgeBridge never guesses a grid.
+External-module images and links stay losses. Older non-5e stats are displayed as
+source text in the native template, without translating their mechanics to 5e.
+All new map-placement behavior needs Toolkit review. Labels remain off.

@@ -146,9 +146,11 @@ anything, check on one real FGU module:
    includes encrypted refusal, fractional resampling, fake install/uninstall
    and native segment counts. Validate one new native output in Toolkit before
    claiming runtime acceptance (Claude owns this; no desktop work by Codex).
-3. **Pins and story → notes.** Map pins to Arkenforge note markers; FG
-   `formattedtext` to native notes via the existing notes writer.
-4. **Tokens / NPCs** — after 3, same as the Foundry M3 plan.
+3. **Pins and story → notes.** Implemented for the bounded FGU shortcut slice and
+   category/reference story records; see Phase 4 below for losses and evidence.
+4. **Tokens / NPCs.** Display NPC notes and bounded portrait token placement are
+   implemented at file level. Native NPC bindings remain omitted for portrait
+   safety; source dialect/alignment and actual token behavior need runtime review.
 
 ## What is needed from Jeffrey
 
@@ -163,3 +165,40 @@ anything, check on one real FGU module:
 - FG wiki, [Module - Image Line of Sight Data](https://fantasygroundsunity.atlassian.net/wiki/spaces/FGCP/pages/996645681)
 - [uvtt2fgu](https://github.com/Imagix/uvtt2fgu) (BSD-3) writer and its
   [FGU XML format wiki page](https://github-wiki-see.page/m/Imagix/uvtt2fgu/wiki/Fantasy-Grounds-Unity-XML-File-Format)
+
+## Phase 4: combined real-module path (2026-11-05, file-level)
+
+`forgebridge convert MODULE --out NEW_DIR` now builds campaign notes and all
+selected calibrated maps in one root `native-package.zip`. The GUI uses the same
+command path and install review. No selected GUI maps means notes only; CLI can
+request this explicitly with `--notes-only`. Maps still need a stored grid or an
+explicit `--grid-size KEY=PX` / `--squares KEY=N`; artwork is hidden by default.
+Uncalibrated image records remain linked image notes, not arbitrarily scaled maps.
+
+Readers handle transparent repeated category containers and `reference.npcdata`,
+`equipmentdata`, `magicrefitemdata`, `magicitemdata`, `spelldata` and reference-page
+text blocks. Paragraph/list/frame text and local record links survive as native
+note text and links. Typography/table/frame layout is flattened and reported.
+Module-qualified references resolve only to that module; external art and links
+remain explicit losses. NPC source AC/HP/speed strings, stored saves/skills,
+actions/traits/legendary actions and CR/XP are retained. Non-5e NPCs use the native
+5e template for display only: their source attacks/saves are preserved, with no
+5e proficiency calculation. This is not ruleset automation.
+
+The bounded FGU image shortcut/token slice uses centre-origin, y-up pixels,
+converted through the actual source grid to 2.56 native units per square.
+Supported pins open converted note targets with labels off. Token portraits,
+square size, rotation and hidden state use the existing native token writer.
+Duplicate/malformed/missing/external placements are losses. Layer transforms,
+combat tracker behavior and unobserved dialects require review. Coordinate
+placement is synthetic/file-level evidence until compared inside Toolkit.
+A token's NPC-note association is reported but **not embedded**: earlier native
+linked-text tests changed portraits into cyan pins. Open the separate NPC note
+by name; do not claim an automatic actor binding.
+
+Real inputs are read-only and never committed. The local Well Met module is
+**3.5E**, with 17 images (16 ART and one NEEDS_GRID) but no stored grid, pins or placed tokens. Therefore it
+cannot supply the requested real pin/token map acceptance case without a new
+FG export containing those records and calibrated grids. Its image and story
+links can be checked as notes. See the new real-adventure validation report for
+counts, graded losses, hashes and the isolated install receipt.
