@@ -202,3 +202,22 @@ cannot supply the requested real pin/token map acceptance case without a new
 FG export containing those records and calibrated grids. Its image and story
 links can be checked as notes. See the new real-adventure validation report for
 counts, graded losses, hashes and the isolated install receipt.
+
+### Remaining Phase 4 record families (2026-11-06)
+
+`fg_records.py` adapts FG tables into the existing RollTable IR and native
+ArkenNoteFieldRollableTable writer. Ranges are preserved, columns combined with
+labels, and result-window references rewritten to converted notes. FG dice
+syntax/settings and native range rolling are not assumed equivalent. Invalid
+ranges retain the source rows as reference text; automation/chaining stays manual.
+Reference-manual indexes create chapter/section notes linking converted pages,
+whose text blocks and original record aliases remain intact. Parcels and quests
+preserve fields, attachments and record links as notes without awarding anything.
+Unknown top-level/reference record types produce per-record unsupported losses.
+All source modules remain read-only; source assets are never copied into the repo.
+Owned fixture checks include a table, manual hierarchy, parcel, quest, image,
+unknown groups and a pin targeting a table. Real modules are rebuilt through the
+same combined conversion path; actual native UI acceptance remains separate.
+
+FG wildcard (`@*`) record links resolve only to a unique converted local target.
+They do not trigger other-module loading; unavailable targets remain explicit losses.

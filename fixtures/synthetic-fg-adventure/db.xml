@@ -11,4 +11,14 @@
 <image><category><map><name>FB FG Owned Map</name><image type="image"><bitmap>images/map.png</bitmap><gridsize>100,100</gridsize><grid>on</grid>
 <shortcuts><shortcut><id>room-pin</id><x>0</x><y>0</y><class>encounter</class><recordname>encounter.room</recordname></shortcut></shortcuts>
 <tokens><token><id>watcher</id><name>Watcher token</name><x>100</x><y>-50</y><size>2</size><rotation>90</rotation><visibility>hidden</visibility><prototype>tokens/watcher.png@FB FG Owned Adventure</prototype><recordname>npc.id-watcher</recordname></token><token><id>second</id><name>Second watcher</name><x>-100</x><y>50</y><size>1</size><prototype>tokens/watcher.png</prototype><recordname>npc.id-watcher</recordname></token></tokens>
-</image></map></category></image></root>
+</image></map></category></image><tables><category><t-one><name>FB FG Watch Table</name><dice>d2</dice><mod>0</mod><output>chat</output><hiderollresults>0</hiderollresults><labelcol1>Watch</labelcol1><tablerows>
+<r1><fromrange>1</fromrange><torange>1</torange><results><c1><result>The watcher</result><resultlink type="windowreference"><class>npc</class><recordname>npc.id-watcher</recordname></resultlink></c1></results></r1>
+<r2><fromrange>2</fromrange><torange>2</torange><results><c1><result>The key</result><resultlink type="windowreference"><class>item</class><recordname>item.id-item</recordname></resultlink></c1></results></r2>
+</tablerows></t-one></category></tables>
+<reference><refmanualdata><page-a><name>FB FG Manual Page</name><blocks><b1><blocktype>singletext</blocktype><text type="formattedtext"><p>Read the <link class="table" recordname="tables.t-one">watch table</link> and <link class="encounter" recordname="encounter.room">room</link>.</p></text></b1></blocks></page-a></refmanualdata>
+<refmanualindex><chapters><c1><name>FB FG Manual Chapter</name><subchapters><s1><name>FB FG Manual Section</name><refpages><p1><name>Page</name><listlink type="windowreference"><class>reference_manualtextwide</class><recordname>reference.refmanualdata.page-a</recordname></listlink></p1></refpages></s1></subchapters></c1></chapters></refmanualindex>
+<widgets><w1><name>Unknown owned widget</name></w1></widgets></reference>
+<treasureparcel><category><p1><name>FB FG Treasure</name><coins><gold>10</gold></coins><itemlist><i1><count>2</count><link type="windowreference"><class>item</class><recordname>item.id-item</recordname></link></i1></itemlist></p1></category></treasureparcel>
+<quest><q1><name>FB FG Quest</name><description type="formattedtext"><p>Find the <link class="item" recordname="item.id-item">key</link>.</p></description><xp>50</xp><status>offered</status></q1></quest>
+<unknown-owned><category><u1><name>Not supported</name><code>never execute</code></u1></category></unknown-owned>
+</root>

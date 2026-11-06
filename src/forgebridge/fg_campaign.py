@@ -278,6 +278,7 @@ def _npc(record, identity, losses, *, is_5e=True):
     formula = _field(record, 'hd', 'hpformula')
     if not formula and hp_raw and '(' in hp_raw: formula = hp_raw.partition('(')[2].rstrip(')')
     if formula:
+        if re.fullmatch(r'\([^()]*\)',formula.strip()): formula=formula.strip()[1:-1].strip()
         attrs['hp']['formula'] = formula
     else:
         gaps.append('Hit point formula is not stored')
@@ -487,7 +488,7 @@ def campaign_ir(source: ModuleSource):
         image = add_image(record, identity)
         display['portrait'] = image
         docs.append({'kind': 'Actor', 'format': 'dnd5e-actor', 'id': identity, 'source_path': 'db.xml',
-                     'adventure_id': module, 'uuid_aliases': [identity, identity + '@' + module], 'display': display,
+                     'adventure_id': module, 'uuid_aliases': [identity, identity + '@' + module, identity + '@*'], 'display': display,
                      'payload': {'name': display['name']}})
     for identity, record in _records(root, 'item') + _records(root, 'spell'):
         if identity in seen:
@@ -503,7 +504,7 @@ def campaign_ir(source: ModuleSource):
         image = add_image(record, identity)
         display['portrait'] = image
         docs.append({'kind': 'Item', 'format': 'dnd5e-spell' if spell else '5e-item-text', 'id': identity,
-                     'source_path': 'db.xml', 'adventure_id': module, 'uuid_aliases': [identity, identity + '@' + module],
+                     'source_path': 'db.xml', 'adventure_id': module, 'uuid_aliases': [identity, identity + '@' + module, identity + '@*'],
                      'display': display, 'payload': {'name': display['name']}})
     for category in STORY_CATEGORIES:
         for identity, record in _records(root, category):
@@ -531,8 +532,12 @@ def campaign_ir(source: ModuleSource):
                 continue
             image = add_image(record, identity)
             docs.append({'kind': 'Story', 'format': 'fg-story', 'id': identity, 'source_path': 'db.xml',
-                         'adventure_id': module, 'uuid_aliases': [identity, identity + '@' + module],
+                         'adventure_id': module, 'uuid_aliases': [identity, identity + '@' + module, identity + '@*'],
                          'display': {}, 'payload': {'name': name, 'text': body, 'image': image}})
+            if identity.startswith('reference.refmanualdata.'):
+                docs[-1]['format']='fg-reference-page'
+    from forgebridge.fg_records import extra_documents
+    docs.extend(extra_documents(root,module,seen,losses,add_image))
     from forgebridge.fantasy_grounds import list_images
     for entry in list_images(source):
         identity = entry['record']
@@ -541,16 +546,13 @@ def campaign_ir(source: ModuleSource):
         image = _stage_image(source, entry['bitmap'], staged, losses, identity)
         if image:
             docs.append({'kind':'Story','format':'fg-image','id':identity,'source_path':'db.xml',
-                         'adventure_id':module,'uuid_aliases':[identity,identity+'@'+module],
+                         'adventure_id':module,'uuid_aliases':[identity,identity+'@'+module,identity+'@*'],
                          'display':{},'payload':{'name':entry['name'],'text':'Source image; no grid/calibration inferred.','image':image}})
     if len(docs) > 2048:
-        raise ModuleError('Campaign exceeds 2048 NPC, item and story records')
-    for group in root:
-        if group.tag not in {'npc','item','spell','story','encounter','image','reference'}:
-            losses.append(_loss('manual','module-section','Module section not converted; source kept unchanged',section=group.tag))
+        raise ModuleError('Campaign exceeds 2048 content records')
     losses.append(_loss('approximate','formattedtext','Paragraph/list/frame text and supported record links retained; original typography, frames, tables and interactive layout are flattened'))
     from forgebridge.scene_profile import fingerprint
-    scope = hashlib.sha256(json.dumps([module, fingerprint(source.path), sorted(doc['id'] for doc in docs)], sort_keys=True).encode()).hexdigest()[:20]
+    scope = hashlib.sha256(json.dumps(['fg-records-v2', module, fingerprint(source.path), sorted(doc['id'] for doc in docs)], sort_keys=True).encode()).hexdigest()[:20]
     return {'version': 1, 'scope': scope, 'package_id': module, 'adventure_id': module, 'documents': docs,
             'losses': losses, 'notes_folder': _notes_folder(info.get('displayname') or info.get('name'))}, staged
 
@@ -567,10 +569,13 @@ def build_campaign(module, *, notes_folder=None):
                 target.parent.mkdir(parents=True, exist_ok=True)
                 target.write_bytes(data)
         files, report = campaign_files(ir, root, notes_folder=notes_folder or ir['notes_folder'])
-    report['counts']['stories'] = sum(d['kind']=='Story' and d['format']!='fg-image' for d in ir['documents'])
+    report['counts']['stories'] = sum(d['format']=='fg-story' for d in ir['documents'])
+    for count,form in [('reference_pages','fg-reference-page'),('reference_chapters','fg-reference-chapter'),('parcels','fg-parcel'),('quests','fg-quest'),('table_references','fg-table-reference')]:
+        report['counts'][count] = sum(d['format']==form for d in ir['documents'])
     report['counts']['images'] = sum(d['format']=='fg-image' for d in ir['documents'])
     report['evidence'] = 'file-level only, Toolkit check pending'
     report['runtime_validation'] = 'not performed'
+    report['reference_policy'] = 'Qualified local references and @* match unique converted local records only; other modules are not loaded; unresolved references stay labels with losses'
     report['source'] = 'fantasy_grounds'
     return files, report
 

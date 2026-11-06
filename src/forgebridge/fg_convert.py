@@ -106,9 +106,10 @@ def convert_fg(package, destination, *, scene_ids=(), scene_keys=(), profiles=()
               'module_definition': discovery['module_definition'], 'source_sha256': before, 'status': 'PASS',
               'scenes': [], 'counts': {g: 0 for g in ('native', 'approximate', 'manual', 'unsupported')},
               'counts_scope': 'FG mapping loss lines; source shapes and native segment records reported separately',
-              'native_counts': {'scenes': 0, 'tokens': 0, 'rejected_tokens': 0, 'notes': 0, 'markers': 0, 'actors':0, 'items':0, 'spells':0, 'stories':0, 'images':0},
+              'native_counts': {'scenes': 0, 'tokens': 0, 'rejected_tokens': 0, 'notes': 0, 'markers': 0, 'actors':0, 'items':0, 'spells':0, 'stories':0, 'images':0, 'tables':0, 'reference_pages':0, 'reference_chapters':0, 'parcels':0, 'quests':0, 'table_references':0},
               'native_losses': [], 'runtime_validation': 'not performed', 'installed': False,
               'manual_steps': ['Labels off; NPC links on tokens omitted to preserve portrait rendering; uncalibrated artwork remains a note attachment, not a map',
+                               'FG @* resolves unique converted local targets only; external modules are not loaded',
                                'Review losses and native fog/player framing; generated files are not runtime validation']}
     combined = {}
     with tempfile.TemporaryDirectory(prefix='forgebridge-fg-') as tmp, ModuleSource(package) as source:

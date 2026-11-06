@@ -1,0 +1,177 @@
+{
+  "evidence": "file-level only; no Toolkit runtime validation",
+  "schema_reference_toolkit": "0.5.1.18",
+  "modules": [
+    {
+      "folder": "well-met",
+      "status": "PASS",
+      "module": "Well Met in Kith'takharos",
+      "source_sha256": "4f1544ad363074f0bc4c2135f190a3beaf0dc95381a8476746c0fb8540b8c335",
+      "source_unchanged": true,
+      "counts": {
+        "tables": 0,
+        "actors": 5,
+        "items": 2,
+        "spells": 0,
+        "playlists": 0,
+        "tracks": 0,
+        "manual_tracks": 0,
+        "notes": 50,
+        "stories": 26,
+        "reference_pages": 0,
+        "reference_chapters": 0,
+        "parcels": 0,
+        "quests": 0,
+        "table_references": 0,
+        "images": 17
+      },
+      "loss_counts": {
+        "manual": 6,
+        "approximate": 13
+      },
+      "loss_features": {
+        "npc-fields": 5,
+        "npc": 5,
+        "item-fields": 1,
+        "formattedtext": 1,
+        "actor": 5,
+        "item": 2
+      },
+      "full_report": "C:\\AMD\\fb-fg-full-records-2026-11-06\\well-met\\conversion-report.json",
+      "package_sha256": "4fff7bb76df247a27a0c00ac156aa8ea9f33c3b122b6b4e44a92f7f7a1834081"
+    },
+    {
+      "folder": "bestiary",
+      "status": "PASS",
+      "module": "DD5E SRD Bestiary",
+      "source_sha256": "fbc8b58f92ecf34da72d1463fc3ca5f1aa991b5076e9df3e1ef85055734e6747",
+      "source_unchanged": true,
+      "counts": {
+        "tables": 0,
+        "actors": 323,
+        "items": 0,
+        "spells": 0,
+        "playlists": 0,
+        "tracks": 0,
+        "manual_tracks": 0,
+        "notes": 351,
+        "stories": 0,
+        "reference_pages": 23,
+        "reference_chapters": 5,
+        "parcels": 0,
+        "quests": 0,
+        "table_references": 0,
+        "images": 0
+      },
+      "loss_counts": {
+        "manual": 508,
+        "approximate": 649
+      },
+      "loss_features": {
+        "npc-fields": 274,
+        "npc": 323,
+        "image": 234,
+        "navigation": 2,
+        "formattedtext": 1,
+        "actor": 323
+      },
+      "full_report": "C:\\AMD\\fb-fg-full-records-2026-11-06\\bestiary\\conversion-report.json",
+      "package_sha256": "6e6fa31e6f98f0e55c4829c772a3e84bb9b9903c7db082c71b5f5bd4ea5e0eb4"
+    },
+    {
+      "folder": "magic-items-local-links",
+      "status": "PASS",
+      "module": "DD5E SRD Magic Items",
+      "source_sha256": "a094391a03ae881ec79ef6833eb7b4858798fbce65a90f37183d9cff8aa756cd",
+      "source_unchanged": true,
+      "counts": {
+        "tables": 29,
+        "actors": 2,
+        "items": 1689,
+        "spells": 0,
+        "playlists": 0,
+        "tracks": 0,
+        "manual_tracks": 0,
+        "notes": 1728,
+        "stories": 0,
+        "reference_pages": 4,
+        "reference_chapters": 4,
+        "parcels": 0,
+        "quests": 0,
+        "table_references": 0,
+        "images": 0
+      },
+      "loss_counts": {
+        "manual": 2712,
+        "approximate": 1748
+      },
+      "loss_features": {
+        "npc-fields": 2,
+        "npc": 2,
+        "item": 1692,
+        "item-fields": 1689,
+        "table-settings": 29,
+        "navigation": 6,
+        "formattedtext": 1,
+        "actor": 2,
+        "link": 1021,
+        "roll-table": 16
+      },
+      "full_report": "C:\\AMD\\fb-fg-full-records-2026-11-06\\magic-items-local-links\\conversion-report.json",
+      "package_sha256": "728a0db9ac73fe8e77a69b9c0696944a1e087c870751e968a02c49ca0a03268e"
+    }
+  ],
+  "installs": [
+    {
+      "source": "well-met",
+      "exit_code": 0,
+      "files_added": 144,
+      "receipt": "C:\\AMD\\fb-backups\\forgebridge-d50a6f38f30548fba595b4d27086ead9\\uninstall.json",
+      "receipt_state": "COMPLETE",
+      "all_hashes_match": true,
+      "package_sha256": "4fff7bb76df247a27a0c00ac156aa8ea9f33c3b122b6b4e44a92f7f7a1834081"
+    },
+    {
+      "source": "owned-control-final",
+      "exit_code": 0,
+      "files_added": 40,
+      "receipt": "C:\\AMD\\fb-backups\\forgebridge-d274a447da5b4946b86cc7da16f4115a\\uninstall.json",
+      "receipt_state": "COMPLETE",
+      "all_hashes_match": true,
+      "package_sha256": "0ad2f65339d31e44d746cba5459a3141c58c55be82596d83aad9cd167c966ac6"
+    }
+  ],
+  "tests": {
+    "run": 337,
+    "passed": 333,
+    "skipped": 4,
+    "skip_reason": "Windows symlink privileges",
+    "seconds": 211.759
+  },
+  "wildcard_fix": {
+    "local_references_fixed": 58,
+    "remaining_unresolved": 1021,
+    "external_modules_loaded": false
+  },
+  "native_npc_binding": "unsupported to preserve token portraits; source association reported",
+  "owned_counts": {
+    "scenes": 1,
+    "tokens": 2,
+    "rejected_tokens": 0,
+    "notes": 12,
+    "markers": 1,
+    "actors": 1,
+    "items": 1,
+    "spells": 1,
+    "stories": 1,
+    "images": 1,
+    "tables": 1,
+    "reference_pages": 1,
+    "reference_chapters": 3,
+    "parcels": 1,
+    "quests": 1,
+    "table_references": 0
+  },
+  "owned_install_approved": true,
+  "runtime_validation": "not performed"
+}

@@ -47,7 +47,7 @@ class FGRealAdventureTests(unittest.TestCase):
             (p/'definition.xml').write_bytes(b'<root><name>Legacy</name><ruleset>3.5E</ruleset></root>')
             (p/'db.xml').write_bytes(b'<root><npc><category><a><name>Old Guard</name><strength>17</strength><ac>18, Touch 10</ac><atk>Spear +4 Melee</atk><cr>2</cr></a></category><category><b><name>Second Guard</name></b></category></npc><reference><npcdata><third><name>Third Guard</name></third></npcdata><magicitemdata><key><name>Old Key</name><description>Key text.</description></key></magicitemdata><refmanualdata><page><name>Page</name><blocks><id><blocktype>singletext</blocktype><text type="formattedtext"><p>Block text.</p></text></id></blocks></page></refmanualdata></reference></root>')
             files,r=build_campaign(p)
-        self.assertEqual(r['counts']['actors'],3);self.assertEqual(r['counts']['items'],1);self.assertEqual(r['counts']['stories'],1)
+        self.assertEqual(r['counts']['actors'],3);self.assertEqual(r['counts']['items'],1);self.assertEqual(r['counts']['reference_pages'],1)
         block=find(node(files[r['links']['npc.a'][:-7]+'.rwnote']),'ArkenNoteFieldStatBlock5e')[0].members
         self.assertIn('18, Touch 10',content(block['_armorClassText']))
         self.assertEqual(content(block['_proficiencyBonusText']),'')

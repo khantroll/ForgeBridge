@@ -453,3 +453,14 @@ Images without grids become note attachments; ForgeBridge never guesses a grid.
 External-module images and links stay losses. Older non-5e stats are displayed as
 source text in the native template, without translating their mechanics to 5e.
 All new map-placement behavior needs Toolkit review. Labels remain off.
+
+FG campaign output also includes range-table notes, reference-manual chapters/pages
+with navigation links, treasure-parcel and quest notes, and image handouts.
+Multiple result columns are kept together with their labels. FG roll formulas,
+modifiers, hidden rolls, chained table rolls and parcel/quest reward automation
+are not inferred: read their graded losses and source settings. Unsupported or
+overlapping ranges become reference text rather than altered rolls. Unknown
+record types are listed individually. Protected modules are always refused.
+
+FG wildcard (`@*`) record links resolve only to a unique converted local target.
+They do not trigger other-module loading; unavailable targets remain explicit losses.

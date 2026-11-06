@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Convert FG range tables, manual chapter/page navigation, treasure parcels, quests
+  and image attachments; report unknown record types and unsupported roll behavior.
+
 - Combine Fantasy Grounds maps, campaign notes, room pins and portrait tokens
   through the normal convert/GUI/review/install flow; explicit notes-only mode.
 - Read nested/category FG and SRD records, formatted block text and qualified
