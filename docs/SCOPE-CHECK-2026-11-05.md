@@ -19,6 +19,7 @@ can only be proven inside Arkenforge.
 | A4 | FG **tokens** placed on maps | "tokens placed on FG maps are not read yet" | Not built |
 | A5 | FG one-step build (maps + notes + markers + tokens; GUI) | BUILD-MAP: "Map conversion … does not write these notes" | Two separate commands today |
 | A6 | Missing Foundry art from a Data folder | PR #30 | File-level done; Toolkit look optional |
+| A7 | **Foundry fog, vision and light animation** (Jeffrey 2026-11-05: in scope) | Native schema has light `_flicker`, token `_vision`, manual/visible-through-fog flags | Capture native fog/vision/animation controls in the Toolkit first (before trial ends), then map Foundry token sight, scene fog/darkness and light animation types; FG vision/LOS the same way |
 
 ## B. Should do next (file-level is enough, or low risk)
 
@@ -39,16 +40,15 @@ can only be proven inside Arkenforge.
 | # | Decision | Why it matters |
 |---|---|---|
 | C1 | Buy Arkenforge after the trial? | Without it, every later feature is file-level only — the level that missed the playlist bug |
-| C2 | Release/announce publicly (Discord/forum) | Real user packages are the only way to find what breaks next |
-| C3 | More game systems (PF2e, PF1, OSE…) | `campaign_dnd5e` is dnd5e-only; your FG folder has PF2/PF1/OSE SRD modules to test with if wanted |
+| C2 | Release/announce publicly | **Decided 2026-11-05: only after feature complete (A and B done)** |
+| C3 | More game systems | **Decided 2026-11-05: not now** (dnd5e only) |
 | C4 | Code-sign the `.exe` | SmartScreen warns on first run |
-| C5 | Older Foundry versions (v11/v12) | Only v13 tested |
+| C5 | Older Foundry versions | **Decided 2026-11-05: v13 only for now** |
 
 ## D. Out of scope by design (keep as reported losses)
 
 - Executing Foundry macros, region behaviors, active effects or automation.
-- Foundry fog/vision semantics (native manual fog starts covered).
-- Light animation; hex/isometric grids; FG terrain (movement-only) occluders.
+- Hex/isometric grids; FG terrain (movement-only) occluders.
 - Encrypted FG Forge/vault modules.
 - Roll20 (licensing), AboveVTT (browser extension).
 - Bidirectional (Arkenforge → other VTT) export.
