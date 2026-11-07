@@ -35,9 +35,9 @@ Post-trial FG text/gap corrections and duplicate-identity vision guards are
 | B6 | Roll-table formulas/weights | **DONE bounded/file-level.** Integer weights and bounded NdS +/- integer use uniform probability tickets. Unsupported/ambiguous formulas reference-only; replacement/drawn/chained behavior manual. |
 | B7 | Release v0.13.0 | **DONE.** v0.13.0 published as a pre-release; attached ZIP downloaded/hash-checked and both clean-unzip EXEs report 0.13.0. [Publication evidence](../validation/2026-11-07-V0130-RELEASE.md). |
 | B8 | Non-developer user guide | **DONE.** FG one-build walkthrough, Foundry Data folder, optional spell pack, campaign-content summary, reviewed install and keep-changed uninstall. |
-| B9 | Cleanup | **OPEN.** Existing FB test maps/notes and receipts remain preserved. Toolkit cleanup needs licensed access and review; missing Retire-ForgeBridgeTestContent.ps1 was not replaced with broad deletion. Old roadmap files are superseded by this scope check; reconcile/archive them deliberately. |
+| B9 | Cleanup | **DECIDED 2026-11-07 (Jeffrey): leave FB test maps/notes/receipts in place.** No agent should uninstall or delete them; they only appear in Jeffrey's own Toolkit. |
 
-Remaining engineering/cleanup after publication: **B9**; bounded B3–B6 limits are documented in [file-level evidence](../validation/2026-11-07-SCOPE-B3-B6.md). Outstanding native acceptance (fog/player output, external art and layout
+Remaining bounded B3–B6 limits are documented in [file-level evidence](../validation/2026-11-07-SCOPE-B3-B6.md). B9 is decided: preserve test content. Outstanding native acceptance (fog/player output, external art and layout
 gap removal) remains visible and does not block independent file-level work.
 
 ## C. Decisions for Jeffrey
