@@ -84,7 +84,12 @@ class NoteBuilder:
                 'ArkenNoteField+_name': name, 'ArkenNoteField+_visibleToPlayers': visible, 'ArkenNoteField+_UID': uid}
 
     def text_field(self, name, segments, uid):
-        return self.node('ArkenNoteFieldText', {**self.field_members(name, uid), '_text': self.text(segments),
+        # Shared journal/story prose: explicit light text on the captured dark field.
+        prose = self.text(segments)
+        for char in prose.members['_characters'].members['_items'].items:
+            if not char.members['_hexColour']:
+                char.members['_hexColour'] = 'FFFFFF'
+        return self.node('ArkenNoteFieldText', {**self.field_members(name, uid), '_text': prose,
             '_fieldColor': self.vector(.15, .15, .15), '_headingColor': self.vector(1., 1., 1.),
             '_bgOpacity': 1., '_showBorder': False, '_font': 'ToolkitDefault'})
 

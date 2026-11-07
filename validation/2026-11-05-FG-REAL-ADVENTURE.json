@@ -1,0 +1,35 @@
+{
+  "evidence": "file-level only; Toolkit never launched",
+  "native_reference_version": "0.5.1.18",
+  "source_modules_unchanged": true,
+  "source_encryption": "all three requested modules unencrypted; protected refusal covered by tests",
+  "installed_package": "C:\\AMD\\fb-fg-real-check-notes-2026-11-05\\native-package.zip",
+  "package_sha256": "2443e0c3e5bc74b25f816dc368af08a4f0d0acc0ce36f45b4e0de2d741d5edc6",
+  "install_exit": 0,
+  "files_added": 144,
+  "receipt": "C:\\AMD\\fb-backups\\forgebridge-7df6f446170941b781e0ec04d24828ec\\uninstall.json",
+  "all_installed_hashes_match": true,
+  "counts": {
+    "scenes": 0,
+    "tokens": 0,
+    "rejected_tokens": 0,
+    "notes": 50,
+    "markers": 0,
+    "actors": 5,
+    "items": 2,
+    "spells": 0,
+    "stories": 26,
+    "images": 17
+  },
+  "loss_counts": {
+    "manual": 6,
+    "approximate": 13
+  },
+  "real_maps_blocker": "16 ART, one NEEDS_GRID; no placed pins/tokens; no grid inferred",
+  "tests": {
+    "run": 332,
+    "passed": 328,
+    "windows_symlink_skipped": 4,
+    "new_fg_integration": 6
+  }
+}

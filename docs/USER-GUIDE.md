@@ -443,6 +443,34 @@ remain unchanged.
 Runtime checks belong to Claude; see ACCEPTANCE-MATRIX.md and his direct-map
 note. This guide adds no Toolkit observations or M1 acceptance claims.
 
+### Fantasy Grounds maps and campaign notes together
+
+Run `forgebridge convert "My Adventure.mod" --out "C:/Conversions/Adventure-01"`
+to build its NPC/item/spell/story notes alongside selected calibrated maps. The
+root `native-package.zip` is the coherent installable output. Use the existing
+`--map-folder`, `--notes-folder`, `--map-name`, review and add-only `--install`
+options. `--notes-only` writes notes without maps. In the GUI, discover the module,
+select maps (or leave the selection empty for campaign notes only), set any
+missing grids, choose a new output folder and build; review losses before install.
+
+Pins link to converted stories when their record and coordinates are supported.
+Placed tokens retain available module portraits; their NPC-note targets are
+listed in the report, but automatic NPC links are omitted to preserve portraits.
+Images without grids become note attachments; ForgeBridge never guesses a grid.
+External-module images and links stay losses. Older non-5e stats are displayed as
+source text in the native template, without translating their mechanics to 5e.
+All new map-placement behavior needs Toolkit review. Labels remain off.
+
+FG campaign output also includes range-table notes, reference-manual chapters/pages
+with navigation links, treasure-parcel and quest notes, and image handouts.
+Multiple result columns are kept together with their labels. FG roll formulas,
+modifiers, hidden rolls, chained table rolls and parcel/quest reward automation
+are not inferred: read their graded losses and source settings. Unsupported or
+overlapping ranges become reference text rather than altered rolls. Unknown
+record types are listed individually. Protected modules are always refused.
+
+FG wildcard (`@*`) record links resolve only to a unique converted local target.
+They do not trigger other-module loading; unavailable targets remain explicit losses.
 ### Animated map tiles and ambient sounds (development branch)
 
 Normal Foundry `convert` writes supported tiles and AmbientSound documents into
@@ -474,3 +502,7 @@ use its validation checklist before accepting this converter-written output.
 ### Native fog, vision and light effects
 
 Conversion reports include a `visibility` section. Foundry scene fog configuration, bounded character vision and recognized flicker/blink effects are written from captured native schemas. Review fog and global darkness settings manually; historical reveal masks are not migrated. NPCs do not gain vision lights. Unsupported modes/animations and uncalibrated scene darkness remain losses. Native runtime acceptance is pending.
+
+### Fantasy Grounds display corrections (file-level)
+
+FG prose carriage-return/newline escapes become real line breaks. Story, manual and other ordinary text fields share the Foundry journal writer's explicit white body text, pale links on dark fields and preserved paragraph breaks; parchment blocks retain dark links. Empty stat rows use captured active flags where present; remaining empty rows request zero-size, zero-width text. The trial has ended: these written-field checks do not confirm native layout or playback.

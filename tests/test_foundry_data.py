@@ -41,7 +41,7 @@ def _snapshot(root: Path):
 
 
 class FoundryDataArtTests(unittest.TestCase):
-    def build(self, root):
+    def build(self, root, *, linked=False):
         package = root / 'source'
         shutil.copytree(FIXTURE, package)
         scene_path = package / 'packs' / 'scenes.db'
@@ -74,7 +74,13 @@ class FoundryDataArtTests(unittest.TestCase):
         (data / TILE).write_bytes(_png())
         outside = root / 'outside.png'
         outside.write_bytes(b'not-in-data')
-        (data / LINKED).symlink_to(outside)
+        if linked:
+            try:
+                (data / LINKED).symlink_to(outside)
+            except OSError as exc:
+                if getattr(exc, 'winerror', None) == 1314:
+                    self.skipTest('Windows symlink privilege unavailable; linked-art safety not exercised')
+                raise
         return package, data
 
     def test_data_folder_embeds_found_art_and_keeps_missing_losses(self):
@@ -93,7 +99,6 @@ class FoundryDataArtTests(unittest.TestCase):
             self.assertIn(MISSING, tile_losses)
             self.assertIn('Foundry Data folder', tile_losses[MISSING])
             self.assertIn('unsafe/remote', tile_losses['../../outside.png'])
-            self.assertIn('symlink was not followed', tile_losses[LINKED])
             portrait_losses = [row for row in native['campaign_content']['losses']
                                if row.get('feature') == 'portrait' and row.get('source') == PORTRAIT]
             self.assertEqual(portrait_losses, [])
@@ -114,6 +119,17 @@ class FoundryDataArtTests(unittest.TestCase):
                                 for row in native['campaign_content']['losses']))
             self.assertIsNone(report['foundry_data'])
             self.assertEqual(_snapshot(data), before)
+
+    def test_linked_art_is_refused_without_changing_source(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            package, data = self.build(root, linked=True)
+            before = _snapshot(data)
+            report = convert(package, root / 'out', foundry_data=data)
+            losses = report['scenes'][0]['native_report']['static_tiles']['losses']
+            self.assertTrue(any(row.get('source') == LINKED and 'symlink was not followed' in row['summary'] for row in losses))
+            self.assertEqual(_snapshot(data), before)
+            self.assertEqual((root / 'outside.png').read_bytes(), b'not-in-data')
 
     def test_traversal_is_refused_before_the_data_folder_is_opened(self):
         with tempfile.TemporaryDirectory() as tmp:

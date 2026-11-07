@@ -189,6 +189,17 @@ def compile_scene_tokens(map_data, source_scene, package, control_files, control
     merges dependencies without overwriting unrelated native content.
     """
     from forgebridge.foundry_tokens import scene_tokens
+    tokens, rejected = scene_tokens(source_scene)
+    return compile_ir_tokens(map_data, tokens, package, control_files, control_map_path,
+        name=name, units_per_grid=units_per_grid, control_units_per_grid=control_units_per_grid,
+        control_name=control_name, origin=origin, namespace=namespace, rejected=rejected, foundry_data=foundry_data)
+
+
+def compile_ir_tokens(map_data, tokens, package, control_files, control_map_path, *,
+                      name, units_per_grid, control_units_per_grid, control_name,
+                      origin=(0., 0.), namespace=None, rejected=None, foundry_data=None):
+    """Source-independent token IR target, retaining existing controls and refusals."""
+    rejected = list(rejected or [])
     from forgebridge.uvtt import open_art
     from forgebridge.validate import InventoryFatal
     reader = Reader(control_files[control_map_path]); reader.read()
@@ -211,7 +222,6 @@ def compile_scene_tokens(map_data, source_scene, package, control_files, control
     with Image.open(io.BytesIO(bytes(blobs[0]))) as control_image:
         if control_image.width != control_image.height: raise ValueError('Control image must be square')
         edge = control_image.width
-    tokens, rejected = scene_tokens(source_scene)
     textures, ready = {}, []
     for token in tokens:
         try:

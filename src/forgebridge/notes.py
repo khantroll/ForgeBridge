@@ -103,10 +103,14 @@ class _PlainText(HTMLParser):
             self.parts.append(data)
 
 
-def _plain_text(value):
+def _plain_text(value, *, preserve_paragraphs=False):
     parser = _PlainText()
     parser.feed(value if isinstance(value, str) else '')
-    return '\n'.join(line.strip() for line in ''.join(parser.parts).splitlines() if line.strip())
+    lines = [line.strip() for line in ''.join(parser.parts).splitlines()]
+    if preserve_paragraphs:
+        import re
+        return re.sub(r'\n{3,}', '\n\n', '\n'.join(lines)).strip()
+    return '\n'.join(line for line in lines if line)
 
 
 def render_notes_text(bundle):

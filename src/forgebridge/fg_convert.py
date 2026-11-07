@@ -10,7 +10,7 @@ import zipfile
 from forgebridge.fantasy_grounds import ModuleSource, inventory, list_images, to_uvtt
 from forgebridge.direct_package import geometry_files
 from forgebridge.native_dependencies import write_archive, merge_native, check_metadata_references
-from forgebridge.output_names import plan_names
+from forgebridge.output_names import plan_names, sanitize_name
 from forgebridge.scene_profile import canonical_hash, fingerprint
 from forgebridge.validate import validate, load_schema, repo_schema
 
@@ -77,7 +77,7 @@ def grid_options(values, rows, label):
 
 
 def convert_fg(package, destination, *, scene_ids=(), scene_keys=(), profiles=(), map_folder=None,
-               notes_folder=None, map_names=None, include_art=False, grid_size=(), squares=()):
+               notes_folder=None, map_names=None, include_art=False, grid_size=(), squares=(), notes_only=False):
     from forgebridge.convert import _new_destination, publish
     package = Path(package).absolute()
     destination = _new_destination(destination, package)
@@ -94,7 +94,10 @@ def convert_fg(package, destination, *, scene_ids=(), scene_keys=(), profiles=()
         if selected - {r[field] for r in rows}:
             raise ValueError('Fantasy Grounds map key not found; use --include-art to select ART records')
         rows = [r for r in rows if r[field] in selected]
-    if not 1 <= len(rows) <= 256:
+    if notes_only:
+        if selected: raise ValueError('--notes-only cannot select maps')
+        rows = []
+    if not 0 <= len(rows) <= 256:
         raise ValueError('Select between 1 and 256 Fantasy Grounds maps; use --include-art for artwork')
     grids, across = grid_options(grid_size, rows, '--grid-size'), grid_options(squares, rows, '--squares')
     names = plan_names(rows, discovery['package_title'], map_folder=map_folder,
@@ -103,13 +106,23 @@ def convert_fg(package, destination, *, scene_ids=(), scene_keys=(), profiles=()
               'module_definition': discovery['module_definition'], 'source_sha256': before, 'status': 'PASS',
               'scenes': [], 'counts': {g: 0 for g in ('native', 'approximate', 'manual', 'unsupported')},
               'counts_scope': 'FG mapping loss lines; source shapes and native segment records reported separately',
-              'native_counts': {'scenes': 0, 'tokens': 0, 'rejected_tokens': 0, 'notes': 0, 'markers': 0},
+              'native_counts': {'scenes': 0, 'tokens': 0, 'rejected_tokens': 0, 'notes': 0, 'markers': 0, 'actors':0, 'items':0, 'spells':0, 'stories':0, 'images':0, 'tables':0, 'reference_pages':0, 'reference_chapters':0, 'parcels':0, 'quests':0, 'table_references':0},
               'native_losses': [], 'runtime_validation': 'not performed', 'installed': False,
-              'manual_steps': ['FG pins, story text and tokens require manual migration; labels off',
+              'manual_steps': ['Labels off; NPC links on tokens omitted to preserve portrait rendering; uncalibrated artwork remains a note attachment, not a map',
+                               'FG @* resolves unique converted local targets only; external modules are not loaded',
                                'Review losses and native fog/player framing; generated files are not runtime validation']}
     combined = {}
     with tempfile.TemporaryDirectory(prefix='forgebridge-fg-') as tmp, ModuleSource(package) as source:
         stage = Path(tmp)
+        from forgebridge.fg_campaign import build_campaign
+        campaign_folder = sanitize_name(notes_folder or map_folder or discovery['package_title'])
+        campaign_files, campaign = build_campaign(package, notes_folder=campaign_folder)
+        merge_native(combined, {n:d for n,d in campaign_files.items() if n.startswith('MyAssets/')})
+        report['campaign_content'] = [campaign]
+        report['native_counts'].update({k:v for k,v in campaign['counts'].items() if k in report['native_counts']})
+        report['native_losses'].append({'scope':'campaign','losses':campaign['losses']})
+        for loss in campaign['losses']: report['counts'][loss['grade']] += 1
+        report['unbuilt_images'] = [r for r in inventory(package)['maps'] if r['record'] not in {x['id'] for x in rows}]
         entries = {e['record']: e for e in list_images(source)}
         for index, row in enumerate(rows, 1):
             folder = stage / f'scene-{index:03d}'; folder.mkdir()
@@ -124,8 +137,14 @@ def convert_fg(package, destination, *, scene_ids=(), scene_keys=(), profiles=()
                 scope = canonical_hash(['native-scene-schema-v1', 'fantasy_grounds', before, row['id']])[:20]
                 files, synthesis, background, omitted = geometry_files(result['uvtt'], scope,
                     name=names[row['key']]['map_name'], map_path=names[row['key']]['map_path'])
-                losses = list(result['losses']) + [
-                    {'field': 'story', 'grade': 'manual', 'detail': 'FG story, encounter text and note pages are not converted in phase 2'},
+                from forgebridge.fg_scene import add_placements
+                files[names[row['key']]['map_path']], placed_files, placement_report = add_placements(
+                    files[names[row['key']]['map_path']], source, entries[row['id']], result, campaign,
+                    name=names[row['key']]['map_name'], scope=scope, staged_root=stage/'source-media')
+                merge_native(files, placed_files)
+                merge_native(files, {n:d for n,d in campaign_files.items() if n.startswith('MyAssets/')})
+                losses = [l for l in result['losses'] if l['field'] not in ('pins','tokens')] + [
+                    {'field':l['feature'],'grade':l['grade'],'detail':l['summary'],**l} for l in placement_report['losses']] + [
                     {'field': 'environment', 'grade': 'manual', 'detail': 'FG ambient/tint settings are not mapped; native environment defaults are used'},
                     {'field': 'fog-vision', 'grade': 'manual', 'detail': 'Native fog configuration mapped separately where stored; saved FG explored masks are not converted'}]
                 if result['counts']['lights']:
@@ -147,8 +166,9 @@ def convert_fg(package, destination, *, scene_ids=(), scene_keys=(), profiles=()
                     uvtt_pixels_per_grid=result['uvtt']['resolution']['pixels_per_grid'], losses=losses)
                 native = {'output_names': names[row['key']], 'source_type': 'fantasy_grounds', 'fantasy_grounds': fg,
                           'visibility': visibility,
-                          'counts': {'notes': 0, 'native_tokens': 0, 'unsupported_tokens': 0, 'native_pdf_pages': 0},
-                          'native_map': {'name': names[row['key']]['map_name'], 'markers': 0, 'marker_labels': 'off',
+                          'counts': {'notes': campaign['counts']['notes'], 'native_tokens': len(placement_report['tokens']), 'unsupported_tokens': len(placement_report['rejected_tokens']), 'native_pdf_pages': 0},
+                          'campaign_content': campaign, 'placements': placement_report,
+                          'native_map': {'name': names[row['key']]['map_name'], 'markers': len(placement_report['markers']), 'marker_labels': 'off',
                                          **synthesis['calibration']},
                           'native_synthesis': {**synthesis, 'background': background, 'scope': scope,
                                                'runtime_validation': 'not performed'},
@@ -165,12 +185,24 @@ def convert_fg(package, destination, *, scene_ids=(), scene_keys=(), profiles=()
                 merge_native(combined, candidate)
                 item.update(status='BUILT', artifact='native-package.zip', fantasy_grounds=fg, native_report=native)
                 report['native_counts']['scenes'] += 1
+                report['native_counts']['markers'] += len(placement_report['markers'])
+                report['native_counts']['tokens'] += len(placement_report['tokens'])
+                report['native_counts']['rejected_tokens'] += len(placement_report['rejected_tokens'])
                 for loss in losses: report['counts'][loss['grade']] += 1
                 report['native_losses'].append({'scene_id': row['id'], 'folder': folder.name, 'losses': losses})
             except (ValueError, OSError) as exc:
                 item.update(status='REJECTED', error=str(exc)); report['status'] = 'PARTIAL'
                 report['counts']['unsupported'] += 1
             report['scenes'].append(item)
+        if not combined:
+            raise ValueError('No readable maps or campaign notes in this module')
+        if len(combined)>16384 or sum(map(len,combined.values()))>1024**3:
+            raise ValueError('Combined native output exceeds 1 GiB / file limits')
+        report['closed_native_metadata_references'] = check_metadata_references(combined)
+        report['combined_artifact'] = 'native-package.zip'
+        write_archive(stage / report['combined_artifact'], {**combined, 'conversion-report.json':json.dumps(report,indent=2).encode()})
+        import shutil
+        shutil.rmtree(stage/'source-media',ignore_errors=True)
         report['closed_native_metadata_references'] = check_metadata_references(combined)
         for name, data in combined.items():
             target = stage / name; target.parent.mkdir(parents=True, exist_ok=True)

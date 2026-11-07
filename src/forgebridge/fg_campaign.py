@@ -56,48 +56,38 @@ def _child_number(node, tag):
 
 
 def _links(value):
-    """Turn FG record links into the UUID form the note writer already rewrites."""
-    if not value:
-        return ''
+    return text(value or '')
 
-    def replace(match):
-        record = (match.group(1) or '').split('@', 1)[0].strip()
-        label = re.sub(r'<[^>]+>', '', match.group(2) or '').strip() or record
-        if not record:
-            return label
-        return '@UUID[' + record + ']{' + label + '}'
 
-    linked = re.sub(r'<link\b[^>]*\brecordname="([^"]*)"[^>]*>(.*?)</link>', replace, value, flags=re.I | re.S)
-    return text(linked)
+def _newlines(value):
+    """Normalize FG prose escapes only; never unicode-decode IDs or asset paths."""
+    value = value.replace('\r\n', '\n').replace('\r', '\n')
+    return re.sub(r'\\+(?:r\\+n|[rn])', '\n', value)
 
 
 def _formatted(node):
+    """Readable block boundaries and explicit FG record links; never execute markup."""
     if node is None:
         return None
-    if node.get('type') == 'formattedtext' or any(True for _ in node):
-        parts = []
-
-        def walk(el):
-            if el.tag == 'link':
-                record = (el.get('recordname') or '').split('@', 1)[0].strip()
-                label = ''.join(el.itertext()).strip() or record
-                parts.append('@UUID[' + record + ']{' + label + '}' if record else label)
-                return
-            if el.text:
-                parts.append(el.text)
-            for child in el:
-                walk(child)
-                if child.tail:
-                    parts.append(child.tail)
-
-        if node.text:
-            parts.append(node.text)
-        for child in node:
+    parts = []
+    blocks = {'p', 'h', 'frame', 'list', 'linklist', 'li', 'table', 'tr'}
+    def walk(el):
+        if el.tag == 'link':
+            record = (el.get('recordname') or el.findtext('recordname') or '').strip()
+            label = ''.join(el.itertext()).strip() or record
+            parts.append('@UUID[' + record + ']{' + label + '}' if record else label)
+            return
+        if el.tag in blocks: parts.append('\n')
+        if el.tag == 'li': parts.append('• ')
+        if el.tag == 'td': parts.append(' | ')
+        if el.text: parts.append(el.text)
+        for child in el:
             walk(child)
-            if child.tail:
-                parts.append(child.tail)
-        return _links(''.join(parts))
-    return _links((node.text or '').strip()) or None
+            if child.tail: parts.append(child.tail)
+        if el.tag in blocks or el.tag == 'br': parts.append('\n')
+    walk(node)
+    value = text(_newlines(''.join(parts)))
+    return re.sub(r'\n[ \t]*\n(?:[ \t]*\n)+', '\n\n', value).strip() or None
 
 
 def _field(record, *tags):
@@ -169,6 +159,12 @@ def _image(record):
 
 
 def _stage_image(source, ref, staged, losses, identity):
+    original = ref
+    if ref and '@' in ref:
+        ref, module = ref.rsplit('@', 1)
+        if module != definition(source).get('name'):
+            losses.append(_loss('manual', 'image', 'Image belongs to another module; no external module lookup', source_id=identity, source=original))
+            return None
     if not ref:
         return None
     suffix = Path(ref).suffix.lower()
@@ -225,14 +221,14 @@ def _action_item(child, name, desc, activation):
     return item, stored_total, ability, ranged or melee
 
 
-def _npc(record, identity, losses):
+def _npc(record, identity, losses, *, is_5e=True):
     gaps = []
     actor = {'name': _field(record, 'name') or 'Unnamed', 'type': 'npc', 'img': _image(record), 'items': [],
              'system': {'abilities': {}, 'attributes': {'hp': {}, 'ac': {}, 'movement': {}, 'senses': {}},
                         'details': {}, 'traits': {}, 'skills': {}}}
     system, attrs, details, traits = actor['system'], actor['system']['attributes'], actor['system']['details'], actor['system']['traits']
     for key, full in ABILITIES:
-        node = record.find('abilities/' + full) if record.find('abilities') is not None else None
+        node = record.find('abilities/' + full) if record.find('abilities') is not None else record.find(full)
         score = _child_number(node, 'score') if node is not None and node.find('score') is not None else _number(node)
         if score is None:
             gaps.append(full + ' score is not stored')
@@ -261,7 +257,7 @@ def _npc(record, identity, losses):
                 entry['total'] = total
             system['skills'][key] = entry
     elif skills_node is not None and (skills_node.text or '').strip():
-        skill_text = skills_node.text.strip()
+        skill_text = _formatted(skills_node)
     speed_raw = _field(record, 'speed')
     parsed, problem = _speed(speed_raw)
     if parsed:
@@ -273,21 +269,28 @@ def _npc(record, identity, losses):
     if ac is not None:
         attrs['ac'] = {'value': ac}
     elif not actext:
-        gaps.append('Armor class is not stored')
+        actext = _field(record, 'ac')
+        if not actext: gaps.append('Armor class is not stored')
+    hp_raw = _field(record, 'hp')
     hp = _child_number(record, 'hp')
+    if hp is None and hp_raw:
+        match = re.fullmatch(r'(\d+)\s*\(([^)]+)\)', hp_raw)
+        if match: hp = int(match[1])
     if hp is not None:
         attrs['hp']['value'] = hp
         attrs['hp']['max'] = _child_number(record, 'hpmax') if record.find('hpmax') is not None else hp
     else:
         gaps.append('Hit points are not stored')
     formula = _field(record, 'hd', 'hpformula')
+    if not formula and hp_raw and '(' in hp_raw: formula = hp_raw.partition('(')[2].rstrip(')')
     if formula:
+        if re.fullmatch(r'\([^()]*\)',formula.strip()): formula=formula.strip()[1:-1].strip()
         attrs['hp']['formula'] = formula
     else:
         gaps.append('Hit point formula is not stored')
     cr_text = _field(record, 'cr')
     prof = _child_number(record, 'profbonus')
-    if prof is None and cr_text:
+    if prof is None and cr_text and is_5e:
         prof = _proficiency(cr_text)
         if prof is not None:
             gaps.append('Proficiency bonus ' + str(prof) + ' is derived from CR ' + cr_text + ' because the module does not store one')
@@ -310,6 +313,10 @@ def _npc(record, identity, losses):
     if xp is not None:
         details['xp'] = {'value': xp}
     details['cr'] = cr_text
+    details['biography'] = {'value': _field(record, 'text', 'description') or ''}
+    for source, target in [('damagevulnerabilities','dv'),('damageresistances','dr'),('damageimmunities','di'),('conditionimmunities','ci')]:
+        value = _field(record, source)
+        if value: traits[target] = value
     stored_totals = {}
     for tag, activation in (('traits', None), ('actions', 'action'), ('bonusactions', 'bonus'),
                             ('reactions', 'reaction'), ('legendaryactions', 'legendary')):
@@ -325,23 +332,40 @@ def _npc(record, identity, losses):
                 gaps.append('Attack "' + (name or child.tag) + '" has no ability score, so its bonus was not derived')
             elif shaped and ability and prof is None:
                 gaps.append('Attack "' + (name or child.tag) + '" was not given a derived bonus because proficiency is unknown')
+            item['_id'] = tag + '.' + child.tag
             actor['items'].append(item)
             if stored_total is not None:
-                stored_totals[child.tag] = stored_total
+                stored_totals[item['_id']] = stored_total
     for tag in ('lairactions', 'lairaction'):
         for child, name, desc in _entries(record, tag):
-            gaps.append('Lair action "' + (name or child.tag) + '" has no 5e Character field and was not placed in the note')
+            actor['items'].append({'name':'Lair action: '+(name or child.tag),'type':'feat','_id':tag+'.'+child.tag, 'system':{'description':{'value':desc}}})
+            gaps.append('Lair action retained as an ability; native 5e template has no separate lair field')
+    for tag in ('spells','innatespells'):
+        value = _field(record, tag)
+        if value:
+            details['biography']['value'] += '\n' + tag + ': ' + value
+            gaps.append(tag + ' preserved as biography text; slots/actions/automation not converted')
     display = actor_ir(actor)
     display['challenge_has_cr'] = bool(cr_text)
     if actext:
-        display['ac'] = actext
+        display['ac'] = (f'{ac:g} ' if ac is not None and not re.match(r'^\s*\d', actext) else '') + actext
     elif ac is None:
         display['ac'] = ''
+    saves_text = _field(record, 'savingthrows') if record.find('savingthrows') is not None and not list(record.find('savingthrows')) else None
+    if saves_text: display['saves'] = saves_text
+    if not is_5e:
+        display['proficiency'] = ''
+        display['derived_values']['attacks'] = []
+        for tag,label in [('atk','Attack'),('fullatk','Full attack'),('specialattacks','Special attacks'),('specialqualities','Special qualities'),('feats','Feats'),('fortitudesave','Fortitude'),('reflexsave','Reflex'),('willsave','Will')]:
+            value = _field(record, tag)
+            if value: display['actions']['actions' if tag in ('atk','fullatk') else 'abilities'].append({'name':label,'description':value})
+        gaps.append('Non-5e ruleset: native 5e template is display-only; source attacks/saves retained verbatim, no 5e proficiency derived')
     if skill_text is not None:
         display['skills'] = skill_text
         gaps.append('Skills are kept as the module text; individual bonuses were not re-derived')
     if not parsed and speed_raw:
         display['speed'] = speed_raw
+    if not formula and hp_raw and hp is None: display['hp_formula'] = hp_raw
     if cr_text:
         display['challenge'] = cr_text + (f' ({xp:g} XP)' if number(xp) else '')
     elif xp is not None:
@@ -377,7 +401,7 @@ def _item(record, identity, losses):
     name = _field(record, 'name') or 'Unnamed'
     kind = (_field(record, 'type', 'subtype') or '')
     description = _field(record, 'description', 'text', 'desc') or ''
-    spell = kind.lower() == 'spell' or (record.find('school') is not None and record.find('level') is not None and 'spell' in kind.lower())
+    spell = kind.lower() == 'spell' or (record.find('school') is not None and record.find('level') is not None)
     if spell and not _has_spell_text(description):
         losses.append(_loss('unsupported', 'spell',
                             'Spell "' + name + '" does not store its text in this module. FG has no dnd5e spell-pack input, so no spell note was written',
@@ -399,6 +423,11 @@ def _item(record, identity, losses):
                                  higherLevel=_field(record, 'athigherlevels', 'higher') or '')
         if level is not None:
             payload['system']['level'] = level
+    extra = []
+    for tag in ('subtype','cost','weight','properties','aura','cl','nonidentified'):
+        value = _field(record, tag)
+        if value: extra.append(tag + ': ' + value)
+    if extra: payload['system']['description']['value'] += '\n' + '\n'.join(extra)
     display = item_ir(payload)
     if spell and level is None:
         display['type'] = ' '.join(part for part in (school, 'spell') if part).strip() or kind
@@ -415,10 +444,22 @@ def _item(record, identity, losses):
 
 
 def _records(root, category):
+    """FG category containers are transparent in record addresses."""
+    groups = {'npc': ('reference.npcdata',),
+              'item': ('reference.equipmentdata', 'reference.magicrefitemdata', 'reference.magicitemdata'),
+              'spell': ('reference.spelldata',), 'story': ('reference.refmanualdata',)}
+    result = []
+    def visit(node, prefix):
+        for child in node:
+            if child.tag == 'category': visit(child, prefix)
+            elif child.find('name') is not None or child.find('text') is not None:
+                result.append((prefix + '.' + child.tag, child))
     parent = root.find(category)
-    if parent is None:
-        return []
-    return [(category + '.' + child.tag, child) for child in list(parent) if child.tag not in ('categoryname', 'label', 'index')]
+    if parent is not None: visit(parent, category)
+    for path in groups.get(category, ()):
+        parent = root.find(path.replace('.', '/'))
+        if parent is not None: visit(parent, path)
+    return result
 
 
 def _notes_folder(name):
@@ -448,13 +489,15 @@ def campaign_ir(source: ModuleSource):
         if not _field(record, 'name'):
             losses.append(_loss('unsupported', 'npc', 'NPC record has no name and was not converted', source_id=identity))
             continue
-        display, _actor = _npc(record, identity, losses)
+        unmapped = [c.tag for c in record if c.tag not in {'name','abilities','strength','dexterity','constitution','intelligence','wisdom','charisma','ac','actext','hp','hpmax','hd','hpformula','speed','profbonus','cr','xp','size','type','creaturetype','alignment','languages','senses','skills','savingthrows','traits','actions','bonusactions','reactions','legendaryactions','lairactions','lairaction','text','description','token','picture','image','damagevulnerabilities','damageresistances','damageimmunities','conditionimmunities','spells','innatespells','atk','fullatk','specialattacks','specialqualities','feats','fortitudesave','reflexsave','willsave'}]
+        if unmapped: losses.append(_loss('manual','npc-fields','Additional source NPC fields not mapped to the native display',source_id=identity,fields=unmapped))
+        display, _actor = _npc(record, identity, losses, is_5e=not info.get('rulesets') or any(r.casefold() in ('5e','dnd5e') for r in info['rulesets']))
         image = add_image(record, identity)
         display['portrait'] = image
         docs.append({'kind': 'Actor', 'format': 'dnd5e-actor', 'id': identity, 'source_path': 'db.xml',
-                     'adventure_id': module, 'uuid_aliases': [identity], 'display': display,
+                     'adventure_id': module, 'uuid_aliases': [identity, identity + '@' + module, identity + '@*'], 'display': display,
                      'payload': {'name': display['name']}})
-    for identity, record in _records(root, 'item'):
+    for identity, record in _records(root, 'item') + _records(root, 'spell'):
         if identity in seen:
             losses.append(_loss('unsupported', 'item', 'Duplicate item record skipped', source_id=identity))
             continue
@@ -463,10 +506,12 @@ def campaign_ir(source: ModuleSource):
         if built is None:
             continue
         display, spell = built
+        unmapped = [c.tag for c in record if c.tag not in {'name','type','subtype','description','text','desc','rarity','token','picture','image','level','school','castingtime','range','duration','components','material','save','attack','damage','athigherlevels','higher','cost','weight','properties','aura','cl','nonidentified'}]
+        if unmapped: losses.append(_loss('manual','item-fields','Additional identification, mechanical or linked-spell fields are not automated',source_id=identity,fields=unmapped))
         image = add_image(record, identity)
         display['portrait'] = image
         docs.append({'kind': 'Item', 'format': 'dnd5e-spell' if spell else '5e-item-text', 'id': identity,
-                     'source_path': 'db.xml', 'adventure_id': module, 'uuid_aliases': [identity],
+                     'source_path': 'db.xml', 'adventure_id': module, 'uuid_aliases': [identity, identity + '@' + module, identity + '@*'],
                      'display': display, 'payload': {'name': display['name']}})
     for category in STORY_CATEGORIES:
         for identity, record in _records(root, category):
@@ -475,6 +520,18 @@ def campaign_ir(source: ModuleSource):
                 continue
             seen.add(identity)
             body = _field(record, 'text', 'description', 'desc')
+            blocks = record.find('blocks')
+            if blocks is not None:
+                parts = [body] if body else []
+                for block in blocks:
+                    value = _field(block, 'text', 'text2')
+                    if value: parts.append(value)
+                    if block.find('text') is not None and block.find('text2') is not None:
+                        value = _field(block, 'text2')
+                        if value: parts.append(value)
+                    unsupported = [x.tag for x in block if x.tag not in ('text','text2','align','blocktype','frame')]
+                    if unsupported: losses.append(_loss('manual','story-block','Reference block media/layout fields need review',source_id=identity,fields=unsupported))
+                body = '\n'.join(parts)
             name = _field(record, 'name') or identity
             if not body:
                 losses.append(_loss('unsupported', 'story', 'Story entry "' + name + '" has no text and was not given a note',
@@ -482,16 +539,32 @@ def campaign_ir(source: ModuleSource):
                 continue
             image = add_image(record, identity)
             docs.append({'kind': 'Story', 'format': 'fg-story', 'id': identity, 'source_path': 'db.xml',
-                         'adventure_id': module, 'uuid_aliases': [identity],
+                         'adventure_id': module, 'uuid_aliases': [identity, identity + '@' + module, identity + '@*'],
                          'display': {}, 'payload': {'name': name, 'text': body, 'image': image}})
+            if identity.startswith('reference.refmanualdata.'):
+                docs[-1]['format']='fg-reference-page'
+    from forgebridge.fg_records import extra_documents
+    docs.extend(extra_documents(root,module,seen,losses,add_image))
+    from forgebridge.fantasy_grounds import list_images
+    for entry in list_images(source):
+        identity = entry['record']
+        if identity in seen: continue
+        seen.add(identity)
+        image = _stage_image(source, entry['bitmap'], staged, losses, identity)
+        if image:
+            docs.append({'kind':'Story','format':'fg-image','id':identity,'source_path':'db.xml',
+                         'adventure_id':module,'uuid_aliases':[identity,identity+'@'+module,identity+'@*'],
+                         'display':{},'payload':{'name':entry['name'],'text':'Source image; no grid/calibration inferred.','image':image}})
     if len(docs) > 2048:
-        raise ModuleError('Campaign exceeds 2048 NPC, item and story records')
-    scope = hashlib.sha256(json.dumps([module, sorted(doc['id'] for doc in docs)], sort_keys=True).encode()).hexdigest()[:20]
+        raise ModuleError('Campaign exceeds 2048 content records')
+    losses.append(_loss('approximate','formattedtext','Paragraph/list/frame text and supported record links retained; original typography, frames, tables and interactive layout are flattened'))
+    from forgebridge.scene_profile import fingerprint
+    scope = hashlib.sha256(json.dumps(['fg-records-v2', module, fingerprint(source.path), sorted(doc['id'] for doc in docs)], sort_keys=True).encode()).hexdigest()[:20]
     return {'version': 1, 'scope': scope, 'package_id': module, 'adventure_id': module, 'documents': docs,
             'losses': losses, 'notes_folder': _notes_folder(info.get('displayname') or info.get('name'))}, staged
 
 
-def build_campaign(module):
+def build_campaign(module, *, notes_folder=None):
     """Return native files and a report. Evidence is file-level only."""
     with ModuleSource(module) as source:
         ir, staged = campaign_ir(source)
@@ -502,10 +575,14 @@ def build_campaign(module):
             if target.resolve().is_relative_to(root.resolve()):
                 target.parent.mkdir(parents=True, exist_ok=True)
                 target.write_bytes(data)
-        files, report = campaign_files(ir, root, notes_folder=ir['notes_folder'])
-    report['counts']['stories'] = sum(row['kind'] == 'Story' for row in report['documents'])
+        files, report = campaign_files(ir, root, notes_folder=notes_folder or ir['notes_folder'])
+    report['counts']['stories'] = sum(d['format']=='fg-story' for d in ir['documents'])
+    for count,form in [('reference_pages','fg-reference-page'),('reference_chapters','fg-reference-chapter'),('parcels','fg-parcel'),('quests','fg-quest'),('table_references','fg-table-reference')]:
+        report['counts'][count] = sum(d['format']==form for d in ir['documents'])
+    report['counts']['images'] = sum(d['format']=='fg-image' for d in ir['documents'])
     report['evidence'] = 'file-level only, Toolkit check pending'
     report['runtime_validation'] = 'not performed'
+    report['reference_policy'] = 'Qualified local references and @* match unique converted local records only; other modules are not loaded; unresolved references stay labels with losses'
     report['source'] = 'fantasy_grounds'
     return files, report
 

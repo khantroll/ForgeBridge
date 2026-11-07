@@ -14,10 +14,10 @@ can only be proven inside Arkenforge.
 | # | Item | Source | State |
 |---|---|---|---|
 | A1 | Animated/video tiles + Foundry ambient sounds, cosmetic stat-block gaps | PR #31 | Installed as *FB Motion Check*; needs Toolkit look + listen |
-| A2 | **Fantasy Grounds on a real adventure**: NPC/item/spell/story notes have only been checked on a synthetic module | `fg_campaign.py` | Real unencrypted modules are on Xenos: *Well Met in Kithtakharos* (ks01 OGL), DD5E SRD Bestiary, DD5E SRD Magic Items |
-| A3 | FG map **pins** (story/encounter links) → room markers | `fantasy_grounds.py` "map pins … not converted yet" | Not built |
-| A4 | FG **tokens** placed on maps | "tokens placed on FG maps are not read yet" | Not built |
-| A5 | FG one-step build (maps + notes + markers + tokens; GUI) | BUILD-MAP: "Map conversion … does not write these notes" | Two separate commands today |
+| A2 | **Fantasy Grounds on real modules** | PR #32; `fg_campaign.py` | Real unencrypted Well Met, SRD Bestiary and Magic Items builds completed at file level; refreshed full-record runs completed and documented in `validation/2026-11-06-FG-FULL-RECORDS.md`. Real Toolkit note checks pending; Well Met is 3.5E display-only |
+| A3 | FG map **pins** → room markers | PR #32; `fg_scene.py` | Bounded FGU shortcut adapter implemented and tested with owned fixtures; real source has no pins, coordinate/runtime check pending |
+| A4 | FG placed **tokens** | PR #32; `fg_scene.py` | Portrait/size/rotation/hidden placement tested at file level. NPC association reported; binding omitted because native linked text changes portrait rendering. Real source has no placements |
+| A5 | FG combined maps + notes + markers + tokens, GUI | PR #32 | Implemented through convert/GUI and standard review/add-only install; explicit notes-only mode; missing grids refused |
 | A6 | Missing Foundry art from a Data folder | PR #30 | File-level done; Toolkit look optional |
 | A7 | **Foundry fog, vision and light animation** (Jeffrey 2026-11-05: in scope) | Native schema has light `_flicker`, token `_vision`, manual/visible-through-fog flags | Capture native fog/vision/animation controls in the Toolkit first (before trial ends), then map Foundry token sight, scene fog/darkness and light animation types; FG vision/LOS the same way |
 
@@ -25,8 +25,8 @@ can only be proven inside Arkenforge.
 
 | # | Item | Notes |
 |---|---|---|
-| B1 | FG **tables** → rollable-table notes | FG `tables` records are not read at all (Foundry tables are) |
-| B2 | FG **parcels/treasure, quests, reference manuals, image handouts** | Not read; reference manuals are how many FG adventures store their text |
+| B1 | FG **tables** → rollable-table notes | PR #32: range rows, column text and result links; native rolls differ from unsupported FG dice/settings, reported explicitly; real Magic Items contains 29 tables |
+| B2 | FG **parcels, quests, reference manuals, image handouts** | PR #32: implemented with record-level unknown-type losses. Real manual pages/chapters and handouts plus owned parcel/quest regressions; runtime pending |
 | B3 | Foundry **system-compendium monsters/items** (links into dnd5e packs other than spells) | Spells resolve via `--spell-pack`; other compendium links stay as text |
 | B4 | FG light/environment details | Lights saved off written on; bright/dim falloff collapsed; ambient/tint not mapped; only first bitmap layer; grid offset ignored |
 | B5 | Foundry playlist settings | Loop, fade, channel, volume, mode → manual review today |

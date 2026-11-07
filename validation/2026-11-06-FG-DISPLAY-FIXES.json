@@ -1,0 +1,179 @@
+{
+  "evidence": "file-level only; trial ended; no installation",
+  "schema_reference_toolkit": "0.5.1.18",
+  "modules": [
+    {
+      "module": "Well Met in Kith'takharos",
+      "source_sha256": "4f1544ad363074f0bc4c2135f190a3beaf0dc95381a8476746c0fb8540b8c335",
+      "source_unchanged": true,
+      "output": "C:\\AMD\\fb-fg-pr32-display-2026-11-06\\well-met",
+      "status": "PASS",
+      "counts": {
+        "tables": 0,
+        "actors": 5,
+        "items": 2,
+        "spells": 0,
+        "playlists": 0,
+        "tracks": 0,
+        "manual_tracks": 0,
+        "notes": 50,
+        "stories": 26,
+        "reference_pages": 0,
+        "reference_chapters": 0,
+        "parcels": 0,
+        "quests": 0,
+        "table_references": 0,
+        "images": 17
+      },
+      "counts_equal_prior_table": true,
+      "loss_counts": {
+        "manual": 6,
+        "approximate": 18
+      },
+      "loss_features": {
+        "npc-fields": 5,
+        "npc": 5,
+        "item-fields": 1,
+        "formattedtext": 1,
+        "actor-empty-layout": 5,
+        "actor": 5,
+        "item": 2
+      },
+      "note_files_audited": 50,
+      "text_fields_audited": 194,
+      "newline_escape_failures": [],
+      "ordinary_text_colours": {
+        "FFFFFF": 84525,
+        "B9CEFF": 1857
+      },
+      "collapsed_empty_fields": {
+        "_sensesText": 5,
+        "_languagesText": 5,
+        "_proficiencyBonusText": 5
+      },
+      "package_sha256": "0cd6619a29c3b2a80b88a80eae4ef70373bfdc59752aab5c6d011c80142e29b0",
+      "runtime_validation": "not performed; trial ended",
+      "installed": false,
+      "prior_loss_feature_totals_preserved": true
+    },
+    {
+      "module": "DD5E SRD Bestiary",
+      "source_sha256": "fbc8b58f92ecf34da72d1463fc3ca5f1aa991b5076e9df3e1ef85055734e6747",
+      "source_unchanged": true,
+      "output": "C:\\AMD\\fb-fg-pr32-display-2026-11-06\\bestiary",
+      "status": "PASS",
+      "counts": {
+        "tables": 0,
+        "actors": 323,
+        "items": 0,
+        "spells": 0,
+        "playlists": 0,
+        "tracks": 0,
+        "manual_tracks": 0,
+        "notes": 351,
+        "stories": 0,
+        "reference_pages": 23,
+        "reference_chapters": 5,
+        "parcels": 0,
+        "quests": 0,
+        "table_references": 0,
+        "images": 0
+      },
+      "counts_equal_prior_table": true,
+      "loss_counts": {
+        "manual": 508,
+        "approximate": 783
+      },
+      "loss_features": {
+        "npc-fields": 274,
+        "npc": 323,
+        "image": 234,
+        "navigation": 2,
+        "formattedtext": 1,
+        "actor": 323,
+        "actor-empty-layout": 134
+      },
+      "note_files_audited": 351,
+      "text_fields_audited": 8366,
+      "newline_escape_failures": [],
+      "ordinary_text_colours": {
+        "FFFFFF": 305216,
+        "B9CEFF": 1442
+      },
+      "collapsed_empty_fields": {
+        "_skillsText": 134
+      },
+      "package_sha256": "868c17f8249f83e00b1360e332d0356fa4d09d02d5a1ad5952414d1051ccafac",
+      "runtime_validation": "not performed; trial ended",
+      "installed": false,
+      "prior_loss_feature_totals_preserved": true
+    },
+    {
+      "module": "DD5E SRD Magic Items",
+      "source_sha256": "a094391a03ae881ec79ef6833eb7b4858798fbce65a90f37183d9cff8aa756cd",
+      "source_unchanged": true,
+      "output": "C:\\AMD\\fb-fg-pr32-display-2026-11-06\\magic-items",
+      "status": "PASS",
+      "counts": {
+        "tables": 29,
+        "actors": 2,
+        "items": 1689,
+        "spells": 0,
+        "playlists": 0,
+        "tracks": 0,
+        "manual_tracks": 0,
+        "notes": 1728,
+        "stories": 0,
+        "reference_pages": 4,
+        "reference_chapters": 4,
+        "parcels": 0,
+        "quests": 0,
+        "table_references": 0,
+        "images": 0
+      },
+      "counts_equal_prior_table": true,
+      "loss_counts": {
+        "manual": 2712,
+        "approximate": 1748
+      },
+      "loss_features": {
+        "npc-fields": 2,
+        "npc": 2,
+        "item": 1692,
+        "item-fields": 1689,
+        "table-settings": 29,
+        "navigation": 6,
+        "formattedtext": 1,
+        "actor": 2,
+        "link": 1021,
+        "roll-table": 16
+      },
+      "note_files_audited": 1728,
+      "text_fields_audited": 5365,
+      "newline_escape_failures": [],
+      "ordinary_text_colours": {
+        "FFFFFF": 21962,
+        "B9CEFF": 286
+      },
+      "collapsed_empty_fields": {},
+      "package_sha256": "3d9f3c69e32a0d74cca13994fcf7a972aeca29ee84c548f4e1ee13c14f3fa33e",
+      "runtime_validation": "not performed; trial ended",
+      "installed": false,
+      "prior_loss_feature_totals_preserved": true
+    }
+  ],
+  "merged_main": "b2d2e4e48c4bbc6c43fb09e6e706d5db65a167ca",
+  "automated": {
+    "os": "Windows",
+    "python": "3.14",
+    "run": 368,
+    "passed": 363,
+    "skipped": 5,
+    "exit_code": 0,
+    "skip_reason": "Windows symlink creation privilege unavailable; skips not counted as passed safety checks",
+    "elapsed_seconds": 140.903
+  },
+  "total_note_files_audited": 2129,
+  "total_text_strings_audited": 13925,
+  "vision_identity_regression": "Duplicate PC identity cannot add vision to the first NPC placement; Foundry and FG adapters emit an explicit unsupported loss"
+}

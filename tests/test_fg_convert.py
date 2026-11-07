@@ -67,7 +67,7 @@ class FantasyGroundsConversionTests(unittest.TestCase):
                     row = discover(path)['scenes'][0]
                     self.assertEqual(row['status'], 'BLOCKED')
 
-    def test_mod_to_native_uses_shared_geometry_only_and_reports_source_semantics(self):
+    def test_mod_to_native_uses_shared_geometry_and_campaign_notes_and_reports_source_semantics(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp); package = module(root); before = package.read_bytes()
             discovery = discover(package); row = discovery['scenes'][0]
@@ -84,13 +84,14 @@ class FantasyGroundsConversionTests(unittest.TestCase):
             self.assertEqual(native['output_names']['map_path'], 'MyAssets/Maps/ForgeBridge test/Layered Map.rwmap')
             self.assertEqual(native['output_names']['notes_folder'], 'ForgeBridge test')
             files = read_package(root / 'out/scene-001/native-package.zip')
-            self.assertFalse(any(p.endswith('.rwnote') or '/Encyclopedia/' in p for p in files))
-            self.assertEqual(len([p for p in files if p.startswith('MyAssets/')]), 4)
+            self.assertTrue(any(p.endswith('.rwnote') for p in files))
+            self.assertEqual(len([p for p in files if p.startswith('MyAssets/')]), 14)
             reader = Reader(files[native['output_names']['map_path']]); graph = reader.read()
             tiles = reader.objects[reader.objects[graph['root_id']]['members']['_tiles']['ref']]
-            self.assertEqual(tiles['members']['_size'], 10)
+            self.assertEqual(tiles['members']['_size'], 11)
+            self.assertEqual(len(native['placements']['markers']),1)
             self.assertGreater(check_metadata_references(files), 0)
-            self.assertTrue({'pins', 'story', 'tokens', 'terrain', 'windows'} <= {l['field'] for l in fg['losses']})
+            self.assertTrue({'terrain', 'windows'} <= {l['field'] for l in fg['losses']})
             summary = report_text(result)
             for text in ['Fantasy Grounds module', 'lights_off: 1', 'Metadata: db.xml', 'terrain']:
                 self.assertIn(text, summary)
@@ -161,11 +162,11 @@ class FantasyGroundsConversionTests(unittest.TestCase):
                     '--map-folder', 'Our module', '--notes-folder', 'Future notes', '--map-name', key + '=Our map',
                     '--install', '--myassets', str(assets), '--backup-root', str(backups)]), 0)
             result = json.loads(output.getvalue()); install = result['installation']
-            self.assertEqual(install['added'], 4)
+            self.assertEqual(install['added'], 14)
             self.assertTrue((assets / 'Maps/Our module/Our map.rwmap').is_file())
             with patch('forgebridge.installer.require_toolkit_closed'):
                 removed = uninstall(install['receipt'])
-            self.assertEqual(removed['removed'], 4)
+            self.assertEqual(removed['removed'], 14)
             self.assertEqual([p.name for p in assets.rglob('*') if p.is_file()], ['user.txt'])
 
     def test_gui_grid_prompts_and_art_toggle_reach_conversion(self):

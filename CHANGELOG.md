@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+- Reject duplicate token identities in vision adapters so a later PC record cannot add sight to the first NPC placement.
+
+- Normalize FG prose newline escapes, preserve paragraph spacing and use shared explicit light journal/story text. Merge native empty-row collapse requests for legacy stat blocks; visual acceptance remains pending after the trial.
+
+- Convert FG range tables, manual chapter/page navigation, treasure parcels, quests
+  and image attachments; report unknown record types and unsupported roll behavior.
+
+- Combine Fantasy Grounds maps, campaign notes, room pins and portrait tokens
+  through the normal convert/GUI/review/install flow; explicit notes-only mode.
+- Read nested/category FG and SRD records, formatted block text and qualified
+  links; preserve string stats and non-5e source attacks without invented 5e rules.
+  Missing grids/art and portrait-safe omitted NPC bindings remain reported limits.
+
 - Development: schema-built Foundry video/animated-image tiles and map-attached
   ambient sounds with calibrated placement, bounded codecs and explicit losses;
   owned FB Motion Check fixture and reviewed install for pending Toolkit acceptance.

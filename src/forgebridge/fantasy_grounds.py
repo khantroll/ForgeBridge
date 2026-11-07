@@ -181,7 +181,7 @@ def definition(source: ModuleSource) -> dict:
 def _record_path(parents, node):
     parts, cur = [], node
     while cur is not None and cur in parents:
-        parts.append(cur.tag)
+        if cur.tag != 'category': parts.append(cur.tag)
         cur = parents[cur]
     return '.'.join(reversed(parts))
 

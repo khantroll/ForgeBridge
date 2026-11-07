@@ -12,7 +12,7 @@ XP = [10,25,50,100,200,450,700,1100,1800,2300,2900,3900,5000,5900,7200,8400,1000
 
 
 def text(value):
-    result = display_enrichers(_plain_text(str(value or '')))
+    result = display_enrichers(_plain_text(str(value or ''), preserve_paragraphs=True))
     result = re.sub(r'\[\[(.*?)\]\](?:\{([^}]+)\})?', lambda m: m[2] or m[1].removeprefix('/r '), result)
     return result
 
