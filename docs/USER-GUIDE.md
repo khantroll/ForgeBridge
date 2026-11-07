@@ -423,7 +423,7 @@ See [native campaign details](NATIVE-CAMPAIGN-CONTENT.md) for implementation not
 | ICE/unstable player stream | Check output/projection settings in a licensed Toolkit. A recorded browser/session pattern is in the validation notes; it is not a proved converter defect or a universal browser fix. |
 | Relaunch fails | Wait until the launcher no longer reports Toolkit running; no duplicate/elevated instances. |
 | Black player view with fog text | Check native fog and framing on a disposable copy; fog-off and bounded reveal/persistence are distinct checks. Preserve original profile maps. |
-| Windows LevelDB .dbtmp error | Retain diagnostics and stop that operation. Host intermittency remains unresolved despite clean CI; no blind retries, new probes or automatic Defender/indexer exclusions. Jeffrey owns exception decisions. |
+| Windows LevelDB .dbtmp error | Retain diagnostics and stop that operation. Host intermittency remains unresolved despite clean CI; no blind retries, new probes or automatic Defender/indexer exclusions. If this happens to you, please open an issue. |
 | Lock/backup failure | Inspect the active/interrupted install and retained receipt; don't remove unfamiliar locks or bypass the closed-Toolkit guard. |
 | Size limit | Export/select fewer scenes. Backup: 16 GiB/100k entries; combined review: 1 GiB/16384 native files; conversion tree: 1 GiB/16384 files. |
 | PDF renderer absent | Keep PDFs manual, or install optional PDF requirements. Skips are not renderer acceptance. |

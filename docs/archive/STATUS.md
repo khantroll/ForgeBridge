@@ -1,8 +1,8 @@
 # Project Status
 
 **Superseded:** this file is historical. Use the
-[2026-11-03 handoff](docs/HANDOFF-2026-11-03.md) for the plan and owners and
-[v0.11.0 release notes](docs/RELEASE-NOTES-v0.11.0.md) for current scope and limits.
+[2026-11-03 handoff](HANDOFF-2026-11-03.md) for the plan and owners and
+[v0.11.0 release notes](../RELEASE-NOTES-v0.11.0.md) for current scope and limits.
 PR #17 is merged as `023f30db`; its corrected runtime recheck is recorded in
 [the recheck report](validation/toolkit-recheck-2026-11-03.md).
 
@@ -24,7 +24,7 @@ WPR start returned0x80070005 Access is denied (FileIO.Verbose.Memory). Follow-up
 status says not recording; no ETL or traced diagnostic created. No privilege
 change or application elevation attempted. Windows tracing rights are a separate
 blocker. See [provenance](validation/2026-10-31-BINDING-PROVENANCE.md)
-and [capture plan](docs/LEVELDB-TRACE.md). Latest failed full result is unchanged.
+and [capture plan](../LEVELDB-TRACE.md). Latest failed full result is unchanged.
 
 Native replacement attribution (2026-10-31): upstream-style Windows file API probe
 reproduces error1175 in one of ten free replacements; all ten Python os.replace
@@ -83,7 +83,7 @@ foreground Codex surface. No input was sent; bounded recovery exhausted. This ne
 control blocker does not undo accepted October 31 player results. The disposable
 fog map remains untouched; bounded fog stays deferred. See
 [resume evidence](validation/2026-10-31-RESUME.md) and
-[release procedure](docs/SCENE-IMPORT-RELEASE.md).
+[release procedure](../SCENE-IMPORT-RELEASE.md).
 
 CI (2026-10-31, commit 271d7dd): GitHub Actions `tests` workflow. Linux and
 Windows (windows-latest, Python 3.13): **167 run, OK, 3 symlink skips** each.
@@ -110,7 +110,7 @@ No map saved. See [player evidence](validation/2026-10-31-PROFILE-PLAYER.md).
 Read-only native audit (2026-10-31): `native_capture --audit` reports selected-map
 closure, per-file input source, unselected files and every conflict/gap before a
 capture destination is chosen, reusing capture checks and writing nothing. See
-[portable capture](docs/NATIVE-CAPTURE.md#read-only-audit-before-capture).
+[portable capture](../NATIVE-CAPTURE.md#read-only-audit-before-capture).
 Latest Linux suite: **158 passed, three symlink skips**. Next independent task:
 the intermittent Windows LevelDB `.dbtmp` replacement error (Windows-only;
 needs a Windows test run). Foundry fog/vision settings now produce a manual
@@ -122,7 +122,7 @@ dependency-closed native ZIPs with original member bytes and a provenance manife
 Pinned profiles can be copied with all inputs and rebased for relocation; reusable
 control exports remain separate from scene geometry and calibration. Saved-asset
 reads require a closed-Toolkit snapshot; no capture installs or edits campaigns.
-See [portable capture](docs/NATIVE-CAPTURE.md) and
+See [portable capture](../NATIVE-CAPTURE.md) and
 [execution evidence](validation/2026-10-18/PORTABLE-CAPTURE.md).
 The historical Crypt/player restart blocker below is superseded by October 31's
 accepted observations. Bounded fog remains pending independently of development.
@@ -144,7 +144,7 @@ See [dependency evidence](validation/2026-10-24-DEPENDENCIES.md).
 
 Historical CPU-contention investigation (2026-10-18; superseded by October 19 recovery below): desktop testing now runs separately
 from tests/builds/PDF/compression/dependency scans. New read-only sampler and
-[desktop runbook](docs/DESKTOP-VALIDATION.md) record process CPU and distinct helper/
+[desktop runbook](../DESKTOP-VALIDATION.md) record process CPU and distinct helper/
 capture outcomes. Baseline Toolkit70.8–76.5% of two-thread capacity; recovery
 Toolkit72.3–75.8%, browsers4.1–7.6%, measured helper0%, no named compute workers.
 One helper setup/enumeration attempt timed out at30s; no screenshot/input followed.
@@ -194,7 +194,7 @@ no repeat of Crypt/fog gestures, rebuild, install or production change justified
 Manual steps remain native UVTT import/export/calibration, reviewed installation,
 GIF setup and the documented bounded fog gesture. Labels off; Foundry fog/vision,
 procedural light animation and actor/stat behavior stay explicit gaps. See
-[scene profiles](docs/SCENE-PROFILES.md) and the validation log. Next validation step:
+[scene profiles](../SCENE-PROFILES.md) and the validation log. Next validation step:
 establish a visible actual player viewport for representative visible/hidden tokens
 on both profile maps, then verify after restart. These pending runtime checks do
 not block independent portable capture/export development. Exact diagnostic and
@@ -251,11 +251,11 @@ file. Complete actor/stat/behavior conversion remains pending.
 
 `PYTHONPATH=src python3 -m forgebridge fixtures/synthetic-leveldb-scene.zip --uvtt-scene scene-vault --uvtt-out scene-vault.uvtt`
 
-reads the LevelDB pack inside the zip, prints one JSON object with `uvtt` and `loss_report`, writes only the `uvtt` object to `--uvtt-out`, and writes `crypt.png` and `drip.wav` in the same directory. The UVTT file is the Arkenforge map import. The PNG and WAV are loose files from the import list in [docs/research/ARKENFORGE.md](docs/research/ARKENFORGE.md): JPG, PNG, WEBP, GIF, MP4, M4V, WEBM, MP3, OGG, and WAV. The envelope on stdout is the graded report and is not itself an import file.
+reads the LevelDB pack inside the zip, prints one JSON object with `uvtt` and `loss_report`, writes only the `uvtt` object to `--uvtt-out`, and writes `crypt.png` and `drip.wav` in the same directory. The UVTT file is the Arkenforge map import. The PNG and WAV are loose files from the import list in [docs/research/ARKENFORGE.md](../research/ARKENFORGE.md): JPG, PNG, WEBP, GIF, MP4, M4V, WEBM, MP3, OGG, and WAV. The envelope on stdout is the graded report and is not itself an import file.
 
 Asset types that are not on that list are skipped and graded unsupported. Zip entries whose names leave the archive are not extracted and are not executed.
 
-The current UVTT object follows the compatibility fixes below, based on the core fields on [Arkenforge's UVTT page](https://arkenforge.com/universal-vtt-files/), read 2026-10-03 (`dateModified` 2026-08-22). Notes are in [docs/compatibility/UVTT-SLICE.md](docs/compatibility/UVTT-SLICE.md).
+The current UVTT object follows the compatibility fixes below, based on the core fields on [Arkenforge's UVTT page](https://arkenforge.com/universal-vtt-files/), read 2026-10-03 (`dateModified` 2026-08-22). Notes are in [docs/compatibility/UVTT-SLICE.md](../compatibility/UVTT-SLICE.md).
 
 These commands still write a UVTT file. They also write loose image and audio files for the scene they read:
 
@@ -269,10 +269,10 @@ No `.uvtt` file is stored as a hand-written artifact. Tests run the writer. Leve
 
 Public docs were re-read on 2026-10-03 and written up with citations:
 
-- [docs/research/FOUNDRY.md](docs/research/FOUNDRY.md) — Version 14 document lists, package layout, and the LevelDB key layout used here.
-- [docs/research/ARKENFORGE.md](docs/research/ARKENFORGE.md) — import extensions, UVTT fields, v0.5.0.0 / v0.5.1 UI features, and the automation surface that was not found.
-- [docs/compatibility/INVENTORY-SPIKE.md](docs/compatibility/INVENTORY-SPIKE.md) — synthetic inventory results, including the LevelDB actor pack.
-- [docs/compatibility/UVTT-SLICE.md](docs/compatibility/UVTT-SLICE.md) — the importable UVTT file, the four grades, the LevelDB scene, and the loose image and audio files.
+- [docs/research/FOUNDRY.md](../research/FOUNDRY.md) — Version 14 document lists, package layout, and the LevelDB key layout used here.
+- [docs/research/ARKENFORGE.md](../research/ARKENFORGE.md) — import extensions, UVTT fields, v0.5.0.0 / v0.5.1 UI features, and the automation surface that was not found.
+- [docs/compatibility/INVENTORY-SPIKE.md](../compatibility/INVENTORY-SPIKE.md) — synthetic inventory results, including the LevelDB actor pack.
+- [docs/compatibility/UVTT-SLICE.md](../compatibility/UVTT-SLICE.md) — the importable UVTT file, the four grades, the LevelDB scene, and the loose image and audio files.
 
 The inventory IR is `schema/inventory-0.1.schema.json`. `fixtures/synthetic-leveldb` is still decoded into the inventory. `fixtures/leveldb-pointer` still fails closed. Unknown fields are retained. Imported JavaScript, macros, HTML, and YAML are not executed.
 
@@ -639,8 +639,8 @@ No desktop testing or further LevelDB investigation in the current development s
 separate scene packages in a new output tree after staging/conflict/closure and
 input-hash checks. Reports shared/conflicting dependencies, repeated source IDs
 and combined losses. No install or calibration inference. See
-[workflow](docs/SCENE-BATCH.md), [evidence](validation/2026-10-31-SCENE-BATCH.md)
-and [M0–M2 matrix](docs/ACCEPTANCE-MATRIX.md).
+[workflow](../SCENE-BATCH.md), [evidence](validation/2026-10-31-SCENE-BATCH.md)
+and [M0–M2 matrix](ACCEPTANCE-MATRIX.md).
 Initial full Windows suite: 184 run, 180 passed, four skipped; final batch tests:
 10/10 pass. Final CI and real package results are recorded in the evidence log.
 Runtime work waits for Claude; further LevelDB attribution is frozen.

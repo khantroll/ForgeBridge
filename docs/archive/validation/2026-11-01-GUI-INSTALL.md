@@ -1,4 +1,4 @@
-# GUI install by Jeffrey — Manor 2nd Floor — 2026-11-01
+# GUI install by the maintainer — Manor 2nd Floor — 2026-11-01
 
 First run of the GUI by the project owner (not an agent). `forgebridge-gui` on the
 Windows host, Toolkit closed.

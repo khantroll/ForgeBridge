@@ -5,7 +5,7 @@ PDF rendering, compression and dependency scans must finish before capture start
 The CPU sampler below reads counters only; it does not control applications.
 
 ```powershell
-pwsh -NoProfile -File validation/measure-desktop-load.ps1 -Phase before -OutputFile validation/NEW-before.json
+pwsh -NoProfile -File docs/archive/validation/measure-desktop-load.ps1 -Phase before -OutputFile docs/archive/validation/NEW-before.json
 ```
 
 Run the sampler from a host shell that can see Toolkit. A sandbox may expose only

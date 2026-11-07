@@ -12,6 +12,6 @@ Attack/Save None; Damage/Effect None; Spell description; At higher levels
 Improved spell effect. The inert file graph has one `ArkenNoteField5eSpellBlock`
 with all ten text members plus field name, UID and player visibility.
 No replacement capture was needed. The original three test notes were later
-deleted in Toolkit with Jeffrey's confirmation; these fixture copies remain.
+deleted in Toolkit with the maintainer's confirmation; these fixture copies remain.
 The schema-built campaign writer already uses these templates for available
 world spells; resolving external system-compendium spells is a separate task.

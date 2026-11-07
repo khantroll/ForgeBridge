@@ -3,12 +3,12 @@
 **Superseded:** the plan below is historical. Use
 [HANDOFF-2026-11-03.md](HANDOFF-2026-11-03.md), section 3, for the v0.11.0 release
 sequence. PR #17 is merged as `023f30db`; the
-[corrected recheck](../validation/toolkit-recheck-2026-11-03.md) supersedes its
+[corrected recheck](validation/toolkit-recheck-2026-11-03.md) supersedes its
 initial failures. Release PR approval precedes merging/tagging; no new feature
 work is part of this release preparation.
 
 Working plan for PR #8 (`cursor/dynamic-lighting-c6b0`). The roadmap
-([COMPLETION-ROADMAP.md](COMPLETION-ROADMAP.md)) is the general guideline; this
+([COMPLETION-ROADMAP.md](../COMPLETION-ROADMAP.md)) is the general guideline; this
 file is the concrete order. Status per item lives in
 [ACCEPTANCE-MATRIX.md](ACCEPTANCE-MATRIX.md); update both when a step finishes.
 
@@ -19,7 +19,7 @@ needs the Toolkit must be finished before then. Everything else can follow.
 **Who does what:** *Claude* = Claude desktop computer use + built-in browser
 (the only player-stream client that has run without the ICE exception: four clean
 sessions). *Codex* = file-level code and docs; no desktop/Computer Use work.
-*Jeffrey* = decisions, approvals, and anything that writes to the real MyAssets.
+*the maintainer* = decisions, approvals, and anything that writes to the real MyAssets.
 
 **Desktop rules (all Toolkit steps):** launch Toolkit only after the launcher no
 longer says "Running Arkenforge Toolkit"; player view only in the Claude built-in
@@ -28,7 +28,7 @@ time); stream 1280×720 / 15 FPS; use disposable "Save as new" copies for any
 edit; never save Profile Crypt / Profile Manor; one agent drives the screen at a
 time.
 
-## Product goal (set by Jeffrey 2026-11-01)
+## Product goal (set by the maintainer 2026-11-01)
 
 A new user runs **one command or a small GUI**, selects a Foundry package, and
 either (a) has the scenes **auto-installed into Arkenforge** (Toolkit closed,
@@ -63,7 +63,7 @@ What stands in the way, and the plan:
 |---|---|---|---|
 | A0 | **Native map synthesis spike (top priority).** (1) Read record shapes from an existing saved map in MyAssets (Toolkit closed). (2) Generate a `.rwmap` for one Count's Manor scene directly from the Foundry source with computed calibration: background, walls, doors, lights. (3) Install it as a new disposable map and open it in the Toolkit: alignment, wall/door blocking, lights, player view. (4) Repeat for a second scene with a different size. | Claude — **Crypt + Manor PASS 11-01** (validation/2026-11-01-DIRECT-MAP.md). Schema-built records + convert/install done (Codex); **end-to-end convert --install PASS in Toolkit** (validation/2026-11-01-CONVERT-INSTALL.md); **all 34 scenes build; Manor 1st installed + Toolkit/player PASS** (validation/2026-11-01-MANOR-INSTALL.md) | Both generated maps open and match the UVTT-imported versions, or the exact failing records are documented and the fallback is chosen by 11-05. |
 | A1 | **M1.2 per-output runtime check** (after A0; on generated maps if A0 passes, otherwise profile maps). On disposable copies of Profile Crypt and Profile Manor: walls block light/vision; each door toggles and blocks when closed; lights sit where the loss report says; every generated token present with correct size/rotation/hidden state; every room marker opens the right note; note attachments/images open; scene music reported as manual. Check the player view where it matters (door and light blocking). | Claude | A results table per map in `validation/`, matrix row M1.2 updated to PASS or with each failure listed. |
-| A2 | **Decide whether to install a batch output.** Codex's `scene_batch` builds Manor+Crypt packages file-only. Validating one in the Toolkit means merging it into the real MyAssets. | Jeffrey | Yes/no recorded here. If yes: back up MyAssets, run `install_review` (expect 0 conflict/0 blocked), install, then Claude repeats a short A1 on the installed map. |
+| A2 | **Decide whether to install a batch output.** Codex's `scene_batch` builds Manor+Crypt packages file-only. Validating one in the Toolkit means merging it into the real MyAssets. | The maintainer | Yes/no recorded here. If yes: back up MyAssets, run `install_review` (expect 0 conflict/0 blocked), install, then Claude repeats a short A1 on the installed map. |
 | A3 | **Capture final evidence before the trial ends.** Screenshots/notes of anything still unverified; list any check that cannot be done after the trial. | Claude | Matrix has no Toolkit-dependent row left at OPEN without a written reason. |
 
 ## Part B — file-level (can run in parallel with A; Codex)
@@ -74,15 +74,15 @@ What stands in the way, and the plan:
 | B2 | **Single entry point** `forgebridge convert PACKAGE --out DIR` (scene discovery, computed calibration, package per scene, combined loss report); `--install` added once A0 and the installer land. Until A0 passes, document the one remaining Toolkit step plainly. | Codex | `docs/SCENE-IMPORT-RELEASE.md` has a copy-paste walkthrough that works from a fresh clone (CI runs it on the synthetic fixture). |
 | B4 | **Add-only installer** reusing `install_review`: refuse if MasterToolkit.exe is running, back up MyAssets, copy new files only, refuse on any conflict, write an uninstall list. Tests with a fake MyAssets. | Codex | Installer passes tests; never overwrites; uninstall list removes exactly what it added. |
 | B5 | **Minimal GUI** (local, stdlib Tkinter or a local web page) over `convert`: pick package, list scenes, choose install or folder output, show loss report. | Codex, after B2 | A non-technical user can convert the Count's Manor package without the terminal. |
-| B3 | **M2.4 user docs**: prerequisites (Python, Toolkit 0.5.1.18, Foundry v13 tested), supported/unsupported list, backup and rollback, troubleshooting (ICE exception → use built-in browser/loopback; relaunch timing; fog starts covered; LevelDB note). | Codex | README points to it; Jeffrey can follow it without asking. |
+| B3 | **M2.4 user docs**: prerequisites (Python, Toolkit 0.5.1.18, Foundry v13 tested), supported/unsupported list, backup and rollback, troubleshooting (ICE exception → use built-in browser/loopback; relaunch timing; fog starts covered; LevelDB note). | Codex | README points to it; the maintainer can follow it without asking. |
 
-## Part C — decisions (Jeffrey)
+## Part C — decisions (maintainer)
 
 | # | Decision | Notes |
 |---|---|---|
 | C1 | **M0.3 Windows LevelDB `.dbtmp`**: accept as a documented host-environment exception for v0.9? | Clean Windows CI runners pass every run (4 full suites, 10 repeats, 30/30 diagnostic). Cheap host test first: add the repo and temp folder to Defender exclusions, rerun the suite 3×. If it stops, document that as the containment. |
-| C2 | **Merge PR #8 into main** once A1, B1 and C1 are done and CI is green. | Squash or merge commit — Jeffrey's choice. Then close PRs #10/#11 by keeping one roadmap file. |
-| C3 | **Tag v0.9 scene-import candidate** (M2.5) after B2/B3 and a fresh-operator run by Jeffrey. | Release notes list limitations from the acceptance matrix verbatim. |
+| C2 | **Merge PR #8 into main** once A1, B1 and C1 are done and CI is green. | Squash or merge commit — the maintainer's choice. Then close PRs #10/#11 by keeping one roadmap file. |
+| C3 | **Tag v0.9 scene-import candidate** (M2.5) after B2/B3 and a fresh-operator run by the maintainer. | Release notes list limitations from the acceptance matrix verbatim. |
 
 ## Part D — after the trial (not started; do not begin before A is finished)
 
@@ -112,7 +112,7 @@ no A-step evidence or M1 row changed.
 
 B3: operator guide added and linked from README; tested version scope, public
 convert workflow, limitations, backup/install/rollback and troubleshooting covered.
-Jeffrey's fresh-operator run remains a release decision, not inferred from docs.
+The maintainer's fresh-operator run remains a release decision, not inferred from docs.
 
 B5: local Tkinter front end and .pyw launcher implemented over convert/install,
 with scoped selection, export, loss review and guarded native install. Headless
@@ -136,15 +136,15 @@ work; A-step notes and M1 rows are not changed by this implementation.
 |---|---|---|---|
 | 1 | Convert all 17 scenes (5e + SA) file-only | Codex | **DONE** — 34/34 BUILT, unique names |
 | 2 | Install Manor 1st Floor; verify in Toolkit incl. marker note + player view | Codex + Claude | **DONE** — validation/2026-11-01-MANOR-INSTALL.md |
-| 3 | Jeffrey tries `forgebridge-gui` on another scene (e.g. Manor 2nd Floor) | Jeffrey + Claude | **DONE** — validation/2026-11-01-GUI-INSTALL.md (marker→note click to re-check by hand) |
+| 3 | The maintainer tries `forgebridge-gui` on another scene (e.g. Manor 2nd Floor) | The maintainer + Claude | **DONE** — validation/2026-11-01-GUI-INSTALL.md (marker→note click to re-check by hand) |
 | 4 | Uninstall from both receipts (Crypt, Manor); prove MyAssets restored | Codex + Claude | **DONE** — all three removed (Manor 1st via `--keep-changed`, 1 Toolkit-edited note kept); no original file missing; Toolkit library clean — validation/2026-11-01-UNINSTALL.md |
 
 ## Status 2026-11-02 morning
 
-- Fresh-operator run by Jeffrey (Count's Lair, GUI): **PASS** —
+- Fresh-operator run by the maintainer (Count's Lair, GUI): **PASS** —
   validation/2026-11-02-FRESH-OPERATOR.md. Marker → note confirmed in the Toolkit.
 - Remaining Toolkit-dependent items: none required for v0.9.
-- Release decisions (Jeffrey): C1 LevelDB exception, C2 merge PR #8, C3 tag v0.9.
+- Release decisions (maintainer): C1 LevelDB exception, C2 merge PR #8, C3 tag v0.9.
 - Next build work: PDF handouts as note pages in convert/GUI (Codex);
   Fantasy Grounds reader on branch `fantasy-grounds-adapter` (needs a real FGU module).
 

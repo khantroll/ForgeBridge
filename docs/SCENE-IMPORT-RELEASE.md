@@ -106,6 +106,6 @@ or player acceptance. No desktop work occurs in this implementation.
 
 Review, current CI/skip evidence, host LevelDB exception decision, native and
 fresh-operator acceptance and explicit merge/tag authorization remain gates.
-See USER-GUIDE.md and ACCEPTANCE-MATRIX.md. No merge or release tag here.
+See USER-GUIDE.md and the release notes. No merge or release tag here.
 The existing scripts/rehearse_scene_import.py synthetic profile rehearsal remains
 available alongside the new public convert CI walkthrough.

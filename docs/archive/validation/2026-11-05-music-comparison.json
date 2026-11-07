@@ -1,7 +1,7 @@
 {
   "toolkit_version": "0.5.1.18",
-  "native_control_audible": "Jeffrey confirmed all three WAV/MP3/OGG controls on 2026-11-04",
-  "prior_written_ogg": "Jeffrey confirmed silence after explicit second-track selection",
+  "native_control_audible": "The maintainer confirmed all three WAV/MP3/OGG controls on 2026-11-04",
+  "prior_written_ogg": "The maintainer confirmed silence after explicit second-track selection",
   "payload_policy": "Encoded bytes unchanged; no .ogg/.mp3/.wav sidecar exists beside any captured native song",
   "repaired_package_sha256": "b4a10a6dd036f7118c03c1978497071431c08a64bb2b051784411a6eff44498c",
   "comparison": [
@@ -1898,7 +1898,7 @@
       ]
     }
   ],
-  "runtime_after_repair": "pending Jeffrey recheck",
+  "runtime_after_repair": "pending the maintainer recheck",
   "installed_package": "C:\\AMD\\fb-audio-mixer-recheck-2026-11-05\\native-package-preserve-edits.zip",
   "installed_package_sha256": "497c9c4da16066f85242756dab14d739385e8f2d692813c70b9f99781ba717d0",
   "installation": {

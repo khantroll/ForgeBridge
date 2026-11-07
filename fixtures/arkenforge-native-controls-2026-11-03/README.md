@@ -44,7 +44,7 @@ provenance, not portable install instructions.
 
 ## Cleanup and preservation
 
-With Jeffrey's explicit confirmation, deleted through Toolkit only:
+With the maintainer's explicit confirmation, deleted through Toolkit only:
 FBCapture 5e Character, FBCapture 5e Item, FBCapture 5e Spell, and
 `Playlists/ForgeBridgeCampaign-edfc87a75fc39f64264e/FBCapture Playlist`.
 Existing tracked template/playlist fixture copies and uninstall receipts remain.
@@ -54,7 +54,7 @@ New Map pair automatically; these were not restored over native writes.
 New isolated reference files remain in MyAssets for a possible human check.
 
 `Retire-ForgeBridgeTestContent.ps1` could not be located in the repository,
-AMD root, other checked clone, Desktop, Documents or Downloads; Jeffrey does
+AMD root, other checked clone, Desktop, Documents or Downloads; the maintainer does
 not know its path. Dry run and Apply are **BLOCKED**. No replacement script or
 broad retirement move was improvised.
 
@@ -65,12 +65,12 @@ not runtime validation of any ForgeBridge mapping.
 
 ## Later human observation — 2026-11-04
 
-Jeffrey reports that these motion/video assets import, place and move correctly,
+The maintainer reports that these motion/video assets import, place and move correctly,
 and that the WAV tone plays when attached to a map. These human results supersede
 the open native-operation checks above, while retaining the earlier agent's
 exact failed workflow as history. They do not establish automatic Foundry
 animated-media/ambient-sound conversion, radius/falloff equivalence or restart
-persistence. Jeffrey also confirmed the synthetic spell notes work. The remaining
+persistence. The maintainer also confirmed the synthetic spell notes work. The remaining
 audio failure is music playlists; MP3 and an explicitly selected OGG were silent.
 
 ## Motion writer references retrieved 2026-11-05

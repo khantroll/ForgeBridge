@@ -91,7 +91,7 @@ The map-builder page (`dateModified` 2024-02-16) omits WEBP and audio that the l
 
 ## Recommended next milestone
 
-That milestone is now recorded in [UVTT-SLICE.md](UVTT-SLICE.md) and [STATUS.md](../../STATUS.md). The note below is the scope that was named at the end of the inventory spike. LevelDB decoding came after that UVTT slice.
+That milestone is now recorded in [UVTT-SLICE.md](UVTT-SLICE.md) and [STATUS.md](../archive/STATUS.md). The note below is the scope that was named at the end of the inventory spike. LevelDB decoding came after that UVTT slice.
 
 **Next milestone: one synthetic scene to a UVTT JSON document, plus a loss report.**
 

@@ -16,7 +16,7 @@ a successful file build, source hash or executable smoke test is not native runt
 - **Animated/video tiles:** the generated FB Motion Check WEBM timer and GIF
   animation played. Native video/motion controls had previously imported, placed
   and moved; this is not a claim that every codec/container was tested.
-- **Map-attached ambient sounds:** Jeffrey heard the generated OGG/WAV controls
+- **Map-attached ambient sounds:** the maintainer heard the generated OGG/WAV controls
   at their placed map objects. Exact source wall occlusion/easing is approximate.
 - **FG combined-adventure workflow:** real Well Met Blood Priest (legacy 3.5E
   display data) and a full story note were inspected. In the distinctly owned FG

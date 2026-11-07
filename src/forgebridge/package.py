@@ -66,12 +66,12 @@ def build_package(companion, map_template, media_template, dest, *, name,
         report['unplaced_markers'] = map_report['unplaced_markers']
         report['regenerated_exported_note_files'] = preserved
         report['counts'].update(native_tokens=0, unsupported_tokens=0)
-        report['status'] = 'Combined native package built; check this scene in Toolkit. See STATUS.md for tested scenes. Player visibility remains unverified.'
+        report['status'] = 'Combined native package built; check this scene in Toolkit. See the release notes for tested scenes. Player visibility remains unverified.'
         from forgebridge.scene_profile import MANUAL_STEPS
         report['manual_steps'] = list(MANUAL_STEPS)
         report['runtime_acceptance'] = {
             'this_build': 'not established by generating files or matching input hashes',
-            'bounded_native_fog': 'native Toolkit capability validated 2026-11-01 on a disposable reference copy (validation/2026-11-01-BOUNDED-FOG.md); packages do not write fog state, and manual fog starts covered for players',
+            'bounded_native_fog': 'native Toolkit capability validated 2026-11-01 on a disposable reference copy (docs/archive/validation/2026-11-01-BOUNDED-FOG.md); packages do not write fog state, and manual fog starts covered for players',
             'foundry_fog_vision': 'not converted; manual native controls are a separate capability',
         }
         if collection is not None:

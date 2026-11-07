@@ -67,7 +67,7 @@ UVTT grid units, origin top-left, y down:
 ## Checked on a real module (2026-11-02)
 
 *Mike's Free Encounters 91 — Gufuhvalur and Isfiskur* (free FGU module,
-`definition.xml` version 4.3, release 8.1|CoreRPG:6; supplied by Jeffrey, not
+`definition.xml` version 4.3, release 8.1|CoreRPG:6; supplied by the maintainer, not
 committed). Findings:
 
 - **Coordinates confirmed**: pixels, origin at the image centre, **y up**.
@@ -111,7 +111,7 @@ committed). Findings:
 Arkenforge's own Fantasy Grounds Unity export of a known map read back exactly:
 199/199 walls, 23/23 doors (20 doors + 3 open doors as windows, endpoints and
 state exact), 66/66 light positions. Arkenforge's exporter shrinks light radius
-≈0.88×. See validation/2026-11-02-FG-ARKENFORGE-EXPORT.md.
+≈0.88×. See docs/archive/validation/2026-11-02-FG-ARKENFORGE-EXPORT.md.
 
 ## Assumptions still to verify
 
@@ -152,7 +152,7 @@ anything, check on one real FGU module:
    implemented at file level. Native NPC bindings remain omitted for portrait
    safety; source dialect/alignment and actual token behavior need runtime review.
 
-## What is needed from Jeffrey
+## What is needed from the maintainer
 
 - One Fantasy Grounds Unity module you own (ideally one map with line of sight
   and lights drawn in FGU), as a `.mod` file or exported module folder. Not
