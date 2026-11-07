@@ -567,5 +567,15 @@
       ],
       "opaque_mask_test": "one persistence byte changed in memory only"
     }
-  ]
+  ],
+  "installation": {
+    "exit_code": 0,
+    "added": 190,
+    "receipt": "C:\\AMD\\fb-backups\\forgebridge-d450b8d1618b4e42897dced0f2bdb97a\\uninstall.json",
+    "backup": "C:\\AMD\\fb-backups\\forgebridge-d450b8d1618b4e42897dced0f2bdb97a\\MyAssets",
+    "state": "COMPLETE",
+    "verified_added_hashes": 190,
+    "identical_files_left_untouched": 156,
+    "runtime_validation": "not performed"
+  }
 }

@@ -35,3 +35,13 @@ Package SHA-256 `2b16964352216e2369ce463e9522d223092e3c10368abf006400279ed9981b1
 | Generated native player vision/effects and restart | BLOCKED | No runtime observation; trial deadline missed |
 
 Full Windows suite: PASS, 335 run, 331 passed, four skipped (Windows symlink tests). Final run exit 0 in 667.834 seconds; no skipped test counted as a passed safety check.
+
+## Installation
+
+Exit 0; **190 files added**, 156 identical dependencies left untouched. Receipt state COMPLETE; all 190 installed added-file SHA-256 values match the receipt. No conflicts refused, no previous checks uninstalled. Toolkit closed; not launched.
+
+Receipt: `C:\AMD\fb-backups\forgebridge-d450b8d1618b4e42897dced0f2bdb97a\uninstall.json`
+
+Backup: `C:\AMD\fb-backups\forgebridge-d450b8d1618b4e42897dced0f2bdb97a\MyAssets`
+
+Open **Maps → FB Fog Check → Count's Lair Fog** for any later licensed runtime check. Eleven lights should flicker; six ghost lights stay static. No lights blink, no negative lights and no NPC vision lights. Dynamic fog with persistence enabled is configuration evidence only, not proof of player reveal/restart behavior.
