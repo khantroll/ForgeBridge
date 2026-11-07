@@ -471,3 +471,6 @@ the same native scene package. Read `native_counts.animated_tiles` /
 
 The owned FB Motion Check fixture shows separate nonoverlapping radius rings;
 use its validation checklist before accepting this converter-written output.
+### Native fog, vision and light effects
+
+Conversion reports include a `visibility` section. Foundry scene fog configuration, bounded character vision and recognized flicker/blink effects are written from captured native schemas. Review fog and global darkness settings manually; historical reveal masks are not migrated. NPCs do not gain vision lights. Unsupported modes/animations and uncalibrated scene darkness remain losses. Native runtime acceptance is pending.

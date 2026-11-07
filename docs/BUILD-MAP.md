@@ -45,3 +45,6 @@ Missing-CR Challenge labels are omitted. Empty nongated stat rows request zero-s
 zero-width text; whether that removes Toolkit layout gaps remains pending.
 Labels off; source procedural light animation, fog/vision and unrelated profile
 player-output checks remain explicit gaps, unaffected by this work.
+## Fog/vision/animation implementation — 2026-11-06
+
+Captured-schema configuration mapping is implemented at file level; native runtime acceptance remains pending. Dynamic fog/persistence, bounded owned-character vision and supported light effects are described in `../validation/2026-11-06-FOG-VISION-ANIMATION.md`. Historical exploration masks, full vision rules, unsupported animations and scene darkness intensity remain explicit gaps.

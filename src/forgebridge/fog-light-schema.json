@@ -1,0 +1,207 @@
+{
+  "version": 1,
+  "reference": "Toolkit 0.5.1.18; fixtures/arkenforge-fog-vision-2026-11-06/README.md",
+  "libraries": {
+    "2": "Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
+  },
+  "classes": {
+    "FogOfWarOptions+FogMode": {
+      "name": "FogOfWarOptions+FogMode",
+      "names": [
+        "value__"
+      ],
+      "types": [
+        0
+      ],
+      "infos": [
+        8
+      ],
+      "library_id": 2
+    },
+    "SVector3": {
+      "name": "SVector3",
+      "names": [
+        "x",
+        "y",
+        "z"
+      ],
+      "types": [
+        0,
+        0,
+        0
+      ],
+      "infos": [
+        11,
+        11,
+        11
+      ],
+      "library_id": 2
+    },
+    "ObjectEffectLightFlicker": {
+      "name": "ObjectEffectLightFlicker",
+      "names": [
+        "_intensity",
+        "_name",
+        "_enabled",
+        "ObjectEffectBase+_name",
+        "ObjectEffectBase+_enabled"
+      ],
+      "types": [
+        0,
+        1,
+        0,
+        1,
+        0
+      ],
+      "infos": [
+        11,
+        null,
+        1,
+        null,
+        1
+      ],
+      "library_id": 2
+    },
+    "ObjectEffectLightBlink": {
+      "name": "ObjectEffectLightBlink",
+      "names": [
+        "_timeBetweenBlinks",
+        "_maxBlinkCount",
+        "_waitTime",
+        "_waitTimeVariance",
+        "_name",
+        "_enabled",
+        "ObjectEffectBase+_name",
+        "ObjectEffectBase+_enabled"
+      ],
+      "types": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0
+      ],
+      "infos": [
+        11,
+        8,
+        11,
+        11,
+        null,
+        1,
+        null,
+        1
+      ],
+      "library_id": 2
+    },
+    "TileLightingProperties": {
+      "name": "TileLightingProperties",
+      "names": [
+        "_hasLight",
+        "_lightRadius",
+        "_lightR",
+        "_lightG",
+        "_lightB",
+        "_visibleThroughFog",
+        "_flicker",
+        "_darkness",
+        "_qualitySetting",
+        "_fov",
+        "_lightUpdates",
+        "_lightIntensity",
+        "_lightDirection"
+      ],
+      "types": [
+        0,
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "infos": [
+        1,
+        "System.Collections.Generic.List`1[[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        11,
+        11,
+        11,
+        1,
+        1,
+        1,
+        8,
+        8,
+        1,
+        11,
+        8
+      ],
+      "library_id": 2
+    }
+  },
+  "defaults": {
+    "ObjectEffectLightFlicker": {
+      "_intensity": 1.0,
+      "_name": "Light Flicker",
+      "_enabled": true,
+      "ObjectEffectBase+_name": "Light Flicker",
+      "ObjectEffectBase+_enabled": true
+    },
+    "ObjectEffectLightBlink": {
+      "_timeBetweenBlinks": 0.07500000298023224,
+      "_maxBlinkCount": 5,
+      "_waitTime": 4.0,
+      "_waitTimeVariance": 0.25,
+      "_name": "Light Blink",
+      "_enabled": true,
+      "ObjectEffectBase+_name": "Light Blink",
+      "ObjectEffectBase+_enabled": true
+    }
+  },
+  "map_fields": {
+    "_fogEnabled": {
+      "type": 0,
+      "info": 1
+    },
+    "_fogMode": {
+      "type": 4,
+      "info": {
+        "name": "FogOfWarOptions+FogMode",
+        "library_id": 2
+      }
+    },
+    "_fogPersists": {
+      "type": 0,
+      "info": 1
+    },
+    "_fogColour": {
+      "type": 4,
+      "info": {
+        "name": "SVector3",
+        "library_id": 2
+      }
+    },
+    "_useCustomLightIntensity": {
+      "type": 0,
+      "info": 1
+    },
+    "_customLightIntensity": {
+      "type": 0,
+      "info": 11
+    }
+  },
+  "source_sha256": "809c7bee195fbf52e0c32528093b743282343fece340d323d3b5da2685314aa9",
+  "inline": {
+    "FogOfWarOptions+FogMode": true,
+    "SVector3": false,
+    "ObjectEffectLightFlicker": false,
+    "ObjectEffectLightBlink": false
+  }
+}
