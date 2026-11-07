@@ -84,7 +84,12 @@ class NoteBuilder:
                 'ArkenNoteField+_name': name, 'ArkenNoteField+_visibleToPlayers': visible, 'ArkenNoteField+_UID': uid}
 
     def text_field(self, name, segments, uid):
-        return self.node('ArkenNoteFieldText', {**self.field_members(name, uid), '_text': self.text(segments),
+        # Shared journal/story prose: explicit light text on the captured dark field.
+        prose = self.text(segments)
+        for char in prose.members['_characters'].members['_items'].items:
+            if not char.members['_hexColour']:
+                char.members['_hexColour'] = 'FFFFFF'
+        return self.node('ArkenNoteFieldText', {**self.field_members(name, uid), '_text': prose,
             '_fieldColor': self.vector(.15, .15, .15), '_headingColor': self.vector(1., 1., 1.),
             '_bgOpacity': 1., '_showBorder': False, '_font': 'ToolkitDefault'})
 
@@ -143,7 +148,8 @@ class NoteBuilder:
 
 class Writer:
     """Emit this known note object graph as NRBF, without a deserializer."""
-    def __init__(self, libraries):
+    def __init__(self, libraries, *, max_items=2000000):
+        self.max_items = max_items
         self.libraries = libraries
         self.out = bytearray()
         self.ids, self.string_ids, self.metadata_ids = {}, {}, {}
@@ -219,6 +225,9 @@ class Writer:
     def array(self, array, oid):
         self.out.append(7); self.integer(oid); self.out.append(0); self.integer(1); self.integer(len(array.items))
         self.out.append(array.kind); self.type_info(array.kind, array.info)
+        if array.kind == 0 and array.info == 2:
+            self.out += bytes(array.items)
+            return
         for item in array.items:
             if array.kind == 0: self.primitive(array.info, item)
             else: self.value(item)
@@ -237,7 +246,7 @@ class Writer:
             else: self.array(value, oid)
         self.out.append(11)
         data = bytes(self.out)
-        inspect_nrbf(data)  # Structure check only; does not prove Arkenforge compatibility.
+        inspect_nrbf(data, max_items=self.max_items)  # Structure check only; does not prove Arkenforge compatibility.
         return data
 
 

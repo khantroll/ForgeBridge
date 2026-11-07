@@ -95,13 +95,17 @@ def check_metadata_references(files):
     _check_paths(files, native_only=False)
     count = 0
     for path, data in files.items():
-        if not path.endswith(('.rwmap', '.rwnote', '.rwmeta', '.rwpl')):
+        if not path.endswith(('.rwmap', '.rwnote', '.rwmeta', '.rwpl', '.rwamb')):
             continue
         reader = Reader(data, max_items=64000000)
         reader.read()
         for value in reader.objects.values():
-            if isinstance(value, str) and value.startswith('MyAssets/') and value.endswith('.rwmeta'):
+            if isinstance(value, str) and value.startswith('MyAssets/') and value.endswith(('.rwmeta','.rwamb')):
                 if value not in files:
                     raise ValueError('Missing native dependency: ' + value + ' (from ' + path + ')')
+                if value.endswith('.rwamb') and value[:-6]+'.rwmeta' not in files:
+                    raise ValueError('Missing native ambience metadata: '+value)
+                if path.endswith('.rwamb') and value.startswith('MyAssets/Audio/') and value[:-7]+'.rwfile' not in files:
+                    raise ValueError('Missing native ambience audio payload: '+value)
                 count += 1
     return count

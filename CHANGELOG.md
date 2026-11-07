@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Normalize FG prose newline escapes, preserve paragraph spacing and use shared explicit light journal/story text. Merge native empty-row collapse requests for legacy stat blocks; visual acceptance remains pending after the trial.
+
 - Convert FG range tables, manual chapter/page navigation, treasure parcels, quests
   and image attachments; report unknown record types and unsupported roll behavior.
 
@@ -11,6 +13,12 @@
   links; preserve string stats and non-5e source attacks without invented 5e rules.
   Missing grids/art and portrait-safe omitted NPC bindings remain reported limits.
 
+- Development: schema-built Foundry video/animated-image tiles and map-attached
+  ambient sounds with calibrated placement, bounded codecs and explicit losses;
+  owned FB Motion Check fixture and reviewed install for pending Toolkit acceptance.
+- Omit missing-CR Challenge labels and request zero-size empty stat rows; visual
+  gap collapse still needs the Toolkit check. Native active flags remain respected.
+- Add schema-built native Dynamic fog/persistence, bounded owned-character vision, flicker/blink and negative-light mapping with explicit approximation reports. File-level coverage only; runtime acceptance pending.
 
 - Revision-scoped campaign note and playlist filenames preserve Toolkit-edited
   predecessors retained by uninstall; displayed playlist names stay unchanged.

@@ -37,7 +37,7 @@ def placements(source, entry, result, links, documents, staged):
             if identity in seen: raise ValueError('Duplicate shortcut identity')
             seen.add(identity)
             if not target: raise ValueError('Pin target not converted or belongs to another module')
-            markers.append(dict(source_id=identity, title=node.findtext('name') or names.get(target) or ref,
+            markers.append(dict(source_id=identity, title=_field(node,'name') or names.get(target) or ref,
                                 target=target, grid_position=point(node)))
         except (ValueError,TypeError) as exc: loss('pin',str(exc),identity,record=ref)
     for index,node in enumerate(token_nodes):
@@ -60,7 +60,7 @@ def placements(source, entry, result, links, documents, staged):
             visibility = (node.findtext('visibility') or 'visible').lower()
             if visibility not in ('0','1','on','off','visible','hidden'): raise ValueError('Unsupported token visibility')
             hidden = visibility in ('0','off','hidden')
-            tokens.append(Token(identity,node.findtext('name') or (npc or {}).get('name') or 'FG token',texture,
+            tokens.append(Token(identity,_field(node,'name') or (npc or {}).get('name') or 'FG token',texture,
                 (pos['x'],pos['y']),(size,size),(scale,scale),angle,hidden,tuple(child.tag for child in node)))
             if node.find('size') is None:
                 losses.append(dict(grade='approximate',feature='token-size',source_id=identity,

@@ -59,6 +59,12 @@ def _links(value):
     return text(value or '')
 
 
+def _newlines(value):
+    """Normalize FG prose escapes only; never unicode-decode IDs or asset paths."""
+    value = value.replace('\r\n', '\n').replace('\r', '\n')
+    return re.sub(r'\\+(?:r\\+n|[rn])', '\n', value)
+
+
 def _formatted(node):
     """Readable block boundaries and explicit FG record links; never execute markup."""
     if node is None:
@@ -80,7 +86,7 @@ def _formatted(node):
             if child.tail: parts.append(child.tail)
         if el.tag in blocks or el.tag == 'br': parts.append('\n')
     walk(node)
-    value = text(''.join(parts))
+    value = text(_newlines(''.join(parts)))
     return re.sub(r'\n[ \t]*\n(?:[ \t]*\n)+', '\n\n', value).strip() or None
 
 
@@ -251,7 +257,7 @@ def _npc(record, identity, losses, *, is_5e=True):
                 entry['total'] = total
             system['skills'][key] = entry
     elif skills_node is not None and (skills_node.text or '').strip():
-        skill_text = skills_node.text.strip()
+        skill_text = _formatted(skills_node)
     speed_raw = _field(record, 'speed')
     parsed, problem = _speed(speed_raw)
     if parsed:
@@ -340,6 +346,7 @@ def _npc(record, identity, losses, *, is_5e=True):
             details['biography']['value'] += '\n' + tag + ': ' + value
             gaps.append(tag + ' preserved as biography text; slots/actions/automation not converted')
     display = actor_ir(actor)
+    display['challenge_has_cr'] = bool(cr_text)
     if actext:
         display['ac'] = (f'{ac:g} ' if ac is not None and not re.match(r'^\s*\d', actext) else '') + actext
     elif ac is None:

@@ -1,0 +1,358 @@
+2c2
+<   _name = 'FB Capture Base'
+---
+>   _name = 'FB Capture Effects'
+5c5
+<   _lastModifiedDate = '134384686045343987'
+---
+>   _lastModifiedDate = '134384688542658970'
+44389c44389
+<                                     4.0960001945495605
+---
+>                                     11.519999504089355
+44401,44402c44401,44402
+<                         _visibleThroughFog = False
+<                         _flicker = False
+---
+>                         _visibleThroughFog = True
+>                         _flicker = True
+44445c44445
+<                                 0
+---
+>                                 4
+44448,44449c44448,44462
+<                         _size = 0
+<                         _version = 0
+---
+>                               - 0
+>                                 [ObjectEffectLightFlicker]
+>                                   _intensity = 1.0
+>                                   _name = 'Light Flicker'
+>                                   _enabled = True
+>                                   ObjectEffectBase+_name = 'Light Flicker'
+>                                   ObjectEffectBase+_enabled = True
+>                               - 1
+>                                 None
+>                               - 2
+>                                 None
+>                               - 3
+>                                 None
+>                         _size = 1
+>                         _version = 1
+44795c44808
+<                         _darkness = False
+---
+>                         _darkness = True
+44837c44850
+<                                 0
+---
+>                                 4
+44840,44841c44853,44870
+<                         _size = 0
+<                         _version = 0
+---
+>                               - 0
+>                                 [ObjectEffectLightBlink]
+>                                   _timeBetweenBlinks = 0.07500000298023224
+>                                   _maxBlinkCount = 5
+>                                   _waitTime = 4.0
+>                                   _waitTimeVariance = 0.25
+>                                   _name = 'Light Blink'
+>                                   _enabled = True
+>                                   ObjectEffectBase+_name = 'Light Blink'
+>                                   ObjectEffectBase+_enabled = True
+>                               - 1
+>                                 None
+>                               - 2
+>                                 None
+>                               - 3
+>                                 None
+>                         _size = 1
+>                         _version = 1
+53498c53527,53788
+<               None
+---
+>               [ArkenMapTileUpgradeBase]
+>                 _tileInfo:
+>                   [ArkenTilePresetContentLink]
+>                     _contentBasePath = 'MyAssets/Encyclopedia/Notes/Map Notes/FB Capture Effects/Chris.rwmeta'
+>                     _contentType = 'note'
+>                     _onlyShowOnMyLevel = False
+>                     _useDefaultTint = False
+>                     _visibleOnLowerLevels = True
+>                     _name = 'Chris_1'
+>                     _editable = True
+>                     _visibleInLibrary = True
+>                     _official = False
+>                     _imported = False
+>                     _version = 0
+>                     _tileName = 'Chris_1'
+>                     _tilePack = ''
+>                     _tileCreator = ''
+>                     _tilePath = None
+>                     _tileType:
+>                       [ArkenTile+TileType]
+>                         value__ = 8
+>                     _category:
+>                       [ArkenTileUpgrade+TileCategory]
+>                         value__ = 0
+>                     _defaultPlacementType:
+>                       [MapOptions+ObjectPlacementType]
+>                         value__ = 2
+>                     _position:
+>                       [SVector2]
+>                         x = 7.925928115844727
+>                         y = -9.333333015441895
+>                     _pivot:
+>                       [SVector2]
+>                         x = 0.0
+>                         y = 0.0
+>                     _rotation = 0.0
+>                     _scale:
+>                       [SVector2]
+>                         x = 0.5311203598976135
+>                         y = 0.5311203598976135
+>                     _groupID = -1
+>                     _sortingOrder = 192
+>                     _mapLevel = 0
+>                     _onTerrainLayer = False
+>                     _hidden = False
+>                     _locked = False
+>                     _superLocked = False
+>                     _hue = 0.5
+>                     _brightness = 0.5
+>                     _saturation = 0.5
+>                     _opacity = 1.0
+>                     _tint:
+>                       [SVector3]
+>                         x = 1.0
+>                         y = 1.0
+>                         z = 1.0
+>                     _flipH = False
+>                     _flipV = False
+>                     _ignoreTimeOfDay = False
+>                     _chromaKeyEnabled = False
+>                     _chromaKeyColour:
+>                       [SVector3]
+>                         x = 1.0
+>                         y = 1.0
+>                         z = 1.0
+>                     _chromeKeyTolerance = 0.07500000298023224
+>                     _lighting:
+>                       [TileLightingProperties]
+>                         _hasLight = True
+>                         _lightRadius:
+>                           [System.Collections.Generic.List`1[[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]]
+>                             _items:
+>                               [None]
+>                                 array_type = 0
+>                                 lengths:
+>                                   - 0
+>                                     4
+>                                 lower_bounds = None
+>                                 items:
+>                                   - 0
+>                                     13.24799919128418
+>                                   - 1
+>                                     0.0
+>                                   - 2
+>                                     0.0
+>                                   - 3
+>                                     0.0
+>                             _size = 1
+>                             _version = 1
+>                         _lightR = 0.3409999907016754
+>                         _lightG = 0.3179999887943268
+>                         _lightB = 0.07100000232458115
+>                         _visibleThroughFog = True
+>                         _flicker = False
+>                         _darkness = False
+>                         _qualitySetting = 0
+>                         _fov = 360
+>                         _lightUpdates = True
+>                         _lightIntensity = 1.0
+>                         _lightDirection = 0
+>                     _hasDropShadow = False
+>                     _blocksLight = False
+>                     _animation:
+>                       [TileAnimationProperties]
+>                         _playing = True
+>                         _currentFrame = 0
+>                         _framesPerSecond = 30.0
+>                         _noOfFrames = 0.0
+>                         _triggered = False
+>                         _startFrame = 0.0
+>                         _endFrame = 0.0
+>                         _destroyAfterOnePlay = False
+>                         _delay = False
+>                         _delayTime = 0.0
+>                         _delayVariance = 0.0
+>                         _deactivateOnDelay = False
+>                         _ghostTileFrame = 0
+>                     _effectsNew:
+>                       [System.Collections.Generic.List`1[[ObjectEffectBase, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]]
+>                         _items:
+>                           [None]
+>                             array_type = 4
+>                             lengths:
+>                               - 0
+>                                 0
+>                             lower_bounds = None
+>                             items:
+>                         _size = 0
+>                         _version = 0
+>                     _alphaFriendlyCollider = False
+>                     _blocking:
+>                       [TileBlockingProperties]
+>                         _blockingEnabled = False
+>                         _light = False
+>                         _vision = False
+>                         _sound = False
+>                         _movement = False
+>                         _oneWay = False
+>                         _oneWayDirection = False
+>                         _toggleable = False
+>                         _colliderMode = 0
+>                     _chromaKeyReplacementColour:
+>                       [SVector3]
+>                         x = 1.0
+>                         y = 1.0
+>                         z = 1.0
+>                     _chromaKeyReplacementAlpha = 0.0
+>                     _uID = 1
+>                     _blockedByMovementBlockers = True
+>                     ArkenTilePresetBase+_name = 'Chris_1'
+>                     ArkenTilePresetBase+_baseName = None
+>                     ArkenTilePresetBase+_editable = True
+>                     ArkenTilePresetBase+_visibleInLibrary = True
+>                     ArkenTilePresetBase+_official = False
+>                     ArkenTilePresetBase+_imported = False
+>                     ArkenTilePresetBase+_version = 0
+>                     ArkenTilePresetBase+_tileName = 'Chris_1'
+>                     ArkenTilePresetBase+_tilePack = ''
+>                     ArkenTilePresetBase+_tileCreator = ''
+>                     ArkenTilePresetBase+_tilePath = None
+>                     ArkenTilePresetBase+_tileType:
+>                       [ArkenTile+TileType]
+>                         value__ = 8
+>                     ArkenTilePresetBase+_category:
+>                       [ArkenTileUpgrade+TileCategory]
+>                         value__ = 0
+>                     ArkenTilePresetBase+_defaultPlacementType:
+>                       [MapOptions+ObjectPlacementType]
+>                         value__ = 2
+>                     ArkenTilePresetBase+_position:
+>                       <seen>
+>                     ArkenTilePresetBase+_pivot:
+>                       <seen>
+>                     ArkenTilePresetBase+_rotation = 0.0
+>                     ArkenTilePresetBase+_scale:
+>                       <seen>
+>                     ArkenTilePresetBase+_groupID = -1
+>                     ArkenTilePresetBase+_sortingOrder = 192
+>                     ArkenTilePresetBase+_mapLevel = 0
+>                     ArkenTilePresetBase+_onTerrainLayer = False
+>                     ArkenTilePresetBase+_hidden = False
+>                     ArkenTilePresetBase+_locked = False
+>                     ArkenTilePresetBase+_superLocked = False
+>                     ArkenTilePresetBase+_hue = 0.5
+>                     ArkenTilePresetBase+_brightness = 0.5
+>                     ArkenTilePresetBase+_saturation = 0.5
+>                     ArkenTilePresetBase+_opacity = 1.0
+>                     ArkenTilePresetBase+_tint:
+>                       <seen>
+>                     ArkenTilePresetBase+_flipH = False
+>                     ArkenTilePresetBase+_flipV = False
+>                     ArkenTilePresetBase+_ignoreTimeOfDay = False
+>                     ArkenTilePresetBase+_chromaKeyEnabled = False
+>                     ArkenTilePresetBase+_chromaKeyColour:
+>                       <seen>
+>                     ArkenTilePresetBase+_chromeKeyTolerance = 0.07500000298023224
+>                     ArkenTilePresetBase+_lighting:
+>                       <seen>
+>                     ArkenTilePresetBase+_hasDropShadow = False
+>                     ArkenTilePresetBase+_blocksLight = False
+>                     ArkenTilePresetBase+_animation:
+>                       <seen>
+>                     ArkenTilePresetBase+_effects:
+>                       [System.Collections.Generic.List`1[[IObjectEffect, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]]
+>                         _items:
+>                           [None]
+>                             array_type = 4
+>                             lengths:
+>                               - 0
+>                                 0
+>                             lower_bounds = None
+>                             items:
+>                         _size = 0
+>                         _version = 0
+>                     ArkenTilePresetBase+_effectsNew:
+>                       <seen>
+>                     ArkenTilePresetBase+_alphaFriendlyCollider = False
+>                     ArkenTilePresetBase+_blocking:
+>                       <seen>
+>                     ArkenTilePresetBase+_chromaKeyReplacementColour:
+>                       <seen>
+>                     ArkenTilePresetBase+_chromaKeyReplacementAlpha = 0.0
+>                     ArkenTilePresetBase+_uID = 1
+>                     ArkenTilePresetBase+_blockedByMovementBlockers = True
+>                     ArkenTilePresetBase+_dropShadow:
+>                       [TileDropShadowProperties]
+>                         _shadowActive = True
+>                         _shadowStrengthUsesMapDefault = True
+>                         _shadowStrength = 1.0
+>                         _shadowSizeUsesMapDefault = True
+>                         _shadowSize = 1.0499999523162842
+>                         _shadowDistanceUsesMapDefault = True
+>                         _shadowDistance = 0.07500000298023224
+>                         _shadowDirectionUsesMapDefault = True
+>                         _shadowDirection = 1
+>                         _followsSunUsesMapDefault = True
+>                         _dropShadowsFollowSun = False
+>                     ArkenTilePresetBase+_dropShadowLegacyUpgrade = True
+>                     ArkenTilePresetBase+_ambience:
+>                       [TileAmbienceProperties]
+>                         _active = False
+>                         _audioPath = None
+>                         _radius = 12.799999237060547
+>                         _falloffRadius = 25.599998474121094
+>                         _volume = 1.0
+>                         _playWhenHidden = True
+>                         _activeTimeMin = 0.0
+>                         _activeTimeMax = 1.0
+>                         _playOnAllLevels = False
+>                 _placementType:
+>                   [MapOptions+ObjectPlacementType]
+>                     value__ = 14
+>                 _brushType:
+>                   [MapOptions+PlacementType]
+>                     value__ = 3
+>                 _gridType:
+>                   [MapOptions+GridType]
+>                     value__ = 0
+>                 spriteWidth = -1.0
+>                 spriteRatio = 1.0
+>                 _trueSize = -1.0
+>                 _additionalData = None
+53513,53514c53803,53804
+<       _size = 192
+<       _version = 192
+---
+>       _size = 193
+>       _version = 193
+53662c53952
+<       value__ = 1
+---
+>       value__ = 2
+53664c53954,53958
+<   _fogColour = None
+---
+>   _fogColour:
+>     [SVector3]
+>       x = 0.0
+>       y = 0.0
+>       z = 0.0
+53694c53988
+<   _nextUID = 0
+---
+>   _nextUID = 1

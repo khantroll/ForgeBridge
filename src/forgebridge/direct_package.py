@@ -32,7 +32,7 @@ def geometry_files(uvtt, scope, *, name, map_path):
     return exports, synthesis, background, omitted_lights
 
 
-def build_direct(package, document, row, package_id, destination, *, names, pdf_pages=False, campaign=None):
+def build_direct(package, document, row, package_id, destination, *, names, pdf_pages=False, campaign=None, foundry_data=None, actor_context=()):
     scene = document['source_scene']
     scope = canonical_hash(['native-scene-schema-v1', package_id, row.get('source_path'),
                             _parent_adventure_id(row), scene])[:20]
@@ -58,8 +58,9 @@ def build_direct(package, document, row, package_id, destination, *, names, pdf_
             template_name='ForgeBridge Control', marker_template_pack=root / 'marker.zip',
             token_control_pack=root / 'token.zip', token_control_name='ForgeBridge Control',
             control_units_per_grid=UNITS_PER_GRID, geometry_map_path=geometry_path,
-            asset_namespace=scope, token_namespace=scope,
-            campaign_dependencies=campaign[0] if campaign else None)
+            asset_namespace=scope,             token_namespace=scope,
+            campaign_dependencies=campaign[0] if campaign else None,
+            foundry_data=foundry_data)
         files = read_package(staged)
         # These are owned generated controls, not exported user content. Re-emit
         # token notes to discard unreachable strings retained by byte patching.
@@ -86,10 +87,18 @@ def build_direct(package, document, row, package_id, destination, *, names, pdf_
             report['campaign_content'] = campaign[1]
             report['campaign_token_links'] = link_token_actors(files, scene, scope, campaign[1])
         from forgebridge.native_tiles import add_tiles
-        files[names['map_path']], tile_files, tile_report = add_tiles(files[names['map_path']], scene, package, scope)
+        files[names['map_path']], tile_files, tile_report = add_tiles(files[names['map_path']], scene, package, scope, foundry_data)
         from forgebridge.native_dependencies import merge_native
         merge_native(files, tile_files)
         report['static_tiles'] = tile_report
+        from forgebridge.native_ambience import add_ambience
+        files[names['map_path']], audio_files, audio_report = add_ambience(files[names['map_path']], scene, package, scope)
+        merge_native(files, audio_files)
+        report['ambient_sounds'] = audio_report
+        from forgebridge.visibility_ir import foundry_visibility
+        from forgebridge.native_visibility import apply_visibility
+        files[names['map_path']], report['visibility'] = apply_visibility(files[names['map_path']],
+            foundry_visibility(scene, actor_context), namespace=scope, units_per_grid=UNITS_PER_GRID)
         report['closed_metadata_references'] = check_metadata_references(files)
         report['native_synthesis'] = {**synthesis, 'background': background,
             'schema_version': 1, 'toolkit_reference': '0.5.1.18', 'scope': scope,
@@ -97,11 +106,15 @@ def build_direct(package, document, row, package_id, destination, *, names, pdf_
             'omitted_lights': [{'uvtt_index': i, 'reason': 'No supported positive radius; source retained'}
                                for i, light in enumerate(uvtt.get('lights', [])) if light in omitted_lights],
             'losses': [{'grade': 'approximate', 'feature': 'light-rendering',
-                       'summary': 'Uses the observed Toolkit UVTT-import color/intensity defaults, not independent Foundry color/animation equivalence'},
+                       'summary': 'Observed color/intensity defaults retained; native fog, vision and effects mapped separately in visibility report; shader/effect equivalence unverified'},
                       {'grade': 'manual', 'feature': 'environment',
                        'summary': 'Uses the known native container defaults; source ambient/time-of-day/environment settings remain retained rather than independently mapped'},
                       {'grade': 'manual', 'feature': 'fog-vision',
-                       'summary': 'Fresh native manual fog starts covered; Foundry exploration/token vision is not converted'}]}
+                       'summary': 'Native fog/vision configuration is mapped in visibility report; historical explored masks and per-user vision are not migrated'}]}
+        report['native_synthesis']['losses'].extend(report['visibility']['losses'])
+        report['manual_steps'] = [s for s in report.get('manual_steps',[]) if 'fog' not in s.lower()] + ['Native fog/vision configuration and supported effects are mapped; saved masks, per-user vision, Simulate darkness and scene darkness intensity need manual review']
+        if report.get('token_conversion'):
+            report['token_conversion']['limits'] = ['Icon/Size token notes; vision lives on the map preset (see visibility report); actor/combat automation is not converted']
         files['conversion-report.json'] = json.dumps(report, indent=2).encode()
         write_archive(destination, files)
     return report

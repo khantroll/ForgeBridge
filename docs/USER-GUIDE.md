@@ -215,7 +215,14 @@ What stays a loss, with the reason in `fg-campaign-report.json`:
 ```powershell
 python -m forgebridge convert "C:/Sources/MyModule.zip" --list-scenes
 python -m forgebridge convert "C:/Sources/MyModule.zip" --out "C:/Conversions/MyModule-01"
+python -m forgebridge convert "C:/Sources/MyModule.zip" --out "C:/Conversions/MyModule-01" --foundry-data "C:/Users/me/AppData/Local/FoundryVTT/Data"
 ```
+
+`--foundry-data` is optional and read-only. Portraits and tiles whose paths
+point at another module, such as `modules/legends-of-barovia-pk/assets/...`,
+are read from inside that Data folder only. A path that leaves the folder, or
+a file that is not there, stays a loss. Nothing is written into Data. This is
+file-level only, Toolkit check pending. The GUI has Choose Foundry Data folder.
 
 Repeat --scene ID or select exact --scene-key KEY from discovery. Default native
 calibration is 2.56 units/grid, upper-left origin, native y up; source padding and
@@ -271,7 +278,7 @@ it for inspection and choose a fresh destination after fixing the cause.
 | Notes and tokens | Existing journal/table/image/marker/token writers; supported square/static tokens preserve identity, position, footprint, scale, rotation and hidden state. |
 | Non-success | Invalid marker positions/targets, unsupported token geometry/scales, source/media gaps and unsupported light ranges remain explicit. |
 | Light fidelity | Uses observed Toolkit UVTT-import color/intensity defaults; independent Foundry color/intensity/animation mapping not claimed. |
-| Audio and GIF | Loose audio is not automatic scene music; GIF import/FPS remains manual. Procedural light animation is separate. |
+| Scene motion / audio | Synthesized Foundry scenes support captured WEBM VP9 / MP4 H.264 video, animated GIF/PNG/WebP frames, and OGG/MP3/PCM-WAV map sounds. Codec/size and timing limits apply; new output needs Toolkit validation. Procedural light animation remains separate. |
 | Fog/vision | Fresh native manual fog starts covered. Foundry exploration, vision/detection and token vision aren't converted. |
 | Actors/behaviors | Source retained/reported; full actors/stats/combat/automation remain gaps. No script execution. |
 | Labels | Off. Player behavior cannot be inferred from GM view. |
@@ -464,3 +471,38 @@ record types are listed individually. Protected modules are always refused.
 
 FG wildcard (`@*`) record links resolve only to a unique converted local target.
 They do not trigger other-module loading; unavailable targets remain explicit losses.
+### Animated map tiles and ambient sounds (development branch)
+
+Normal Foundry `convert` writes supported tiles and AmbientSound documents into
+the same native scene package. Read `native_counts.animated_tiles` /
+`ambient_sounds` and each scene's `static_tiles` / `ambient_sounds` audits plus
+`native_losses`. These file-level results do not prove playback or audibility.
+
+- WEBM VP9 and MP4 H.264/AVC: one video track, original bytes embedded, muted,
+  captured autoplay/loop defaults, generated play-symbol thumbnail. Codec headers
+  are inspected, not fully decoded by ForgeBridge; other containers/codecs are losses.
+- Animated GIF/PNG/WebP: decoded composed RGBA frames, at most 128 frames and
+  16 million total frame pixels. Uniform timing maps to FPS (capped 60); variable
+  timing is approximated by mean frame duration and reported. Missing/invalid
+  frame durations assume 100 ms and add an explicit loss. Position, square
+  footprint, clockwise rotation and hidden state map independently.
+- Sound: OGG Vorbis, MP3 or mono/stereo uncompressed PCM WAV, maximum 16 MiB
+  per source asset (tiles have the same byte limit). Position includes source
+  padding/origin. Radius in source distance units / grid distance gives squares,
+  then ×2.56 native units. Native falloff outer radius is that boundary; eased
+  sources approximate linear attenuation from the centre. Without easing the
+  outermost 0.1% is a small native falloff edge. Walls, precise easing curves,
+  schedules, levels/channels and effects require review. Preset/track gain stays
+  1; the map attachment carries source volume. Source hidden disables sound.
+- Static tiles remain supported. Unsupported/unsafe/missing assets are explicit
+  losses, with no invented replacement. No external/Toolkit encoder is used.
+
+The owned FB Motion Check fixture shows separate nonoverlapping radius rings;
+use its validation checklist before accepting this converter-written output.
+### Native fog, vision and light effects
+
+Conversion reports include a `visibility` section. Foundry scene fog configuration, bounded character vision and recognized flicker/blink effects are written from captured native schemas. Review fog and global darkness settings manually; historical reveal masks are not migrated. NPCs do not gain vision lights. Unsupported modes/animations and uncalibrated scene darkness remain losses. Native runtime acceptance is pending.
+
+### Fantasy Grounds display corrections (file-level)
+
+FG prose carriage-return/newline escapes become real line breaks. Story, manual and other ordinary text fields share the Foundry journal writer's explicit white body text, pale links on dark fields and preserved paragraph breaks; parchment blocks retain dark links. Empty stat rows use captured active flags where present; remaining empty rows request zero-size, zero-width text. The trial has ended: these written-field checks do not confirm native layout or playback.

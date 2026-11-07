@@ -94,6 +94,7 @@ def main(argv=None):
     parser.add_argument('--package', default='')
     parser.add_argument('--out', default='')
     parser.add_argument('--dnd5e-system', default='')
+    parser.add_argument('--foundry-data', default='')
     args = parser.parse_args(argv)
     # Lazy import: headless CI exercises the controller without creating a window.
     import tkinter as tk
@@ -101,6 +102,7 @@ def main(argv=None):
     app = tk.Tk(); app.title('ForgeBridge ' + get_version() + ' — scene conversion'); app.geometry('900x860')
     package = tk.StringVar(value=args.package); output = tk.StringVar(value=args.out)
     spell_input = tk.StringVar(value=args.dnd5e_system)
+    foundry_data = tk.StringVar(value=args.foundry_data)
     map_folder, notes_folder = tk.StringVar(), tk.StringVar()
     pdf_pages = tk.BooleanVar(value=True)
     include_art = tk.BooleanVar(value=False)
@@ -127,6 +129,10 @@ def main(argv=None):
         filedialog.askdirectory() or spell_input.get())).pack(side='left')
     ttk.Button(spell_buttons, text='Choose spells pack / system ZIP', command=lambda: spell_input.set(
         filedialog.askopenfilename(filetypes=[('Spells JSON/NeDB or system ZIP', '*.json *.db *.zip')]) or spell_input.get())).pack(side='left')
+    ttk.Label(panel, text='Optional Foundry Data folder (read-only)').pack(anchor='w')
+    ttk.Entry(panel, textvariable=foundry_data).pack(fill='x')
+    ttk.Button(panel, text='Choose Foundry Data folder', command=lambda: foundry_data.set(
+        filedialog.askdirectory(title='Select Foundry Data folder (read-only)') or foundry_data.get())).pack(anchor='w')
     ttk.Label(panel, text='New output folder (must not exist)').pack(anchor='w')
     ttk.Entry(panel, textvariable=output).pack(fill='x')
     ttk.Button(panel, text='Choose where to save output', command=lambda: choose_output()).pack(anchor='w', pady=4)
@@ -252,6 +258,8 @@ def main(argv=None):
         options = {'pdf': None if pdf_pages.get() else 'references'}
         if spell_input.get().strip():
             options['dnd5e_system'] = spell_input.get().strip()
+        if foundry_data.get().strip():
+            options['foundry_data'] = foundry_data.get().strip()
         if state.get('source_type') == 'fantasy_grounds':
             if any(r['status'] in ('NEEDS_GRID', 'ART') and r['key'] not in grids and r['key'] not in across
                    for r in rows if r['key'] in selected):

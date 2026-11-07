@@ -72,3 +72,24 @@ exact failed workflow as history. They do not establish automatic Foundry
 animated-media/ambient-sound conversion, radius/falloff equivalence or restart
 persistence. Jeffrey also confirmed the synthetic spell notes work. The remaining
 audio failure is music playlists; MP3 and an explicitly selected OGG were silent.
+
+## Motion writer references retrieved 2026-11-05
+
+`gif-control/forgebridge-signal.rwfile/.rwmeta` are the owned synthetic three-frame
+GIF imported and playback/position/restart-tested on 2026-10-16, recovered read-only
+from the retained first install backup. Its local manifest gives original backup
+root and hashes; the source frames/GIF are synthetic. Original bytes are unchanged.
+The new `src/forgebridge/motion-schema.json` strips source names and payload bytes
+from known video, GIF, SFX and ambience declarations/defaults. No installed files
+are read by the production writer. Video category is 2; GIF category is 1 in both
+asset metadata **and map preset**. Uniform frame timing maps to FPS; differing
+source frame durations are an explicit approximation.
+
+Read-only map inspection while Toolkit was closed also found existing active
+`ArkenTilePresetContentLink` ambience anchors on `MyAssets/Maps/Town.rwmap`:
+`_contentType="Ambience Preset"`, `_contentBasePath` and `TileAmbienceProperties`
+with active/audioPath/radius/falloffRadius/volume/playWhenHidden/time/level fields.
+No original map bytes, sounds, names, positions or artwork were copied into this
+fixture or production defaults. The writer reuses its existing schema-built
+content-link template; this inspection establishes the attachment field shape,
+not a conversion runtime PASS or an independently calibrated hearing boundary.

@@ -12,7 +12,7 @@ XP = [10,25,50,100,200,450,700,1100,1800,2300,2900,3900,5000,5900,7200,8400,1000
 
 
 def text(value):
-    result = display_enrichers(_plain_text(str(value or '')))
+    result = display_enrichers(_plain_text(str(value or ''), preserve_paragraphs=True))
     result = re.sub(r'\[\[(.*?)\]\](?:\{([^}]+)\})?', lambda m: m[2] or m[1].removeprefix('/r '), result)
     return result
 
@@ -83,8 +83,8 @@ def actor_ir(actor):
     if not number(xp) and number(cr):
         values = {0:10,.125:25,.25:50,.5:100, **{i:XP[i+3] for i in range(1,31)}}
         xp = values.get(cr)
-    challenge = str(cr) if cr is not None else 'Unknown'
-    if xp is not None: challenge += f' ({xp:g} XP)'
+    challenge = str(cr) if cr is not None else ''
+    if xp is not None: challenge = (challenge + f' ({xp:g} XP)').strip()
     derived_ac=armor_class(actor,modifiers)
     armor=derived_ac['value']
     approximations.extend(derived_ac['warnings'])
@@ -117,7 +117,7 @@ def actor_ir(actor):
             'vulnerabilities': trait(traits.get('dv')), 'resistances': trait(traits.get('dr')),
             'immunities': trait(traits.get('di')), 'conditions': trait(traits.get('ci')),
             'senses': sensory.strip(', '), 'languages': trait(traits.get('languages'),deduplicate=True),
-            'challenge': challenge, 'proficiency': signed(prof) if number(prof) else '',
+            'challenge': challenge, 'challenge_has_cr': cr is not None, 'proficiency': signed(prof) if number(prof) else '',
             'biography': text(details.get('biography', {}).get('value','')),
             'actions': actions, 'approximations': approximations,
             'derived_values':{'ac':derived_ac,'attacks':derived_attacks,'prose_corrections':changes}}

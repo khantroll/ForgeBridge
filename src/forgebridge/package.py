@@ -20,7 +20,7 @@ def build_package(companion, map_template, media_template, dest, *, name,
                   regenerate_notes=False, token_control_pack=None, token_control_name=None,
                   control_units_per_grid=None, marker_template_pack=None, asset_namespace=None,
                   token_namespace=None, profile_provenance=None, geometry_map_path=None, note_prefix='',
-                  campaign_dependencies=None):
+                  campaign_dependencies=None, foundry_data=None):
     if (package is None) == (media_bundle is None):
         raise ValueError('Provide exactly one source package or collected media bundle')
     token_options = (token_control_pack, token_control_name, control_units_per_grid)
@@ -88,7 +88,8 @@ def build_package(companion, map_template, media_template, dest, *, name,
             updated, generated, rows, rejected = compile_scene_tokens(files[map_path], source['source_scene'],
                 package, controls, control_maps[0], name=name, units_per_grid=units_per_grid,
                 origin=origin, control_name=token_control_name, control_units_per_grid=control_units_per_grid,
-                namespace=name if token_namespace is None else token_namespace)
+                namespace=name if token_namespace is None else token_namespace,
+                foundry_data=foundry_data)
             merge_native(files, controls)
             if set(generated) & set(files):
                 raise ValueError('Generated tokens conflict with existing exported content; use a clean source export')

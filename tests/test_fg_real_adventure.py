@@ -37,7 +37,7 @@ class FGRealAdventureTests(unittest.TestCase):
         self.assertEqual(block['_legendaryActions'].members['_size'],1)
         self.assertEqual(block['_actions'].members['_size'],2)
         room=node(files[links['encounter.room'][:-7]+'.rwnote']);body=find(room,'ArkenNoteFieldText')[0].members['_text']
-        self.assertIn('First paragraph.\nSecond paragraph.',content(body))
+        self.assertIn('First paragraph.\n\nSecond paragraph.',content(body))
         self.assertIn('• One',content(body));self.assertIn('Read aloud.',content(body))
         self.assertTrue(any(c.members['_link']==links['npc.id-watcher'] for c in body.members['_characters'].members['_items'].items))
 
@@ -50,7 +50,8 @@ class FGRealAdventureTests(unittest.TestCase):
         self.assertEqual(r['counts']['actors'],3);self.assertEqual(r['counts']['items'],1);self.assertEqual(r['counts']['reference_pages'],1)
         block=find(node(files[r['links']['npc.a'][:-7]+'.rwnote']),'ArkenNoteFieldStatBlock5e')[0].members
         self.assertIn('18, Touch 10',content(block['_armorClassText']))
-        self.assertEqual(content(block['_proficiencyBonusText']),'')
+        self.assertEqual(content(block['_proficiencyBonusText']),'\u200b')
+        self.assertEqual(block['_proficiencyBonusText'].members['_characters'].members['_items'].items[0].members['_size'],0)
         self.assertTrue(any('Spear +4 Melee' in content(v) for v in block['_actions'].members['_items'].items))
         self.assertTrue(any('Non-5e' in json.dumps(l) for l in r['losses']))
 
