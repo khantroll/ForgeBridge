@@ -1,7 +1,7 @@
 # Scene-import acceptance matrix
 
 Baseline: PR #8 at 3409bd9, 2026-10-31. One row per numbered item in
-[completion roadmap M0–M2](COMPLETION-ROADMAP.md). PASS applies only to the
+[completion roadmap M0–M2](../COMPLETION-ROADMAP.md). PASS applies only to the
 whole stated item; partial evidence leaves it OPEN. BLOCKED identifies a specific
 external prerequisite. No runtime result is inferred from hashes or file builds.
 Windows native observations below use Toolkit **0.5.1.18**, launcher **7.0.0.3**.
@@ -33,7 +33,7 @@ Foundry fog/vision and procedural animation mapping remain conversion gaps.
 
 ## Batch/CI follow-up
 
-Implementation and regression evidence: [scene batch](../validation/2026-10-31-SCENE-BATCH.md)
+Implementation and regression evidence: [scene batch](../../validation/2026-10-31-SCENE-BATCH.md)
 at 9a86c63. Its full CI suites pass on Python 3.13: Linux 185 run/181 passed/4
 skips; Windows 185 run/182 passed/3 skips. This supersedes the pending current-head
 CI verification in the baseline evidence and supports M0.2 PASS for 9a86c63.

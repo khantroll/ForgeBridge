@@ -3,12 +3,12 @@
 **Superseded:** the plan below is historical. Use
 [HANDOFF-2026-11-03.md](HANDOFF-2026-11-03.md), section 3, for the v0.11.0 release
 sequence. PR #17 is merged as `023f30db`; the
-[corrected recheck](../validation/toolkit-recheck-2026-11-03.md) supersedes its
+[corrected recheck](../../validation/toolkit-recheck-2026-11-03.md) supersedes its
 initial failures. Release PR approval precedes merging/tagging; no new feature
 work is part of this release preparation.
 
 Working plan for PR #8 (`cursor/dynamic-lighting-c6b0`). The roadmap
-([COMPLETION-ROADMAP.md](COMPLETION-ROADMAP.md)) is the general guideline; this
+([COMPLETION-ROADMAP.md](../COMPLETION-ROADMAP.md)) is the general guideline; this
 file is the concrete order. Status per item lives in
 [ACCEPTANCE-MATRIX.md](ACCEPTANCE-MATRIX.md); update both when a step finishes.
 

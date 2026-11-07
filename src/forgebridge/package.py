@@ -66,7 +66,7 @@ def build_package(companion, map_template, media_template, dest, *, name,
         report['unplaced_markers'] = map_report['unplaced_markers']
         report['regenerated_exported_note_files'] = preserved
         report['counts'].update(native_tokens=0, unsupported_tokens=0)
-        report['status'] = 'Combined native package built; check this scene in Toolkit. See STATUS.md for tested scenes. Player visibility remains unverified.'
+        report['status'] = 'Combined native package built; check this scene in Toolkit. See the release notes for tested scenes. Player visibility remains unverified.'
         from forgebridge.scene_profile import MANUAL_STEPS
         report['manual_steps'] = list(MANUAL_STEPS)
         report['runtime_acceptance'] = {

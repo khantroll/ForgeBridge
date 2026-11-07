@@ -6,11 +6,11 @@ ForgeBridge is an experimental, local migration tool that translates external VT
 
 The current Foundry workflow can build native Arkenforge scene packages directly from supported source data—without requiring an existing Arkenforge map, a manual UVTT import, or per-scene calibration. It preserves available source information and generates explicit reports for anything it cannot convert faithfully.
 
-**Latest documented release:** [v0.13.0](docs/RELEASE-NOTES-v0.13.0.md) · [Windows downloads on GitHub Releases](https://github.com/khantroll/ForgeBridge/releases) · [Operator guide](docs/USER-GUIDE.md)
+**Current release:** [v0.13.0](docs/RELEASE-NOTES-v0.13.0.md) · [Windows downloads on GitHub Releases](https://github.com/khantroll/ForgeBridge/releases) · [Operator guide](docs/USER-GUIDE.md)
 
 > **Supported source scope: Foundry v13 / dnd5e and unencrypted Fantasy Grounds Unity modules.**
 
-**Compatibility is limited to the versions and content described below.** A successful build is not proof of complete scene or campaign fidelity. Review the conversion report and validate generated maps in Arkenforge before using them in a game.
+**Compatibility is limited to tested versions and content.** A successful build is not proof of complete scene or campaign fidelity. Review the conversion report and validate generated maps in Arkenforge before using them in a game.
 
 ## Quick start
 
@@ -43,7 +43,7 @@ Use a **new output directory** for each run; ForgeBridge does not overwrite exis
 
 ## What it converts today
 
-The current Foundry adapter supports bounded conversion of:
+From Foundry, ForgeBridge currently converts:
 
 | Source content | Arkenforge output |
 | --- | --- |
@@ -60,18 +60,24 @@ The current Foundry adapter supports bounded conversion of:
 
 Each build produces a combined `MyAssets` tree, per-scene packages, and readable conversion reports. UVTT output is also available; **UVTT is an interchange option, not the limit of the native converter**.
 
-Fantasy Grounds Unity modules now use one build for supported maps and campaign
-notes, including NPC/item/spell/story notes, tables/manuals/handouts, note-opening
-pins and portrait tokens. Missing grids need an explicit size; encrypted modules
-are refused. NPC links on tokens remain omitted to preserve portraits.
+From Fantasy Grounds Unity, one build converts maps along with campaign notes:
+NPCs, items, spells, story entries, tables, manuals, handouts, map pins that open
+notes, and portrait tokens. If a map has no grid you'll need to give a grid size.
+Encrypted modules are refused. Tokens keep their portraits but aren't linked to
+their NPC notes.
 
-Supported Foundry animated/video tiles and map-attached ambience have earlier
-Toolkit observations. Optional Data-folder art and fog/vision/light-effect mapping
-are file-level only. Unsupported animations, source darkness, historical fog and
-full actor/combat behavior remain reported limits. MP3/OGG playlists preserve
-available bytes; source playback settings need review. Windows EXEs are unsigned.
-See [the release evidence split](docs/RELEASE-NOTES-v0.13.0.md) and
-[supported scope](docs/USER-GUIDE.md#supported--manual--unsupported).
+**Not yet verified inside Arkenforge:** fog, vision and light effects, and art from
+Foundry's Data folder. ForgeBridge builds these, but they haven't been checked in a
+running Toolkit, so review them after import. Animated/video tiles and map ambience
+were checked in an earlier release.
+
+**Not converted:** unsupported animations, source darkness, previously revealed fog, detection/vision permissions,
+and full actor/combat behavior. These are listed in the loss report. Playlists keep
+their MP3/OGG files, but volume and looping settings need a manual check. The
+Windows EXEs are unsigned.
+
+See the [release notes](docs/RELEASE-NOTES-v0.13.0.md) and
+[supported scope](docs/USER-GUIDE.md#supported--manual--unsupported) for details.
 
 ## Resolving linked dnd5e spells
 
@@ -129,24 +135,24 @@ Design principles:
 
 ## Compatibility and project status
 
-The [v0.13.0 release notes](docs/RELEASE-NOTES-v0.13.0.md) distinguish earlier
-**Windows / Toolkit 0.5.1.18** observations from new file-level-only work. Supported
-source scope is **Foundry v13 / dnd5e** and unencrypted **Fantasy Grounds Unity**
-modules. The trial has ended; this release has no new Toolkit runtime acceptance.
-Windows/Linux tests and frozen-EXE checks do not replace it.
+ForgeBridge supports **Foundry v13 with the dnd5e system** and unencrypted
+**Fantasy Grounds Unity** modules. Earlier releases were checked by hand in the
+Arkenforge Toolkit (0.5.1.18 on Windows). v0.13.0 passed automated Windows and
+Linux tests, but its new features have not yet been checked in a running Toolkit.
 
-FG campaign notes, tables, manuals, handouts, pins and portrait tokens now share
-the combined conversion path. Full actor/combat behavior, additional systems,
-source-compendium monsters/items, environment fidelity and some playback/roll
-settings remain gaps. ForgeBridge is not a lossless campaign migration tool.
+Known gaps: full actor and combat behavior, game systems other than dnd5e,
+monsters and items that live only in source compendiums, environment effects, and
+some playback and roll-table settings. ForgeBridge gets you most of the way, not a
+lossless copy of your campaign.
 
-Detailed compatibility evidence is maintained in the [acceptance matrix](docs/ACCEPTANCE-MATRIX.md) and [release notes](docs/RELEASE-NOTES-v0.13.0.md).
+The [v0.13.0 release notes](docs/RELEASE-NOTES-v0.13.0.md) list exactly what was
+tested and what remains a known gap.
 
 ## Documentation
 
 - [Operator guide](docs/USER-GUIDE.md) — installation, GUI/CLI use, output review, safe install, and recovery.
 - [v0.13.0 release notes](docs/RELEASE-NOTES-v0.13.0.md) — tested release scope and known limitations ([v0.9.0](docs/RELEASE-NOTES-v0.9.0.md); [changelog](CHANGELOG.md)).
-- [Acceptance matrix](docs/ACCEPTANCE-MATRIX.md) — evidence and boundaries of validated behavior.
+- [Archive](docs/archive/README.md) — superseded status logs, handoffs and the original acceptance matrix, kept for history.
 - [Scene profiles](docs/SCENE-PROFILES.md), [batch builds](docs/SCENE-BATCH.md), and [native capture](docs/NATIVE-CAPTURE.md) — advanced workflows.
 - [Scene import/release rules](docs/SCENE-IMPORT-RELEASE.md) — review and installation safeguards.
 
