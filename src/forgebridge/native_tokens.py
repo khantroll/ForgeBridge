@@ -181,14 +181,15 @@ def token_files(map_data, tokens, textures, *, name, units_per_grid, origin,
 
 
 def compile_scene_tokens(map_data, source_scene, package, control_files, control_map_path, *,
-                         name, units_per_grid, control_units_per_grid, control_name, origin=(0., 0.), namespace=None):
+                         name, units_per_grid, control_units_per_grid, control_name, origin=(0., 0.), namespace=None,
+                         foundry_data=None):
     """Compose source-adapted tokens into an existing map using a separate control.
 
     Returns generated dependencies and explicit per-token refusals. The caller
     merges dependencies without overwriting unrelated native content.
     """
     from forgebridge.foundry_tokens import scene_tokens
-    from forgebridge.uvtt import _package_file, _safe_ref
+    from forgebridge.uvtt import open_art
     from forgebridge.validate import InventoryFatal
     reader = Reader(control_files[control_map_path]); reader.read()
     def value(v): return reader.objects[v['ref']] if isinstance(v, dict) and 'ref' in v else v
@@ -214,9 +215,7 @@ def compile_scene_tokens(map_data, source_scene, package, control_files, control
     textures, ready = {}, []
     for token in tokens:
         try:
-            safe, problem = _safe_ref(token.texture)
-            if problem or not safe: raise ValueError('Unsafe source texture path')
-            path = _package_file(Path(package), safe)
+            path = open_art(package, token.texture, foundry_data)
             if path.stat().st_size > 32 * 1024 * 1024: raise ValueError('Source texture exceeds bound')
             with path.open('rb') as stream:
                 data = stream.read(32 * 1024 * 1024 + 1)

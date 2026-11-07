@@ -774,6 +774,48 @@ def _package_file(package: Path, safe: str) -> Path:
     raise InventoryFatal(f"path is not a file inside the package: {safe}")
 
 
+def open_art(package: Path, ref: str | None, data_root: Path | None = None) -> Path:
+    """Read one image from the package, or from a Foundry Data folder.
+
+    The Data folder is optional and read-only. The reference must already be a
+    contained relative path. Links are not followed, and nothing is written.
+    """
+    safe, problem = _safe_ref(ref)
+    if problem or not safe:
+        raise InventoryFatal("unsafe/remote art reference" if problem else "missing art reference")
+    try:
+        return _package_file(Path(package), safe)
+    except InventoryFatal:
+        if data_root is None:
+            raise
+    try:
+        return _data_file(Path(data_root), safe)
+    except InventoryFatal as exc:
+        if "symlink" in str(exc) or "link" in str(exc):
+            raise
+        raise InventoryFatal(f"art not in the package or the Foundry Data folder: {safe}") from exc
+
+
+def _data_file(root: Path, safe: str) -> Path:
+    root = root.resolve()
+    if root.is_symlink() or root.is_junction():
+        raise InventoryFatal("Foundry Data folder is a link and was not followed")
+    path = root / safe
+    current = path
+    while True:
+        if current.is_symlink() or current.is_junction():
+            raise InventoryFatal(f"symlink was not followed: {safe}")
+        if current.resolve() == root or current == root:
+            break
+        parent = current.parent
+        if parent == current:
+            break
+        current = parent
+    if not _contained(root, path) or not path.is_file():
+        raise InventoryFatal(f"path is not a file inside the Foundry Data folder: {safe}")
+    return path
+
+
 def _contained(root: Path, path: Path) -> bool:
     try:
         path.resolve().relative_to(root)
