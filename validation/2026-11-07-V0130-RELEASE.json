@@ -1,0 +1,78 @@
+{
+  "release_url": "https://github.com/khantroll/ForgeBridge/releases/tag/v0.13.0",
+  "tag": "v0.13.0",
+  "prerelease": true,
+  "asset": "ForgeBridge-0.13.0-windows-x64.zip",
+  "asset_id": 720814589,
+  "zip_bytes": 29274141,
+  "zip_sha256": "14fa2bf9dfc57705f518187c128929252335919140c39698dc850c07d4f7e94a",
+  "official_digest_matches": true,
+  "archive": "C:\\AMD\\fb-release-v0130-clean-2026-11-07\\ForgeBridge-0.13.0-windows-x64.zip",
+  "app_folder": "C:\\AMD\\fb-release-v0130-clean-2026-11-07\\clean unzip\\ForgeBridge",
+  "folder_bytes": 57567623,
+  "commands": {
+    "ForgeBridge.exe": {
+      "exit_code": 0,
+      "stdout": "ForgeBridge 0.13.0",
+      "stderr": ""
+    },
+    "forgebridge-cli.exe": {
+      "exit_code": 0,
+      "stdout": "ForgeBridge 0.13.0",
+      "stderr": ""
+    }
+  },
+  "gui_bundle_check": {
+    "version": "0.13.0",
+    "title": "ForgeBridge 0.13.0 \u2014 scene conversion",
+    "tcl": "8.6.15",
+    "psutil_pid": 9696,
+    "tk_file_picker_selection": "PASS",
+    "native_dialog_commands": "PASS (argument validation; no manual modal interaction)",
+    "worker_thread": "PASS",
+    "error_dialog_dispatch": "PASS (captured, no blocking modal)",
+    "error_log": "C:\\AMD\\fb-release-v0130-clean-2026-11-07\\forgebridge-error.log",
+    "status": "PASS"
+  },
+  "embedded_build_info": {
+    "version": "0.13.0",
+    "mode": "onedir",
+    "architecture": "windows-x64"
+  },
+  "python_removed_from_executable_path": true,
+  "toolkit_runtime_validation": "not performed; trial ended",
+  "real_myassets_modified": false,
+  "windows_version_info": [
+    {
+      "exe": "ForgeBridge.exe",
+      "FileVersion": "0.13.0",
+      "ProductVersion": "0.13.0"
+    },
+    {
+      "exe": "forgebridge-cli.exe",
+      "FileVersion": "0.13.0",
+      "ProductVersion": "0.13.0"
+    }
+  ],
+  "release_pr": 34,
+  "release_merge": "0c96bff8d7b099693a158c5f2791d112b543c4c0",
+  "annotated_tag_object": "da276082fa62ea754e35e5df9fd259666115c37e",
+  "tag_target": "0c96bff8d7b099693a158c5f2791d112b543c4c0",
+  "pr_test_workflow": 42377502368,
+  "pr_standalone_workflow": 42377502369,
+  "tag_workflow": 42377926550,
+  "local_windows_tests": {
+    "run": 368,
+    "passed": 363,
+    "skipped": 5,
+    "exit_code": 0,
+    "reason_for_skips": "Windows symlink creation privilege unavailable; skips not passed safety checks"
+  },
+  "remaining_scope": [
+    "B3",
+    "unfinished B4",
+    "B5",
+    "B6",
+    "B9"
+  ]
+}
