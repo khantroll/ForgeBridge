@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Development: schema-built Foundry video/animated-image tiles and map-attached
+  ambient sounds with calibrated placement, bounded codecs and explicit losses;
+  owned FB Motion Check fixture and reviewed install for pending Toolkit acceptance.
+- Omit missing-CR Challenge labels and request zero-size empty stat rows; visual
+  gap collapse still needs the Toolkit check. Native active flags remain respected.
+
 - Revision-scoped campaign note and playlist filenames preserve Toolkit-edited
   predecessors retained by uninstall; displayed playlist names stay unchanged.
 

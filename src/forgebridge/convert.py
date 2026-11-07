@@ -137,7 +137,7 @@ def convert(package, destination, *, scene_ids=(), scene_keys=(), profiles=(),
               'source_sha256': before, 'scenes': [], 'counts': {g: 0 for g in
                   ('native', 'approximate', 'manual', 'unsupported')},
               'counts_scope': 'Source/UVTT grades; native outcomes and remaining losses are reported separately',
-              'native_counts': {k:0 for k in ('scenes','tokens','rejected_tokens','notes','markers','tables','actors','items','spells','playlists','tracks','manual_tracks','static_tiles','token_actor_links')},
+              'native_counts': {k:0 for k in ('scenes','tokens','rejected_tokens','notes','markers','tables','actors','items','spells','playlists','tracks','manual_tracks','static_tiles','animated_tiles','ambient_sounds','token_actor_links')},
               'native_losses': [],
               'pdf_mode': selected_pdf, 'pdf_mode_loss': pdf_loss,
               'runtime_validation': 'not performed', 'installed': False,
@@ -145,7 +145,7 @@ def convert(package, destination, *, scene_ids=(), scene_keys=(), profiles=(),
               'foundry_data': None if data_root is None else {'path': str(data_root), 'access': 'read-only',
                   'evidence': 'file-level only, Toolkit check pending'},
               'manual_steps': ['Review combined losses and installation conflicts before player use; labels off',
-                               'GIF/FPS setup, manual native fog, audio transcoding and actor/vision/behavior automation remain manual',
+                               'Unsupported media/transcoding, manual native fog and actor/vision/behavior automation remain manual',
                                'Generating files is not runtime validation of this output']}
     from forgebridge.spell_source import spell_source, resolve_spells
     spell_digest = fingerprint(dnd5e_system) if dnd5e_system is not None else None
@@ -267,7 +267,9 @@ def convert(package, destination, *, scene_ids=(), scene_keys=(), profiles=(),
                 for key, source in [('tokens', 'native_tokens'), ('rejected_tokens', 'unsupported_tokens'), ('notes', 'notes')]:
                     report['native_counts'][key] += counts.get(source, 0)
                 report['native_counts']['markers'] += native_report['native_map']['markers']
-                report['native_counts']['static_tiles'] += native_report.get('static_tiles', {}).get('count', 0)
+                report['native_counts']['static_tiles'] += native_report.get('static_tiles', {}).get('static_count',native_report.get('static_tiles', {}).get('count', 0))
+                report['native_counts']['animated_tiles'] += native_report.get('static_tiles', {}).get('animated_count',0)
+                report['native_counts']['ambient_sounds'] += native_report.get('ambient_sounds', {}).get('count',0)
                 report['native_counts']['token_actor_links'] += native_report.get('campaign_token_links', {}).get('count', 0)
                 campaign = native_report.get('campaign_content')
                 if campaign and campaign['scope'] not in published_campaigns:
@@ -275,6 +277,7 @@ def convert(package, destination, *, scene_ids=(), scene_keys=(), profiles=(),
                     published_campaigns.add(campaign['scope'])
                 remaining = list(native_report.get('native_synthesis', {}).get('losses', []))
                 remaining += native_report.get('static_tiles', {}).get('losses', [])
+                remaining += native_report.get('ambient_sounds', {}).get('losses', [])
                 remaining += native_report.get('campaign_token_links', {}).get('losses', [])
                 if pdf_loss:
                     remaining.append({'grade': 'manual', 'feature': 'pdf-mode', 'summary': pdf_loss})

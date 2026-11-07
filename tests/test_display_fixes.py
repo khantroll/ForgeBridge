@@ -44,7 +44,7 @@ class DisplayFixTests(unittest.TestCase):
             files, report=campaign_files(campaign([document('Actor',source)]),tmp,notes_folder='Test')
         block=find(node(files[next(p for p in files if p.endswith('.rwnote'))]),'ArkenNoteFieldStatBlock5e')[0]
         for field in ('_skillsText','_sensesText','_languagesText','_proficiencyBonusText'):
-            self.assertEqual(content(block.members[field]),'')
+            self.assertEqual(content(block.members[field]).replace('\u200b',''),'')
         self.assertFalse(block.members['_savingThrowsFieldActive'])
         self.assertTrue(block.members['_damageImmunitiesFieldActive'])
         self.assertEqual(set(block.members),set(block.schema['names']))
@@ -57,7 +57,7 @@ class DisplayFixTests(unittest.TestCase):
         target=report['documents'][0]['target'][:-7]+'.rwnote'
         block=find(node(files[target]),'ArkenNoteFieldStatBlock5e')[0].members
         for field in ('_skillsText','_sensesText','_languagesText','_proficiencyBonusText'):
-            self.assertEqual(content(block[field]),'')
+            self.assertEqual(content(block[field]).replace('\u200b',''),'')
         self.assertFalse(block['_savingThrowsFieldActive'])
         self.assertFalse(block['_damageResistanceFieldActive'])
 

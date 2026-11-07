@@ -1,0 +1,207 @@
+{
+  "evidence": "file-level only; generated motion/audio/layout runtime checks pending",
+  "toolkit_reference_version": "0.5.1.18",
+  "toolkit_closed_at_install_and_verification": true,
+  "installation": {
+    "status": "PASS",
+    "added": 20,
+    "receipt": "C:\\AMD\\fb-backups\\forgebridge-0ff050e03cc0426dbe69e04be3cb438c\\uninstall.json",
+    "backup": "C:\\AMD\\fb-backups\\forgebridge-0ff050e03cc0426dbe69e04be3cb438c\\MyAssets",
+    "runtime_validation": "not performed"
+  },
+  "all_installed_hashes_match": true,
+  "package": "C:\\AMD\\fb-motion-check-handoff-2026-11-05\\scene-001\\native-package.zip",
+  "package_sha256": "ab061dae455eaa9455901821e5338fbe44c20869260ece6da4d9c7f3405e7437",
+  "native_files": 20,
+  "map_reachable_files": 16,
+  "independent_notes": [
+    "MyAssets/Encyclopedia/Notes/FB Motion Check/Campaign-v4-32d829731813ffbb4ec2-0a368689067181cffd9c.rwmeta",
+    "MyAssets/Encyclopedia/Notes/FB Motion Check/Campaign-v4-32d829731813ffbb4ec2-0a368689067181cffd9c.rwnote",
+    "MyAssets/Encyclopedia/Notes/FB Motion Check/a976b4b77de1c988ea49-000-Scene-Index.rwmeta",
+    "MyAssets/Encyclopedia/Notes/FB Motion Check/a976b4b77de1c988ea49-000-Scene-Index.rwnote"
+  ],
+  "reference_count": 7,
+  "counts": {
+    "scenes": 1,
+    "tokens": 0,
+    "rejected_tokens": 0,
+    "notes": 2,
+    "markers": 0,
+    "tables": 0,
+    "actors": 1,
+    "items": 0,
+    "spells": 0,
+    "playlists": 0,
+    "tracks": 0,
+    "manual_tracks": 0,
+    "static_tiles": 0,
+    "animated_tiles": 2,
+    "ambient_sounds": 2,
+    "token_actor_links": 0
+  },
+  "tile_conversion": {
+    "count": 2,
+    "static_count": 0,
+    "animated_count": 2,
+    "tiles": [
+      {
+        "kind": "video",
+        "codec": "VP9",
+        "width": 64,
+        "height": 64,
+        "bytes_preserved": true,
+        "media_losses": [
+          "Video sound is muted; thumbnail is a generated play symbol; autoplay/loop use captured defaults"
+        ],
+        "source_id": "webm-tile",
+        "source": "assets/motion.webm",
+        "target": "MyAssets/Media/Cartographer/Quick Import/ForgeBridge-a976b4b77de1c988ea49/Tile-6a8686c97c11f675ce7d.rwmeta",
+        "position": {
+          "x": 8.96,
+          "y": -7.68
+        },
+        "rotation_clockwise": 0,
+        "hidden": false
+      },
+      {
+        "kind": "animated-image",
+        "width": 64,
+        "height": 64,
+        "frames": 4,
+        "fps": 4.0,
+        "source_frame_ms": [
+          250.0,
+          250.0,
+          250.0,
+          250.0
+        ],
+        "bytes_preserved": false,
+        "media_losses": [],
+        "source_id": "gif-tile",
+        "source": "assets/moving.gif",
+        "target": "MyAssets/Media/Cartographer/Quick Import/ForgeBridge-a976b4b77de1c988ea49/Tile-c147f1658c40527e4f0f.rwmeta",
+        "position": {
+          "x": 20.48,
+          "y": -7.68
+        },
+        "rotation_clockwise": 15,
+        "hidden": false
+      }
+    ],
+    "losses": [
+      {
+        "grade": "approximate",
+        "feature": "animated-tile",
+        "source_id": "webm-tile",
+        "details": [
+          "Video sound is muted; thumbnail is a generated play symbol; autoplay/loop use captured defaults"
+        ],
+        "summary": "Rectangle, position, rotation and hidden mapped; source alpha/tint, texture offsets/scale, occlusion, elevation/levels and behavior require review; Toolkit display unverified"
+      },
+      {
+        "grade": "approximate",
+        "feature": "animated-tile",
+        "source_id": "gif-tile",
+        "details": [],
+        "summary": "Rectangle, position, rotation and hidden mapped; source alpha/tint, texture offsets/scale, occlusion, elevation/levels and behavior require review; Toolkit display unverified"
+      }
+    ]
+  },
+  "ambient_sounds": {
+    "count": 2,
+    "sounds": [
+      {
+        "source_id": "left-ogg",
+        "name": "FB Left OGG 440Hz",
+        "source": "assets/left.ogg",
+        "position_squares": [
+          3.5,
+          8.5
+        ],
+        "radius_squares": 2.0,
+        "source_radius": 10,
+        "source_grid_distance": 5,
+        "volume": 0.6,
+        "hidden": false,
+        "easing": true,
+        "walls": true,
+        "native_position": {
+          "x": 8.96,
+          "y": -21.76
+        },
+        "native_inner_radius": 0.0,
+        "native_outer_radius": 5.12,
+        "preset": "MyAssets/AmbiencePresets/ForgeBridge-a976b4b77de1c988ea49/3aa1795049cbdc4eefef.rwamb",
+        "audio": "MyAssets/Audio/SFX/ForgeBridge-a976b4b77de1c988ea49/3aa1795049cbdc4eefef.rwfile",
+        "source_sha256": "6df2a341b3229f659039dbc49735564dec005b76678b5ccbd0aa8f0d28a51c12",
+        "duration_seconds": 2.0,
+        "bytes_preserved": true
+      },
+      {
+        "source_id": "right-wav",
+        "name": "FB Right WAV 660Hz",
+        "source": "assets/right.wav",
+        "position_squares": [
+          11.5,
+          8.5
+        ],
+        "radius_squares": 3.0,
+        "source_radius": 15,
+        "source_grid_distance": 5,
+        "volume": 0.5,
+        "hidden": false,
+        "easing": false,
+        "walls": false,
+        "native_position": {
+          "x": 29.44,
+          "y": -21.76
+        },
+        "native_inner_radius": 7.67232,
+        "native_outer_radius": 7.68,
+        "preset": "MyAssets/AmbiencePresets/ForgeBridge-a976b4b77de1c988ea49/adb359fef72f66eb907f.rwamb",
+        "audio": "MyAssets/Audio/SFX/ForgeBridge-a976b4b77de1c988ea49/adb359fef72f66eb907f.rwfile",
+        "source_sha256": "698d5731fcef2fc069aabe6ec6eea5ea714d820f174914a29ca099e56f02a5d3",
+        "duration_seconds": 8.0,
+        "bytes_preserved": true
+      }
+    ],
+    "losses": [
+      {
+        "grade": "approximate",
+        "feature": "ambient-sound",
+        "source_id": "left-ogg",
+        "summary": "Outer radius and volume mapped; native linear falloff approximates Foundry easing (0.1% edge when disabled); wall occlusion, timing/repeat, darkness conditions, channel/levels and effects require native review; preset/track gain 1; source hidden disables playback; anchor hidden is only an icon setting"
+      },
+      {
+        "grade": "approximate",
+        "feature": "ambient-sound",
+        "source_id": "right-wav",
+        "summary": "Outer radius and volume mapped; native linear falloff approximates Foundry easing (0.1% edge when disabled); wall occlusion, timing/repeat, darkness conditions, channel/levels and effects require native review; preset/track gain 1; source hidden disables playback; anchor hidden is only an icon setting"
+      }
+    ]
+  },
+  "npc": "FB Motion Watcher (no CR)",
+  "zero_size_empty_rows": true,
+  "candidate_uninstall": {
+    "status": "PASS",
+    "removed": 20,
+    "kept_changed": [],
+    "removed_empty_folders": 5,
+    "backup_retained": true
+  },
+  "tests": {
+    "run": 338,
+    "passed": 334,
+    "windows_symlink_skipped": 4,
+    "targeted_motion_tests": 12
+  },
+  "current_fixture_regenerates_installed_native_bytes": true,
+  "reviewed_candidate_uninstall": {
+    "status": "PASS",
+    "removed": 20,
+    "kept_changed": [],
+    "removed_empty_folders": 5,
+    "backup_retained": true
+  },
+  "video_variant_names_initialized": true
+}
