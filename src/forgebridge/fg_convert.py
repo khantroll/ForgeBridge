@@ -137,6 +137,12 @@ def convert_fg(package, destination, *, scene_ids=(), scene_keys=(), profiles=()
                 scope = canonical_hash(['native-scene-schema-v1', 'fantasy_grounds', before, row['id']])[:20]
                 files, synthesis, background, omitted = geometry_files(result['uvtt'], scope,
                     name=names[row['key']]['map_name'], map_path=names[row['key']]['map_path'])
+                from forgebridge.fg_layers import layer_ir
+                from forgebridge.native_layers import add_layers
+                layer_records, layer_losses = layer_ir(source, entries[row['id']], result)
+                files[names[row['key']]['map_path']], layer_files, layer_report = add_layers(files[names[row['key']]['map_path']], layer_records, scope, synthesis['image_meta_path'], background['dimensions'])
+                merge_native(files, layer_files)
+                layer_report['losses'].extend(layer_losses)
                 from forgebridge.fg_scene import add_placements
                 files[names[row['key']]['map_path']], placed_files, placement_report = add_placements(
                     files[names[row['key']]['map_path']], source, entries[row['id']], result, campaign,
@@ -147,6 +153,7 @@ def convert_fg(package, destination, *, scene_ids=(), scene_keys=(), profiles=()
                     {'field':l['feature'],'grade':l['grade'],'detail':l['summary'],**l} for l in placement_report['losses']] + [
                     {'field': 'environment', 'grade': 'manual', 'detail': 'FG ambient/tint settings are not mapped; native environment defaults are used'},
                     {'field': 'fog-vision', 'grade': 'manual', 'detail': 'Native fog configuration mapped separately where stored; saved FG explored masks are not converted'}]
+                losses += [{'field':l['feature'],'grade':l['grade'],'detail':l['summary'],**l} for l in layer_report['losses']]
                 if result['counts']['lights']:
                     losses.append({'field': 'native-light-rendering', 'grade': 'approximate',
                                    'detail': 'Native writer uses observed UVTT-import light defaults; source color/falloff equivalence is not established'})
@@ -165,7 +172,7 @@ def convert_fg(package, destination, *, scene_ids=(), scene_keys=(), profiles=()
                     'output_size_px': background['dimensions'], 'applied': result['size_px'] != background['dimensions']},
                     uvtt_pixels_per_grid=result['uvtt']['resolution']['pixels_per_grid'], losses=losses)
                 native = {'output_names': names[row['key']], 'source_type': 'fantasy_grounds', 'fantasy_grounds': fg,
-                          'visibility': visibility,
+                          'visibility': visibility, 'bitmap_layers': layer_report,
                           'counts': {'notes': campaign['counts']['notes'], 'native_tokens': len(placement_report['tokens']), 'unsupported_tokens': len(placement_report['rejected_tokens']), 'native_pdf_pages': 0},
                           'campaign_content': campaign, 'placements': placement_report,
                           'native_map': {'name': names[row['key']]['map_name'], 'markers': len(placement_report['markers']), 'marker_labels': 'off',

@@ -79,11 +79,19 @@ def extra_documents(root, module, seen, losses, image_for_record=None):
                     unknown=[c.tag for c in row if c.tag not in ('fromrange','torange','results')]
                     if unknown: loss('manual','table-row','Unmapped table row fields',identity,fields=unknown,row=row.tag)
                 dice=record.findtext('dice') or ''
-                formula='1'+dice if re.fullmatch(r'd[1-9][0-9]*',dice) else 'FG dice: '+dice
+                formula='1'+dice if re.fullmatch(r'd[1-9][0-9]*',dice) else dice if re.fullmatch(r'[1-9][0-9]*d[1-9][0-9]*(?:[+-][0-9]+)?',dice) else 'FG dice: '+dice
+                mod=_child_number(record,'mod')
+                if mod:
+                    match=re.fullmatch(r'(\d+d\d+)([+-]\d+)?',formula)
+                    if type(mod) is int and match:
+                        offset=int(match[2] or 0)+mod;formula=match[1]+(f'{offset:+d}' if offset else '')
+                    else:
+                        loss('manual','table-formula','Unsupported FG modifier; reference-only formula retained',identity,modifier=mod)
+                        formula='Unsupported FG modifier: '+str(mod)+'; '+formula
                 payload=dict(name=name,results=rows,formula=formula,replacement=True,
                     fg_settings={c.tag:plain_tree(c) for c in record if c.tag!='tablerows'})
                 document(identity,name,kind='RollTable',form='fg-table',payload=payload)
-                loss('approximate','table-settings','Range rows and column text/links retained; source dice, modifier, output, hidden rolls, chained tables and replacement behavior require review; source settings retained',identity,settings=payload['fg_settings'])
+                loss('approximate','table-settings','Range rows and column text/links retained; supported dice/modifiers mapped separately; output, hidden rolls, chained tables and replacement behavior require review; source settings retained',identity,settings=payload['fg_settings'])
     # FG manual chapters are database records; leaf listlinks address page records.
     index=root.find('reference/refmanualindex')
     if index is not None:

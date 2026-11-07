@@ -271,7 +271,7 @@ it for inspection and choose a fresh destination after fixing the cause.
 | Items/spells | Item/Spell notes from available source text/images; exact Foundry spell-compendium links need the optional spell pack. |
 | Roll tables | Native range-table notes and available result links; formulas, weights and chained rolls need review. |
 | FG parcels/quests | Reward/item/currency/status text as notes, without inventory/reward automation. |
-| Playlists | Available local MP3/OGG song bytes and ordered playlist entries. Loop/fade/channel/volume/mode need manual review. |
+| Playlists | Available local MP3/OGG song bytes and ordered playlist entries. Gain is approximate; loop/fade/channel/mode need manual review. |
 | Static and animated tiles | Supported images, GIF/PNG/WebP animation frames and WEBM VP9/MP4 H.264 video with placement; unsupported codecs/limits become losses. |
 | Ambient sounds | Supported Foundry OGG/MP3/PCM-WAV positioned on the map; radius/volume mapped, easing/walls approximate. |
 | Tokens/map pins | Supported square portrait tokens and note-opening markers. Automatic token-to-NPC bindings are omitted to preserve portraits. |
@@ -465,3 +465,31 @@ Conversion reports include a `visibility` section. Foundry scene fog configurati
 ### Fantasy Grounds display corrections (file-level)
 
 FG prose carriage-return/newline escapes become real line breaks. Story, manual and other ordinary text fields share the Foundry journal writer's explicit white body text, pale links on dark fields and preserved paragraph breaks; parchment blocks retain dark links. Empty stat rows use captured active flags where present; remaining empty rows request zero-size, zero-width text. The trial has ended: these written-field checks do not confirm native layout or playback.
+
+## Referenced compendium content and bounded fidelity
+
+A full `--dnd5e-system C:\Foundry\dnd5e` folder now resolves exact referenced
+Actor and Item IDs as well as spells. Only the referenced closure in the selected
+Adventure/world is imported, including references from journals, scenes and converted
+documents. Cycles are deduplicated; missing/ambiguous IDs remain losses. A bare
+spells pack stays spells-only. External portraits require accessible system assets.
+See `campaign_content.compendium_source` for provenance and unresolved references.
+
+Playlist and track volume multiply into the captured native Master gain (an
+approximation of normalized source gain). Missing gains retain the captured default;
+explicit zero stays silent. Loop, fade, channel and playback mode each remain manual
+settings, recorded with their source values. No playback behavior was newly tested.
+
+Integer weighted tables and bounded `NdS +/- integer` formulas become uniform native
+probability-ticket ranges. The source numeric dice total is not generally retained.
+Ambiguous weights/ranges, gaps, overlaps, scripts and unsupported formulas stay
+reference-only. Zero-probability text is retained outside the rolling field.
+Replacement, drawn state and chained-table execution remain manual.
+
+FG lights carry normalized RGB, scalar intensity and off state. Native rendering
+and normalized intensity are approximate; bright/dim falloff has no demonstrated
+captured-field equivalent and is reported per light. Flat bitmap layers support
+position, positive scale or grid-unit size, rotation, ordering and hidden state.
+Opaque persisted transforms, parent/group transforms, blend/tint/masks, ambient
+settings and grid-offset fidelity remain manual. Layer coordinate/rotation behavior
+has file-level evidence only; the preview/canvas remains based on the first bitmap.

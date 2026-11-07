@@ -29,16 +29,15 @@ Post-trial FG text/gap corrections and duplicate-identity vision guards are
 |---|---|---|
 | B1 | FG tables → rollable-table notes | **DONE implementation/file-level.** 29 real Magic Items tables; ranges, columns and converted links. Formula/weight/roll equivalence remains B6, not silently declared complete. |
 | B2 | FG parcels, quests, manuals, handouts | **DONE implementation/file-level.** Real manual navigation/pages/handouts and owned parcel/quest regressions; unknown record types have explicit losses. Broad runtime acceptance pending. |
-| B3 | Foundry system-compendium monsters/items | **OPEN.** Beyond spells, dnd5e system-pack actor/item references remain losses. Optional spells use `--dnd5e-system`; no automatic external-module guesses. |
-| B4 | FG light/environment fidelity | **PARTIAL.** Off lights, stored LOS/sight and recognized effects now mapped at file level. Bright/dim falloff, source color/intensity, ambient/tint, additional bitmap layers/transforms and grid-offset fidelity remain. |
-| B5 | Foundry playlist settings | **OPEN.** Preserve/map loop, fade, channel, volume, mode and playback state beyond ordered playable song references. |
-| B6 | Roll-table formulas/weights | **OPEN.** Range-table notes exist; nontrivial formulas, weights, replacement/drawn state and chained roll behavior need a supported mapping or explicit review. |
+| B3 | Foundry system-compendium monsters/items | **DONE bounded/file-level.** Referenced dnd5e Actor/Item closure through --dnd5e-system, shared native templates; exact IDs only. Bare spell inputs remain spells-only. |
+| B4 | FG light/environment fidelity | **DONE bounded/file-level.** RGB/intensity/off state and flat bitmap layers mapped. Falloff, ambient/tint, grid offsets, opaque/group transforms and renderer equivalence explicitly manual/approximate. |
+| B5 | Foundry playlist settings | **DONE bounded/file-level.** Playlist/track gain maps approximately to captured Master volume. Loop/fade/channel/mode individually manual; no invented fields. |
+| B6 | Roll-table formulas/weights | **DONE bounded/file-level.** Integer weights and bounded NdS +/- integer use uniform probability tickets. Unsupported/ambiguous formulas reference-only; replacement/drawn/chained behavior manual. |
 | B7 | Release v0.13.0 | **DONE.** v0.13.0 published as a pre-release; attached ZIP downloaded/hash-checked and both clean-unzip EXEs report 0.13.0. [Publication evidence](../validation/2026-11-07-V0130-RELEASE.md). |
 | B8 | Non-developer user guide | **DONE.** FG one-build walkthrough, Foundry Data folder, optional spell pack, campaign-content summary, reviewed install and keep-changed uninstall. |
 | B9 | Cleanup | **OPEN.** Existing FB test maps/notes and receipts remain preserved. Toolkit cleanup needs licensed access and review; missing Retire-ForgeBridgeTestContent.ps1 was not replaced with broad deletion. Old roadmap files are superseded by this scope check; reconcile/archive them deliberately. |
 
-Remaining engineering/cleanup after publication: **B3, unfinished B4, B5, B6,
-B9**. Outstanding native acceptance (fog/player output, external art and layout
+Remaining engineering/cleanup after publication: **B9**; bounded B3–B6 limits are documented in [file-level evidence](../validation/2026-11-07-SCOPE-B3-B6.md). Outstanding native acceptance (fog/player output, external art and layout
 gap removal) remains visible and does not block independent file-level work.
 
 ## C. Decisions for Jeffrey

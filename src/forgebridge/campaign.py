@@ -28,7 +28,7 @@ def read_campaign(package, inventory, scene_row, *, cache=None):
     cache = {} if cache is None else cache
     parent = _parent_adventure_id(scene_row)
     source = scene_row.get('source_path')
-    docs, errors = [], []
+    docs, errors, references = [], [], []
     def payloads(row):
         key = (row.get('source_path'), row['document_type'])
         if key not in cache: cache[key] = _journal_pack_payloads(package, row)
@@ -45,6 +45,10 @@ def read_campaign(package, inventory, scene_row, *, cache=None):
         rows = payloads({**scene_row, 'document_type': 'Adventure'})
         found = [p for p in rows if p.get('_id', p.get('id')) == parent]
         if len(found) != 1: raise ValueError('Selected campaign Adventure missing or ambiguous')
+        journal_refs=found[0].get('journal', [])
+        if not isinstance(journal_refs,list) or len(journal_refs)>2048:raise ValueError('Invalid/oversized Adventure journal collection')
+        references.extend(journal_refs)
+        references.extend(found[0].get('scenes', []))
         for collection, kind in COLLECTIONS.items():
             objects = found[0].get(collection, [])
             if not isinstance(objects, list) or len(objects) > 2048:
@@ -56,6 +60,8 @@ def read_campaign(package, inventory, scene_row, *, cache=None):
     seen = set()
     for row in inventory['documents']:
         kind = row.get('document_type')
+        if not parent and kind in ('JournalEntry','Scene'):
+            references.extend(payloads(row))
         if kind not in ({'Actor', 'Item'} if parent else set(COLLECTIONS.values())): continue
         key = (row.get('source_path'), kind)
         if key in seen: continue
@@ -66,4 +72,4 @@ def read_campaign(package, inventory, scene_row, *, cache=None):
     if len(docs) > 2048: raise ValueError('Campaign exceeds 2048 documents')
     scope = hashlib.sha256(json.dumps([inventory['provenance']['package_id'], source if parent else None, parent]).encode()).hexdigest()[:20]
     return {'version': 1, 'scope': scope, 'documents': docs, 'losses': errors,
-            'system': inventory['provenance'].get('system'), 'adventure_id': parent}
+            'system': inventory['provenance'].get('system'), 'adventure_id': parent, 'reference_payloads':references}

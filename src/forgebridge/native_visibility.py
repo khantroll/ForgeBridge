@@ -70,6 +70,9 @@ def apply_visibility(data, ir, *, namespace, units_per_grid=2.56, origin=(0.,0.)
         m=node.members
         m.update(_hasLight=row.get('enabled',True),_visibleThroughFog=bool(row.get('reveals')) and not row.get('darkness',False) and row.get('enabled',True),_darkness=bool(row.get('darkness')), _flicker=bool(row.get('effect') and row['effect']['kind']=='flicker'))
         if row.get('intensity') is not None:m['_lightIntensity']=float(row['intensity'])
+        if row.get('rgb') is not None:
+            if len(row['rgb'])!=3 or not all(math.isfinite(v) and 0<=v<=1 for v in row['rgb']):raise ValueError('Invalid light RGB')
+            m.update(zip(('_lightR','_lightG','_lightB'),row['rgb']))
         if row.get('radius') is not None:
             radius=row['radius']*units_per_grid
             if not math.isfinite(radius) or radius<=0:raise ValueError('Invalid calibrated light radius')
@@ -87,7 +90,7 @@ def apply_visibility(data, ir, *, namespace, units_per_grid=2.56, origin=(0.,0.)
             if bare(key)=='_lighting':field(presetid,key,lit)
             elif bare(key)=='_effectsNew':field(presetid,key,eff)
         point=val(p['_position'])['members']
-        return dict(source_id=row['source_id'],native_uid=p['_uID'],position=dict(point),native_radius=lit.members['_lightRadius'].members['_items'].items[0],reveals=lit.members['_visibleThroughFog'],darkness=lit.members['_darkness'],effect=row.get('effect'),enabled=lit.members['_hasLight'])
+        return dict(rgb=[lit.members[k] for k in ('_lightR','_lightG','_lightB')],intensity=lit.members['_lightIntensity'],source_id=row['source_id'],native_uid=p['_uID'],position=dict(point),native_radius=lit.members['_lightRadius'].members['_items'].items[0],reveals=lit.members['_visibleThroughFog'],darkness=lit.members['_darkness'],effect=row.get('effect'),enabled=lit.members['_hasLight'])
     new=[];nextuid=max(root['_nextUID'],max((objects[i]['members'].get('_uID',0)+1 for i in presets),default=1))
     for row in ir['lights']:
         if row['index'] is not None:
