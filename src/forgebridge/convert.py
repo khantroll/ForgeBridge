@@ -97,13 +97,26 @@ def _new_destination(destination, package):
     return dest
 
 
+def _foundry_data_root(path):
+    if path is None:
+        return None
+    root = Path(path).absolute()
+    if not root.is_dir() or root.is_symlink() or root.is_junction():
+        raise ValueError('Foundry Data folder must be an existing directory, not a link')
+    if any(p.is_symlink() or p.is_junction() for p in root.parents):
+        raise ValueError('Foundry Data folder must not contain links or junctions')
+    return root
+
+
 def convert(package, destination, *, scene_ids=(), scene_keys=(), profiles=(),
             map_folder=None, notes_folder=None, map_names=None, pdf=None,
-            include_art=False, grid_size=(), squares=(), dnd5e_system=None):
+            include_art=False, grid_size=(), squares=(), dnd5e_system=None, foundry_data=None):
     from forgebridge.fg_convert import is_fg_input, convert_fg
     if is_fg_input(package):
         if dnd5e_system is not None:
             raise ValueError('--dnd5e-system applies only to Foundry packages')
+        if foundry_data is not None:
+            raise ValueError('--foundry-data applies only to Foundry packages')
         return convert_fg(package, destination, scene_ids=scene_ids, scene_keys=scene_keys, profiles=profiles,
                           map_folder=map_folder, notes_folder=notes_folder, map_names=map_names,
                           include_art=include_art, grid_size=grid_size, squares=squares)
@@ -111,10 +124,13 @@ def convert(package, destination, *, scene_ids=(), scene_keys=(), profiles=(),
         raise ValueError('--grid-size, --squares and --include-art are Fantasy Grounds input options')
     package = Path(package).absolute()
     dest = _new_destination(destination, package)
+    data_root = _foundry_data_root(foundry_data)
     if dnd5e_system is not None:
         spell_path = Path(dnd5e_system).absolute()
         if spell_path.is_dir() and dest.resolve().is_relative_to(spell_path.resolve()):
             raise ValueError('Output must be outside the optional spell source')
+    if data_root is not None and dest.resolve().is_relative_to(data_root.resolve()):
+        raise ValueError('Output must be outside the Foundry Data folder')
     before = fingerprint(package)
     selected_pdf, pdf_loss = pdf_mode(pdf)
     report = {'format': 'forgebridge.conversion', 'version': 1, 'status': 'PASS',
@@ -126,6 +142,8 @@ def convert(package, destination, *, scene_ids=(), scene_keys=(), profiles=(),
               'pdf_mode': selected_pdf, 'pdf_mode_loss': pdf_loss,
               'runtime_validation': 'not performed', 'installed': False,
               'native_synthesis': 'Schema-built Toolkit 0.5.1.18 records; default calibration 2.56 units/grid, upper-left origin (0,0)',
+              'foundry_data': None if data_root is None else {'path': str(data_root), 'access': 'read-only',
+                  'evidence': 'file-level only, Toolkit check pending'},
               'manual_steps': ['Review combined losses and installation conflicts before player use; labels off',
                                'Unsupported media/transcoding, manual native fog and actor/vision/behavior automation remain manual',
                                'Generating files is not runtime validation of this output']}
@@ -210,8 +228,8 @@ def convert(package, destination, *, scene_ids=(), scene_keys=(), profiles=(),
                 for grade, count in document['loss_report']['counts'].items(): report['counts'][grade] += count
                 if _identity(row) in native:
                     audit, settings = native[_identity(row)]
-                    conversion = build_package(**{**settings, 'pdf_pages': selected_pdf == 'pages'}, dest=folder / 'native-package.zip',
-                                               profile_provenance=audit['provenance'])
+                    conversion = build_package(**{**settings, 'pdf_pages': selected_pdf == 'pages', 'foundry_data': data_root},
+                                               dest=folder / 'native-package.zip', profile_provenance=audit['provenance'])
                     result.update(status='BUILT', artifact='native-package.zip', native_report=conversion)
                 else:
                     from forgebridge.direct_package import build_direct
@@ -225,10 +243,11 @@ def convert(package, destination, *, scene_ids=(), scene_keys=(), profiles=(),
                         ir = resolve_spells(ir, spells)
                         ir['package_id'] = report['package_id']
                         campaign_outputs[campaign_key] = campaign_files(ir, root, notes_folder=scene_names['notes_folder'],
-                            spell_root=spells['root'] if spells else None)
+                            spell_root=spells['root'] if spells else None, foundry_data=data_root)
                         report['campaign_content'].append(campaign_outputs[campaign_key][1])
                     conversion = build_direct(root, document, row, report['package_id'], folder / 'native-package.zip',
-                                              names=scene_names, pdf_pages=selected_pdf == 'pages', campaign=campaign_outputs[campaign_key])
+                                              names=scene_names, pdf_pages=selected_pdf == 'pages', campaign=campaign_outputs[campaign_key],
+                                              foundry_data=data_root)
                     result.update(status='BUILT', artifact='native-package.zip', native_report=conversion)
                 members = read_package(folder / 'native-package.zip')
                 candidate = {n: d for n, d in members.items() if n.startswith('MyAssets/')}
@@ -325,6 +344,7 @@ def main(argv=None):
     parser.add_argument('--map-name', action='append', default=[], help='SCENE_KEY=NAME; repeat per scene, or NAME for a single scene')
     parser.add_argument('--pdf', choices=('pages', 'references'), help='Default pages if pypdfium2 imports, otherwise references with a reported loss')
     parser.add_argument('--dnd5e-system', help='Optional dnd5e system folder/ZIP or standalone spells JSON/NeDB/LevelDB pack; resolve exact spell UUIDs')
+    parser.add_argument('--foundry-data', help='Optional Foundry Data folder; read-only lookup for art paths outside the package')
     parser.add_argument('--install', action='store_true', help='Explicit add-only installation after building/review checks')
     parser.add_argument('--myassets', help='Actual MyAssets destination; required with --install')
     parser.add_argument('--backup-root', help='Separate existing full-backup directory; required with --install')
@@ -345,7 +365,8 @@ def main(argv=None):
             if not args.out: raise ValueError('Provide --out NEW_DIRECTORY, --install, or --list-scenes')
             report = convert(args.package, args.out, scene_ids=args.scene, scene_keys=args.scene_key, profiles=args.profile,
                              map_folder=args.map_folder, notes_folder=args.notes_folder, map_names=args.map_name, pdf=args.pdf,
-                             include_art=args.include_art, grid_size=args.grid_size, squares=args.squares, dnd5e_system=args.dnd5e_system)
+                             include_art=args.include_art, grid_size=args.grid_size, squares=args.squares, dnd5e_system=args.dnd5e_system,
+                             foundry_data=args.foundry_data)
             if args.install:
                 if report['status'] != 'PASS': raise ValueError('Resolve rejected scenes before installation; outputs retained for review')
                 from forgebridge.installer import install_conversion

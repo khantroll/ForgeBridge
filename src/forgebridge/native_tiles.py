@@ -13,11 +13,11 @@ from forgebridge.native_map import clone
 from forgebridge.nrbf import Reader
 from forgebridge.native_scene import background_asset, UNITS_PER_GRID, _set
 from forgebridge.scene_records import record, asset_templates
-from forgebridge.uvtt import _square_grid, _scene_origin, _safe_ref, _package_file
+from forgebridge.uvtt import _square_grid, _scene_origin, open_art
 from forgebridge.validate import InventoryFatal
 
 
-def add_tiles(data, scene, package, scope):
+def add_tiles(data, scene, package, scope, foundry_data=None):
     reader=Reader(data,max_items=64000000);graph=reader.read();root=clone(reader,graph['root_id'])
     collection=root.members['_tiles'].members
     items=collection['_items'].items[:collection['_size']]
@@ -32,9 +32,7 @@ def add_tiles(data, scene, package, scope):
             if not isinstance(tile,dict):raise ValueError('Invalid tile document')
             ir=tile_ir(scene,tile,index)
             if not isinstance(ref,str):raise ValueError('Unsafe/missing tile texture')
-            safe,problem=_safe_ref(unquote(ref))
-            if problem or not safe:raise ValueError('Unsafe/missing tile texture')
-            path=_package_file(Path(package),safe)
+            path=open_art(package, unquote(ref), foundry_data)
             if path.stat().st_size>16*1024*1024:raise ValueError('Tile exceeds 16 MiB')
             image=path.read_bytes();suffix=path.suffix.lower()
             if suffix in ('.mov','.m4v','.avi','.mkv'):raise ValueError('Unsupported video container: '+suffix)

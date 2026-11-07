@@ -32,7 +32,7 @@ def geometry_files(uvtt, scope, *, name, map_path):
     return exports, synthesis, background, omitted_lights
 
 
-def build_direct(package, document, row, package_id, destination, *, names, pdf_pages=False, campaign=None):
+def build_direct(package, document, row, package_id, destination, *, names, pdf_pages=False, campaign=None, foundry_data=None):
     scene = document['source_scene']
     scope = canonical_hash(['native-scene-schema-v1', package_id, row.get('source_path'),
                             _parent_adventure_id(row), scene])[:20]
@@ -58,8 +58,9 @@ def build_direct(package, document, row, package_id, destination, *, names, pdf_
             template_name='ForgeBridge Control', marker_template_pack=root / 'marker.zip',
             token_control_pack=root / 'token.zip', token_control_name='ForgeBridge Control',
             control_units_per_grid=UNITS_PER_GRID, geometry_map_path=geometry_path,
-            asset_namespace=scope, token_namespace=scope,
-            campaign_dependencies=campaign[0] if campaign else None)
+            asset_namespace=scope,             token_namespace=scope,
+            campaign_dependencies=campaign[0] if campaign else None,
+            foundry_data=foundry_data)
         files = read_package(staged)
         # These are owned generated controls, not exported user content. Re-emit
         # token notes to discard unreachable strings retained by byte patching.
@@ -86,7 +87,7 @@ def build_direct(package, document, row, package_id, destination, *, names, pdf_
             report['campaign_content'] = campaign[1]
             report['campaign_token_links'] = link_token_actors(files, scene, scope, campaign[1])
         from forgebridge.native_tiles import add_tiles
-        files[names['map_path']], tile_files, tile_report = add_tiles(files[names['map_path']], scene, package, scope)
+        files[names['map_path']], tile_files, tile_report = add_tiles(files[names['map_path']], scene, package, scope, foundry_data)
         from forgebridge.native_dependencies import merge_native
         merge_native(files, tile_files)
         report['static_tiles'] = tile_report

@@ -215,7 +215,14 @@ What stays a loss, with the reason in `fg-campaign-report.json`:
 ```powershell
 python -m forgebridge convert "C:/Sources/MyModule.zip" --list-scenes
 python -m forgebridge convert "C:/Sources/MyModule.zip" --out "C:/Conversions/MyModule-01"
+python -m forgebridge convert "C:/Sources/MyModule.zip" --out "C:/Conversions/MyModule-01" --foundry-data "C:/Users/me/AppData/Local/FoundryVTT/Data"
 ```
+
+`--foundry-data` is optional and read-only. Portraits and tiles whose paths
+point at another module, such as `modules/legends-of-barovia-pk/assets/...`,
+are read from inside that Data folder only. A path that leaves the folder, or
+a file that is not there, stays a loss. Nothing is written into Data. This is
+file-level only, Toolkit check pending. The GUI has Choose Foundry Data folder.
 
 Repeat --scene ID or select exact --scene-key KEY from discovery. Default native
 calibration is 2.56 units/grid, upper-left origin, native y up; source padding and
