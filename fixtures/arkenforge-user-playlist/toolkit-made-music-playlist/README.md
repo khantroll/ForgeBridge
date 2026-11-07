@@ -1,6 +1,6 @@
 # Populated Toolkit user music control
 
-Created 2026-11-04, Windows, Toolkit **0.5.1.18**, with Jeffrey's explicit
+Created 2026-11-04, Windows, Toolkit **0.5.1.18**, with the maintainer's explicit
 confirmation. Audio → Playlists → New playlist → **FB Native Music Control** →
 Add new content → From File Import → selected the existing synthetic
 `FBReference-tone.wav`. The importer completed and displayed a two-second song.
@@ -28,13 +28,13 @@ comparison evidence distinguish raw bytes, field values and runtime claims.
 All three source formats are stored in `AudioTrack._clipRAW`, with a matching
 `_originalFile` extension. Metadata is not proof of audible playback.
 
-Before repair, Jeffrey reported the original MP3 silent and, during this
+Before repair, the maintainer reported the original MP3 silent and, during this
 session, confirmed **“OGG is silent”** after the second OGG track was started
 explicitly and observed advancing to 00:56. No codec is declared working from
 a timer, payload signature or successful import alone. Production MP3 remains
 manual; corrected-playlist listening is a separate acceptance check.
 
-Jeffrey subsequently confirmed **all three files here are audible**, identifying
+The maintainer subsequently confirmed **all three files here are audible**, identifying
 this native control playlist in his supplied photo (2026-11-04): WAV,
 FBMusicControl-MP3 and FBMusicControl-OGG. This supersedes the transient silence
 observed while testing the native control; the intervening setting/session change

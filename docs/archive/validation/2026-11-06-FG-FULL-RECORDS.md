@@ -103,7 +103,7 @@ Manual page links should open Watch Table and Room; chapter → section → page
 navigation is closed. The d2 table links its results to Watcher/Key notes.
 Source unknown records deliberately produce unsupported losses and are not run.
 
-Jeffrey explicitly approved adding the separate owned control. The initial
+The maintainer explicitly approved adding the separate owned control. The initial
 file-only package is retained above; the installed final package is
 `C:/AMD/fb-fg-full-records-2026-11-06/owned-control-final/native-package.zip`. Actual placement, roll behavior, visibility, note
 rendering, navigation and persistence remain Toolkit checks. Labels remain off;

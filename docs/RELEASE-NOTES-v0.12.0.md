@@ -11,7 +11,7 @@ Keep **forgebridge-cli.exe** and `_internal` beside it. No Python installation i
 - Local **MP3 and OGG Vorbis** music is embedded unchanged, preserving its codec
   and extension. Playlist entries initialize Master at 80%; no encoder or Toolkit
   ffmpeg is required. Encoded local paths such as `Crypt%20and%20Lair.mp3` resolve
-  safely. Jeffrey heard Ambient's Manor, Crypt And Lair and Forest separately.
+  safely. The maintainer heard Ambient's Manor, Crypt And Lair and Forest separately.
 - Optional **dnd5e spell-pack** input resolves exact external spell UUIDs to 5e
   Spell notes and rewrites source links. Use the unzipped dnd5e system folder or
   `packs/spells`; the complete system ZIP can exceed the read budget. All three
@@ -26,7 +26,7 @@ Keep **forgebridge-cli.exe** and `_internal` beside it. No Python installation i
   edited map names no longer match generated files. Map names must be unique
   across the entire MyAssets library, including different folders.
 
-Runtime evidence: [Claude + Jeffrey, 2026-11-05](archive/validation/2026-11-05-FINAL-TOOLKIT-CHECK.md),
+Runtime evidence: [Claude + the maintainer, 2026-11-05](archive/validation/2026-11-05-FINAL-TOOLKIT-CHECK.md),
 Toolkit **0.5.1.18** on Windows. That check did not repeat the unchanged map/token
 writer or inspect the expanded mixer value. Earlier native MP3/OGG control
 listening and byte preservation are recorded in the music fixtures/evidence.

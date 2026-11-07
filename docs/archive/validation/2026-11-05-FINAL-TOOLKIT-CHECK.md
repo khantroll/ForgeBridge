@@ -1,4 +1,4 @@
-# Final Toolkit check — 2026-11-05 (Claude + Jeffrey)
+# Final Toolkit check — 2026-11-05 (Claude + the maintainer)
 
 Toolkit 0.5.1.18 started from the launcher (trial: 1 d 4 h remaining at 14:29 CT).
 Checks the installs in [2026-11-05-FINAL-TRIAL-BUILD.md](2026-11-05-FINAL-TRIAL-BUILD.md).
@@ -7,9 +7,9 @@ Nothing edited or saved; quit with Yes to exit, no save prompt.
 | Check | Result | Notes |
 |---|---|---|
 | Ambient playlist listed (FB Campaign Check) | PASS | 3 songs, 03:01: Manor 01:00, Crypt And Lair 01:01, Forest 01:00 |
-| Manor audible | PASS | Jeffrey heard it; timer advanced |
-| Crypt And Lair audible | PASS | Jeffrey heard it (URL-encoded source path resolved) |
-| Forest audible | PASS | Jeffrey heard it |
+| Manor audible | PASS | The maintainer heard it; timer advanced |
+| Crypt And Lair audible | PASS | The maintainer heard it (URL-encoded source path resolved) |
+| Forest audible | PASS | The maintainer heard it |
 | Spell Scroll: Bless → Bless | PASS | Link opens the 5e Spell note (1st-level enchantment, fields filled) |
 | Spell Scroll Spiritual Weapon → Spiritual Weapon | PASS | Opens; 2nd-level evocation |
 | Spell Scroll Protection from Poison → Protection from Poison | PASS with defect | Opens; text shows raw `&Reference[poisoned apply=false]` |

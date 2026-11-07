@@ -5,7 +5,7 @@ Ground truth: the native map **ForgeBridge Direct Crypt 2026-11-01** (199 walls,
 Toolkit's own UVTT import, validation/2026-11-01-DIRECT-MAP.md).
 
 Export: Arkenforge Toolkit 0.5.1.18 → Export Map → VTT Export → **Fantasy
-Grounds Unity**, PNG, export area drawn by Jeffrey with a margin around the map.
+Grounds Unity**, PNG, export area drawn by the maintainer with a margin around the map.
 Output: `ForgeBridge Direct Crypt 2026-11-01.png` (5000×4800) + `.xml` sidecar
 (`root version="4.1" dataversion="20210302"`, gridsize 100,100, gridoffset 0,50,
 222 occluders, 66 lights, ambient block). Not committed.

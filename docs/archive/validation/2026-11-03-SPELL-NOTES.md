@@ -12,7 +12,7 @@ closed for all builds/tests/installation below. No new native runtime PASS.
 | Missing ID/input, ambiguous IDs, unsafe archive, changed input, output containment | PASS, synthetic file level | Explicit losses/refusal; changed input never publishes destination |
 | CLI and GUI optional input | PASS, headless/file level | Public convert and GUI callback regression tests |
 | Real Count's Lair without optional pack | PASS, file level only | Exit 0; counts and three exact unresolved UUIDs below |
-| New synthetic Spell notes in Toolkit | NOT CHECKED | Installed for Jeffrey's short check below |
+| New synthetic Spell notes in Toolkit | NOT CHECKED | Installed for the maintainer's short check below |
 | Real three compendium spells in Toolkit | BLOCKED | Matching dnd5e source pack not located/supplied; no replacement rules invented |
 
 Full Windows suite: **301 run, 297 passed, four Windows symlink tests skipped**.
@@ -60,7 +60,7 @@ Backup:
 Receipt (retain):
 `C:\AMD\fb-backups\forgebridge-0dfc37eda81046f983a866b594833dfb\uninstall.json`.
 
-Jeffrey's five-minute check, starting Toolkit from the launcher:
+The maintainer's five-minute check, starting Toolkit from the launcher:
 
 1. Notes → **FB Spell Notes Synthetic Check** → **FB Spell Notes Synthetic Caster**.
 2. In Biography, follow each of its three links. Confirm each reaches its

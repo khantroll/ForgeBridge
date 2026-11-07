@@ -10,7 +10,7 @@ PR #26 remains unmerged, awaiting Claude's Toolkit check.
 
 ## Music and campaign output
 
-Jeffrey confirms 2026-11-04 native MP3 embedded unchanged in a song is audible.
+The maintainer confirms 2026-11-04 native MP3 embedded unchanged in a song is audible.
 Production accepts MP3 and OGG Vorbis unchanged, preserving the extension and
 initializing Master at 80%. MPEG Layer III frames supply a bounded duration
 without any external encoder; invalid/unsupported audio remains an explicit loss.

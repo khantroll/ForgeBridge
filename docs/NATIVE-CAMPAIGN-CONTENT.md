@@ -152,7 +152,7 @@ Scene reports separately list static tiles and omitted token-to-actor links.
 - Playlists: schema-built `.rwpl`/metadata with reachable song pairs for supplied
   local MP3 or OGG Vorbis. Original encoded bytes and extensions are preserved;
   no encoder or Toolkit ffmpeg is needed. Native MP3/OGG controls were confirmed
-  audible by Jeffrey on 2026-11-04 in Toolkit 0.5.1.18. Generated playlist entries
+  audible by the maintainer on 2026-11-04 in Toolkit 0.5.1.18. Generated playlist entries
   initialize their Master stem at 80%. Missing, invalid or unsupported tracks
   remain explicit losses. Fades, mode, source volume, looping and channels
   remain manual. Each new playlist still needs its own listening check.

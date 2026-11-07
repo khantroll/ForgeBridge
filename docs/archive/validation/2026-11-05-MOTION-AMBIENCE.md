@@ -88,7 +88,7 @@ Backup:
 Machine-readable values, native coordinates and remaining losses are in the
 adjacent JSON. Existing check packages and user content were not uninstalled.
 
-## Exact Toolkit targets for Claude / Jeffrey
+## Exact Toolkit targets for Claude / the maintainer
 
 Start Toolkit only through the launcher. Keep the established 30-FPS setting;
 player output is not required to begin these GM/map checks.

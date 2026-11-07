@@ -1,6 +1,6 @@
 # PR #32 main integration and display corrections
 
-All new evidence is **file-level only**. The Arkenforge trial has ended. No real installation, desktop control, Toolkit launch or real MyAssets change was performed. The historical Claude/Jeffrey observations in `2026-11-06-TOOLKIT-CHECK.md` remain separate and unchanged. Windows / Python 3.14; native schema reference Toolkit 0.5.1.18.
+All new evidence is **file-level only**. The Arkenforge trial has ended. No real installation, desktop control, Toolkit launch or real MyAssets change was performed. The historical Claude/the maintainer observations in `2026-11-06-TOOLKIT-CHECK.md` remain separate and unchanged. Windows / Python 3.14; native schema reference Toolkit 0.5.1.18.
 
 ## Merge resolution
 

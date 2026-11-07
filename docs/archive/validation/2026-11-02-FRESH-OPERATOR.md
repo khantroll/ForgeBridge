@@ -1,4 +1,4 @@
-# Fresh-operator run by Jeffrey — 2026-11-02 — PASS
+# Fresh-operator run by the maintainer — 2026-11-02 — PASS
 
 Fresh clone to `C:\AMD\fb-fresh`, following docs/USER-GUIDE.md without help.
 

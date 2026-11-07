@@ -1,4 +1,4 @@
-# Toolkit check — 2026-11-06 (Claude + Jeffrey), last trial day
+# Toolkit check — 2026-11-06 (Claude + the maintainer), last trial day
 
 Toolkit 0.5.1.18 from the launcher. Nothing saved except the two capture maps
 (FB Capture Base / FB Capture Effects, see fixtures/arkenforge-fog-vision-2026-11-06).
@@ -9,7 +9,7 @@ Accidental edits on FB FG Owned Map were discarded (No to save).
 |---|---|
 | Upper-left WEBM tile | PASS — test-pattern timer changes between frames (loops) |
 | Upper-middle GIF tile | PASS — inner square cycles yellow → blue → green |
-| Lower-left 440 Hz OGG / lower-right 660 Hz WAV ambience | PASS — native sound objects (e.g. "FB Left OGG 440Hz") at circle centres; Jeffrey heard the audio |
+| Lower-left 440 Hz OGG / lower-right 660 Hz WAV ambience | PASS — native sound objects (e.g. "FB Left OGG 440Hz") at circle centres; the maintainer heard the audio |
 | FB Motion Watcher (no CR) | not opened |
 
 ## PR #32 — Fantasy Grounds real adventure: PASS with defects
