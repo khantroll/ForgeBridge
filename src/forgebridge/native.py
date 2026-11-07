@@ -143,7 +143,8 @@ class NoteBuilder:
 
 class Writer:
     """Emit this known note object graph as NRBF, without a deserializer."""
-    def __init__(self, libraries):
+    def __init__(self, libraries, *, max_items=2000000):
+        self.max_items = max_items
         self.libraries = libraries
         self.out = bytearray()
         self.ids, self.string_ids, self.metadata_ids = {}, {}, {}
@@ -219,6 +220,9 @@ class Writer:
     def array(self, array, oid):
         self.out.append(7); self.integer(oid); self.out.append(0); self.integer(1); self.integer(len(array.items))
         self.out.append(array.kind); self.type_info(array.kind, array.info)
+        if array.kind == 0 and array.info == 2:
+            self.out += bytes(array.items)
+            return
         for item in array.items:
             if array.kind == 0: self.primitive(array.info, item)
             else: self.value(item)
@@ -237,7 +241,7 @@ class Writer:
             else: self.array(value, oid)
         self.out.append(11)
         data = bytes(self.out)
-        inspect_nrbf(data)  # Structure check only; does not prove Arkenforge compatibility.
+        inspect_nrbf(data, max_items=self.max_items)  # Structure check only; does not prove Arkenforge compatibility.
         return data
 
 

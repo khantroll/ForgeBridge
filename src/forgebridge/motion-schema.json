@@ -1,0 +1,3038 @@
+{
+  "provenance": {
+    "toolkit": "0.5.1.18",
+    "evidence": "Member declarations/defaults from owned synthetic native video/GIF/SFX/ambience controls. Payloads and source names removed. No runtime conversion claim.",
+    "inputs": [
+      {
+        "fixture": "fixtures\\arkenforge-native-controls-2026-11-03\\MyAssets\\Media\\Cartographer\\FBReference-motion.rwfile",
+        "sha256": "50a05a402f3aaa9b44399235813d573ff54cb3eb7581298d69080379ba5bb5b4"
+      },
+      {
+        "fixture": "fixtures\\arkenforge-native-controls-2026-11-03\\MyAssets\\Media\\Cartographer\\FBReference-motion.rwmeta",
+        "sha256": "f9df419688f2a4c8bd38a7e3afdc1d9ff61f2652e670ff67dab9e8d38cce824c"
+      },
+      {
+        "fixture": "fixtures\\arkenforge-native-controls-2026-11-03\\gif-control\\forgebridge-signal.rwfile",
+        "sha256": "9ea7a397fb8fb4fd79726f0001231416c2341392ce4fc77c25b1c9bf66489f84"
+      },
+      {
+        "fixture": "fixtures\\arkenforge-native-controls-2026-11-03\\gif-control\\forgebridge-signal.rwmeta",
+        "sha256": "1a824dcad0a74aa10ad62f938f9b0d754ef47b08f39b7de8828efa6eed1fbb5a"
+      },
+      {
+        "fixture": "fixtures\\arkenforge-native-controls-2026-11-03\\MyAssets\\AmbiencePresets\\FB Native Reference Ambience 2026-11-03.rwamb",
+        "sha256": "0c8bf91a6e455550a23a9eaa8795c41821ae2213754382b89202dbcb831acc71"
+      },
+      {
+        "fixture": "fixtures\\arkenforge-native-controls-2026-11-03\\MyAssets\\AmbiencePresets\\FB Native Reference Ambience 2026-11-03.rwmeta",
+        "sha256": "ddcf4233678d8248161a005bffff84f5cbe47c54002bb9678d53c65e9c71f6c6"
+      },
+      {
+        "fixture": "fixtures\\arkenforge-native-controls-2026-11-03\\MyAssets\\Audio\\SFX\\FBReference-tone.rwfile",
+        "sha256": "f4e298508b742881157115b7fb92f8bbd6b52fb7088a46e879b721dc12973028"
+      },
+      {
+        "fixture": "fixtures\\arkenforge-native-controls-2026-11-03\\MyAssets\\Audio\\SFX\\FBReference-tone.rwmeta",
+        "sha256": "e0f6abaef2abdfcfc1cf84ce6d1122be0792bd81e384abd204604e3ee915ed3b"
+      }
+    ]
+  },
+  "libraries": {
+    "2": "Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
+  },
+  "classes": {
+    "ArkenTileUpgrade": {
+      "name": "ArkenTileUpgrade",
+      "names": [
+        "_name",
+        "_pack",
+        "_creator",
+        "_category",
+        "_legacyType",
+        "_thumbnail",
+        "_thumbnailScale",
+        "_content"
+      ],
+      "types": [
+        1,
+        1,
+        1,
+        4,
+        4,
+        4,
+        0,
+        2
+      ],
+      "infos": [
+        null,
+        null,
+        null,
+        {
+          "name": "ArkenTileUpgrade+TileCategory",
+          "library_id": 2
+        },
+        {
+          "name": "ArkenTile+TileType",
+          "library_id": 2
+        },
+        {
+          "name": "ArkenImage",
+          "library_id": 2
+        },
+        11,
+        null
+      ],
+      "library_id": 2
+    },
+    "ArkenTileUpgrade+TileCategory": {
+      "name": "ArkenTileUpgrade+TileCategory",
+      "names": [
+        "value__"
+      ],
+      "types": [
+        0
+      ],
+      "infos": [
+        8
+      ],
+      "library_id": 2
+    },
+    "ArkenTile+TileType": {
+      "name": "ArkenTile+TileType",
+      "names": [
+        "value__"
+      ],
+      "types": [
+        0
+      ],
+      "infos": [
+        8
+      ],
+      "library_id": 2
+    },
+    "ArkenImage": {
+      "name": "ArkenImage",
+      "names": [
+        "_packImgX",
+        "_packImgY",
+        "_packImgChannels",
+        "_packImageRAW"
+      ],
+      "types": [
+        0,
+        0,
+        0,
+        7
+      ],
+      "infos": [
+        8,
+        8,
+        8,
+        2
+      ],
+      "library_id": 2
+    },
+    "ArkenVideo": {
+      "name": "ArkenVideo",
+      "names": [
+        "_rawFile",
+        "_originalFile"
+      ],
+      "types": [
+        7,
+        1
+      ],
+      "infos": [
+        2,
+        null
+      ],
+      "library_id": 2
+    },
+    "ArkenTileMeta": {
+      "name": "ArkenTileMeta",
+      "names": [
+        "_category",
+        "_tileType",
+        "_tileCategory",
+        "_thumbnail",
+        "_thumbnailScale",
+        "_variations",
+        "_name",
+        "_pack",
+        "_creator",
+        "_genre",
+        "_subgenre",
+        "_tags",
+        "_starred",
+        "_hideFromView",
+        "_includedWorldPaths",
+        "_official",
+        "_prevPathIfDeleted",
+        "_links",
+        "ArkenBaseMeta+_name",
+        "ArkenBaseMeta+_pack",
+        "ArkenBaseMeta+_creator",
+        "ArkenBaseMeta+_genre",
+        "ArkenBaseMeta+_subgenre",
+        "ArkenBaseMeta+_tags",
+        "ArkenBaseMeta+_starred",
+        "ArkenBaseMeta+_hideFromView",
+        "ArkenBaseMeta+_includedWorldPaths",
+        "ArkenBaseMeta+_official",
+        "ArkenBaseMeta+_prevPathIfDeleted",
+        "ArkenBaseMeta+_links",
+        "LinkableContent+_links"
+      ],
+      "types": [
+        1,
+        4,
+        4,
+        4,
+        0,
+        3,
+        1,
+        1,
+        1,
+        1,
+        1,
+        3,
+        0,
+        0,
+        3,
+        0,
+        1,
+        3,
+        1,
+        1,
+        1,
+        1,
+        1,
+        3,
+        0,
+        0,
+        3,
+        0,
+        1,
+        3,
+        3
+      ],
+      "infos": [
+        null,
+        {
+          "name": "ArkenTile+TileType",
+          "library_id": 2
+        },
+        {
+          "name": "ArkenTileUpgrade+TileCategory",
+          "library_id": 2
+        },
+        {
+          "name": "ArkenImage",
+          "library_id": 2
+        },
+        11,
+        "System.Collections.Generic.List`1[[ArkenTilePresetBase, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        null,
+        null,
+        null,
+        null,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        1,
+        1,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        1,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        null,
+        null,
+        null,
+        null,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        1,
+        1,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        1,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"
+      ],
+      "library_id": 2
+    },
+    "System.Collections.Generic.List`1[[ArkenTilePresetBase, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]": {
+      "name": "System.Collections.Generic.List`1[[ArkenTilePresetBase, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+      "names": [
+        "_items",
+        "_size",
+        "_version"
+      ],
+      "types": [
+        4,
+        0,
+        0
+      ],
+      "infos": [
+        {
+          "name": "ArkenTilePresetBase[]",
+          "library_id": 2
+        },
+        8,
+        8
+      ],
+      "library_id": null
+    },
+    "ArkenTilePresetVideo": {
+      "name": "ArkenTilePresetVideo",
+      "names": [
+        "_soundEnabled",
+        "_videoPlaying",
+        "_loop",
+        "_volume",
+        "_speed",
+        "_destroyAfterOnePlay",
+        "_delay",
+        "_delayTime",
+        "_delayVariance",
+        "_deactivateOnDelay",
+        "_name",
+        "_editable",
+        "_visibleInLibrary",
+        "_official",
+        "_imported",
+        "_version",
+        "_tileName",
+        "_tilePack",
+        "_tileCreator",
+        "_tilePath",
+        "_tileType",
+        "_category",
+        "_defaultPlacementType",
+        "_position",
+        "_pivot",
+        "_rotation",
+        "_scale",
+        "_groupID",
+        "_sortingOrder",
+        "_mapLevel",
+        "_onTerrainLayer",
+        "_hidden",
+        "_locked",
+        "_superLocked",
+        "_hue",
+        "_brightness",
+        "_saturation",
+        "_opacity",
+        "_tint",
+        "_flipH",
+        "_flipV",
+        "_ignoreTimeOfDay",
+        "_chromaKeyEnabled",
+        "_chromaKeyColour",
+        "_chromeKeyTolerance",
+        "_lighting",
+        "_hasDropShadow",
+        "_blocksLight",
+        "_animation",
+        "_effectsNew",
+        "_alphaFriendlyCollider",
+        "_blocking",
+        "_chromaKeyReplacementColour",
+        "_chromaKeyReplacementAlpha",
+        "_uID",
+        "_blockedByMovementBlockers",
+        "ArkenTilePresetBase+_name",
+        "ArkenTilePresetBase+_baseName",
+        "ArkenTilePresetBase+_editable",
+        "ArkenTilePresetBase+_visibleInLibrary",
+        "ArkenTilePresetBase+_official",
+        "ArkenTilePresetBase+_imported",
+        "ArkenTilePresetBase+_version",
+        "ArkenTilePresetBase+_tileName",
+        "ArkenTilePresetBase+_tilePack",
+        "ArkenTilePresetBase+_tileCreator",
+        "ArkenTilePresetBase+_tilePath",
+        "ArkenTilePresetBase+_tileType",
+        "ArkenTilePresetBase+_category",
+        "ArkenTilePresetBase+_defaultPlacementType",
+        "ArkenTilePresetBase+_position",
+        "ArkenTilePresetBase+_pivot",
+        "ArkenTilePresetBase+_rotation",
+        "ArkenTilePresetBase+_scale",
+        "ArkenTilePresetBase+_groupID",
+        "ArkenTilePresetBase+_sortingOrder",
+        "ArkenTilePresetBase+_mapLevel",
+        "ArkenTilePresetBase+_onTerrainLayer",
+        "ArkenTilePresetBase+_hidden",
+        "ArkenTilePresetBase+_locked",
+        "ArkenTilePresetBase+_superLocked",
+        "ArkenTilePresetBase+_hue",
+        "ArkenTilePresetBase+_brightness",
+        "ArkenTilePresetBase+_saturation",
+        "ArkenTilePresetBase+_opacity",
+        "ArkenTilePresetBase+_tint",
+        "ArkenTilePresetBase+_flipH",
+        "ArkenTilePresetBase+_flipV",
+        "ArkenTilePresetBase+_ignoreTimeOfDay",
+        "ArkenTilePresetBase+_chromaKeyEnabled",
+        "ArkenTilePresetBase+_chromaKeyColour",
+        "ArkenTilePresetBase+_chromeKeyTolerance",
+        "ArkenTilePresetBase+_lighting",
+        "ArkenTilePresetBase+_hasDropShadow",
+        "ArkenTilePresetBase+_blocksLight",
+        "ArkenTilePresetBase+_animation",
+        "ArkenTilePresetBase+_effects",
+        "ArkenTilePresetBase+_effectsNew",
+        "ArkenTilePresetBase+_alphaFriendlyCollider",
+        "ArkenTilePresetBase+_blocking",
+        "ArkenTilePresetBase+_chromaKeyReplacementColour",
+        "ArkenTilePresetBase+_chromaKeyReplacementAlpha",
+        "ArkenTilePresetBase+_uID",
+        "ArkenTilePresetBase+_blockedByMovementBlockers",
+        "ArkenTilePresetBase+_dropShadow",
+        "ArkenTilePresetBase+_dropShadowLegacyUpgrade",
+        "ArkenTilePresetBase+_ambience"
+      ],
+      "types": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        4,
+        4,
+        4,
+        4,
+        4,
+        0,
+        4,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        4,
+        0,
+        0,
+        0,
+        0,
+        4,
+        0,
+        4,
+        0,
+        0,
+        4,
+        3,
+        0,
+        4,
+        4,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        4,
+        4,
+        4,
+        4,
+        4,
+        0,
+        4,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        4,
+        0,
+        0,
+        0,
+        0,
+        4,
+        0,
+        4,
+        0,
+        0,
+        4,
+        3,
+        3,
+        0,
+        4,
+        4,
+        0,
+        0,
+        0,
+        4,
+        0,
+        4
+      ],
+      "infos": [
+        1,
+        1,
+        1,
+        11,
+        11,
+        1,
+        1,
+        11,
+        11,
+        1,
+        null,
+        1,
+        1,
+        1,
+        1,
+        8,
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "ArkenTile+TileType",
+          "library_id": 2
+        },
+        {
+          "name": "ArkenTileUpgrade+TileCategory",
+          "library_id": 2
+        },
+        {
+          "name": "MapOptions+ObjectPlacementType",
+          "library_id": 2
+        },
+        {
+          "name": "SVector2",
+          "library_id": 2
+        },
+        {
+          "name": "SVector2",
+          "library_id": 2
+        },
+        11,
+        {
+          "name": "SVector2",
+          "library_id": 2
+        },
+        8,
+        8,
+        8,
+        1,
+        1,
+        1,
+        1,
+        11,
+        11,
+        11,
+        11,
+        {
+          "name": "SVector3",
+          "library_id": 2
+        },
+        1,
+        1,
+        1,
+        1,
+        {
+          "name": "SVector3",
+          "library_id": 2
+        },
+        11,
+        {
+          "name": "TileLightingProperties",
+          "library_id": 2
+        },
+        1,
+        1,
+        {
+          "name": "TileAnimationProperties",
+          "library_id": 2
+        },
+        "System.Collections.Generic.List`1[[ObjectEffectBase, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        1,
+        {
+          "name": "TileBlockingProperties",
+          "library_id": 2
+        },
+        {
+          "name": "SVector3",
+          "library_id": 2
+        },
+        11,
+        9,
+        1,
+        null,
+        null,
+        1,
+        1,
+        1,
+        1,
+        8,
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "ArkenTile+TileType",
+          "library_id": 2
+        },
+        {
+          "name": "ArkenTileUpgrade+TileCategory",
+          "library_id": 2
+        },
+        {
+          "name": "MapOptions+ObjectPlacementType",
+          "library_id": 2
+        },
+        {
+          "name": "SVector2",
+          "library_id": 2
+        },
+        {
+          "name": "SVector2",
+          "library_id": 2
+        },
+        11,
+        {
+          "name": "SVector2",
+          "library_id": 2
+        },
+        8,
+        8,
+        8,
+        1,
+        1,
+        1,
+        1,
+        11,
+        11,
+        11,
+        11,
+        {
+          "name": "SVector3",
+          "library_id": 2
+        },
+        1,
+        1,
+        1,
+        1,
+        {
+          "name": "SVector3",
+          "library_id": 2
+        },
+        11,
+        {
+          "name": "TileLightingProperties",
+          "library_id": 2
+        },
+        1,
+        1,
+        {
+          "name": "TileAnimationProperties",
+          "library_id": 2
+        },
+        "System.Collections.Generic.List`1[[IObjectEffect, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "System.Collections.Generic.List`1[[ObjectEffectBase, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        1,
+        {
+          "name": "TileBlockingProperties",
+          "library_id": 2
+        },
+        {
+          "name": "SVector3",
+          "library_id": 2
+        },
+        11,
+        9,
+        1,
+        {
+          "name": "TileDropShadowProperties",
+          "library_id": 2
+        },
+        1,
+        {
+          "name": "TileAmbienceProperties",
+          "library_id": 2
+        }
+      ],
+      "library_id": 2
+    },
+    "MapOptions+ObjectPlacementType": {
+      "name": "MapOptions+ObjectPlacementType",
+      "names": [
+        "value__"
+      ],
+      "types": [
+        0
+      ],
+      "infos": [
+        8
+      ],
+      "library_id": 2
+    },
+    "SVector2": {
+      "name": "SVector2",
+      "names": [
+        "x",
+        "y"
+      ],
+      "types": [
+        0,
+        0
+      ],
+      "infos": [
+        11,
+        11
+      ],
+      "library_id": 2
+    },
+    "SVector3": {
+      "name": "SVector3",
+      "names": [
+        "x",
+        "y",
+        "z"
+      ],
+      "types": [
+        0,
+        0,
+        0
+      ],
+      "infos": [
+        11,
+        11,
+        11
+      ],
+      "library_id": 2
+    },
+    "TileLightingProperties": {
+      "name": "TileLightingProperties",
+      "names": [
+        "_hasLight",
+        "_lightRadius",
+        "_lightR",
+        "_lightG",
+        "_lightB",
+        "_visibleThroughFog",
+        "_flicker",
+        "_darkness",
+        "_qualitySetting",
+        "_fov",
+        "_lightUpdates",
+        "_lightIntensity",
+        "_lightDirection"
+      ],
+      "types": [
+        0,
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "infos": [
+        1,
+        "System.Collections.Generic.List`1[[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        11,
+        11,
+        11,
+        1,
+        1,
+        1,
+        8,
+        8,
+        1,
+        11,
+        8
+      ],
+      "library_id": 2
+    },
+    "System.Collections.Generic.List`1[[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]": {
+      "name": "System.Collections.Generic.List`1[[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+      "names": [
+        "_items",
+        "_size",
+        "_version"
+      ],
+      "types": [
+        7,
+        0,
+        0
+      ],
+      "infos": [
+        11,
+        8,
+        8
+      ],
+      "library_id": null
+    },
+    "TileAnimationProperties": {
+      "name": "TileAnimationProperties",
+      "names": [
+        "_playing",
+        "_currentFrame",
+        "_framesPerSecond",
+        "_noOfFrames",
+        "_triggered",
+        "_startFrame",
+        "_endFrame",
+        "_destroyAfterOnePlay",
+        "_delay",
+        "_delayTime",
+        "_delayVariance",
+        "_deactivateOnDelay",
+        "_ghostTileFrame"
+      ],
+      "types": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "infos": [
+        1,
+        8,
+        11,
+        11,
+        1,
+        11,
+        11,
+        1,
+        1,
+        11,
+        11,
+        1,
+        8
+      ],
+      "library_id": 2
+    },
+    "System.Collections.Generic.List`1[[ObjectEffectBase, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]": {
+      "name": "System.Collections.Generic.List`1[[ObjectEffectBase, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+      "names": [
+        "_items",
+        "_size",
+        "_version"
+      ],
+      "types": [
+        4,
+        0,
+        0
+      ],
+      "infos": [
+        {
+          "name": "ObjectEffectBase[]",
+          "library_id": 2
+        },
+        8,
+        8
+      ],
+      "library_id": null
+    },
+    "TileBlockingProperties": {
+      "name": "TileBlockingProperties",
+      "names": [
+        "_blockingEnabled",
+        "_light",
+        "_vision",
+        "_sound",
+        "_movement",
+        "_oneWay",
+        "_oneWayDirection",
+        "_toggleable",
+        "_colliderMode"
+      ],
+      "types": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "infos": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        8
+      ],
+      "library_id": 2
+    },
+    "System.Collections.Generic.List`1[[IObjectEffect, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]": {
+      "name": "System.Collections.Generic.List`1[[IObjectEffect, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+      "names": [
+        "_items",
+        "_size",
+        "_version"
+      ],
+      "types": [
+        4,
+        0,
+        0
+      ],
+      "infos": [
+        {
+          "name": "IObjectEffect[]",
+          "library_id": 2
+        },
+        8,
+        8
+      ],
+      "library_id": null
+    },
+    "TileDropShadowProperties": {
+      "name": "TileDropShadowProperties",
+      "names": [
+        "_shadowActive",
+        "_shadowStrengthUsesMapDefault",
+        "_shadowStrength",
+        "_shadowSizeUsesMapDefault",
+        "_shadowSize",
+        "_shadowDistanceUsesMapDefault",
+        "_shadowDistance",
+        "_shadowDirectionUsesMapDefault",
+        "_shadowDirection",
+        "_followsSunUsesMapDefault",
+        "_dropShadowsFollowSun"
+      ],
+      "types": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "infos": [
+        1,
+        1,
+        11,
+        1,
+        11,
+        1,
+        11,
+        1,
+        8,
+        1,
+        1
+      ],
+      "library_id": 2
+    },
+    "TileAmbienceProperties": {
+      "name": "TileAmbienceProperties",
+      "names": [
+        "_active",
+        "_audioPath",
+        "_radius",
+        "_falloffRadius",
+        "_volume",
+        "_playWhenHidden",
+        "_activeTimeMin",
+        "_activeTimeMax",
+        "_playOnAllLevels"
+      ],
+      "types": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "infos": [
+        1,
+        null,
+        11,
+        11,
+        11,
+        1,
+        11,
+        11,
+        1
+      ],
+      "library_id": 2
+    },
+    "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]": {
+      "name": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+      "names": [
+        "_items",
+        "_size",
+        "_version"
+      ],
+      "types": [
+        6,
+        0,
+        0
+      ],
+      "infos": [
+        null,
+        8,
+        8
+      ],
+      "library_id": null
+    },
+    "System.Collections.Generic.List`1[[ArkenImage, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]": {
+      "name": "System.Collections.Generic.List`1[[ArkenImage, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+      "names": [
+        "_items",
+        "_size",
+        "_version"
+      ],
+      "types": [
+        4,
+        0,
+        0
+      ],
+      "infos": [
+        {
+          "name": "ArkenImage[]",
+          "library_id": 2
+        },
+        8,
+        8
+      ],
+      "library_id": null
+    },
+    "AmbiencePreset": {
+      "name": "AmbiencePreset",
+      "names": [
+        "_name",
+        "_pack",
+        "_creator",
+        "_tracks",
+        "_image",
+        "_defaultVolume",
+        "_links",
+        "LinkableContent+_links"
+      ],
+      "types": [
+        1,
+        1,
+        1,
+        3,
+        4,
+        0,
+        3,
+        3
+      ],
+      "infos": [
+        null,
+        null,
+        null,
+        "System.Collections.Generic.List`1[[ContentItem, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        {
+          "name": "ArkenImage",
+          "library_id": 2
+        },
+        11,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"
+      ],
+      "library_id": 2
+    },
+    "System.Collections.Generic.List`1[[ContentItem, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]": {
+      "name": "System.Collections.Generic.List`1[[ContentItem, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+      "names": [
+        "_items",
+        "_size",
+        "_version"
+      ],
+      "types": [
+        4,
+        0,
+        0
+      ],
+      "infos": [
+        {
+          "name": "ContentItem[]",
+          "library_id": 2
+        },
+        8,
+        8
+      ],
+      "library_id": null
+    },
+    "ContentItem": {
+      "name": "ContentItem",
+      "names": [
+        "_filePath",
+        "_content"
+      ],
+      "types": [
+        1,
+        2
+      ],
+      "infos": [
+        null,
+        null
+      ],
+      "library_id": 2
+    },
+    "AmbienceTrack": {
+      "name": "AmbienceTrack",
+      "names": [
+        "_name",
+        "_pack",
+        "_creator",
+        "_noOfTimes",
+        "_timing",
+        "_timeUnit",
+        "_options",
+        "_reverbOptions"
+      ],
+      "types": [
+        1,
+        1,
+        1,
+        0,
+        0,
+        4,
+        3,
+        4
+      ],
+      "infos": [
+        null,
+        null,
+        null,
+        8,
+        8,
+        {
+          "name": "UnitConversion+TimeUnit",
+          "library_id": 2
+        },
+        "System.Collections.Generic.Dictionary`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        {
+          "name": "ArkenReverbPreset",
+          "library_id": 2
+        }
+      ],
+      "library_id": 2
+    },
+    "UnitConversion+TimeUnit": {
+      "name": "UnitConversion+TimeUnit",
+      "names": [
+        "value__"
+      ],
+      "types": [
+        0
+      ],
+      "infos": [
+        8
+      ],
+      "library_id": 2
+    },
+    "System.Collections.Generic.Dictionary`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]": {
+      "name": "System.Collections.Generic.Dictionary`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+      "names": [
+        "Version",
+        "Comparer",
+        "HashSize",
+        "KeyValuePairs"
+      ],
+      "types": [
+        0,
+        3,
+        0,
+        3
+      ],
+      "infos": [
+        8,
+        "System.Collections.Generic.GenericEqualityComparer`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        8,
+        "System.Collections.Generic.KeyValuePair`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]][]"
+      ],
+      "library_id": null
+    },
+    "System.Collections.Generic.GenericEqualityComparer`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]": {
+      "name": "System.Collections.Generic.GenericEqualityComparer`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+      "names": [],
+      "types": [],
+      "infos": [],
+      "library_id": null
+    },
+    "System.Collections.Generic.KeyValuePair`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]": {
+      "name": "System.Collections.Generic.KeyValuePair`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+      "names": [
+        "key",
+        "value"
+      ],
+      "types": [
+        1,
+        0
+      ],
+      "infos": [
+        null,
+        11
+      ],
+      "library_id": null
+    },
+    "ArkenAmbiencePresetMeta": {
+      "name": "ArkenAmbiencePresetMeta",
+      "names": [
+        "_name",
+        "_pack",
+        "_creator",
+        "_genre",
+        "_subgenre",
+        "_tags",
+        "_starred",
+        "_hideFromView",
+        "_includedWorldPaths",
+        "_official",
+        "_prevPathIfDeleted",
+        "_links",
+        "ArkenBaseMeta+_name",
+        "ArkenBaseMeta+_pack",
+        "ArkenBaseMeta+_creator",
+        "ArkenBaseMeta+_genre",
+        "ArkenBaseMeta+_subgenre",
+        "ArkenBaseMeta+_tags",
+        "ArkenBaseMeta+_starred",
+        "ArkenBaseMeta+_hideFromView",
+        "ArkenBaseMeta+_includedWorldPaths",
+        "ArkenBaseMeta+_official",
+        "ArkenBaseMeta+_prevPathIfDeleted",
+        "ArkenBaseMeta+_links",
+        "LinkableContent+_links"
+      ],
+      "types": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        3,
+        0,
+        0,
+        3,
+        0,
+        1,
+        3,
+        1,
+        1,
+        1,
+        1,
+        1,
+        3,
+        0,
+        0,
+        3,
+        0,
+        1,
+        3,
+        3
+      ],
+      "infos": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        1,
+        1,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        1,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        null,
+        null,
+        null,
+        null,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        1,
+        1,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        1,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"
+      ],
+      "library_id": 2
+    },
+    "ArkenAudio": {
+      "name": "ArkenAudio",
+      "names": [
+        "_name",
+        "_pack",
+        "_creator",
+        "_album",
+        "_category",
+        "_duration",
+        "_isSong",
+        "_orderValue",
+        "_tags",
+        "_artists",
+        "_tracks"
+      ],
+      "types": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        3,
+        3,
+        3
+      ],
+      "infos": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        11,
+        1,
+        8,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        "System.Collections.Generic.List`1[[AudioTrack, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]"
+      ],
+      "library_id": 2
+    },
+    "System.Collections.Generic.List`1[[AudioTrack, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]": {
+      "name": "System.Collections.Generic.List`1[[AudioTrack, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+      "names": [
+        "_items",
+        "_size",
+        "_version"
+      ],
+      "types": [
+        4,
+        0,
+        0
+      ],
+      "infos": [
+        {
+          "name": "AudioTrack[]",
+          "library_id": 2
+        },
+        8,
+        8
+      ],
+      "library_id": null
+    },
+    "AudioTrack": {
+      "name": "AudioTrack",
+      "names": [
+        "_trackName",
+        "_originalFile",
+        "_clipRAW",
+        "_parentName"
+      ],
+      "types": [
+        1,
+        1,
+        7,
+        1
+      ],
+      "infos": [
+        null,
+        null,
+        2,
+        null
+      ],
+      "library_id": 2
+    },
+    "ArkenAudioMeta": {
+      "name": "ArkenAudioMeta",
+      "names": [
+        "_artists",
+        "_album",
+        "_category",
+        "_duration",
+        "_isSong",
+        "_orderValue",
+        "_name",
+        "_pack",
+        "_creator",
+        "_genre",
+        "_subgenre",
+        "_tags",
+        "_starred",
+        "_hideFromView",
+        "_includedWorldPaths",
+        "_official",
+        "_prevPathIfDeleted",
+        "_links",
+        "ArkenBaseMeta+_name",
+        "ArkenBaseMeta+_pack",
+        "ArkenBaseMeta+_creator",
+        "ArkenBaseMeta+_genre",
+        "ArkenBaseMeta+_subgenre",
+        "ArkenBaseMeta+_tags",
+        "ArkenBaseMeta+_starred",
+        "ArkenBaseMeta+_hideFromView",
+        "ArkenBaseMeta+_includedWorldPaths",
+        "ArkenBaseMeta+_official",
+        "ArkenBaseMeta+_prevPathIfDeleted",
+        "ArkenBaseMeta+_links",
+        "LinkableContent+_links"
+      ],
+      "types": [
+        3,
+        1,
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        3,
+        0,
+        0,
+        3,
+        0,
+        1,
+        3,
+        1,
+        1,
+        1,
+        1,
+        1,
+        3,
+        0,
+        0,
+        3,
+        0,
+        1,
+        3,
+        3
+      ],
+      "infos": [
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        null,
+        null,
+        11,
+        1,
+        8,
+        null,
+        null,
+        null,
+        null,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        1,
+        1,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        1,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        null,
+        null,
+        null,
+        null,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        1,
+        1,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        1,
+        null,
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+        "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"
+      ],
+      "library_id": 2
+    }
+  },
+  "defaults": {
+    "video_asset": {
+      "id": 1,
+      "class": "ArkenTileUpgrade",
+      "inline": false,
+      "members": {
+        "_name": "",
+        "_pack": "",
+        "_creator": "",
+        "_category": {
+          "id": 2,
+          "class": "ArkenTileUpgrade+TileCategory",
+          "inline": true,
+          "members": {
+            "value__": 2
+          }
+        },
+        "_legacyType": {
+          "id": 3,
+          "class": "ArkenTile+TileType",
+          "inline": true,
+          "members": {
+            "value__": 8
+          }
+        },
+        "_thumbnail": {
+          "id": 4,
+          "class": "ArkenImage",
+          "inline": false,
+          "members": {
+            "_packImgX": -1,
+            "_packImgY": -1,
+            "_packImgChannels": 4,
+            "_packImageRAW": {
+              "id": 5,
+              "array": [
+                0,
+                2
+              ],
+              "items": []
+            }
+          }
+        },
+        "_thumbnailScale": 1.0,
+        "_content": {
+          "id": 6,
+          "class": "ArkenVideo",
+          "inline": false,
+          "members": {
+            "_rawFile": {
+              "id": 7,
+              "array": [
+                0,
+                2
+              ],
+              "items": []
+            },
+            "_originalFile": ""
+          }
+        }
+      }
+    },
+    "video_meta": {
+      "id": 1,
+      "class": "ArkenTileMeta",
+      "inline": false,
+      "members": {
+        "_category": null,
+        "_tileType": {
+          "id": 2,
+          "class": "ArkenTile+TileType",
+          "inline": true,
+          "members": {
+            "value__": 8
+          }
+        },
+        "_tileCategory": {
+          "id": 3,
+          "class": "ArkenTileUpgrade+TileCategory",
+          "inline": true,
+          "members": {
+            "value__": 2
+          }
+        },
+        "_thumbnail": {
+          "id": 4,
+          "class": "ArkenImage",
+          "inline": false,
+          "members": {
+            "_packImgX": -1,
+            "_packImgY": -1,
+            "_packImgChannels": 4,
+            "_packImageRAW": {
+              "id": 5,
+              "array": [
+                0,
+                2
+              ],
+              "items": []
+            }
+          }
+        },
+        "_thumbnailScale": 1.0,
+        "_variations": {
+          "id": 6,
+          "class": "System.Collections.Generic.List`1[[ArkenTilePresetBase, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+          "inline": false,
+          "members": {
+            "_items": {
+              "id": 7,
+              "array": [
+                4,
+                {
+                  "name": "ArkenTilePresetBase",
+                  "library_id": 2
+                }
+              ],
+              "items": [
+                {
+                  "id": 8,
+                  "class": "ArkenTilePresetVideo",
+                  "inline": false,
+                  "members": {
+                    "_soundEnabled": false,
+                    "_videoPlaying": true,
+                    "_loop": true,
+                    "_volume": 1.0,
+                    "_speed": 1.0,
+                    "_destroyAfterOnePlay": false,
+                    "_delay": false,
+                    "_delayTime": 0.0,
+                    "_delayVariance": 0.0,
+                    "_deactivateOnDelay": false,
+                    "_name": "",
+                    "_editable": true,
+                    "_visibleInLibrary": true,
+                    "_official": false,
+                    "_imported": false,
+                    "_version": 0,
+                    "_tileName": "",
+                    "_tilePack": "",
+                    "_tileCreator": "",
+                    "_tilePath": null,
+                    "_tileType": {
+                      "id": 9,
+                      "class": "ArkenTile+TileType",
+                      "inline": true,
+                      "members": {
+                        "value__": 8
+                      }
+                    },
+                    "_category": {
+                      "id": 10,
+                      "class": "ArkenTileUpgrade+TileCategory",
+                      "inline": true,
+                      "members": {
+                        "value__": 2
+                      }
+                    },
+                    "_defaultPlacementType": {
+                      "id": 11,
+                      "class": "MapOptions+ObjectPlacementType",
+                      "inline": true,
+                      "members": {
+                        "value__": 2
+                      }
+                    },
+                    "_position": {
+                      "id": 12,
+                      "class": "SVector2",
+                      "inline": false,
+                      "members": {
+                        "x": 0.0,
+                        "y": 0.0
+                      }
+                    },
+                    "_pivot": {
+                      "id": 13,
+                      "class": "SVector2",
+                      "inline": false,
+                      "members": {
+                        "x": 0.0,
+                        "y": 0.0
+                      }
+                    },
+                    "_rotation": 0.0,
+                    "_scale": {
+                      "id": 14,
+                      "class": "SVector2",
+                      "inline": false,
+                      "members": {
+                        "x": 1.0,
+                        "y": 1.0
+                      }
+                    },
+                    "_groupID": -1,
+                    "_sortingOrder": -1,
+                    "_mapLevel": 0,
+                    "_onTerrainLayer": false,
+                    "_hidden": false,
+                    "_locked": false,
+                    "_superLocked": false,
+                    "_hue": 0.5,
+                    "_brightness": 0.5,
+                    "_saturation": 0.5,
+                    "_opacity": 1.0,
+                    "_tint": {
+                      "id": 15,
+                      "class": "SVector3",
+                      "inline": false,
+                      "members": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                      }
+                    },
+                    "_flipH": false,
+                    "_flipV": false,
+                    "_ignoreTimeOfDay": false,
+                    "_chromaKeyEnabled": false,
+                    "_chromaKeyColour": {
+                      "id": 16,
+                      "class": "SVector3",
+                      "inline": false,
+                      "members": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                      }
+                    },
+                    "_chromeKeyTolerance": 0.07500000298023224,
+                    "_lighting": {
+                      "id": 17,
+                      "class": "TileLightingProperties",
+                      "inline": false,
+                      "members": {
+                        "_hasLight": false,
+                        "_lightRadius": {
+                          "id": 18,
+                          "class": "System.Collections.Generic.List`1[[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                          "inline": false,
+                          "members": {
+                            "_items": {
+                              "id": 19,
+                              "array": [
+                                0,
+                                11
+                              ],
+                              "items": [
+                                12.799999237060547,
+                                0.0,
+                                0.0,
+                                0.0
+                              ]
+                            },
+                            "_size": 1,
+                            "_version": 1
+                          }
+                        },
+                        "_lightR": 0.3409999907016754,
+                        "_lightG": 0.3179999887943268,
+                        "_lightB": 0.07100000232458115,
+                        "_visibleThroughFog": false,
+                        "_flicker": false,
+                        "_darkness": false,
+                        "_qualitySetting": 0,
+                        "_fov": 360,
+                        "_lightUpdates": true,
+                        "_lightIntensity": 1.0,
+                        "_lightDirection": 0
+                      }
+                    },
+                    "_hasDropShadow": false,
+                    "_blocksLight": false,
+                    "_animation": {
+                      "id": 20,
+                      "class": "TileAnimationProperties",
+                      "inline": false,
+                      "members": {
+                        "_playing": true,
+                        "_currentFrame": 0,
+                        "_framesPerSecond": 30.0,
+                        "_noOfFrames": 0.0,
+                        "_triggered": false,
+                        "_startFrame": 0.0,
+                        "_endFrame": 0.0,
+                        "_destroyAfterOnePlay": false,
+                        "_delay": false,
+                        "_delayTime": 0.0,
+                        "_delayVariance": 0.0,
+                        "_deactivateOnDelay": false,
+                        "_ghostTileFrame": 0
+                      }
+                    },
+                    "_effectsNew": {
+                      "id": 21,
+                      "class": "System.Collections.Generic.List`1[[ObjectEffectBase, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+                      "inline": false,
+                      "members": {
+                        "_items": {
+                          "id": 22,
+                          "array": [
+                            4,
+                            {
+                              "name": "ObjectEffectBase",
+                              "library_id": 2
+                            }
+                          ],
+                          "items": []
+                        },
+                        "_size": 0,
+                        "_version": 0
+                      }
+                    },
+                    "_alphaFriendlyCollider": false,
+                    "_blocking": {
+                      "id": 23,
+                      "class": "TileBlockingProperties",
+                      "inline": false,
+                      "members": {
+                        "_blockingEnabled": false,
+                        "_light": false,
+                        "_vision": false,
+                        "_sound": false,
+                        "_movement": false,
+                        "_oneWay": false,
+                        "_oneWayDirection": false,
+                        "_toggleable": false,
+                        "_colliderMode": 0
+                      }
+                    },
+                    "_chromaKeyReplacementColour": {
+                      "id": 24,
+                      "class": "SVector3",
+                      "inline": false,
+                      "members": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                      }
+                    },
+                    "_chromaKeyReplacementAlpha": 0.0,
+                    "_uID": -1,
+                    "_blockedByMovementBlockers": false,
+                    "ArkenTilePresetBase+_name": "",
+                    "ArkenTilePresetBase+_baseName": null,
+                    "ArkenTilePresetBase+_editable": true,
+                    "ArkenTilePresetBase+_visibleInLibrary": true,
+                    "ArkenTilePresetBase+_official": false,
+                    "ArkenTilePresetBase+_imported": false,
+                    "ArkenTilePresetBase+_version": 0,
+                    "ArkenTilePresetBase+_tileName": "",
+                    "ArkenTilePresetBase+_tilePack": "",
+                    "ArkenTilePresetBase+_tileCreator": "",
+                    "ArkenTilePresetBase+_tilePath": null,
+                    "ArkenTilePresetBase+_tileType": {
+                      "id": 25,
+                      "class": "ArkenTile+TileType",
+                      "inline": true,
+                      "members": {
+                        "value__": 8
+                      }
+                    },
+                    "ArkenTilePresetBase+_category": {
+                      "id": 26,
+                      "class": "ArkenTileUpgrade+TileCategory",
+                      "inline": true,
+                      "members": {
+                        "value__": 2
+                      }
+                    },
+                    "ArkenTilePresetBase+_defaultPlacementType": {
+                      "id": 27,
+                      "class": "MapOptions+ObjectPlacementType",
+                      "inline": true,
+                      "members": {
+                        "value__": 2
+                      }
+                    },
+                    "ArkenTilePresetBase+_position": {
+                      "use": 12
+                    },
+                    "ArkenTilePresetBase+_pivot": {
+                      "use": 13
+                    },
+                    "ArkenTilePresetBase+_rotation": 0.0,
+                    "ArkenTilePresetBase+_scale": {
+                      "use": 14
+                    },
+                    "ArkenTilePresetBase+_groupID": -1,
+                    "ArkenTilePresetBase+_sortingOrder": -1,
+                    "ArkenTilePresetBase+_mapLevel": 0,
+                    "ArkenTilePresetBase+_onTerrainLayer": false,
+                    "ArkenTilePresetBase+_hidden": false,
+                    "ArkenTilePresetBase+_locked": false,
+                    "ArkenTilePresetBase+_superLocked": false,
+                    "ArkenTilePresetBase+_hue": 0.5,
+                    "ArkenTilePresetBase+_brightness": 0.5,
+                    "ArkenTilePresetBase+_saturation": 0.5,
+                    "ArkenTilePresetBase+_opacity": 1.0,
+                    "ArkenTilePresetBase+_tint": {
+                      "use": 15
+                    },
+                    "ArkenTilePresetBase+_flipH": false,
+                    "ArkenTilePresetBase+_flipV": false,
+                    "ArkenTilePresetBase+_ignoreTimeOfDay": false,
+                    "ArkenTilePresetBase+_chromaKeyEnabled": false,
+                    "ArkenTilePresetBase+_chromaKeyColour": {
+                      "use": 16
+                    },
+                    "ArkenTilePresetBase+_chromeKeyTolerance": 0.07500000298023224,
+                    "ArkenTilePresetBase+_lighting": {
+                      "use": 17
+                    },
+                    "ArkenTilePresetBase+_hasDropShadow": false,
+                    "ArkenTilePresetBase+_blocksLight": false,
+                    "ArkenTilePresetBase+_animation": {
+                      "use": 20
+                    },
+                    "ArkenTilePresetBase+_effects": {
+                      "id": 28,
+                      "class": "System.Collections.Generic.List`1[[IObjectEffect, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+                      "inline": false,
+                      "members": {
+                        "_items": {
+                          "id": 29,
+                          "array": [
+                            4,
+                            {
+                              "name": "IObjectEffect",
+                              "library_id": 2
+                            }
+                          ],
+                          "items": []
+                        },
+                        "_size": 0,
+                        "_version": 0
+                      }
+                    },
+                    "ArkenTilePresetBase+_effectsNew": {
+                      "use": 21
+                    },
+                    "ArkenTilePresetBase+_alphaFriendlyCollider": false,
+                    "ArkenTilePresetBase+_blocking": {
+                      "use": 23
+                    },
+                    "ArkenTilePresetBase+_chromaKeyReplacementColour": {
+                      "use": 24
+                    },
+                    "ArkenTilePresetBase+_chromaKeyReplacementAlpha": 0.0,
+                    "ArkenTilePresetBase+_uID": -1,
+                    "ArkenTilePresetBase+_blockedByMovementBlockers": false,
+                    "ArkenTilePresetBase+_dropShadow": {
+                      "id": 30,
+                      "class": "TileDropShadowProperties",
+                      "inline": false,
+                      "members": {
+                        "_shadowActive": true,
+                        "_shadowStrengthUsesMapDefault": true,
+                        "_shadowStrength": 1.0,
+                        "_shadowSizeUsesMapDefault": true,
+                        "_shadowSize": 1.0499999523162842,
+                        "_shadowDistanceUsesMapDefault": true,
+                        "_shadowDistance": 0.07500000298023224,
+                        "_shadowDirectionUsesMapDefault": true,
+                        "_shadowDirection": 1,
+                        "_followsSunUsesMapDefault": true,
+                        "_dropShadowsFollowSun": false
+                      }
+                    },
+                    "ArkenTilePresetBase+_dropShadowLegacyUpgrade": true,
+                    "ArkenTilePresetBase+_ambience": {
+                      "id": 31,
+                      "class": "TileAmbienceProperties",
+                      "inline": false,
+                      "members": {
+                        "_active": false,
+                        "_audioPath": null,
+                        "_radius": 12.799999237060547,
+                        "_falloffRadius": 25.599998474121094,
+                        "_volume": 1.0,
+                        "_playWhenHidden": true,
+                        "_activeTimeMin": 0.0,
+                        "_activeTimeMax": 1.0,
+                        "_playOnAllLevels": false
+                      }
+                    }
+                  }
+                },
+                null,
+                null,
+                null
+              ]
+            },
+            "_size": 1,
+            "_version": 1
+          }
+        },
+        "_name": "",
+        "_pack": "",
+        "_creator": "",
+        "_genre": "",
+        "_subgenre": "",
+        "_tags": {
+          "id": 32,
+          "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+          "inline": false,
+          "members": {
+            "_items": {
+              "id": 33,
+              "array": [
+                1,
+                null
+              ],
+              "items": []
+            },
+            "_size": 0,
+            "_version": 0
+          }
+        },
+        "_starred": false,
+        "_hideFromView": false,
+        "_includedWorldPaths": null,
+        "_official": false,
+        "_prevPathIfDeleted": null,
+        "_links": {
+          "id": 34,
+          "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+          "inline": false,
+          "members": {
+            "_items": {
+              "use": 33
+            },
+            "_size": 0,
+            "_version": 0
+          }
+        },
+        "ArkenBaseMeta+_name": "",
+        "ArkenBaseMeta+_pack": "",
+        "ArkenBaseMeta+_creator": "",
+        "ArkenBaseMeta+_genre": "",
+        "ArkenBaseMeta+_subgenre": "",
+        "ArkenBaseMeta+_tags": {
+          "use": 32
+        },
+        "ArkenBaseMeta+_starred": false,
+        "ArkenBaseMeta+_hideFromView": false,
+        "ArkenBaseMeta+_includedWorldPaths": null,
+        "ArkenBaseMeta+_official": false,
+        "ArkenBaseMeta+_prevPathIfDeleted": null,
+        "ArkenBaseMeta+_links": {
+          "use": 34
+        },
+        "LinkableContent+_links": {
+          "use": 34
+        }
+      }
+    },
+    "video_preset": {
+      "id": 1,
+      "class": "ArkenTilePresetVideo",
+      "inline": false,
+      "members": {
+        "_soundEnabled": false,
+        "_videoPlaying": true,
+        "_loop": true,
+        "_volume": 1.0,
+        "_speed": 1.0,
+        "_destroyAfterOnePlay": false,
+        "_delay": false,
+        "_delayTime": 0.0,
+        "_delayVariance": 0.0,
+        "_deactivateOnDelay": false,
+        "_name": "",
+        "_editable": true,
+        "_visibleInLibrary": true,
+        "_official": false,
+        "_imported": false,
+        "_version": 0,
+        "_tileName": "",
+        "_tilePack": "",
+        "_tileCreator": "",
+        "_tilePath": null,
+        "_tileType": {
+          "id": 2,
+          "class": "ArkenTile+TileType",
+          "inline": true,
+          "members": {
+            "value__": 8
+          }
+        },
+        "_category": {
+          "id": 3,
+          "class": "ArkenTileUpgrade+TileCategory",
+          "inline": true,
+          "members": {
+            "value__": 2
+          }
+        },
+        "_defaultPlacementType": {
+          "id": 4,
+          "class": "MapOptions+ObjectPlacementType",
+          "inline": true,
+          "members": {
+            "value__": 2
+          }
+        },
+        "_position": {
+          "id": 5,
+          "class": "SVector2",
+          "inline": false,
+          "members": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "_pivot": {
+          "id": 6,
+          "class": "SVector2",
+          "inline": false,
+          "members": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "_rotation": 0.0,
+        "_scale": {
+          "id": 7,
+          "class": "SVector2",
+          "inline": false,
+          "members": {
+            "x": 1.0,
+            "y": 1.0
+          }
+        },
+        "_groupID": -1,
+        "_sortingOrder": -1,
+        "_mapLevel": 0,
+        "_onTerrainLayer": false,
+        "_hidden": false,
+        "_locked": false,
+        "_superLocked": false,
+        "_hue": 0.5,
+        "_brightness": 0.5,
+        "_saturation": 0.5,
+        "_opacity": 1.0,
+        "_tint": {
+          "id": 8,
+          "class": "SVector3",
+          "inline": false,
+          "members": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          }
+        },
+        "_flipH": false,
+        "_flipV": false,
+        "_ignoreTimeOfDay": false,
+        "_chromaKeyEnabled": false,
+        "_chromaKeyColour": {
+          "id": 9,
+          "class": "SVector3",
+          "inline": false,
+          "members": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          }
+        },
+        "_chromeKeyTolerance": 0.07500000298023224,
+        "_lighting": {
+          "id": 10,
+          "class": "TileLightingProperties",
+          "inline": false,
+          "members": {
+            "_hasLight": false,
+            "_lightRadius": {
+              "id": 11,
+              "class": "System.Collections.Generic.List`1[[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+              "inline": false,
+              "members": {
+                "_items": {
+                  "id": 12,
+                  "array": [
+                    0,
+                    11
+                  ],
+                  "items": [
+                    12.799999237060547,
+                    0.0,
+                    0.0,
+                    0.0
+                  ]
+                },
+                "_size": 1,
+                "_version": 1
+              }
+            },
+            "_lightR": 0.3409999907016754,
+            "_lightG": 0.3179999887943268,
+            "_lightB": 0.07100000232458115,
+            "_visibleThroughFog": false,
+            "_flicker": false,
+            "_darkness": false,
+            "_qualitySetting": 0,
+            "_fov": 360,
+            "_lightUpdates": true,
+            "_lightIntensity": 1.0,
+            "_lightDirection": 0
+          }
+        },
+        "_hasDropShadow": false,
+        "_blocksLight": false,
+        "_animation": {
+          "id": 13,
+          "class": "TileAnimationProperties",
+          "inline": false,
+          "members": {
+            "_playing": true,
+            "_currentFrame": 0,
+            "_framesPerSecond": 30.0,
+            "_noOfFrames": 0.0,
+            "_triggered": false,
+            "_startFrame": 0.0,
+            "_endFrame": 0.0,
+            "_destroyAfterOnePlay": false,
+            "_delay": false,
+            "_delayTime": 0.0,
+            "_delayVariance": 0.0,
+            "_deactivateOnDelay": false,
+            "_ghostTileFrame": 0
+          }
+        },
+        "_effectsNew": {
+          "id": 14,
+          "class": "System.Collections.Generic.List`1[[ObjectEffectBase, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+          "inline": false,
+          "members": {
+            "_items": {
+              "id": 15,
+              "array": [
+                4,
+                {
+                  "name": "ObjectEffectBase",
+                  "library_id": 2
+                }
+              ],
+              "items": []
+            },
+            "_size": 0,
+            "_version": 0
+          }
+        },
+        "_alphaFriendlyCollider": false,
+        "_blocking": {
+          "id": 16,
+          "class": "TileBlockingProperties",
+          "inline": false,
+          "members": {
+            "_blockingEnabled": false,
+            "_light": false,
+            "_vision": false,
+            "_sound": false,
+            "_movement": false,
+            "_oneWay": false,
+            "_oneWayDirection": false,
+            "_toggleable": false,
+            "_colliderMode": 0
+          }
+        },
+        "_chromaKeyReplacementColour": {
+          "id": 17,
+          "class": "SVector3",
+          "inline": false,
+          "members": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          }
+        },
+        "_chromaKeyReplacementAlpha": 0.0,
+        "_uID": -1,
+        "_blockedByMovementBlockers": false,
+        "ArkenTilePresetBase+_name": "",
+        "ArkenTilePresetBase+_baseName": null,
+        "ArkenTilePresetBase+_editable": true,
+        "ArkenTilePresetBase+_visibleInLibrary": true,
+        "ArkenTilePresetBase+_official": false,
+        "ArkenTilePresetBase+_imported": false,
+        "ArkenTilePresetBase+_version": 0,
+        "ArkenTilePresetBase+_tileName": "",
+        "ArkenTilePresetBase+_tilePack": "",
+        "ArkenTilePresetBase+_tileCreator": "",
+        "ArkenTilePresetBase+_tilePath": null,
+        "ArkenTilePresetBase+_tileType": {
+          "id": 18,
+          "class": "ArkenTile+TileType",
+          "inline": true,
+          "members": {
+            "value__": 8
+          }
+        },
+        "ArkenTilePresetBase+_category": {
+          "id": 19,
+          "class": "ArkenTileUpgrade+TileCategory",
+          "inline": true,
+          "members": {
+            "value__": 2
+          }
+        },
+        "ArkenTilePresetBase+_defaultPlacementType": {
+          "id": 20,
+          "class": "MapOptions+ObjectPlacementType",
+          "inline": true,
+          "members": {
+            "value__": 2
+          }
+        },
+        "ArkenTilePresetBase+_position": {
+          "use": 5
+        },
+        "ArkenTilePresetBase+_pivot": {
+          "use": 6
+        },
+        "ArkenTilePresetBase+_rotation": 0.0,
+        "ArkenTilePresetBase+_scale": {
+          "use": 7
+        },
+        "ArkenTilePresetBase+_groupID": -1,
+        "ArkenTilePresetBase+_sortingOrder": -1,
+        "ArkenTilePresetBase+_mapLevel": 0,
+        "ArkenTilePresetBase+_onTerrainLayer": false,
+        "ArkenTilePresetBase+_hidden": false,
+        "ArkenTilePresetBase+_locked": false,
+        "ArkenTilePresetBase+_superLocked": false,
+        "ArkenTilePresetBase+_hue": 0.5,
+        "ArkenTilePresetBase+_brightness": 0.5,
+        "ArkenTilePresetBase+_saturation": 0.5,
+        "ArkenTilePresetBase+_opacity": 1.0,
+        "ArkenTilePresetBase+_tint": {
+          "use": 8
+        },
+        "ArkenTilePresetBase+_flipH": false,
+        "ArkenTilePresetBase+_flipV": false,
+        "ArkenTilePresetBase+_ignoreTimeOfDay": false,
+        "ArkenTilePresetBase+_chromaKeyEnabled": false,
+        "ArkenTilePresetBase+_chromaKeyColour": {
+          "use": 9
+        },
+        "ArkenTilePresetBase+_chromeKeyTolerance": 0.07500000298023224,
+        "ArkenTilePresetBase+_lighting": {
+          "use": 10
+        },
+        "ArkenTilePresetBase+_hasDropShadow": false,
+        "ArkenTilePresetBase+_blocksLight": false,
+        "ArkenTilePresetBase+_animation": {
+          "use": 13
+        },
+        "ArkenTilePresetBase+_effects": {
+          "id": 21,
+          "class": "System.Collections.Generic.List`1[[IObjectEffect, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+          "inline": false,
+          "members": {
+            "_items": {
+              "id": 22,
+              "array": [
+                4,
+                {
+                  "name": "IObjectEffect",
+                  "library_id": 2
+                }
+              ],
+              "items": []
+            },
+            "_size": 0,
+            "_version": 0
+          }
+        },
+        "ArkenTilePresetBase+_effectsNew": {
+          "use": 14
+        },
+        "ArkenTilePresetBase+_alphaFriendlyCollider": false,
+        "ArkenTilePresetBase+_blocking": {
+          "use": 16
+        },
+        "ArkenTilePresetBase+_chromaKeyReplacementColour": {
+          "use": 17
+        },
+        "ArkenTilePresetBase+_chromaKeyReplacementAlpha": 0.0,
+        "ArkenTilePresetBase+_uID": -1,
+        "ArkenTilePresetBase+_blockedByMovementBlockers": false,
+        "ArkenTilePresetBase+_dropShadow": {
+          "id": 23,
+          "class": "TileDropShadowProperties",
+          "inline": false,
+          "members": {
+            "_shadowActive": true,
+            "_shadowStrengthUsesMapDefault": true,
+            "_shadowStrength": 1.0,
+            "_shadowSizeUsesMapDefault": true,
+            "_shadowSize": 1.0499999523162842,
+            "_shadowDistanceUsesMapDefault": true,
+            "_shadowDistance": 0.07500000298023224,
+            "_shadowDirectionUsesMapDefault": true,
+            "_shadowDirection": 1,
+            "_followsSunUsesMapDefault": true,
+            "_dropShadowsFollowSun": false
+          }
+        },
+        "ArkenTilePresetBase+_dropShadowLegacyUpgrade": true,
+        "ArkenTilePresetBase+_ambience": {
+          "id": 24,
+          "class": "TileAmbienceProperties",
+          "inline": false,
+          "members": {
+            "_active": false,
+            "_audioPath": null,
+            "_radius": 12.799999237060547,
+            "_falloffRadius": 25.599998474121094,
+            "_volume": 1.0,
+            "_playWhenHidden": true,
+            "_activeTimeMin": 0.0,
+            "_activeTimeMax": 1.0,
+            "_playOnAllLevels": false
+          }
+        }
+      }
+    },
+    "animated_asset": {
+      "id": 1,
+      "class": "ArkenTileUpgrade",
+      "inline": false,
+      "members": {
+        "_name": "",
+        "_pack": "",
+        "_creator": "",
+        "_category": {
+          "id": 2,
+          "class": "ArkenTileUpgrade+TileCategory",
+          "inline": true,
+          "members": {
+            "value__": 1
+          }
+        },
+        "_legacyType": {
+          "id": 3,
+          "class": "ArkenTile+TileType",
+          "inline": true,
+          "members": {
+            "value__": 8
+          }
+        },
+        "_thumbnail": {
+          "id": 4,
+          "class": "ArkenImage",
+          "inline": false,
+          "members": {
+            "_packImgX": -1,
+            "_packImgY": -1,
+            "_packImgChannels": 4,
+            "_packImageRAW": {
+              "id": 5,
+              "array": [
+                0,
+                2
+              ],
+              "items": []
+            }
+          }
+        },
+        "_thumbnailScale": 1.0,
+        "_content": {
+          "id": 6,
+          "class": "System.Collections.Generic.List`1[[ArkenImage, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+          "inline": false,
+          "members": {
+            "_items": {
+              "id": 7,
+              "array": [
+                4,
+                {
+                  "name": "ArkenImage",
+                  "library_id": 2
+                }
+              ],
+              "items": [
+                {
+                  "id": 8,
+                  "class": "ArkenImage",
+                  "inline": false,
+                  "members": {
+                    "_packImgX": -1,
+                    "_packImgY": -1,
+                    "_packImgChannels": 4,
+                    "_packImageRAW": {
+                      "use": 5
+                    }
+                  }
+                },
+                {
+                  "id": 9,
+                  "class": "ArkenImage",
+                  "inline": false,
+                  "members": {
+                    "_packImgX": -1,
+                    "_packImgY": -1,
+                    "_packImgChannels": 4,
+                    "_packImageRAW": {
+                      "id": 10,
+                      "array": [
+                        0,
+                        2
+                      ],
+                      "items": []
+                    }
+                  }
+                },
+                {
+                  "id": 11,
+                  "class": "ArkenImage",
+                  "inline": false,
+                  "members": {
+                    "_packImgX": -1,
+                    "_packImgY": -1,
+                    "_packImgChannels": 4,
+                    "_packImageRAW": {
+                      "id": 12,
+                      "array": [
+                        0,
+                        2
+                      ],
+                      "items": []
+                    }
+                  }
+                },
+                null
+              ]
+            },
+            "_size": 3,
+            "_version": 3
+          }
+        }
+      }
+    },
+    "animated_meta": {
+      "id": 1,
+      "class": "ArkenTileMeta",
+      "inline": false,
+      "members": {
+        "_category": null,
+        "_tileType": {
+          "id": 2,
+          "class": "ArkenTile+TileType",
+          "inline": true,
+          "members": {
+            "value__": 8
+          }
+        },
+        "_tileCategory": {
+          "id": 3,
+          "class": "ArkenTileUpgrade+TileCategory",
+          "inline": true,
+          "members": {
+            "value__": 1
+          }
+        },
+        "_thumbnail": {
+          "id": 4,
+          "class": "ArkenImage",
+          "inline": false,
+          "members": {
+            "_packImgX": -1,
+            "_packImgY": -1,
+            "_packImgChannels": 4,
+            "_packImageRAW": {
+              "id": 5,
+              "array": [
+                0,
+                2
+              ],
+              "items": []
+            }
+          }
+        },
+        "_thumbnailScale": 1.0,
+        "_variations": {
+          "id": 6,
+          "class": "System.Collections.Generic.List`1[[ArkenTilePresetBase, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+          "inline": false,
+          "members": {
+            "_items": {
+              "id": 7,
+              "array": [
+                4,
+                {
+                  "name": "ArkenTilePresetBase",
+                  "library_id": 2
+                }
+              ],
+              "items": []
+            },
+            "_size": 0,
+            "_version": 0
+          }
+        },
+        "_name": "",
+        "_pack": "",
+        "_creator": "",
+        "_genre": "",
+        "_subgenre": "",
+        "_tags": {
+          "id": 8,
+          "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+          "inline": false,
+          "members": {
+            "_items": {
+              "id": 9,
+              "array": [
+                1,
+                null
+              ],
+              "items": []
+            },
+            "_size": 0,
+            "_version": 0
+          }
+        },
+        "_starred": false,
+        "_hideFromView": false,
+        "_includedWorldPaths": null,
+        "_official": false,
+        "_prevPathIfDeleted": null,
+        "_links": {
+          "id": 10,
+          "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+          "inline": false,
+          "members": {
+            "_items": {
+              "id": 11,
+              "array": [
+                1,
+                null
+              ],
+              "items": [
+                "",
+                null,
+                null,
+                null
+              ]
+            },
+            "_size": 1,
+            "_version": 1
+          }
+        },
+        "ArkenBaseMeta+_name": "",
+        "ArkenBaseMeta+_pack": "",
+        "ArkenBaseMeta+_creator": "",
+        "ArkenBaseMeta+_genre": "",
+        "ArkenBaseMeta+_subgenre": "",
+        "ArkenBaseMeta+_tags": {
+          "use": 8
+        },
+        "ArkenBaseMeta+_starred": false,
+        "ArkenBaseMeta+_hideFromView": false,
+        "ArkenBaseMeta+_includedWorldPaths": null,
+        "ArkenBaseMeta+_official": false,
+        "ArkenBaseMeta+_prevPathIfDeleted": null,
+        "ArkenBaseMeta+_links": {
+          "use": 10
+        },
+        "LinkableContent+_links": {
+          "use": 10
+        }
+      }
+    },
+    "ambience": {
+      "id": 1,
+      "class": "AmbiencePreset",
+      "inline": false,
+      "members": {
+        "_name": "",
+        "_pack": "",
+        "_creator": "",
+        "_tracks": {
+          "id": 2,
+          "class": "System.Collections.Generic.List`1[[ContentItem, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+          "inline": false,
+          "members": {
+            "_items": {
+              "id": 3,
+              "array": [
+                4,
+                {
+                  "name": "ContentItem",
+                  "library_id": 2
+                }
+              ],
+              "items": [
+                {
+                  "id": 4,
+                  "class": "ContentItem",
+                  "inline": false,
+                  "members": {
+                    "_filePath": "",
+                    "_content": {
+                      "id": 5,
+                      "class": "AmbienceTrack",
+                      "inline": false,
+                      "members": {
+                        "_name": "",
+                        "_pack": "",
+                        "_creator": "",
+                        "_noOfTimes": 1,
+                        "_timing": 0,
+                        "_timeUnit": {
+                          "id": 6,
+                          "class": "UnitConversion+TimeUnit",
+                          "inline": true,
+                          "members": {
+                            "value__": 0
+                          }
+                        },
+                        "_options": {
+                          "id": 7,
+                          "class": "System.Collections.Generic.Dictionary`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                          "inline": false,
+                          "members": {
+                            "Version": 1,
+                            "Comparer": {
+                              "id": 8,
+                              "class": "System.Collections.Generic.GenericEqualityComparer`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                              "inline": false,
+                              "members": {}
+                            },
+                            "HashSize": 3,
+                            "KeyValuePairs": {
+                              "id": 9,
+                              "array": [
+                                3,
+                                "System.Collections.Generic.KeyValuePair`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"
+                              ],
+                              "items": [
+                                {
+                                  "id": 10,
+                                  "class": "System.Collections.Generic.KeyValuePair`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+                                  "inline": true,
+                                  "members": {
+                                    "key": "Volume",
+                                    "value": 0.5
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        },
+                        "_reverbOptions": null
+                      }
+                    }
+                  }
+                },
+                null,
+                null,
+                null
+              ]
+            },
+            "_size": 1,
+            "_version": 1
+          }
+        },
+        "_image": null,
+        "_defaultVolume": 0.5,
+        "_links": {
+          "id": 11,
+          "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+          "inline": false,
+          "members": {
+            "_items": {
+              "id": 12,
+              "array": [
+                1,
+                null
+              ],
+              "items": []
+            },
+            "_size": 0,
+            "_version": 0
+          }
+        },
+        "LinkableContent+_links": {
+          "use": 11
+        }
+      }
+    },
+    "ambience_meta": {
+      "id": 1,
+      "class": "ArkenAmbiencePresetMeta",
+      "inline": false,
+      "members": {
+        "_name": "",
+        "_pack": "",
+        "_creator": "",
+        "_genre": "",
+        "_subgenre": "",
+        "_tags": {
+          "id": 2,
+          "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+          "inline": false,
+          "members": {
+            "_items": {
+              "id": 3,
+              "array": [
+                1,
+                null
+              ],
+              "items": []
+            },
+            "_size": 0,
+            "_version": 0
+          }
+        },
+        "_starred": false,
+        "_hideFromView": false,
+        "_includedWorldPaths": null,
+        "_official": false,
+        "_prevPathIfDeleted": null,
+        "_links": {
+          "id": 4,
+          "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+          "inline": false,
+          "members": {
+            "_items": {
+              "use": 3
+            },
+            "_size": 0,
+            "_version": 0
+          }
+        },
+        "ArkenBaseMeta+_name": "",
+        "ArkenBaseMeta+_pack": "",
+        "ArkenBaseMeta+_creator": "",
+        "ArkenBaseMeta+_genre": "",
+        "ArkenBaseMeta+_subgenre": "",
+        "ArkenBaseMeta+_tags": {
+          "use": 2
+        },
+        "ArkenBaseMeta+_starred": false,
+        "ArkenBaseMeta+_hideFromView": false,
+        "ArkenBaseMeta+_includedWorldPaths": null,
+        "ArkenBaseMeta+_official": false,
+        "ArkenBaseMeta+_prevPathIfDeleted": null,
+        "ArkenBaseMeta+_links": {
+          "use": 4
+        },
+        "LinkableContent+_links": {
+          "use": 4
+        }
+      }
+    },
+    "sfx": {
+      "id": 1,
+      "class": "ArkenAudio",
+      "inline": false,
+      "members": {
+        "_name": "",
+        "_pack": "",
+        "_creator": "",
+        "_album": null,
+        "_category": null,
+        "_duration": 2.0,
+        "_isSong": false,
+        "_orderValue": 0,
+        "_tags": {
+          "id": 2,
+          "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+          "inline": false,
+          "members": {
+            "_items": {
+              "id": 3,
+              "array": [
+                1,
+                null
+              ],
+              "items": []
+            },
+            "_size": 0,
+            "_version": 0
+          }
+        },
+        "_artists": {
+          "id": 4,
+          "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+          "inline": false,
+          "members": {
+            "_items": {
+              "use": 3
+            },
+            "_size": 0,
+            "_version": 0
+          }
+        },
+        "_tracks": {
+          "id": 5,
+          "class": "System.Collections.Generic.List`1[[AudioTrack, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+          "inline": false,
+          "members": {
+            "_items": {
+              "id": 6,
+              "array": [
+                4,
+                {
+                  "name": "AudioTrack",
+                  "library_id": 2
+                }
+              ],
+              "items": [
+                {
+                  "id": 7,
+                  "class": "AudioTrack",
+                  "inline": false,
+                  "members": {
+                    "_trackName": "Master",
+                    "_originalFile": "",
+                    "_clipRAW": {
+                      "id": 8,
+                      "array": [
+                        0,
+                        2
+                      ],
+                      "items": []
+                    },
+                    "_parentName": ""
+                  }
+                },
+                null,
+                null,
+                null
+              ]
+            },
+            "_size": 1,
+            "_version": 1
+          }
+        }
+      }
+    },
+    "sfx_meta": {
+      "id": 1,
+      "class": "ArkenAudioMeta",
+      "inline": false,
+      "members": {
+        "_artists": {
+          "id": 2,
+          "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+          "inline": false,
+          "members": {
+            "_items": {
+              "id": 3,
+              "array": [
+                1,
+                null
+              ],
+              "items": []
+            },
+            "_size": 0,
+            "_version": 0
+          }
+        },
+        "_album": null,
+        "_category": null,
+        "_duration": 2.0,
+        "_isSong": false,
+        "_orderValue": 0,
+        "_name": "",
+        "_pack": "",
+        "_creator": "",
+        "_genre": "",
+        "_subgenre": "",
+        "_tags": {
+          "id": 4,
+          "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+          "inline": false,
+          "members": {
+            "_items": {
+              "use": 3
+            },
+            "_size": 0,
+            "_version": 0
+          }
+        },
+        "_starred": false,
+        "_hideFromView": false,
+        "_includedWorldPaths": null,
+        "_official": false,
+        "_prevPathIfDeleted": null,
+        "_links": {
+          "id": 5,
+          "class": "System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+          "inline": false,
+          "members": {
+            "_items": {
+              "use": 3
+            },
+            "_size": 0,
+            "_version": 0
+          }
+        },
+        "ArkenBaseMeta+_name": "",
+        "ArkenBaseMeta+_pack": "",
+        "ArkenBaseMeta+_creator": "",
+        "ArkenBaseMeta+_genre": "",
+        "ArkenBaseMeta+_subgenre": "",
+        "ArkenBaseMeta+_tags": {
+          "use": 4
+        },
+        "ArkenBaseMeta+_starred": false,
+        "ArkenBaseMeta+_hideFromView": false,
+        "ArkenBaseMeta+_includedWorldPaths": null,
+        "ArkenBaseMeta+_official": false,
+        "ArkenBaseMeta+_prevPathIfDeleted": null,
+        "ArkenBaseMeta+_links": {
+          "use": 5
+        },
+        "LinkableContent+_links": {
+          "use": 5
+        }
+      }
+    }
+  }
+}

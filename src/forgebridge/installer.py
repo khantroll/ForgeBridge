@@ -124,7 +124,7 @@ def install(packages, myassets, backup_root):
     for package, pinned in zip(packages, audit['inputs']):
         if fingerprint(package) != pinned['sha256']: raise ValueError('Package changed after review')
         merge_native(native, {n: d for n, d in read_package(package).items() if n.startswith('MyAssets/')})
-    if not native or any(Path(name).suffix not in {'.rwmap', '.rwmeta', '.rwnote', '.rwfile', '.rwpl'} for name in native):
+    if not native or any(Path(name).suffix not in {'.rwmap', '.rwmeta', '.rwnote', '.rwfile', '.rwpl', '.rwamb'} for name in native):
         raise ValueError('Install requires a native scene package, not UVTT/source files or unknown asset types')
     lock = root.parent / '.forgebridge-install.lock'
     token = uuid.uuid4().hex

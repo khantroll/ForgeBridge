@@ -180,10 +180,10 @@ def campaign_files(ir, package, *, notes_folder, spell_root=None):
                     '_damageVulnerabilitiesText':txt(a['vulnerabilities'],'Damage Vulnerabilities'), '_damageResistancesText':txt(a['resistances'],'Damage Resistances'),
                     '_damageImmunitiesText':txt(a['immunities'],'Damage Immunities'),'_conditionImmunitiesText':txt(a['conditions'],'Condition Immunities'),
                     '_sensesText':txt(a['senses'],'Senses' if a['senses'] else None),'_languagesText':txt(a['languages'],'Languages' if a['languages'] else None),
-                    '_challengeText':txt(a['challenge'],'Challenge'),'_proficiencyBonusText':txt(a['proficiency'],'Proficiency Bonus' if a['proficiency'] else None)}
+                    '_challengeText':txt(a['challenge'],'Challenge' if a.get('challenge_has_cr',bool(a['challenge'])) else None),'_proficiencyBonusText':txt(a['proficiency'],'Proficiency Bonus' if a['proficiency'] else None)}
             values.update({'_'+key+'ValNew':txt(value) for key,value in a['abilities'].items()});m.update(values)
             for key,value in [('_savingThrowsFieldActive',a['saves']),('_damageVulnerabilitiesFieldActive',a['vulnerabilities']),('_damageResistanceFieldActive',a['resistances']),('_damageImmunitiesFieldActive',a['immunities']),('_conditionImmunitiesFieldActive',a['conditions'])]:m[key]=bool(value)
-            for field,value in [('skills',a['skills']),('senses',a['senses']),('languages',a['languages']),('proficiencyBonus',a['proficiency'])]:
+            for field,value in [('skills',a['skills']),('senses',a['senses']),('languages',a['languages']),('proficiencyBonus',a['proficiency']),('challenge',a['challenge'])]:
                 flag='_'+field+'FieldActive'
                 if flag in m: m[flag]=bool(value)
             tracked=m['_trackedHitPoints'].members
@@ -199,6 +199,18 @@ def campaign_files(ir, package, *, notes_folder, spell_root=None):
                     seq.members['_items'].items.append(builder.rich(runs))
                 seq.members.update(_size=len(entries),_version=len(entries))
             builder.style_block(block,'Character')
+            # The captured block lacks flags for these rows. A zero-width glyph
+            # at explicit font size zero requests collapsed text metrics instead
+            # of an empty string inheriting the default font size.
+            # Native layout acceptance remains a separate runtime check.
+            collapsed_fields=[]
+            for key in ('_typeText','_skillsText','_sensesText','_languagesText','_proficiencyBonusText','_challengeText'):
+                old=m[key]
+                if old.members['_characters'].members['_size']==0:
+                    collapsed=builder.rich([('\u200b',0,None)],size=0)
+                    collapsed.members['_font']=old.members['_font'];m[key]=collapsed;collapsed_fields.append(key)
+
+            if collapsed_fields:loss('approximate','actor-empty-layout','Empty rows without native active flags use zero-size zero-width text; native gap collapse awaits Toolkit check',source_id=doc['id'],fields=collapsed_fields)
             fields=[block]
             image=portrait(a['portrait'])
             if image:fields.insert(0,builder.media_field('Portrait',image,2))
