@@ -127,7 +127,7 @@ runtime scopes; input fingerprints are not runtime validation.
 
 ## Real-scene demonstration
 
-`validation/2026-10-16/prepare_real_profiles.py` snapshots the already calibrated
+`docs/archive/validation/2026-10-16/prepare_real_profiles.py` snapshots the already calibrated
 Manor and Crypt native exports and captures separate profiles. The pinned
 `profile-runtime-private/{manor,crypt}.scene-profile.json` files record the exact
 inputs used; source media and native ZIP exports remain local assets. Missing or
@@ -140,6 +140,6 @@ validation operation, never part of a production build/preflight.
 The pair's file audit passes (Manor one token, Crypt nine and one explicit
 rejection). Representative runtime token/link switching and restart checks pass on October18.
 Actual player visibility/restart samples passed October 31; see
-[runtime evidence](../validation/2026-10-31-PROFILE-PLAYER.md). Fog was disabled
+[runtime evidence](archive/validation/2026-10-31-PROFILE-PLAYER.md). Fog was disabled
 for those observations; bounded fog is still deferred. The validation log separates
 runtime observations from file-only provenance and earlier player evidence.

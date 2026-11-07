@@ -174,7 +174,7 @@ accepted native extension and participates in dependency closure. No real
 MyAssets installation was part of the original 2026-11-02 file-level check.
 
 The 2026-11-03 corrected check was explicitly installed under new receipts;
-see [the recheck evidence](../validation/2026-11-03-CAMPAIGN-RECHECK.md).
+see [the recheck evidence](archive/validation/2026-11-03-CAMPAIGN-RECHECK.md).
 Generated campaign notes now have an explicit `Campaign-v2-` filename prefix,
 allowing edited v1 notes retained by `--keep-changed` to remain untouched.
 
@@ -187,7 +187,7 @@ never executed. Boris explicitly specifies natural AC 10 and INT for Claws, so
 Languages deduplicate case-insensitively and walk speed appears first.
 
 File-level evidence and per-scene package hashes are in
-[the campaign validation report](../validation/2026-11-02-CAMPAIGN-CONTENT.md).
+[the campaign validation report](archive/validation/2026-11-02-CAMPAIGN-CONTENT.md).
 Captured heading/body fonts, stat colours and per-character font runs are
 preserved structurally; this is not a rendering observation.
 

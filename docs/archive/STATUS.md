@@ -4,7 +4,7 @@
 [2026-11-03 handoff](HANDOFF-2026-11-03.md) for the plan and owners and
 [v0.11.0 release notes](../RELEASE-NOTES-v0.11.0.md) for current scope and limits.
 PR #17 is merged as `023f30db`; its corrected runtime recheck is recorded in
-[the recheck report](../../validation/toolkit-recheck-2026-11-03.md).
+[the recheck report](validation/toolkit-recheck-2026-11-03.md).
 
 **Lifecycle:** CALIBRATED SCENE PROFILES — PLAYER RUNTIME VALIDATED
 **Implementation started:** Inventory CLI, importable UVTT, loose scene assets, embedded Adventure scene discovery, ambient color, and deterministic AmbientLight range conversion
@@ -23,7 +23,7 @@ recording. User approved the bounded system-wide FileIO trace, but non-elevated
 WPR start returned0x80070005 Access is denied (FileIO.Verbose.Memory). Follow-up
 status says not recording; no ETL or traced diagnostic created. No privilege
 change or application elevation attempted. Windows tracing rights are a separate
-blocker. See [provenance](../../validation/2026-10-31-BINDING-PROVENANCE.md)
+blocker. See [provenance](validation/2026-10-31-BINDING-PROVENANCE.md)
 and [capture plan](../LEVELDB-TRACE.md). Latest failed full result is unchanged.
 
 Native replacement attribution (2026-10-31): upstream-style Windows file API probe
@@ -34,7 +34,7 @@ handles produce error32, not1175. Standalone no-LevelDB process: 20 free operati
 pass/20 held controls block as expected. Failed trial files now retained. Source
 hashes unchanged; no retry, elevation or security changes. Reader errors now retain
 their cause after long paths; seven targeted tests pass. Latest full suite remains
-the failed 173-test run below. See [diagnosis](../../validation/2026-10-31-NATIVE-REPLACE.md).
+the failed 173-test run below. See [diagnosis](validation/2026-10-31-NATIVE-REPLACE.md).
 
 Installation review and blocker (2026-10-31): added read-only
 `forgebridge.install_review` against a caller-selected static MyAssets copy.
@@ -51,7 +51,7 @@ release blocker; no full-suite green claim or blind repeat. One bounded comparis
 of three create, three copied-open and three replace controls passes (source
 unchanged); that does not resolve or erase the failure. Only Python 3.14 variants
 are installed locally; a Python 3.13 comparison cannot be done without another
-environment. See [evidence](../../validation/2026-10-31-INSTALL-REVIEW.md).
+environment. See [evidence](validation/2026-10-31-INSTALL-REVIEW.md).
 
 Operator rehearsal (2026-10-31): new developer script exercises 18 public CLI
 steps across three relocated synthetic profiles, with original input paths offline.
@@ -60,7 +60,7 @@ metadata references. Overwrites and changed inputs are refused; original bytes
 remain unchanged. This is file-level CLI acceptance, not native calibration,
 installation, fresh-operator or Toolkit runtime acceptance. Full Windows/Python
 3.14.2 suite: **168 run, 164 passed, four symlink skips**, 64.140s. See
-[evidence](../../validation/2026-10-31-OPERATOR-REHEARSAL.md).
+[evidence](validation/2026-10-31-OPERATOR-REHEARSAL.md).
 
 The subsequent explicit user-requested window switch restored actual Toolkit
 capture (bound Shift-only input, focused Toolkit, edit counter 0/0). This
@@ -82,7 +82,7 @@ Desktop enumeration and binding work, but two fresh Toolkit captures showed the
 foreground Codex surface. No input was sent; bounded recovery exhausted. This new
 control blocker does not undo accepted October 31 player results. The disposable
 fog map remains untouched; bounded fog stays deferred. See
-[resume evidence](../../validation/2026-10-31-RESUME.md) and
+[resume evidence](validation/2026-10-31-RESUME.md) and
 [release procedure](../SCENE-IMPORT-RELEASE.md).
 
 CI (2026-10-31, commit 271d7dd): GitHub Actions `tests` workflow. Linux and
@@ -105,7 +105,7 @@ Two stream sessions at 1280×720/15 connected without the 10-19 WebRTC exception
 The earlier black player output is explained by saved manual fog with no revealed
 area ("Fog of war is active!"); fog was disabled for the session only, so bounded
 fog remains DEFERRED. The 10-24 capture mismatch cleared after a Windows restart.
-No map saved. See [player evidence](../../validation/2026-10-31-PROFILE-PLAYER.md).
+No map saved. See [player evidence](validation/2026-10-31-PROFILE-PLAYER.md).
 
 Read-only native audit (2026-10-31): `native_capture --audit` reports selected-map
 closure, per-file input source, unselected files and every conflict/gap before a
@@ -123,7 +123,7 @@ Pinned profiles can be copied with all inputs and rebased for relocation; reusab
 control exports remain separate from scene geometry and calibration. Saved-asset
 reads require a closed-Toolkit snapshot; no capture installs or edits campaigns.
 See [portable capture](../NATIVE-CAPTURE.md) and
-[execution evidence](../../validation/2026-10-18/PORTABLE-CAPTURE.md).
+[execution evidence](validation/2026-10-18/PORTABLE-CAPTURE.md).
 The historical Crypt/player restart blocker below is superseded by October 31's
 accepted observations. Bounded fog remains pending independently of development.
 
@@ -132,7 +132,7 @@ Windows separators, drive-qualified names, alternate data streams and NUL names
 before writing. A cross-platform regression checks rejected entries cannot write
 outside the snapshot and that accepted CURRENT bytes remain unchanged. No retry,
 conversion-semantic or runtime-validation change. See
-[reader evidence](../../validation/2026-10-24-READER-HARDENING.md).
+[reader evidence](validation/2026-10-24-READER-HARDENING.md).
 Latest full suite: **150 run, 146 passed, four Windows symlink skips**, 31.173s.
 
 Dependency isolation hardening (2026-10-24): capture and production assembly now
@@ -140,7 +140,7 @@ share portable native-path checks. Case aliases and ZIP symlinks fail; dependenc
 merges validate every entry before mutation. Exact identical dependencies still
 deduplicate. Final package audits reject ambiguous paths even without tokens.
 Latest full suite: **156 run, 152 passed, four Windows symlink skips**, 37.037s.
-See [dependency evidence](../../validation/2026-10-24-DEPENDENCIES.md).
+See [dependency evidence](validation/2026-10-24-DEPENDENCIES.md).
 
 Historical CPU-contention investigation (2026-10-18; superseded by October 19 recovery below): desktop testing now runs separately
 from tests/builds/PDF/compression/dependency scans. New read-only sampler and
@@ -567,8 +567,8 @@ passed. Initial full run: 148 total, 142 passed, 4 skipped,1 corrected safety fa
 and1 inventory error subsequently passed. No clean full rerun claimed.
 An initial Crypt source-reader failure passed controlled comparisons/retry;
 cause unconfirmed. No conversion math changed.
-See [execution details](../../validation/2026-10-18/PORTABLE-CAPTURE.md) and
-[hashes](../../validation/2026-10-18/portable-capture-results.json).
+See [execution details](validation/2026-10-18/PORTABLE-CAPTURE.md) and
+[hashes](validation/2026-10-18/portable-capture-results.json).
 
 BLOCKED/PENDING: desktop helper setup/enumeration after bounded recovery.
 Full support diagnostic stays local; no new activation/capture/input/runtime pass.
@@ -589,7 +589,7 @@ contention is correlated; the cap's isolated causal effect is not established.
 PASS: clean full suite 148 run, 144 passed, four Windows symlink skips, 48.387s.
 Crypt player visibility / both profile player restart checks remain PENDING;
 bounded fog DEFERRED. No package/content edits or installations in this pass.
-See [measured recovery](../../validation/2026-10-19-CPU-RECOVERY.md) for precise scope.
+See [measured recovery](validation/2026-10-19-CPU-RECOVERY.md) for precise scope.
 ## Profile player follow-up and reference audit (2026-10-19)
 
 BLOCKED: browser connection caused native Toolkit Unity WebRTC empty ICE-candidate
@@ -608,7 +608,7 @@ Windows .dbtmp replacement failures during both new test-DB creation and copied
 snapshot opening; root cause unresolved. No retries or LevelDB logic changed.
 Next independent task: controlled Windows LevelDB temporary-file replacement
 reproduction and diagnosis; native reference schema coverage can proceed separately.
-See [follow-up evidence](../../validation/2026-10-19-PROFILE-PLAYER.md).
+See [follow-up evidence](validation/2026-10-19-PROFILE-PLAYER.md).
 ## Resume checkpoint (2026-10-24)
 
 PASS: full diagnostic regression 149 run, 145 passed, four Windows symlink skips,
@@ -628,7 +628,7 @@ and observed native-reference schemas. See validation/2026-10-24-RESUME.md.
 
 Bounded fog is **BLOCKED**, waiting for Claude app built-in-browser testing.
 The consolidated browser/address ledger is in
-[the player-address evidence](../../validation/2026-10-31-PLAYER-ADDRESS.md).
+[the player-address evidence](validation/2026-10-31-PLAYER-ADDRESS.md).
 Two error-free Claude loopback sessions remain accepted; Waterfox LAN/loopback
 ICE failures and user-reported Chrome ICE are an observed pattern, not a cause.
 No desktop testing or further LevelDB investigation in the current development session.
@@ -639,7 +639,7 @@ No desktop testing or further LevelDB investigation in the current development s
 separate scene packages in a new output tree after staging/conflict/closure and
 input-hash checks. Reports shared/conflicting dependencies, repeated source IDs
 and combined losses. No install or calibration inference. See
-[workflow](../SCENE-BATCH.md), [evidence](../../validation/2026-10-31-SCENE-BATCH.md)
+[workflow](../SCENE-BATCH.md), [evidence](validation/2026-10-31-SCENE-BATCH.md)
 and [M0–M2 matrix](ACCEPTANCE-MATRIX.md).
 Initial full Windows suite: 184 run, 180 passed, four skipped; final batch tests:
 10/10 pass. Final CI and real package results are recorded in the evidence log.

@@ -39,7 +39,7 @@ block, and six representative token portraits in Toolkit **0.5.1.18**. MP3 and
 OGG experiment timers advanced without visible errors, but no one listening
 through these tools confirmed audible output. The all-11 token portrait census
 is still incomplete; file inspection confirms all 11 independent icon/Size
-records. See [runtime evidence](../validation/toolkit-recheck-2026-11-03.md).
+records. See [runtime evidence](archive/validation/toolkit-recheck-2026-11-03.md).
 
 Token-to-stat-block links are deliberately omitted: adding a link changed map
 portraits into note pins. Actor notes remain separately accessible. Derived AC
@@ -48,8 +48,8 @@ and walk speed is first. Boris's source specifies natural AC 10 and INT-based
 Claws +1; those are retained rather than guessed from DEX.
 
 Real FG file-level cases and the scoped native geometry check are documented in
-[FG phase 2](../validation/2026-11-02-FG-NATIVE-PHASE2.md) and
-[native export evidence](../validation/2026-11-02-FG-ARKENFORGE-EXPORT.md).
+[FG phase 2](archive/validation/2026-11-02-FG-NATIVE-PHASE2.md) and
+[native export evidence](archive/validation/2026-11-02-FG-ARKENFORGE-EXPORT.md).
 Windows/Linux tests and the standalone EXE build/smoke are release gates.
 Release-branch Windows full suite: **294 run, 290 passed, four Windows symlink
 privilege skips**, including version consistency and GUI version-only exit.

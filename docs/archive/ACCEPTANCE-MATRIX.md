@@ -33,7 +33,7 @@ Foundry fog/vision and procedural animation mapping remain conversion gaps.
 
 ## Batch/CI follow-up
 
-Implementation and regression evidence: [scene batch](../../validation/2026-10-31-SCENE-BATCH.md)
+Implementation and regression evidence: [scene batch](validation/2026-10-31-SCENE-BATCH.md)
 at 9a86c63. Its full CI suites pass on Python 3.13: Linux 185 run/181 passed/4
 skips; Windows 185 run/182 passed/3 skips. This supersedes the pending current-head
 CI verification in the baseline evidence and supports M0.2 PASS for 9a86c63.

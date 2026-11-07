@@ -45,7 +45,7 @@ Toolkit was already closed when work resumed on 2026-11-05. Only then were the
 eight native files copied, without modification. `manifest.json` records their
 hashes and complete class/member/type declarations. Tests compare encoded bytes
 through native import and schema serialization, including OGG production output.
-The companion `validation/2026-11-05-music-comparison.json` records old/repaired
+The companion `docs/archive/validation/2026-11-05-music-comparison.json` records old/repaired
 playlist, song and metadata fields, embedded-byte headers/hashes/lengths, codec
 inspection and native controls. No song/metadata payload changed in the repaired
 two-track experiment; only its `.rwpl` changed.

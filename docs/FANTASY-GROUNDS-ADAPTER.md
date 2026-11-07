@@ -111,7 +111,7 @@ committed). Findings:
 Arkenforge's own Fantasy Grounds Unity export of a known map read back exactly:
 199/199 walls, 23/23 doors (20 doors + 3 open doors as windows, endpoints and
 state exact), 66/66 light positions. Arkenforge's exporter shrinks light radius
-≈0.88×. See validation/2026-11-02-FG-ARKENFORGE-EXPORT.md.
+≈0.88×. See docs/archive/validation/2026-11-02-FG-ARKENFORGE-EXPORT.md.
 
 ## Assumptions still to verify
 

@@ -83,5 +83,5 @@ Deliver feature-by-feature, with capability tests and grades:
 ## References
 - PR #8: https://github.com/khantroll/ForgeBridge/pull/8
 - PR #9: https://github.com/khantroll/ForgeBridge/pull/9
-- Current player validation: `validation/2026-10-31-PROFILE-PLAYER.md` on PR #8
+- Current player validation: `docs/archive/validation/2026-10-31-PROFILE-PLAYER.md` on PR #8
 - Detailed current implementation status: `STATUS.md` on PR #8

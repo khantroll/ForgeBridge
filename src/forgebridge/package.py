@@ -71,7 +71,7 @@ def build_package(companion, map_template, media_template, dest, *, name,
         report['manual_steps'] = list(MANUAL_STEPS)
         report['runtime_acceptance'] = {
             'this_build': 'not established by generating files or matching input hashes',
-            'bounded_native_fog': 'native Toolkit capability validated 2026-11-01 on a disposable reference copy (validation/2026-11-01-BOUNDED-FOG.md); packages do not write fog state, and manual fog starts covered for players',
+            'bounded_native_fog': 'native Toolkit capability validated 2026-11-01 on a disposable reference copy (docs/archive/validation/2026-11-01-BOUNDED-FOG.md); packages do not write fog state, and manual fog starts covered for players',
             'foundry_fog_vision': 'not converted; manual native controls are a separate capability',
         }
         if collection is not None:

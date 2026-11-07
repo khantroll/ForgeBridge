@@ -42,7 +42,7 @@ started no trace and changed no privilege or settings.
 
 PENDING APPROVAL: built-in FileIO would collect system-wide filenames/metadata,
 exceeding the prior owned-file-only diagnostic scope. A concrete one-capture plan
-is [LEVELDB-TRACE.md](../docs/LEVELDB-TRACE.md). No collection started and no admin
+is [LEVELDB-TRACE.md](../../LEVELDB-TRACE.md). No collection started and no admin
 elevation attempted. Raw ETL must stay local; support transmission is not authorized.
 
 Superseding outcome: user explicitly approved one short local capture. Attempted

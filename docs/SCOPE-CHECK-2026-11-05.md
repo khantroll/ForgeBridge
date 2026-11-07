@@ -18,10 +18,10 @@ from observed runtime behavior; hashes and CI are not runtime validation.
 | A6 | Optional Foundry Data art folder (#30) | **Done at file level only.** Safe read-only lookup; missing art stays loss. Not seen in Toolkit. |
 | A7 | Fog, vision and light animation (#33) | **Done bounded implementation at file level only.** Captured Dynamic fog/persistence, character revealing lights, approximate darkvision, Flicker/Blink and negative-light flags; stored FG LOS/sight/effects share the path. No historical masks, full vision/detection permissions or calibrated scene darkness. Simulate darkness is Toolkit-wide. |
 
-Historical native observations: [2026-11-06 Toolkit check](../validation/2026-11-06-TOOLKIT-CHECK.md)
-and [v0.12 display check](../validation/2026-11-05-V0120-TOOLKIT-CHECK.md).
+Historical native observations: [2026-11-06 Toolkit check](archive/validation/2026-11-06-TOOLKIT-CHECK.md)
+and [v0.12 display check](archive/validation/2026-11-05-V0120-TOOLKIT-CHECK.md).
 Post-trial FG text/gap corrections and duplicate-identity vision guards are
-[file-level only](../validation/2026-11-06-FG-DISPLAY-FIXES.md).
+[file-level only](archive/validation/2026-11-06-FG-DISPLAY-FIXES.md).
 
 ## B. File-level / low-risk engineering and release work
 
@@ -33,7 +33,7 @@ Post-trial FG text/gap corrections and duplicate-identity vision guards are
 | B4 | FG light/environment fidelity | **PARTIAL.** Off lights, stored LOS/sight and recognized effects now mapped at file level. Bright/dim falloff, source color/intensity, ambient/tint, additional bitmap layers/transforms and grid-offset fidelity remain. |
 | B5 | Foundry playlist settings | **OPEN.** Preserve/map loop, fade, channel, volume, mode and playback state beyond ordered playable song references. |
 | B6 | Roll-table formulas/weights | **OPEN.** Range-table notes exist; nontrivial formulas, weights, replacement/drawn state and chained roll behavior need a supported mapping or explicit review. |
-| B7 | Release v0.13.0 | **DONE.** v0.13.0 published as a pre-release; attached ZIP downloaded/hash-checked and both clean-unzip EXEs report 0.13.0. [Publication evidence](../validation/2026-11-07-V0130-RELEASE.md). |
+| B7 | Release v0.13.0 | **DONE.** v0.13.0 published as a pre-release; attached ZIP downloaded/hash-checked and both clean-unzip EXEs report 0.13.0. [Publication evidence](archive/validation/2026-11-07-V0130-RELEASE.md). |
 | B8 | Non-developer user guide | **DONE.** FG one-build walkthrough, Foundry Data folder, optional spell pack, campaign-content summary, reviewed install and keep-changed uninstall. |
 | B9 | Cleanup | **DECIDED 2026-11-07 (Jeffrey): leave FB test maps/notes/receipts in place.** No agent should uninstall or delete them; they only appear in Jeffrey's own Toolkit. |
 

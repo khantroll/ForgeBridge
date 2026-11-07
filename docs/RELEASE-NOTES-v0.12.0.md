@@ -26,7 +26,7 @@ Keep **forgebridge-cli.exe** and `_internal` beside it. No Python installation i
   edited map names no longer match generated files. Map names must be unique
   across the entire MyAssets library, including different folders.
 
-Runtime evidence: [Claude + Jeffrey, 2026-11-05](../validation/2026-11-05-FINAL-TOOLKIT-CHECK.md),
+Runtime evidence: [Claude + Jeffrey, 2026-11-05](archive/validation/2026-11-05-FINAL-TOOLKIT-CHECK.md),
 Toolkit **0.5.1.18** on Windows. That check did not repeat the unchanged map/token
 writer or inspect the expanded mixer value. Earlier native MP3/OGG control
 listening and byte preservation are recorded in the music fixtures/evidence.
