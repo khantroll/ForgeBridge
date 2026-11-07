@@ -6,11 +6,11 @@ ForgeBridge is an experimental, local migration tool that translates external VT
 
 The current Foundry workflow can build native Arkenforge scene packages directly from supported source data—without requiring an existing Arkenforge map, a manual UVTT import, or per-scene calibration. It preserves available source information and generates explicit reports for anything it cannot convert faithfully.
 
-**Current release:** [v0.13.0](docs/RELEASE-NOTES-v0.13.0.md) · [Windows downloads on GitHub Releases](https://github.com/khantroll/ForgeBridge/releases) · [Operator guide](docs/USER-GUIDE.md) · [Handoff](docs/HANDOFF-2026-11-03.md)
+**Latest documented release:** [v0.13.0](docs/RELEASE-NOTES-v0.13.0.md) · [Windows downloads on GitHub Releases](https://github.com/khantroll/ForgeBridge/releases) · [Operator guide](docs/USER-GUIDE.md)
 
 > **Supported source scope: Foundry v13 / dnd5e and unencrypted Fantasy Grounds Unity modules.**
 
-**Compatibility is limited to tested versions and content.** A successful build is not proof of complete scene or campaign fidelity. Review the conversion report and validate generated maps in Arkenforge before using them in a game.
+**Compatibility is limited to the versions and content described below.** A successful build is not proof of complete scene or campaign fidelity. Review the conversion report and validate generated maps in Arkenforge before using them in a game.
 
 ## Quick start
 
@@ -73,7 +73,7 @@ available bytes; source playback settings need review. Windows EXEs are unsigned
 See [the release evidence split](docs/RELEASE-NOTES-v0.13.0.md) and
 [supported scope](docs/USER-GUIDE.md#supported--manual--unsupported).
 
-## Some spells need the free dnd5e system download
+## Resolving linked dnd5e spells
 
 Foundry adventures often store only a *link* to a spell, such as a scroll of
 Bless, and not the spell itself. The spell lives in Foundry's free **dnd5e game
@@ -94,7 +94,7 @@ The optional installer is designed to work with the Arkenforge Toolkit closed. I
 
 Read the [installation and recovery guide](docs/USER-GUIDE.md#installation-backups-and-recovery) and [release checklist](docs/SCENE-IMPORT-RELEASE.md) before installing native packages.
 
-## How ForgeBridge is designed
+## Architecture
 
 ```text
 External VTT package (Foundry or unencrypted Fantasy Grounds Unity)
@@ -119,7 +119,7 @@ External VTT package (Foundry or unencrypted Fantasy Grounds Unity)
 
 The **intermediate representation (IR)** separates source-specific formats from Arkenforge output. That makes it possible to add another inbound VTT adapter without rebuilding the entire converter around a second proprietary format.
 
-The guiding principles are:
+Design principles:
 
 - **Preserve meaning, not only images.** Translate supported scene structure and relationships instead of merely flattening maps.
 - **Be deterministic first.** Optional future AI-assisted analysis should never be required for routine conversion.
@@ -140,16 +140,12 @@ the combined conversion path. Full actor/combat behavior, additional systems,
 source-compendium monsters/items, environment fidelity and some playback/roll
 settings remain gaps. ForgeBridge is not a lossless campaign migration tool.
 
-Use the [current scope check](docs/SCOPE-CHECK-2026-11-05.md),
-[2026-11-06 native observations](validation/2026-11-06-TOOLKIT-CHECK.md) and
-[post-trial FG audit](validation/2026-11-06-FG-DISPLAY-FIXES.md) for boundaries.
-Earlier handoff and validation records remain historical evidence.
+Detailed compatibility evidence is maintained in the [acceptance matrix](docs/ACCEPTANCE-MATRIX.md) and [release notes](docs/RELEASE-NOTES-v0.13.0.md).
 
 ## Documentation
 
 - [Operator guide](docs/USER-GUIDE.md) — installation, GUI/CLI use, output review, safe install, and recovery.
 - [v0.13.0 release notes](docs/RELEASE-NOTES-v0.13.0.md) — tested release scope and known limitations ([v0.9.0](docs/RELEASE-NOTES-v0.9.0.md); [changelog](CHANGELOG.md)).
-- [Handoff](docs/HANDOFF-2026-11-03.md) — release sequence and owners; STATUS and NEXT-STEPS are historical.
 - [Acceptance matrix](docs/ACCEPTANCE-MATRIX.md) — evidence and boundaries of validated behavior.
 - [Scene profiles](docs/SCENE-PROFILES.md), [batch builds](docs/SCENE-BATCH.md), and [native capture](docs/NATIVE-CAPTURE.md) — advanced workflows.
 - [Scene import/release rules](docs/SCENE-IMPORT-RELEASE.md) — review and installation safeguards.
