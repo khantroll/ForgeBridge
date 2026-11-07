@@ -62,10 +62,13 @@ def foundry_visibility(scene, actors=()):
     actor_ids={}
     for actor in actors:
         if isinstance(actor,dict):actor_ids.setdefault(actor.get('_id',actor.get('id')),[]).append(actor)
-    tokens=[];excluded=[]
+    tokens=[];excluded=[];seen=set()
     for t in scene.get('tokens',[]):
         if not isinstance(t,dict):continue
         identity='Scene.'+str(scene.get('_id'))+'.Token.'+str(t.get('_id'))
+        if identity in seen:
+            loss(losses,'unsupported','token-vision','Duplicate token identity; placement uses the first record, so this duplicate cannot change its vision',source_id=identity);continue
+        seen.add(identity)
         sight=t.get('sight') if isinstance(t.get('sight'),dict) else {}
         candidates=actor_ids.get(t.get('actorId'),[])
         actor=candidates[0] if len(candidates)==1 else t.get('actorData',{})
@@ -111,9 +114,13 @@ def fg_visibility(source,entry,result):
             radius=max(abs(v) for v in ranges) if native_index is None else None,darkness=negative,
             reveals=flag(_text(node,'vision')) is True,enabled=node.find('on') is not None,
             effect=animation({'type':kind},losses,'light.'+str(i))))
-    tokens=[]
+    tokens=[];seen=set()
     parents = [entry['_node']] + entry['_node'].findall('./layers/layer')
     for i,node in enumerate([t for parent in parents for t in parent.findall('./tokens/token')]):
+        identity=entry['record']+'.token.'+(node.findtext('id') or str(i))
+        if identity in seen:
+            loss(losses,'unsupported','fg-token-vision','Duplicate token identity; placement uses the first record, so this duplicate cannot change its vision',source_id=identity);continue
+        seen.add(identity)
         ref=node.findtext('recordname') or node.findtext('link/recordname') or ''
         if not ref.startswith('charsheet.'):continue # NPCs/friendly NPCs are never vision sources.
         if flag(node.findtext('sight/enabled')) is not True:continue
@@ -126,7 +133,6 @@ def fg_visibility(source,entry,result):
         mode=node.findtext('sight/visionMode') or 'basic'
         if mode not in ('basic','darkvision'):
             loss(losses,'unsupported','fg-token-vision','Unsupported FG vision mode',source_id=ref);continue
-        identity=entry['record']+'.token.'+(node.findtext('id') or str(i))
         tokens.append(dict(source_id=identity,name=node.findtext('name'),radius=radius,intensity=.15 if mode=='darkvision' else 1.,mode=mode))
     loss(losses,'approximate','fg-vision','Only stored LOS/PC sight/light animation flags mapped. FG token placement must exist to attach vision; missing ownership/range, masks, exploration history, ambient/darkness and effects stay manual')
     return dict(source='fantasy_grounds',fog=dict(enabled=enabled,persists=persists),lights=lights,tokens=tokens,excluded_tokens=[],losses=losses)

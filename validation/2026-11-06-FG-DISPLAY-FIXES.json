@@ -166,12 +166,14 @@
   "automated": {
     "os": "Windows",
     "python": "3.14",
-    "run": 367,
-    "passed": 362,
+    "run": 368,
+    "passed": 363,
     "skipped": 5,
     "exit_code": 0,
-    "skip_reason": "Windows symlink creation privilege unavailable; skips not counted as passed safety checks"
+    "skip_reason": "Windows symlink creation privilege unavailable; skips not counted as passed safety checks",
+    "elapsed_seconds": 140.903
   },
   "total_note_files_audited": 2129,
-  "total_text_strings_audited": 13925
+  "total_text_strings_audited": 13925,
+  "vision_identity_regression": "Duplicate PC identity cannot add vision to the first NPC placement; Foundry and FG adapters emit an explicit unsupported loss"
 }

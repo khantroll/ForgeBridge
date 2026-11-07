@@ -100,3 +100,25 @@ class FGDisplayRegressions(unittest.TestCase):
             check_metadata_references(files)
             actual=node(files[native['output_names']['map_path']])
             self.assertEqual(actual.members['_fogMode'].members['value__'],2)
+
+    def test_duplicate_pc_identity_cannot_grant_vision_to_first_npc(self):
+        from forgebridge.visibility_ir import foundry_visibility
+        scene={'_id':'s','width':100,'height':100,'padding':0,'grid':{'size':100,'type':1,'distance':5},'tokenVision':True,'tokens':[
+            {'_id':'dup','actorId':'npc','sight':{'enabled':False}},
+            {'_id':'dup','actorId':'pc','sight':{'enabled':True,'range':30}}]}
+        ir=foundry_visibility(scene,[{'_id':'npc','type':'npc'},{'_id':'pc','type':'character','ownership':{'default':3}}])
+        self.assertEqual(ir['tokens'],[])
+        self.assertTrue(any('Duplicate token identity' in l['summary'] for l in ir['losses']))
+        with tempfile.TemporaryDirectory() as tmp:
+            p=Path(tmp)/'module';shutil.copytree(FIXTURE,p)
+            xml=ET.parse(p/'db.xml');tokens=xml.find('./image/category/map/image/tokens')
+            duplicate=tokens.findall('token')[1];duplicate.find('id').text='watcher'
+            duplicate.find('recordname').text='charsheet.owned'
+            sight=ET.SubElement(duplicate,'sight')
+            for k,v in [('enabled','true'),('range','3'),('units','squares')]: ET.SubElement(sight,k).text=v
+            xml.write(p/'db.xml')
+            report=convert(p,Path(tmp)/'out')
+        native=report['scenes'][0]['native_report']
+        self.assertEqual(len(native['placements']['tokens']),1)
+        self.assertEqual(native['visibility']['tokens'],[])
+        self.assertTrue(any('Duplicate token identity' in l['summary'] for l in native['visibility']['losses']))

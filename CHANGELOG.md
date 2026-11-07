@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Reject duplicate token identities in vision adapters so a later PC record cannot add sight to the first NPC placement.
+
 - Normalize FG prose newline escapes, preserve paragraph spacing and use shared explicit light journal/story text. Merge native empty-row collapse requests for legacy stat blocks; visual acceptance remains pending after the trial.
 
 - Convert FG range tables, manual chapter/page navigation, treasure parcels, quests
