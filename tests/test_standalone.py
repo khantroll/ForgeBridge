@@ -19,7 +19,7 @@ class StandaloneTests(unittest.TestCase):
     def test_release_version_matches_metadata_and_source_fallback(self):
         from forgebridge import __version__
         metadata = tomllib.loads((Path(__file__).resolve().parents[1] / 'pyproject.toml').read_text())
-        self.assertEqual(metadata['project']['version'], '0.12.0')
+        self.assertEqual(metadata['project']['version'], '0.13.0')
         self.assertEqual(__version__, metadata['project']['version'])
         with tempfile.TemporaryDirectory() as tmp, \
                 patch('forgebridge.version.version', side_effect=PackageNotFoundError), \
@@ -28,11 +28,11 @@ class StandaloneTests(unittest.TestCase):
 
     def test_gui_version_exits_before_creating_a_window(self):
         from forgebridge.gui import main as gui_main
-        with patch('forgebridge.gui.get_version', return_value='0.12.0'), redirect_stdout(io.StringIO()) as out:
+        with patch('forgebridge.gui.get_version', return_value='0.13.0'), redirect_stdout(io.StringIO()) as out:
             with self.assertRaises(SystemExit) as stopped:
                 gui_main(['--version'])
         self.assertEqual(stopped.exception.code, 0)
-        self.assertEqual(out.getvalue().strip(), 'ForgeBridge 0.12.0')
+        self.assertEqual(out.getvalue().strip(), 'ForgeBridge 0.13.0')
 
     def test_generator_release_version_does_not_change_the_ir_version(self):
         fixture = Path(__file__).resolve().parents[1] / 'fixtures/synthetic-module'
@@ -40,29 +40,29 @@ class StandaloneTests(unittest.TestCase):
         self.assertEqual(document['generator']['version'], get_version())
         self.assertEqual(document['ir_version'], '0.1.0')
         self.assertEqual(validate(document, load_schema()), [])
-        document['generator']['version'] = '0.12.0'
+        document['generator']['version'] = '0.13.0'
         self.assertEqual(validate(document, load_schema()), [])
-        document['ir_version'] = '0.12.0'
+        document['ir_version'] = '0.13.0'
         self.assertTrue(validate(document, load_schema()))
     def test_gui_title_and_callback_exception_handler(self):
         def scenario(ui):
-            self.assertIn('ForgeBridge 0.12.0', ui['title'])
+            self.assertIn('ForgeBridge 0.13.0', ui['title'])
             value = ValueError('callback failure')
             ui['root'].report_callback_exception(type(value), value, None)
-        with patch('forgebridge.gui.get_version', return_value='0.12.0'), patch('forgebridge.gui.report_error') as reporter:
+        with patch('forgebridge.gui.get_version', return_value='0.13.0'), patch('forgebridge.gui.report_error') as reporter:
             run_headless_gui(scenario)
             self.assertEqual(reporter.call_args.args[0], 'callback failure')
             self.assertEqual(reporter.call_args.kwargs['output'], 'test-output')
 
     def test_cli_version_needs_no_package_argument(self):
-        with patch('forgebridge.cli.get_version', return_value='0.12.0'), redirect_stdout(io.StringIO()) as out:
+        with patch('forgebridge.cli.get_version', return_value='0.13.0'), redirect_stdout(io.StringIO()) as out:
             with self.assertRaises(SystemExit) as stopped: main(['--version'])
         self.assertEqual(stopped.exception.code, 0)
-        self.assertEqual(out.getvalue().strip(), 'ForgeBridge 0.12.0')
+        self.assertEqual(out.getvalue().strip(), 'ForgeBridge 0.13.0')
 
     def test_version_metadata_then_embedded_fallback(self):
-        with patch('forgebridge.version.version', return_value='0.12.0'):
-            self.assertEqual(get_version(), '0.12.0')
+        with patch('forgebridge.version.version', return_value='0.13.0'):
+            self.assertEqual(get_version(), '0.13.0')
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp); (root / 'build-info.json').write_text(json.dumps({'version': '0.10.1'}))
             with patch('forgebridge.version.version', side_effect=PackageNotFoundError), \

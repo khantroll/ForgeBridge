@@ -1,29 +1,34 @@
 # Changelog
 
-## Unreleased
+## v0.13.0 — 2026-11-07
 
-- Reject duplicate token identities in vision adapters so a later PC record cannot add sight to the first NPC placement.
+### Checked in Arkenforge Toolkit (earlier check builds)
 
-- Normalize FG prose newline escapes, preserve paragraph spacing and use shared explicit light journal/story text. Merge native empty-row collapse requests for legacy stat blocks; visual acceptance remains pending after the trial.
+- Generated WEBM/GIF tiles animate; placed OGG/WAV ambience is audible.
+- Sampled real FG NPC/story notes and owned FG pin/portrait-token controls work.
+  The real Well Met module has no source pins/tokens; do not conflate the controls.
+- v0.12 enricher labels, parchment-link colour, missing stat labels/proficiency
+  and cantrip type text were checked. MP3/OGG music and spell links retain prior evidence.
 
-- Convert FG range tables, manual chapter/page navigation, treasure parcels, quests
-  and image attachments; report unknown record types and unsupported roll behavior.
+### File-level only (not yet seen in the Toolkit)
 
-- Combine Fantasy Grounds maps, campaign notes, room pins and portrait tokens
-  through the normal convert/GUI/review/install flow; explicit notes-only mode.
-- Read nested/category FG and SRD records, formatted block text and qualified
-  links; preserve string stats and non-5e source attacks without invented 5e rules.
-  Missing grids/art and portrait-safe omitted NPC bindings remain reported limits.
+- Fog/vision/light animation (#33), optional Foundry Data art (#30), and post-trial
+  FG newline/colour/paragraph/empty-row corrections (#32). Gap collapse unverified.
+- Combined FG conversion retains tables/manuals/parcels/quests/handouts and all
+  prior real counts; 2129 notes / 13925 text strings audited without newline escapes.
+- Shared FG maps/notes/tables/manuals/placements use one convert/GUI/review path.
+- Version 0.13.0 metadata/fallback/tests and Windows one-folder release workflow.
+- Revision-scoped campaign filenames preserve edited predecessors kept by uninstall, without changing displayed names.
 
-- Development: schema-built Foundry video/animated-image tiles and map-attached
-  ambient sounds with calibrated placement, bounded codecs and explicit losses;
-  owned FB Motion Check fixture and reviewed install for pending Toolkit acceptance.
-- Omit missing-CR Challenge labels and request zero-size empty stat rows; visual
-  gap collapse still needs the Toolkit check. Native active flags remain respected.
-- Add schema-built native Dynamic fog/persistence, bounded owned-character vision, flicker/blink and negative-light mapping with explicit approximation reports. File-level coverage only; runtime acceptance pending.
+### Known limitations
 
-- Revision-scoped campaign note and playlist filenames preserve Toolkit-edited
-  predecessors retained by uninstall; displayed playlist names stay unchanged.
+- Ghost/other unsupported effects, uncalibrated scene darkness and Toolkit-wide
+  Simulate darkness; fog history, full vision rules and behavior remain gaps.
+- Encrypted FG inputs refused; supported semantic target dnd5e / Foundry v13 only.
+- Unsigned EXEs trigger SmartScreen; compendium monsters/items, FG environment
+  details, playlist settings, weighted/formula rolls and cleanup remain open.
+- No new Toolkit runtime evidence: the trial has ended. Full details and evidence
+  split: docs/RELEASE-NOTES-v0.13.0.md.
 
 ## v0.12.0 — 2026-11-05
 
