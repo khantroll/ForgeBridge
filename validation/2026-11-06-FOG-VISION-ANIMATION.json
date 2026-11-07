@@ -1,0 +1,571 @@
+{
+  "package": "C:\\AMD\\fb-fog-check-final-2026-11-06\\scene-001\\native-package.zip",
+  "sha256": "2b16964352216e2369ce463e9522d223092e3c10368abf006400279ed9981b1e",
+  "output_names": {
+    "map_folder": "FB Fog Check",
+    "map_name": "Count's Lair Fog",
+    "notes_folder": "FB Fog Check",
+    "map_path": "MyAssets/Maps/FB Fog Check/Count's Lair Fog.rwmap"
+  },
+  "closed_native_metadata_references": 243,
+  "visibility": {
+    "source": "foundry",
+    "fog": {
+      "enabled": true,
+      "mode": 2,
+      "persists": true,
+      "historical_masks_migrated": false
+    },
+    "lights": [
+      {
+        "source_id": "M5Vqp8O3f2EsHU95",
+        "native_uid": 151,
+        "position": {
+          "x": 27.98080062866211,
+          "y": -19.430400848388672
+        },
+        "native_radius": 4.0960001945495605,
+        "reveals": false,
+        "darkness": false,
+        "effect": {
+          "kind": "flicker",
+          "intensity": 0.2
+        },
+        "enabled": true
+      },
+      {
+        "source_id": "9su7Mx1lBvNcLZ12",
+        "native_uid": 152,
+        "position": {
+          "x": 6.400000095367432,
+          "y": -7.679999828338623
+        },
+        "native_radius": 4.0960001945495605,
+        "reveals": false,
+        "darkness": false,
+        "effect": {
+          "kind": "flicker",
+          "intensity": 0.2
+        },
+        "enabled": true
+      },
+      {
+        "source_id": "v56HBiTzQ05uGVDx",
+        "native_uid": 153,
+        "position": {
+          "x": 10.214400291442871,
+          "y": -26.419200897216797
+        },
+        "native_radius": 4.0960001945495605,
+        "reveals": false,
+        "darkness": false,
+        "effect": {
+          "kind": "flicker",
+          "intensity": 0.2
+        },
+        "enabled": true
+      },
+      {
+        "source_id": "n6iLGOiRxK7Wf5tX",
+        "native_uid": 154,
+        "position": {
+          "x": 16.128000259399414,
+          "y": -14.387200355529785
+        },
+        "native_radius": 4.0960001945495605,
+        "reveals": false,
+        "darkness": false,
+        "effect": {
+          "kind": "flicker",
+          "intensity": 0.2
+        },
+        "enabled": true
+      },
+      {
+        "source_id": "9Uu4G3vuk2QjvC8G",
+        "native_uid": 155,
+        "position": {
+          "x": 10.163200378417969,
+          "y": -65.84320068359375
+        },
+        "native_radius": 4.0960001945495605,
+        "reveals": false,
+        "darkness": false,
+        "effect": {
+          "kind": "flicker",
+          "intensity": 0.2
+        },
+        "enabled": true
+      },
+      {
+        "source_id": "du9Gh7cxP91mBnFy",
+        "native_uid": 156,
+        "position": {
+          "x": 32.81919860839844,
+          "y": -51.8656005859375
+        },
+        "native_radius": 7.679999828338623,
+        "reveals": false,
+        "darkness": false,
+        "effect": {
+          "kind": "flicker",
+          "intensity": 0.2
+        },
+        "enabled": true
+      },
+      {
+        "source_id": "Nb46ST69dipYu4mM",
+        "native_uid": 157,
+        "position": {
+          "x": 20.531200408935547,
+          "y": -46.20800018310547
+        },
+        "native_radius": 7.679999828338623,
+        "reveals": false,
+        "darkness": false,
+        "effect": {
+          "kind": "flicker",
+          "intensity": 0.2
+        },
+        "enabled": true
+      },
+      {
+        "source_id": "HdxkNwnC5TOaenKK",
+        "native_uid": 158,
+        "position": {
+          "x": 20.300800323486328,
+          "y": -64.76799774169922
+        },
+        "native_radius": 7.679999828338623,
+        "reveals": false,
+        "darkness": false,
+        "effect": {
+          "kind": "flicker",
+          "intensity": 0.2
+        },
+        "enabled": true
+      },
+      {
+        "source_id": "WocjJjsHrgytsMRO",
+        "native_uid": 159,
+        "position": {
+          "x": 61.260799407958984,
+          "y": -46.13119888305664
+        },
+        "native_radius": 7.679999828338623,
+        "reveals": false,
+        "darkness": false,
+        "effect": {
+          "kind": "flicker",
+          "intensity": 0.2
+        },
+        "enabled": true
+      },
+      {
+        "source_id": "gR6CLMYdmwjP0nJn",
+        "native_uid": 160,
+        "position": {
+          "x": 49.305599212646484,
+          "y": -51.25120162963867
+        },
+        "native_radius": 7.679999828338623,
+        "reveals": false,
+        "darkness": false,
+        "effect": {
+          "kind": "flicker",
+          "intensity": 0.2
+        },
+        "enabled": true
+      },
+      {
+        "source_id": "wpfalWEeva0SPQkV",
+        "native_uid": 161,
+        "position": {
+          "x": 40.959999084472656,
+          "y": -30.719999313354492
+        },
+        "native_radius": 7.679999828338623,
+        "reveals": false,
+        "darkness": false,
+        "effect": {
+          "kind": "flicker",
+          "intensity": 0.2
+        },
+        "enabled": true
+      },
+      {
+        "source_id": "zrHqw3PqBHNAIyXt",
+        "native_uid": 162,
+        "position": {
+          "x": 19.200000762939453,
+          "y": -3.8399999141693115
+        },
+        "native_radius": 5.119999885559082,
+        "reveals": false,
+        "darkness": false,
+        "effect": null,
+        "enabled": true
+      },
+      {
+        "source_id": "ZMu5fkydSs8OERVs",
+        "native_uid": 163,
+        "position": {
+          "x": 24.31999969482422,
+          "y": -3.8399999141693115
+        },
+        "native_radius": 5.119999885559082,
+        "reveals": false,
+        "darkness": false,
+        "effect": null,
+        "enabled": true
+      },
+      {
+        "source_id": "W7Jug9m5D50BQ8oU",
+        "native_uid": 164,
+        "position": {
+          "x": 29.440000534057617,
+          "y": -3.8399999141693115
+        },
+        "native_radius": 5.119999885559082,
+        "reveals": false,
+        "darkness": false,
+        "effect": null,
+        "enabled": true
+      },
+      {
+        "source_id": "OPLWTz9AIgEJamgg",
+        "native_uid": 165,
+        "position": {
+          "x": 34.560001373291016,
+          "y": -3.8399999141693115
+        },
+        "native_radius": 5.119999885559082,
+        "reveals": false,
+        "darkness": false,
+        "effect": null,
+        "enabled": true
+      },
+      {
+        "source_id": "RLw5UB3xmN1v4qau",
+        "native_uid": 166,
+        "position": {
+          "x": 42.2400016784668,
+          "y": -8.960000038146973
+        },
+        "native_radius": 5.119999885559082,
+        "reveals": false,
+        "darkness": false,
+        "effect": null,
+        "enabled": true
+      },
+      {
+        "source_id": "IHhO8iqXPH6yhrCa",
+        "native_uid": 167,
+        "position": {
+          "x": 42.2400016784668,
+          "y": -16.639999389648438
+        },
+        "native_radius": 5.119999885559082,
+        "reveals": false,
+        "darkness": false,
+        "effect": null,
+        "enabled": true
+      }
+    ],
+    "tokens": [],
+    "excluded_tokens": [
+      {
+        "source_id": "Scene.CAx2kvd87wTQkHWt.Token.t0VMy5rDO9TzyZ7o",
+        "name": "Count Lugosi",
+        "reason": "NPC/unknown ownership, disabled sight, or scene token vision off"
+      },
+      {
+        "source_id": "Scene.CAx2kvd87wTQkHWt.Token.2Rp0SpbIqwlh06dI",
+        "name": "Dark Soul",
+        "reason": "NPC/unknown ownership, disabled sight, or scene token vision off"
+      },
+      {
+        "source_id": "Scene.CAx2kvd87wTQkHWt.Token.Zrez31XmbIfXq2TM",
+        "name": "Dark Soul",
+        "reason": "NPC/unknown ownership, disabled sight, or scene token vision off"
+      },
+      {
+        "source_id": "Scene.CAx2kvd87wTQkHWt.Token.mSxH18jqCcbqb1fU",
+        "name": "Dark Soul",
+        "reason": "NPC/unknown ownership, disabled sight, or scene token vision off"
+      },
+      {
+        "source_id": "Scene.CAx2kvd87wTQkHWt.Token.DtA3XQTfWWLsk1nL",
+        "name": "Dark Soul",
+        "reason": "NPC/unknown ownership, disabled sight, or scene token vision off"
+      },
+      {
+        "source_id": "Scene.CAx2kvd87wTQkHWt.Token.bLV4MMExwqpNEcBa",
+        "name": "Dark Soul",
+        "reason": "NPC/unknown ownership, disabled sight, or scene token vision off"
+      },
+      {
+        "source_id": "Scene.CAx2kvd87wTQkHWt.Token.kkOFAlX1ECe5LS2u",
+        "name": "Dark Soul",
+        "reason": "NPC/unknown ownership, disabled sight, or scene token vision off"
+      },
+      {
+        "source_id": "Scene.CAx2kvd87wTQkHWt.Token.VngYtNfSbzv9cqT4",
+        "name": "Skeleton",
+        "reason": "NPC/unknown ownership, disabled sight, or scene token vision off"
+      },
+      {
+        "source_id": "Scene.CAx2kvd87wTQkHWt.Token.8xwufEr7xWI1p5Iy",
+        "name": "Swarm of Spiders",
+        "reason": "NPC/unknown ownership, disabled sight, or scene token vision off"
+      },
+      {
+        "source_id": "Scene.CAx2kvd87wTQkHWt.Token.Sg5Cc1PkOP8iVL1K",
+        "name": "Skeleton",
+        "reason": "NPC/unknown ownership, disabled sight, or scene token vision off"
+      },
+      {
+        "source_id": "Scene.CAx2kvd87wTQkHWt.Token.w4GvsWLOIOu1wL7H",
+        "name": "Willa",
+        "reason": "NPC/unknown ownership, disabled sight, or scene token vision off"
+      }
+    ],
+    "losses": [
+      {
+        "grade": "approximate",
+        "feature": "fog",
+        "summary": "Configuration only: Dynamic mode; exploration flag maps to native persistence. Saved Foundry explored masks, per-user vision, overlays, fog colors and global illumination are not migrated; Toolkit Simulate darkness is not a map field"
+      },
+      {
+        "grade": "manual",
+        "feature": "scene-darkness",
+        "summary": "Custom light-intensity direction was not exercised by the capture; native custom intensity unchanged",
+        "source_value": 0.5
+      },
+      {
+        "grade": "approximate",
+        "feature": "light-animation",
+        "summary": "Captured flicker effect; flicker intensity /10 where stored; source speed/reverse/color/phase are not equivalent. Blink uses captured timing defaults",
+        "source_id": "M5Vqp8O3f2EsHU95",
+        "source_animation": {
+          "type": "torch",
+          "speed": 8,
+          "intensity": 2,
+          "reverse": false
+        }
+      },
+      {
+        "grade": "approximate",
+        "feature": "light-animation",
+        "summary": "Captured flicker effect; flicker intensity /10 where stored; source speed/reverse/color/phase are not equivalent. Blink uses captured timing defaults",
+        "source_id": "9su7Mx1lBvNcLZ12",
+        "source_animation": {
+          "type": "torch",
+          "speed": 8,
+          "intensity": 2,
+          "reverse": false
+        }
+      },
+      {
+        "grade": "approximate",
+        "feature": "light-animation",
+        "summary": "Captured flicker effect; flicker intensity /10 where stored; source speed/reverse/color/phase are not equivalent. Blink uses captured timing defaults",
+        "source_id": "v56HBiTzQ05uGVDx",
+        "source_animation": {
+          "type": "torch",
+          "speed": 8,
+          "intensity": 2,
+          "reverse": false
+        }
+      },
+      {
+        "grade": "approximate",
+        "feature": "light-animation",
+        "summary": "Captured flicker effect; flicker intensity /10 where stored; source speed/reverse/color/phase are not equivalent. Blink uses captured timing defaults",
+        "source_id": "n6iLGOiRxK7Wf5tX",
+        "source_animation": {
+          "type": "torch",
+          "speed": 8,
+          "intensity": 2,
+          "reverse": false
+        }
+      },
+      {
+        "grade": "approximate",
+        "feature": "light-animation",
+        "summary": "Captured flicker effect; flicker intensity /10 where stored; source speed/reverse/color/phase are not equivalent. Blink uses captured timing defaults",
+        "source_id": "9Uu4G3vuk2QjvC8G",
+        "source_animation": {
+          "type": "torch",
+          "speed": 8,
+          "intensity": 2,
+          "reverse": false
+        }
+      },
+      {
+        "grade": "approximate",
+        "feature": "light-animation",
+        "summary": "Captured flicker effect; flicker intensity /10 where stored; source speed/reverse/color/phase are not equivalent. Blink uses captured timing defaults",
+        "source_id": "du9Gh7cxP91mBnFy",
+        "source_animation": {
+          "type": "torch",
+          "speed": 8,
+          "intensity": 2,
+          "reverse": false
+        }
+      },
+      {
+        "grade": "approximate",
+        "feature": "light-animation",
+        "summary": "Captured flicker effect; flicker intensity /10 where stored; source speed/reverse/color/phase are not equivalent. Blink uses captured timing defaults",
+        "source_id": "Nb46ST69dipYu4mM",
+        "source_animation": {
+          "type": "torch",
+          "speed": 8,
+          "intensity": 2,
+          "reverse": false
+        }
+      },
+      {
+        "grade": "approximate",
+        "feature": "light-animation",
+        "summary": "Captured flicker effect; flicker intensity /10 where stored; source speed/reverse/color/phase are not equivalent. Blink uses captured timing defaults",
+        "source_id": "HdxkNwnC5TOaenKK",
+        "source_animation": {
+          "type": "torch",
+          "speed": 8,
+          "intensity": 2,
+          "reverse": false
+        }
+      },
+      {
+        "grade": "approximate",
+        "feature": "light-animation",
+        "summary": "Captured flicker effect; flicker intensity /10 where stored; source speed/reverse/color/phase are not equivalent. Blink uses captured timing defaults",
+        "source_id": "WocjJjsHrgytsMRO",
+        "source_animation": {
+          "type": "torch",
+          "speed": 8,
+          "intensity": 2,
+          "reverse": false
+        }
+      },
+      {
+        "grade": "approximate",
+        "feature": "light-animation",
+        "summary": "Captured flicker effect; flicker intensity /10 where stored; source speed/reverse/color/phase are not equivalent. Blink uses captured timing defaults",
+        "source_id": "gR6CLMYdmwjP0nJn",
+        "source_animation": {
+          "type": "torch",
+          "speed": 8,
+          "intensity": 2,
+          "reverse": false
+        }
+      },
+      {
+        "grade": "approximate",
+        "feature": "light-animation",
+        "summary": "Captured flicker effect; flicker intensity /10 where stored; source speed/reverse/color/phase are not equivalent. Blink uses captured timing defaults",
+        "source_id": "wpfalWEeva0SPQkV",
+        "source_animation": {
+          "type": "torch",
+          "speed": 8,
+          "intensity": 2,
+          "reverse": false
+        }
+      },
+      {
+        "grade": "unsupported",
+        "feature": "light-animation",
+        "summary": "No observed native mapping for ghost",
+        "source_id": "zrHqw3PqBHNAIyXt",
+        "source_animation": {
+          "type": "ghost",
+          "speed": 2,
+          "intensity": 2,
+          "reverse": false
+        }
+      },
+      {
+        "grade": "unsupported",
+        "feature": "light-animation",
+        "summary": "No observed native mapping for ghost",
+        "source_id": "ZMu5fkydSs8OERVs",
+        "source_animation": {
+          "type": "ghost",
+          "speed": 2,
+          "intensity": 3,
+          "reverse": false
+        }
+      },
+      {
+        "grade": "unsupported",
+        "feature": "light-animation",
+        "summary": "No observed native mapping for ghost",
+        "source_id": "W7Jug9m5D50BQ8oU",
+        "source_animation": {
+          "type": "ghost",
+          "speed": 2,
+          "intensity": 3,
+          "reverse": false
+        }
+      },
+      {
+        "grade": "unsupported",
+        "feature": "light-animation",
+        "summary": "No observed native mapping for ghost",
+        "source_id": "OPLWTz9AIgEJamgg",
+        "source_animation": {
+          "type": "ghost",
+          "speed": 2,
+          "intensity": 3,
+          "reverse": false
+        }
+      },
+      {
+        "grade": "unsupported",
+        "feature": "light-animation",
+        "summary": "No observed native mapping for ghost",
+        "source_id": "RLw5UB3xmN1v4qau",
+        "source_animation": {
+          "type": "ghost",
+          "speed": 2,
+          "intensity": 3,
+          "reverse": false
+        }
+      },
+      {
+        "grade": "unsupported",
+        "feature": "light-animation",
+        "summary": "No observed native mapping for ghost",
+        "source_id": "IHhO8iqXPH6yhrCa",
+        "source_animation": {
+          "type": "ghost",
+          "speed": 2,
+          "intensity": 3,
+          "reverse": false
+        }
+      }
+    ],
+    "runtime_validation": "not performed"
+  },
+  "capture_validation": [
+    {
+      "capture": "FB Capture Base",
+      "sha256": "a0d7726a70b21a48e42bb3b5dc564a896560ca828d42e0084b45b332e30b964c",
+      "unchanged": true,
+      "effect_schema_and_defaults_equal": [],
+      "opaque_mask_test": null
+    },
+    {
+      "capture": "FB Capture Effects",
+      "sha256": "809c7bee195fbf52e0c32528093b743282343fece340d323d3b5da2685314aa9",
+      "unchanged": true,
+      "effect_schema_and_defaults_equal": [
+        "ObjectEffectLightFlicker",
+        "ObjectEffectLightBlink"
+      ],
+      "opaque_mask_test": "one persistence byte changed in memory only"
+    }
+  ]
+}

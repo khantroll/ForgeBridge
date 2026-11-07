@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add schema-built native Dynamic fog/persistence, bounded owned-character vision, flicker/blink and negative-light mapping with explicit approximation reports. File-level coverage only; runtime acceptance pending.
+
 - Revision-scoped campaign note and playlist filenames preserve Toolkit-edited
   predecessors retained by uninstall; displayed playlist names stay unchanged.
 

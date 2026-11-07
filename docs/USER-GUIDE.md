@@ -435,3 +435,7 @@ remain unchanged.
 
 Runtime checks belong to Claude; see ACCEPTANCE-MATRIX.md and his direct-map
 note. This guide adds no Toolkit observations or M1 acceptance claims.
+
+### Native fog, vision and light effects
+
+Conversion reports include a `visibility` section. Foundry scene fog configuration, bounded character vision and recognized flicker/blink effects are written from captured native schemas. Review fog and global darkness settings manually; historical reveal masks are not migrated. NPCs do not gain vision lights. Unsupported modes/animations and uncalibrated scene darkness remain losses. Native runtime acceptance is pending.

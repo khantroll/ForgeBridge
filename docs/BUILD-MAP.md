@@ -26,3 +26,7 @@ substituted. Bounded fog/profile-player checks retain their prior pending status
 ## Final trial audio build — 2026-11-05
 
 Jeffrey confirms MP3 embedded unchanged in a native song is audible in Toolkit 0.5.1.18 (2026-11-04). Production now embeds MP3 and OGG Vorbis bytes directly, retaining each extension and initializing Master at 80%. URL-encoded package audio paths are decoded and revalidated before contained lookup. No Toolkit encoder is required. The rebuilt Ambient playlist still needs its own Toolkit check; missing package tracks remain explicit losses.
+
+## Fog/vision/animation implementation — 2026-11-06
+
+Captured-schema configuration mapping is implemented at file level; native runtime acceptance remains pending. Dynamic fog/persistence, bounded owned-character vision and supported light effects are described in `../validation/2026-11-06-FOG-VISION-ANIMATION.md`. Historical exploration masks, full vision rules, unsupported animations and scene darkness intensity remain explicit gaps.

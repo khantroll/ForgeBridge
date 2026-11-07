@@ -174,7 +174,7 @@ def convert(package, destination, *, scene_ids=(), scene_keys=(), profiles=(),
                             map_folder=map_folder, notes_folder=notes_folder, map_names=map_names)
         stage = Path(tmp)
         combined_native = {}
-        campaign_cache, campaign_outputs = {}, {}
+        campaign_cache, campaign_outputs, campaign_actors = {}, {}, {}
         report['campaign_content'] = []
         published_campaigns = set()
         for index, row in enumerate(rows, 1):
@@ -224,11 +224,13 @@ def convert(package, destination, *, scene_ids=(), scene_keys=(), profiles=(),
                         ir = read_campaign(root, inventory, row, cache=campaign_cache)
                         ir = resolve_spells(ir, spells)
                         ir['package_id'] = report['package_id']
+                        # Keep actor ownership context scoped to this Adventure; never infer from disposition.
+                        campaign_actors[campaign_key] = [d['payload'] for d in ir['documents'] if d['kind']=='Actor' and d.get('adventure_id')==_parent_adventure_id(row)]
                         campaign_outputs[campaign_key] = campaign_files(ir, root, notes_folder=scene_names['notes_folder'],
                             spell_root=spells['root'] if spells else None)
                         report['campaign_content'].append(campaign_outputs[campaign_key][1])
                     conversion = build_direct(root, document, row, report['package_id'], folder / 'native-package.zip',
-                                              names=scene_names, pdf_pages=selected_pdf == 'pages', campaign=campaign_outputs[campaign_key])
+                                              names=scene_names, pdf_pages=selected_pdf == 'pages', campaign=campaign_outputs[campaign_key], actor_context=campaign_actors[campaign_key])
                     result.update(status='BUILT', artifact='native-package.zip', native_report=conversion)
                 members = read_package(folder / 'native-package.zip')
                 candidate = {n: d for n, d in members.items() if n.startswith('MyAssets/')}

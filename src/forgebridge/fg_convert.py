@@ -127,7 +127,7 @@ def convert_fg(package, destination, *, scene_ids=(), scene_keys=(), profiles=()
                 losses = list(result['losses']) + [
                     {'field': 'story', 'grade': 'manual', 'detail': 'FG story, encounter text and note pages are not converted in phase 2'},
                     {'field': 'environment', 'grade': 'manual', 'detail': 'FG ambient/tint settings are not mapped; native environment defaults are used'},
-                    {'field': 'fog-vision', 'grade': 'manual', 'detail': 'Native fog starts covered; FG exploration/vision is not converted'}]
+                    {'field': 'fog-vision', 'grade': 'manual', 'detail': 'Native fog configuration mapped separately where stored; saved FG explored masks are not converted'}]
                 if result['counts']['lights']:
                     losses.append({'field': 'native-light-rendering', 'grade': 'approximate',
                                    'detail': 'Native writer uses observed UVTT-import light defaults; source color/falloff equivalence is not established'})
@@ -136,11 +136,17 @@ def convert_fg(package, destination, *, scene_ids=(), scene_keys=(), profiles=()
                                    'detail': 'See-through non-door occluders are retained in UVTT, not emitted by the native writer'})
                 if omitted:
                     losses.append({'field': 'lights', 'grade': 'unsupported', 'detail': 'Native writer omitted lights without a positive radius'})
+                from forgebridge.visibility_ir import fg_visibility
+                from forgebridge.native_visibility import apply_visibility
+                files[names[row['key']]['map_path']], visibility = apply_visibility(
+                    files[names[row['key']]['map_path']], fg_visibility(source,entries[row['id']],result), namespace=scope)
+                losses += [{'field':l['feature'],'grade':l['grade'],'detail':l['summary'],**l} for l in visibility['losses']]
                 fg = {k: v for k, v in result.items() if k != 'uvtt'}
                 fg.update(pins=row['pins'], resampling={'source_size_px': result['size_px'],
                     'output_size_px': background['dimensions'], 'applied': result['size_px'] != background['dimensions']},
                     uvtt_pixels_per_grid=result['uvtt']['resolution']['pixels_per_grid'], losses=losses)
                 native = {'output_names': names[row['key']], 'source_type': 'fantasy_grounds', 'fantasy_grounds': fg,
+                          'visibility': visibility,
                           'counts': {'notes': 0, 'native_tokens': 0, 'unsupported_tokens': 0, 'native_pdf_pages': 0},
                           'native_map': {'name': names[row['key']]['map_name'], 'markers': 0, 'marker_labels': 'off',
                                          **synthesis['calibration']},
