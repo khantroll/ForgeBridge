@@ -40,7 +40,7 @@ def sequence(node, values):
     node.members['_items'].items=list(values);node.members.update(_size=len(values),_version=len(values))
 
 
-def music_track_info(schema, name, path):
+def music_track_info(schema, name, path, volume=.8):
     """Initialize the single Master stem emitted by this writer.
 
     Toolkit 0.5.1.18's file-import control creates Master at 80 percent.
@@ -54,7 +54,7 @@ def music_track_info(schema, name, path):
                  'Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]')
     pair_schema = {'name': pair_name, 'names': ['key', 'value'], 'types': [1, 0],
                    'infos': [None, 11], 'library_id': None}
-    pair = Node(pair_schema, {'key': 'Master', 'value': .8}, inline=True)
+    pair = Node(pair_schema, {'key': 'Master', 'value': volume}, inline=True)
     info.members['_trackVolumes'].members.update(Version=2, HashSize=3,
         KeyValuePairs=Array([pair], 3, pair_name))
     return info
@@ -130,9 +130,16 @@ def playlist_files(source, package, scope, *, folder='ForgeBridge', revision=Non
     basename=name if revision is None else name+'-v'+str(revision)
     base='MyAssets/Playlists/'+folder+'/'+basename
     files={};entries=[];losses=[];tracks=0;songs=[]
+    from forgebridge.playlist_settings import settings, gain
+    settings_report = settings(source, 'playlist', losses)
+    playlist_gain = gain(source.get('volume'), losses, 'playlist')
     sounds=source.get('sounds',[])
     if not isinstance(sounds,list) or len(sounds)>256:raise ValueError('Invalid/oversized playlist')
     for sound in sounds:
+        if not isinstance(sound,dict):
+            losses.append({'grade':'manual','feature':'playlist-track','summary':'Invalid song document; no settings inferred'});continue
+        track_settings = settings(sound, str(sound.get('_id', sound.get('name','Track'))), losses)
+        track_gain = gain(sound.get('volume'), losses, str(sound.get('_id',sound.get('name','Track'))))
         ref=sound.get('path');track_name=str(sound.get('name') or 'Track')
         try:
             safe,problem=_safe_ref(unquote(ref) if isinstance(ref,str) else ref)
@@ -151,17 +158,18 @@ def playlist_files(source, package, scope, *, folder='ForgeBridge', revision=Non
             sequence(song.members['_tracks'],[audio])
             files[songbase+'.rwfile']=Writer(schema['libraries']).write(song)
             files[songbase+'.rwmeta']=Writer(schema['libraries']).write(songmeta)
-            info=music_track_info(schema,track_name,songbase+'.rwmeta')
+            volume = (playlist_gain if playlist_gain is not None else 1.) * (track_gain if track_gain is not None else 1.) if playlist_gain is not None or track_gain is not None else .8
+            info=music_track_info(schema,track_name,songbase+'.rwmeta',volume)
             content=record(schema,'content');content.members.update(_filePath=songbase+'.rwmeta',_content=info)
             entry=record(schema,'entry');entry.members.update(_order=tracks,_value=content);entries.append(entry);tracks+=1
             songs.append({'source_id':sound.get('_id'),'source':ref,'source_sha256':hashlib.sha256(data).hexdigest(),
                           'native_file':songbase+'.rwfile','native_metadata':songbase+'.rwmeta','duration_seconds':duration,
-                          'bytes_preserved':True,'runtime_validation':'not performed'})
+                          'bytes_preserved':True,'native_master_volume':volume,'settings':track_settings,'runtime_validation':'not performed'})
         except (OSError,ValueError,InventoryFatal) as exc:
             losses.append({'grade':'manual','feature':'playlist-track','source':ref,'name':track_name,'summary':str(exc)})
     sequence(playlist.members['_songs'].members['_entries'],entries)
     files[base+'.rwpl']=Writer(schema['libraries']).write(playlist)
     files[base+'.rwmeta']=Writer(schema['libraries']).write(meta)
-    losses.append({'grade':'approximate','feature':'playlist','summary':'Ordered song references only; source loop, fades, channel, mode, volume and playback state require manual review; playback not runtime-validated'})
+    losses.append({'grade':'approximate','feature':'playlist','summary':'Ordered song references and normalized Master gain written; playback state/behavior and loudness curve not runtime-validated'})
     return files,{'playlists':1,'playlist':base+'.rwpl','source_id':source.get('_id',source.get('id')),
-                  'tracks':tracks,'songs':songs,'manual_tracks':len(sounds)-tracks,'losses':losses}
+                  'tracks':tracks,'songs':songs,'settings':settings_report,'manual_tracks':len(sounds)-tracks,'losses':losses}

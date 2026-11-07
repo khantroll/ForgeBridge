@@ -98,7 +98,7 @@ def campaign_files(ir, package, *, notes_folder, spell_root=None, foundry_data=N
     def loss(grade, feature, summary, **details): losses.append(dict(grade=grade, feature=feature, summary=summary, **details))
     # Missing external spells already carry one graded 'external-spell' loss;
     # their prose links stay as text without a second 'link' loss.
-    external_missing = set((ir.get('spell_source') or {}).get('unresolved_uuids') or [])
+    external_missing = set((ir.get('spell_source') or {}).get('unresolved_uuids') or []) | set((ir.get('compendium_source') or {}).get('unresolved_uuids') or [])
     for doc in docs:
         if doc['kind'] == 'Playlist': continue
         if doc['kind'] == 'Actor' and doc.get('format') != 'dnd5e-actor': continue
@@ -154,25 +154,37 @@ def campaign_files(ir, package, *, notes_folder, spell_root=None, foundry_data=N
             return target+'.rwmeta'
         except (OSError,ValueError,InventoryFatal) as exc:
             loss('manual','portrait',str(exc),source=ref);return None
+    table_reports=[]
     counts=dict(tables=0,actors=0,items=0,spells=0,playlists=0,tracks=0,manual_tracks=0)
     for doc in docs:
         p=doc['payload'];kind=doc['kind']; identity=(kind,doc['source_path'],doc['adventure_id'],doc['id']); path=paths.get(identity)
         fields=[];name=str(p.get('name') or doc['id'])
         if kind=='RollTable':
-            table=[]
-            for r in p.get('results',[]):
-                span=r.get('range',[])
-                if len(span)!=2:continue
-                runs=segments(str(r.get('name') or '')+'\n'+str(r.get('description',r.get('text',''))))
-                table.append((*span,[(s,link) for s,font,link in runs]))
-            try: fields.append(builder.table_field(name,table,1));counts['tables']+=1
+            from forgebridge.table_ir import ranges
+            try:
+                expanded,audit=ranges(p)
+                table=[]
+                for index,start,end in expanded:
+                    r=p['results'][index]
+                    reference=r.get('documentUuid') or ((str(r.get('documentCollection'))+'.'+str(r.get('documentId'))) if r.get('documentCollection') and r.get('documentId') else '')
+                    link_text=(' @UUID['+reference+']{Linked source document}') if reference else ''
+                    runs=segments(str(r.get('name') or '')+'\n'+str(r.get('description',r.get('text','')))+link_text)
+                    table.append((start,end,[(s,link) for s,font,link in runs]))
+                fields.append(builder.table_field(name,table,1));counts['tables']+=1
+                table_reports.append({'source_id':doc['id'],'status':'mapped',**audit,'native_ranges':[[a,b] for i,a,b in expanded]})
+                nonrolling=[r for r,n in zip(p['results'],audit['result_tickets']) if not n]
+                if nonrolling:
+                    runs=segments('\n\n'.join(str(r.get('name') or '')+'\n'+str(r.get('description',r.get('text',''))) for r in nonrolling))
+                    fields.append(builder.text_field('Non-rolling source entries',[(v,link) for v,font,link in runs],3))
+                if not audit['numeric_roll_preserved'] or audit['adjustments']:
+                    loss('approximate','roll-table','Native uniform tickets preserve supported probabilities, not original numeric dice results',source_id=doc['id'],formula=p.get('formula'),**audit)
             except ValueError as exc:
-                fields.append(builder.text_field('Table reference',[(text(json.dumps(p.get('results',[]))),None)],1))
-                loss('manual','roll-table','Cannot represent source ranges: '+str(exc),source_id=doc['id'])
-            fields.append(builder.text_field('Source roll settings',[(f"Formula: {p.get('formula')}; replacement: {p.get('replacement')}; weights/drawn/permissions are not automated.",None)],2))
-            maximum=max((r[1] for r in table),default=0)
-            if p.get('formula')!=f'1d{maximum}' or p.get('replacement') is not True or any(r.get('weight',1)!=1 or r.get('documentUuid') or r.get('documentId') for r in p.get('results',[])):
-                loss('approximate','roll-table','Native range table retained; source formula/weights/replacement/document draws require review (not repaired)',source_id=doc['id'],formula=p.get('formula'))
+                table_reports.append({'source_id':doc['id'],'status':'reference','source_formula':p.get('formula'),'reason':str(exc)})
+                fields.append(builder.text_field('Table reference',[(s,link) for s,font,link in segments(json.dumps(p.get('results',[])))],1))
+                loss('manual','roll-table','Cannot represent source probabilities: '+str(exc),source_id=doc['id'],formula=p.get('formula'))
+            fields.append(builder.text_field('Source roll settings',[(text(json.dumps({**{k:p.get(k) for k in ('formula','replacement','displayRoll')},'results':[{k:r.get(k) for k in ('range','weight','drawn','documentUuid','documentCollection','documentId')} for r in p.get('results',[])]},ensure_ascii=True)),None)],2))
+            for setting,value in [('replacement',p.get('replacement')),('drawn',[r.get('drawn') for r in p.get('results',[])]),('chained',[{k:r.get(k) for k in ('documentUuid','documentCollection','documentId')} for r in p.get('results',[]) if r.get('documentUuid') or r.get('documentId') or r.get('documentCollection')])]:
+                loss('manual','roll-table-'+setting,'Native range rolls do not reproduce source '+setting+' state/behavior; no source expression executed',source_id=doc['id'],source_value=value)
         elif kind=='Actor':
             if doc.get('format') != 'dnd5e-actor':
                 loss('unsupported','actor','Only dnd5e npc/character stat blocks supported',source_id=doc['id']);continue
@@ -215,7 +227,7 @@ def campaign_files(ir, package, *, notes_folder, spell_root=None, foundry_data=N
 
             if collapsed_fields:loss('approximate','actor-empty-layout','Empty rows without native active flags use zero-size zero-width text; native gap collapse awaits Toolkit check',source_id=doc['id'],fields=collapsed_fields)
             fields=[block]
-            image=portrait(a['portrait'])
+            image=portrait(a['portrait'],external=doc.get('external_system',False))
             if image:fields.insert(0,builder.media_field('Portrait',image,2))
             if a['biography']:fields.append(builder.text_field('Biography',[(s,link) for s,font,link in segments(a['biography'])],3))
             counts['actors']+=1
@@ -253,7 +265,7 @@ def campaign_files(ir, package, *, notes_folder, spell_root=None, foundry_data=N
     check_metadata_references(files)
     files['campaign-source-'+scope+'.json']=json.dumps(ir,ensure_ascii=True,sort_keys=True).encode()
     from collections import Counter
-    return files,{'scope':scope,'native_revision':NATIVE_CAMPAIGN_REVISION,'adventure_id':ir.get('adventure_id'),'spell_source':ir.get('spell_source'),'counts':{**counts,'notes':len(rows)},'documents':rows,'playlists':playlists,'links':links,'losses':losses,
+    return files,{'scope':scope,'native_revision':NATIVE_CAMPAIGN_REVISION,'adventure_id':ir.get('adventure_id'),'spell_source':ir.get('spell_source'),'compendium_source':ir.get('compendium_source'),'table_conversion':table_reports,'counts':{**counts,'notes':len(rows)},'documents':rows,'playlists':playlists,'links':links,'losses':losses,
                   'loss_counts':dict(Counter(l['grade'] for l in losses)),'runtime_validation':'not performed'}
 
 

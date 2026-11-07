@@ -191,7 +191,7 @@ def _bitmap(image_node):
     layers = image_node.find('layers')
     if layers is not None:
         for layer in layers.findall('layer'):
-            path = _text(layer, 'bitmap')
+            path = _text(layer, 'bitmap') or _text(layer, 'asset')
             if path:
                 return path, len(layers.findall('layer'))
     return _text(image_node, 'bitmap'), 1
@@ -354,7 +354,7 @@ def to_uvtt(source: ModuleSource, entry: dict, *, include_image=True, grid_size=
     if (_first(nodes, 'gridtype') or 'square').lower() not in ('square', ''):
         losses.append(('grid', 'unsupported', 'non-square (hex/iso) grid type'))
     if entry['layers'] > 1:
-        losses.append(('image', 'approximate', f"{entry['layers']} image layers; only the first bitmap layer is used"))
+        losses.append(('image', 'approximate', f"{entry['layers']} image layers; UVTT carries the first bitmap; native output audits additional layers separately"))
     frame = _Frame(width, height, true_ppg)
 
     walls, objects, portals = [], [], []
@@ -409,7 +409,7 @@ def to_uvtt(source: ModuleSource, entry: dict, *, include_image=True, grid_size=
     if lights:
         losses.append(('lights', 'approximate', 'FG bright/dim falloff reduced to one radius (the larger)'))
     if counts['lights_off']:
-        losses.append(('lights', 'approximate', f"{counts['lights_off']} lights saved as off are written as on"))
+        losses.append(('lights', 'approximate', f"{counts['lights_off']} lights saved off are retained in source metadata; native visibility applies the off state"))
     if origin == 'none':
         losses.append(('line_of_sight', 'manual', 'no line-of-sight/lighting data found for this map'))
     if entry['pins']:

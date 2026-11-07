@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- Resolve referenced dnd5e compendium actors/items with existing native campaign templates.
+- Map FG light RGB/intensity and bounded flat bitmap layers; report unsupported falloff/transforms.
+- Map playlist/song gain approximately; audit loop/fade/channel/mode separately as manual.
+- Convert weighted and simple-dice tables into native probability ranges; retain non-rolling entries and explicit state/chain losses.
+- All additions have file-level evidence only; no new Toolkit acceptance.
+
 ## v0.13.0 — 2026-11-07
 
 ### Checked in Arkenforge Toolkit (earlier check builds)

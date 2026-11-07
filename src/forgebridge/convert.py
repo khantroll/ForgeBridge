@@ -347,7 +347,7 @@ def main(argv=None):
     parser.add_argument('--notes-folder', help='Visible notes folder; default same as map folder')
     parser.add_argument('--map-name', action='append', default=[], help='SCENE_KEY=NAME; repeat per scene, or NAME for a single scene')
     parser.add_argument('--pdf', choices=('pages', 'references'), help='Default pages if pypdfium2 imports, otherwise references with a reported loss')
-    parser.add_argument('--dnd5e-system', help='Optional dnd5e system folder/ZIP or standalone spells JSON/NeDB/LevelDB pack; resolve exact spell UUIDs')
+    parser.add_argument('--dnd5e-system', help='Optional dnd5e system folder/ZIP or standalone spells JSON/NeDB/LevelDB pack; resolve referenced dnd5e spells, actors and items (standalone packs are spells only)')
     parser.add_argument('--foundry-data', help='Optional Foundry Data folder; read-only lookup for art paths outside the package')
     parser.add_argument('--install', action='store_true', help='Explicit add-only installation after building/review checks')
     parser.add_argument('--myassets', help='Actual MyAssets destination; required with --install')

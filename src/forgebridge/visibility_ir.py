@@ -90,7 +90,7 @@ def foundry_visibility(scene, actors=()):
 
 
 def fg_visibility(source,entry,result):
-    from forgebridge.fantasy_grounds import _metadata_nodes,_all,_first,_floats,_text,_Frame
+    from forgebridge.fantasy_grounds import _metadata_nodes,_all,_first,_floats,_text,_Frame,_color
     nodes,_=_metadata_nodes(source,entry);losses=[];lights=[];index=0
     def flag(value):return True if str(value).lower() in ('on','true','1') else False if str(value).lower() in ('off','false','0') else None
     enabled=flag(_first(nodes,'los'))
@@ -110,8 +110,24 @@ def fg_visibility(source,entry,result):
         anim=node.find('animation');kind=(anim.get('type') or anim.findtext('type') or anim.text or '').strip() if anim is not None else ''
         if not kind and node.find('flicker') is not None and (not (node.findtext('flicker') or '').strip() or flag(node.findtext('flicker')) is True):kind='flicker'
         if not kind and node.find('blink') is not None and (not (node.findtext('blink') or '').strip() or flag(node.findtext('blink')) is True):kind='blink'
+        colour,ok=_color(_text(node,'color'))
+        rgb=[int(colour[j:j+2],16)/255 for j in (2,4,6)]
+        intensity=1.
+        raw=_text(node,'intensity')
+        if raw is not None:
+            try:
+                value=float(raw)
+                if not math.isfinite(value) or not 0<=value<=2:raise ValueError()
+                intensity=value
+            except ValueError:loss(losses,'manual','fg-light-intensity','Invalid FG intensity; native default 1 retained',source_id='light.'+str(i),source_value=raw)
+        if not ok:loss(losses,'approximate','fg-light-colour','Missing/unreadable source colour; explicit white fallback',source_id='light.'+str(i),source_value=_text(node,'color'))
+        if colour[:2]!='ff':loss(losses,'manual','fg-light-alpha','ARGB alpha has no demonstrated native light-alpha equivalent; RGB kept',source_id='light.'+str(i),source_alpha=colour[:2])
+        loss(losses,'approximate','fg-light-colour-intensity','RGB components and scalar intensity mapped; renderer colour-space, gain and overbright equivalence not runtime-validated',source_id='light.'+str(i),source_colour=colour,source_intensity=raw)
+        loss(losses,'manual','fg-light-falloff','Outer radius mapped. Captured TileLightingProperties has no demonstrated near/far gain/falloff members; multi-radius list semantics not calibrated, so no invented fields',source_id='light.'+str(i),source_ranges_and_falloff=_floats(_text(node,'range') or '', 'FG range',even=False))
+        unknown={c.tag:c.text for c in node if c.tag not in ('position','range','color','intensity','on','type','vision','animation','flicker','blink')}
+        if unknown:loss(losses,'manual','fg-light-fields','Unmapped light configuration retained for review',source_id='light.'+str(i),fields=unknown)
         lights.append(dict(source_id='light.'+str(i),index=native_index,position=frame.point(*pos) if native_index is None else None,
-            radius=max(abs(v) for v in ranges) if native_index is None else None,darkness=negative,
+            radius=max(abs(v) for v in ranges),darkness=negative or (ok and rgb==[0.,0.,0.]),rgb=rgb,intensity=intensity,
             reveals=flag(_text(node,'vision')) is True,enabled=node.find('on') is not None,
             effect=animation({'type':kind},losses,'light.'+str(i))))
     tokens=[];seen=set()
