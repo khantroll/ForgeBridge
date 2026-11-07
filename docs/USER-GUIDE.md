@@ -1,10 +1,13 @@
 # ForgeBridge operator guide
 
-ForgeBridge discovers scenes in a Foundry package and builds native Arkenforge
-output with code-defined records. The default path needs no manual UVTT import,
-map export or calibration and no pre-existing imported map. Existing calibrated
-profiles remain optional advanced overrides. Every output still needs its own
-Toolkit check; this tool does not claim lossless campaign/behavior conversion.
+ForgeBridge turns Foundry v13/dnd5e packages and unencrypted Fantasy Grounds Unity
+modules into Arkenforge maps and notes. You do not need Python when using the
+Windows app, or a manual UVTT import/map export for normal conversion. Keep your
+original package: the report lists missing or approximate content.
+
+Current release: **v0.13.0**. The Toolkit trial has ended. Earlier observations and
+new file-level-only features are separated in [the release notes](RELEASE-NOTES-v0.13.0.md).
+Passing conversion is not proof of appearance, audio or player behavior in Toolkit.
 
 ## Easiest: download the Windows app
 
@@ -58,7 +61,7 @@ fence lines). You need Git and Python 3.12 or newer from python.org; 3.13 and
 cd C:\AMD                       # any folder you like
 git clone https://github.com/khantroll/ForgeBridge.git
 cd .\ForgeBridge                # git clone creates this folder; work inside it
-git checkout v0.11.0               # the tested release
+git checkout v0.13.0               # the tested release
 py -m venv .venv                # uses your newest installed Python
 .\.venv\Scripts\Activate.ps1
 python -m pip install .
@@ -97,120 +100,108 @@ CI runs the synthetic command.
 
 ## Graphical workflow
 
-After setup, run `forgebridge-gui`, double-click forgebridge_gui.pyw on Windows (it prefers .venv's
-Pythonw), or run `python -m forgebridge gui`. Tkinter must be installed. No web
-server or browser is needed.
+1. Open **ForgeBridge.exe**. Use **Choose folder** / **Choose ZIP** for a Foundry
+   package, or **Choose FG module** for a Fantasy Grounds `.mod` file. An unpacked
+   FG module folder can also be selected with Choose folder.
+2. For Foundry only, optionally choose the **Foundry Data folder** for missing
+   portraits/tiles, and the **dnd5e system folder / spells pack** for external spell
+   links. Both are explained below; leave them blank if you do not have them.
+3. Click **Discover scenes**. Nothing is selected automatically. Foundry rows
+   show the scene and parent Adventure; FG rows show map, module and grid status.
+   Ctrl-click the maps you want, or use **Select all** / **Clear**. Choosing one FG
+   map still brings across the module's supported campaign notes.
+4. For an FG **NEEDS_GRID** row, select it and choose **Squares across** or
+   **Pixels per square**. Supply a value you know; ForgeBridge does not guess.
+   **Include artwork (FG ART)** reveals pictures normally excluded from map discovery.
+5. Set **Map folder** and **Notes folder**, and double-click a map row or choose
+   **Rename selected maps** to change its name. Existing library map names must
+   be unique even across folders. The build summary shows the sanitized names used.
+6. Click **Choose where to save output**. Pick a parent folder and check the new
+   child folder shown under **Folder to create**; it must not already exist.
+   Leave optional profiles alone for the normal workflow. Foundry PDF handouts
+   become bounded note pages when the PDF checkbox is checked.
+7. Click **Build / export**. Read the counts and losses before using the output.
+   An FG build with no maps selected is notes-only; a Foundry build requires a
+   scene selection. A refused map or missing image is not silently replaced.
+8. To install, close Toolkit normally, then choose **Install reviewed native
+   outputs**. Select actual MyAssets and a separate backup folder. Review the
+   destination, added files and conflicts; confirm only a successful build. No
+   Toolkit launch or installation happens just because you build.
+9. Keep the backup and **uninstall.json** path from the result. Opening notes in
+   Toolkit can change their files; `--keep-changed` preserves those edits later.
 
-1. Choose the Foundry folder/ZIP and click Discover scenes.
-2. Discovery starts with nothing selected. Rows show scene — Adventure name
-   (pack folder), grouped by Adventure then scene name; without an Adventure
-   name, the pack folder is shown instead. Select scenes (Ctrl-click for multiple),
-   or use Select all / Clear. Pack/Adventure scope remains separate even if IDs match.
-   Map folder and Notes folder start with the first displayed Adventure name
-   (or package title, or ForgeBridge). Edit them as needed. Map names default to
-   scene names: double-click a selected row or use Rename selected maps to edit.
-   Names actually used after Windows sanitization appear in the build summary.
-3. Click Choose where to save output and select a parent folder; the app proposes
-   a new child folder and shows the full Folder to create path. Profiles are
-   optional overrides; default output uses schema-built native synthesis.
-4. Leave Convert PDF handouts into note pages checked for page images, or uncheck
-   it to keep references. Build/export and read the source-stage and native-stage
-   loss summary. Duplicate map names require renaming before building; no hash
-   suffix is added. Existing destination map names are shown before installing.
-5. Review before using Install reviewed native outputs. Select actual MyAssets
-   and a separate existing backup folder; keep Toolkit closed and confirm the
-   displayed destination/backup summary. Rejected/UVTT-only results cannot install.
-   Opening notes in the Toolkit can change them; uninstall with --keep-changed
-   later keeps those edits.
-
-Wait for file work to finish before closing. The GUI has headless controller
-coverage, but was not launched/visually validated by Codex in this session.
+Wait for file work to finish before closing ForgeBridge. With a Python install,
+`forgebridge-gui` or `python -m forgebridge gui` opens the same interface.
 
 ## Command-line conversion and output
 
-### Fantasy Grounds modules
+### Fantasy Grounds walkthrough: one module → maps and notes
 
-Use Choose FG module in the GUI, or give convert a `.mod`, an unpacked folder
-containing `definition.xml`, or an unencrypted vault-style ZIP containing one
-module under `modules/<name>/`. Detection is automatic; Foundry inputs retain
-their existing workflow. FG normally keeps `.mod` files in
-`%APPDATA%\SmiteWorks\Fantasy Grounds\modules` (AppData is hidden in Explorer;
-paste this path into Explorer's address bar). Store and Forge `vault` content is
-encrypted and **not supported**. Export an unprotected module from your own
-campaign instead; ForgeBridge never bypasses protection.
+Find your `.mod` under `%APPDATA%\SmiteWorks\Fantasy Grounds\modules`.
+AppData is hidden: paste that path into Explorer's address bar. Copy the module
+somewhere convenient if desired; ForgeBridge reads it without modifying it.
+Choose an **unencrypted** module. Protected Store/Forge/vault content is refused;
+ForgeBridge cannot unlock it. A folder containing `definition.xml` and `db.xml`,
+or an unencrypted vault-style ZIP containing one module, is also accepted.
 
-```powershell
-forgebridge convert "C:/Sources/MyModule.mod" --list-scenes
-forgebridge convert "C:/Sources/MyModule.mod" --scene-key KEY --squares 40 --out "C:/Conversions/FG-01"
-```
+For example, choose My Adventure.mod, click Discover scenes, select one READABLE
+map, name both output folders My Adventure, and build into a new folder. That
+**single build includes the selected maps and the module's supported notes**.
+There is no need to combine separate map/note ZIPs yourself.
 
-FG rows show the map name, module, READABLE/NEEDS_GRID/ART status and pixels per
-square when known. ART pictures are hidden by default; CLI --include-art or the
-GUI Include artwork (FG ART) checkbox lists them. Selecting ART does not invent
-a grid. For NEEDS_GRID, select the row and choose Squares across or Pixels per
-square. CLI --squares KEY=N and --grid-size KEY=PX may repeat per selected map;
-the bare value works only when exactly one map is selected. A stored gridsize
-always wins. Missing grids refuse that map; no grid is guessed. Fractional grids
-resample the background to whole UVTT pixels per square, with source/output
-dimensions and the approximation recorded.
+| Discovery status | What to do |
+|---|---|
+| READABLE | Stored image/grid can build. Select the map. |
+| NEEDS_GRID | Enter known squares across or pixels per square before building. |
+| ART | Normally a handout, not a calibrated map. Leave it as an image note; show artwork and supply a grid only if you intend a map. |
+| BLOCKED | Read the reason; do not install a partial result. |
 
-Map folder defaults to the module display name, then its name; map name defaults
-to the image record name. The same --map-folder, --notes-folder and keyed
---map-name overrides, Windows sanitization and clash rules apply. Native output
-uses the existing 2.56 units/grid writer. FG pins, story, tokens, ambient/vision
-and unsupported occluders remain explicit manual/unsupported losses; no Foundry
-note/token stages run. Notes folder is reserved for future FG notes, not populated
-with invented content. FG wall counts describe source polylines; native record
-counts describe their straight segments. Native door counts include see-through
-window portals. Source counts, metadata source, pixels/square, resampling and
-graded FG losses appear in conversion-report.json and the GUI summary.
+The stored FG grid always wins over an override. Unsupported layers, transforms,
+terrain and environment settings remain report losses. Maps without a known grid
+are not assigned a guessed scale. Your build includes available NPC/item/spell,
+story, table, manual, parcel, quest and image notes even when a map does not use them.
 
-The same explicit --install flags and GUI reviewed installer use full backups,
-refuse conflicts, and create receipts supporting uninstall/--keep-changed. Never
-install a PARTIAL build. FG native output has synthetic/file-level coverage;
-Claude's Toolkit check remains required for a new output.
-
-#### NPCs, items and story
-
-Map conversion does not write these notes. A separate command does, and only
-from text stored in the module. Output is file-level only; Toolkit check
-pending. Passing tests prove files and receipts, not that notes appear in the
-Toolkit.
+Command-line equivalent (use the printed key for the map you selected):
 
 ```powershell
-python -m forgebridge.fantasy_grounds "C:/Sources/MyModule.mod" --campaign-out "C:/Conversions/FG-notes"
-python -m forgebridge.fantasy_grounds "C:/Sources/MyModule.mod" --campaign-out "C:/Conversions/FG-notes" --install --myassets "C:/ArkenforgeData/MyAssets" --backup-root "D:/ForgeBridgeBackups"
+forgebridge convert "C:/Sources/My Adventure.mod" --list-scenes
+forgebridge convert "C:/Sources/My Adventure.mod" --scene-key MAP_KEY --out "C:/Conversions/Adventure-01" --map-folder "My Adventure" --notes-folder "My Adventure"
 ```
 
-`--campaign-out` writes the loose MyAssets tree, `fg-campaign-report.json`, and
-an installable `native-package.zip`. That zip uses the same review, full
-backup, uninstall receipt and `--keep-changed` path as Foundry native packages
-(`forgebridge install --package …` also accepts it). `--install` requires
-`--myassets` and `--backup-root`; Toolkit must stay closed.
+For one selected map without a grid, add `--squares 40` or `--grid-size 100` only
+when those values are correct for your map. With multiple maps, use repeated
+`--squares KEY=N` / `--grid-size KEY=PX`. To convert only campaign notes:
 
-What it writes (file-level only, Toolkit check pending):
+```powershell
+forgebridge convert "C:/Sources/My Adventure.mod" --notes-only --out "C:/Conversions/Adventure-notes-01"
+```
 
-- Each NPC becomes a 5e Character note: armor class, hit points, speed, ability
-  scores, saves, skills, senses, languages, traits, actions, reactions and
-  legendary actions. Walk speed is listed first. Repeated languages are kept
-  once. An attack bonus is ability modifier + proficiency + item bonus when
-  the module stores the ability. A different stored total is left as written.
-- Each item becomes a 5e Item note. A spell item becomes a 5e Spell note only
-  when the module itself contains the spell text. A name that only points at
-  another FG library is skipped.
-- Each story or encounter entry with text becomes one note. Links between
-  those NPCs, items and story entries are kept. An image stored in the module
-  is attached. A path that leaves the module is not opened.
-
-What stays a loss, with the reason in `fg-campaign-report.json`:
-
-- Missing scores, hit points, challenge rating, descriptions or story text.
-- Bonus actions share the actions list, because the 5e Character note has no
-  bonus-action field. Lair actions are not placed.
-- Map pins, tokens on maps, and the map file itself are unchanged by this
-  command. Do not treat a passing test as proof the Toolkit shows the note.
+The output's root **native-package.zip** is the coherent installable package;
+`MyAssets/` contains its native files and `conversion-report.json` contains the
+counts and losses. Use the same reviewed installer/uninstall receipt workflow
+below. Missing external-module text/images stay losses; no replacement is invented.
+A map pin opens its converted note. Tokens keep portraits and Size controls;
+open the corresponding NPC note separately, because adding its link changes the
+observed token appearance into a note pin.
 
 ### Foundry packages
+
+Use a Foundry v13 package folder or ZIP. In the GUI, discover scenes and select
+only the Adventure/maps you want; 5e and SA variants are listed separately.
+
+The **optional Foundry Data folder** is the user-data folder containing `modules`,
+`worlds` and `systems`, not the Foundry program folder or just an arbitrary image
+folder. A common location is `%LOCALAPPDATA%\FoundryVTT\Data`; your server may
+use another location. Use **Choose Foundry Data folder** if you have that matching
+folder. This can supply art referenced outside the adventure package. It is read
+only; missing/unsafe files still appear as losses. If you only have the adventure
+ZIP, skip it. The new lookup is file-level tested, not seen in Toolkit.
+
+The separate **optional dnd5e system/spells pack** supplies exact external spell
+IDs. Use an unzipped compatible system folder or its `packs/spells`, not the Data
+folder itself. Missing spells remain explicit links/losses without this input;
+monsters/items from other system packs are not resolved yet. See the spell
+walkthrough below for the tested free download.
 
 ```powershell
 python -m forgebridge convert "C:/Sources/MyModule.zip" --list-scenes
@@ -270,6 +261,28 @@ ZIP, UVTT ZIP, original companion and readable notes. Reports/original PDFs stay
 outside MyAssets. Missing completion report means incomplete publication: preserve
 it for inspection and choose a fresh destination after fixing the cause.
 
+## What campaign content comes across?
+
+| Source content | Native result and limits |
+|---|---|
+| Scenes/maps | Background, supported barriers/doors/lights, map name/folder and available placements. Source grids/padding are normalized. |
+| Journals, FG stories/manuals/handouts | Notes with readable text, converted local links and available image attachments; original interactive formatting is flattened. |
+| dnd5e NPCs/characters | Display stat-block notes, available portrait, tracked HP and abilities/actions/reactions/legendary actions. Not combat/actor automation. Legacy FG stats are source display text, not a new supported game system. |
+| Items/spells | Item/Spell notes from available source text/images; exact Foundry spell-compendium links need the optional spell pack. |
+| Roll tables | Native range-table notes and available result links; formulas, weights and chained rolls need review. |
+| FG parcels/quests | Reward/item/currency/status text as notes, without inventory/reward automation. |
+| Playlists | Available local MP3/OGG song bytes and ordered playlist entries. Loop/fade/channel/volume/mode need manual review. |
+| Static and animated tiles | Supported images, GIF/PNG/WebP animation frames and WEBM VP9/MP4 H.264 video with placement; unsupported codecs/limits become losses. |
+| Ambient sounds | Supported Foundry OGG/MP3/PCM-WAV positioned on the map; radius/volume mapped, easing/walls approximate. |
+| Tokens/map pins | Supported square portrait tokens and note-opening markers. Automatic token-to-NPC bindings are omitted to preserve portraits. |
+| Foundry PDFs | Bounded page-image notes by default with renderer available; source-only references when selected or limits refuse rendering. |
+
+For a selected Foundry Adventure, shared supported actors/items/tables/playlists
+come across once, not only records reached from a selected map. Read
+`campaign_content`, `native_losses`, `static_tiles`, `ambient_sounds` and
+`visibility` in the report. Hashes prove input identity, not native behavior.
+Labels remain off; scripts, active effects and source automation never execute.
+
 ## Supported / manual / unsupported
 
 | Feature | Scope |
@@ -277,58 +290,48 @@ it for inspection and choose a fresh destination after fixing the cause.
 | Geometry/background | Direct native maps, barriers, doors, lights, background assets and browser previews from known schemas; no native files shipped. |
 | Notes and tokens | Existing journal/table/image/marker/token writers; supported square/static tokens preserve identity, position, footprint, scale, rotation and hidden state. |
 | Non-success | Invalid marker positions/targets, unsupported token geometry/scales, source/media gaps and unsupported light ranges remain explicit. |
-| Light fidelity | Uses observed Toolkit UVTT-import color/intensity defaults; independent Foundry color/intensity/animation mapping not claimed. |
+| Light fidelity | Observed light defaults plus bounded Flicker/Blink/darkness flags; unsupported animation and scene darkness stay manual. New effects are file-level only. |
 | Scene motion / audio | Synthesized Foundry scenes support captured WEBM VP9 / MP4 H.264 video, animated GIF/PNG/WebP frames, and OGG/MP3/PCM-WAV map sounds. Codec/size and timing limits apply; new output needs Toolkit validation. Procedural light animation remains separate. |
-| Fog/vision | Fresh native manual fog starts covered. Foundry exploration, vision/detection and token vision aren't converted. |
-| Actors/behaviors | Source retained/reported; full actors/stats/combat/automation remain gaps. No script execution. |
+| Fog/vision | Native configuration and bounded character sight/effects are written at file level. Historical exploration masks, complete detection/permissions and runtime equivalence remain gaps. |
+| Actors/behaviors | Supported stat-block notes are display content; full actor/combat behavior remains a gap. No script execution. |
 | Labels | Off. Player behavior cannot be inferred from GM view. |
 
 Advanced profile/capture/batch workflows remain in SCENE-PROFILES.md,
 NATIVE-CAPTURE.md and SCENE-BATCH.md. Don't repin hashes just to clear errors.
 
-## Installation, backups and recovery
+## Install, back up and uninstall
 
-Toolkit must stay closed; wait for the launcher to stop saying Running Arkenforge
-Toolkit before relaunching. Keep Toolkit/launcher/helper non-elevated.
+Building creates files only. Installation is a separate reviewed action and
+requires Toolkit to be **closed normally**; ForgeBridge will refuse while it is
+running. Choose actual MyAssets, usually
+`C:\Program Files (x86)\ArkenforgeData\MyAssets`, and a **separate backup folder**.
+The installer backs up the entire existing MyAssets first, which needs disk
+space. It adds absent files and reuses identical dependencies; different existing
+bytes or duplicate library map names are conflicts, not overwrite requests.
+Rename/rebuild or resolve the report deliberately; never Replace All.
 
-```powershell
-python -m forgebridge convert "C:/Sources/MyModule.zip" --out "C:/Conversions/MyModule-02" --install --myassets "C:/ArkenforgeData/MyAssets" --backup-root "D:/ForgeBridgeBackups"
-```
-
-This deliberately authorizes add-only installation after build/conflict checks;
-it does not pause for review. Prefer build-only plus the explicit install command
-in SCENE-IMPORT-RELEASE.md when you want to review first. A full MyAssets backup
-comes before copying; conflicts/running Toolkit/inspection failure refuse writes.
-Only absent files are added; identical files untouched. Backups are separate,
-existing folders. No permission/security changes or automatic elevation.
-
-The backup run holds hashes and an uninstall receipt. Review later references
-and preserve later edits before:
+After a successful GUI install, copy the displayed **uninstall.json** path to
+your notes. Keep that file and its backup folder. CLI users can install an
+already built combined package (the Windows app uses forgebridge-cli.exe):
 
 ```powershell
-python -m forgebridge install --uninstall "D:/ForgeBridgeBackups/forgebridge-RUN_ID/uninstall.json"
+.\forgebridge-cli.exe install --package "C:\Conversions\Adventure-01\native-package.zip" --myassets "C:\Program Files (x86)\ArkenforgeData\MyAssets" --backup-root "D:\ForgeBridgeBackups"
 ```
 
-Only recorded unchanged additions are removed. Edited/missing additions block
-removal; existing content, later user files, directories and backups remain.
-
-Opening a converted note in the Toolkit can rewrite its file, so after real use a
-plain uninstall may refuse with "Added file changed/missing". To remove
-everything that is still exactly as installed and keep the changed files (they
-are listed, and recorded in the receipt), add `--keep-changed`:
+To undo this install, close Toolkit again. Open PowerShell in the extracted app
+folder, paste your **actual receipt path**, and run:
 
 ```powershell
-forgebridge install --uninstall "D:/ForgeBridgeBackups/forgebridge-RUN_ID/uninstall.json" --keep-changed
+.\forgebridge-cli.exe install --uninstall "D:\ForgeBridgeBackups\forgebridge-RUN_ID\uninstall.json" --keep-changed
 ```
 
-Delete the listed kept files yourself afterwards if you do not want them.
-
-Uninstall also removes folders the install created once they are empty; folders
-that still hold kept or later files stay. Running `--uninstall` again on a
-receipt that was already uninstalled only tidies such empty folders (useful for
-receipts from v0.9.0, which left empty folders behind); it never deletes files.
-INCOMPLETE receipts require manual review. Restore only reviewed affected backup
-files with Toolkit closed; never Replace All or blind folder synchronization.
+`--keep-changed` removes the install's unchanged files and keeps edited ones,
+listing them in the result. Opening a note in Toolkit can rewrite it, so a kept
+note does not necessarily mean you edited its text. Kept files may remain visible;
+review them later in a licensed Toolkit. No unrelated files or backups are removed.
+Without this option, changed files cause a refusal. Do not delete edits to bypass it.
+Only empty folders created by that install are tidied. Incomplete receipts need
+manual review; never restore a whole backup over later work blindly.
 
 ## Spells that need the free dnd5e system download
 
@@ -357,8 +360,8 @@ free dnd5e system download, which is about 108 MB.
 
 1. Open the dnd5e releases page:
    <https://github.com/foundryvtt/dnd5e/releases>
-2. Find the newest release that is **not** marked *Pre-release*. As of
-   November 2026 that's **6.0.6**. Under **Assets**, download
+2. The recorded check used **6.0.6**. For that tested setup, open its release
+   and, under **Assets**, download
    `dnd5e-release-<version>.zip`, for example
    [dnd5e-release-6.0.6.zip](https://github.com/foundryvtt/dnd5e/releases/download/release-6.0.6/dnd5e-release-6.0.6.zip).
 3. **Unzip it** to a folder, for example `C:\Foundry\dnd5e`. Right-click the zip
@@ -376,8 +379,9 @@ free dnd5e system download, which is about 108 MB.
      forgebridge convert "C:\Adventures\counts-manor" --out "C:\ForgeBridge\counts-manor-out" --dnd5e-system "C:\Foundry\dnd5e"
      ```
 
-5. Check the report. The missing-spell entries are gone, and each linked
-   spell is now its own 5e Spell note that the scroll or monster note links to.
+5. Check the report. Supported exact spell IDs become 5e Spell notes linked
+   from their scroll or monster note. Any unresolved spell stays listed; do not
+   assume a different system release contains the same IDs.
 
 **Already have Foundry installed?** You can skip the download and pick your
 existing system folder, `<Foundry user data>\Data\systems\dnd5e`. Its spells are
@@ -408,31 +412,15 @@ in `Data\systems\dnd5e\packs\spells`.
 
 ## Troubleshooting
 
-Foundry campaign content is included automatically for the selected Adventure:
-all roll tables, supported dnd5e actor stat blocks, item/spell notes and playlists,
-alongside the chosen scenes. Shared content is counted once in
-`conversion-report.json` → `campaign_content`; per-scene reports list static
-tiles and omitted token-link losses. Token portraits use the v0.10 Size/icon
-notes; adding stat links caused note-marker rendering in Toolkit, so actor
-notes remain separate. Review the graded losses before installing. Stat
-blocks are display content, not actor automation. Missing portraits stay manual.
-Local MP3 and OGG Vorbis tracks are embedded unchanged, retaining their original
-format; no encoder or Toolkit ffmpeg is needed. Jeffrey confirmed native MP3
-and OGG playback in Toolkit 0.5.1.18; each rebuilt playlist still needs listening. New campaign fields, playlists
-and tile placements still require Toolkit acceptance. See
-[native campaign details](NATIVE-CAMPAIGN-CONTENT.md).
-Playlists now use their display-name filenames inside the chosen notes folder
-in `MyAssets/Playlists`, with current Toolkit user metadata. Listing and playback
-await recheck. Corrected generated notes use revision-scoped `Campaign-vN-` filenames; edited
-predecessors kept by uninstall remain preserved and are not overwritten. Campaign
-playlist filenames also carry the internal revision while their displayed names
-remain unchanged.
+Build into a new output folder and review the loss report first. The guide and
+release notes separate historical Toolkit observations from post-trial file checks.
+See [native campaign details](NATIVE-CAMPAIGN-CONTENT.md) for implementation notes.
 
 | Symptom | Action |
 | --- | --- |
 | Conflict/existing output | Select a new output; preserve/review user edits. Never overwrite to clear it. |
 | Hash mismatch with advanced profile | Restore pinned inputs or deliberately recapture the correct profile; no blind repinning. |
-| ICE/unstable Toolkit | Stop projection, close normally, use Claude's built-in browser at http://127.0.0.1/ with Waterfox/Chrome player tabs closed. This is an observed browser/session pattern, not a proved cause or converter defect. |
+| ICE/unstable player stream | Check output/projection settings in a licensed Toolkit. A recorded browser/session pattern is in the validation notes; it is not a proved converter defect or a universal browser fix. |
 | Relaunch fails | Wait until the launcher no longer reports Toolkit running; no duplicate/elevated instances. |
 | Black player view with fog text | Check native fog and framing on a disposable copy; fog-off and bounded reveal/persistence are distinct checks. Preserve original profile maps. |
 | Windows LevelDB .dbtmp error | Retain diagnostics and stop that operation. Host intermittency remains unresolved despite clean CI; no blind retries, new probes or automatic Defender/indexer exclusions. Jeffrey owns exception decisions. |
@@ -440,38 +428,9 @@ remain unchanged.
 | Size limit | Export/select fewer scenes. Backup: 16 GiB/100k entries; combined review: 1 GiB/16384 native files; conversion tree: 1 GiB/16384 files. |
 | PDF renderer absent | Keep PDFs manual, or install optional PDF requirements. Skips are not renderer acceptance. |
 
-Runtime checks belong to Claude; see ACCEPTANCE-MATRIX.md and his direct-map
-note. This guide adds no Toolkit observations or M1 acceptance claims.
+The trial has ended; future native checks require Toolkit access. This guide adds no new runtime observations.
 
-### Fantasy Grounds maps and campaign notes together
-
-Run `forgebridge convert "My Adventure.mod" --out "C:/Conversions/Adventure-01"`
-to build its NPC/item/spell/story notes alongside selected calibrated maps. The
-root `native-package.zip` is the coherent installable output. Use the existing
-`--map-folder`, `--notes-folder`, `--map-name`, review and add-only `--install`
-options. `--notes-only` writes notes without maps. In the GUI, discover the module,
-select maps (or leave the selection empty for campaign notes only), set any
-missing grids, choose a new output folder and build; review losses before install.
-
-Pins link to converted stories when their record and coordinates are supported.
-Placed tokens retain available module portraits; their NPC-note targets are
-listed in the report, but automatic NPC links are omitted to preserve portraits.
-Images without grids become note attachments; ForgeBridge never guesses a grid.
-External-module images and links stay losses. Older non-5e stats are displayed as
-source text in the native template, without translating their mechanics to 5e.
-All new map-placement behavior needs Toolkit review. Labels remain off.
-
-FG campaign output also includes range-table notes, reference-manual chapters/pages
-with navigation links, treasure-parcel and quest notes, and image handouts.
-Multiple result columns are kept together with their labels. FG roll formulas,
-modifiers, hidden rolls, chained table rolls and parcel/quest reward automation
-are not inferred: read their graded losses and source settings. Unsupported or
-overlapping ranges become reference text rather than altered rolls. Unknown
-record types are listed individually. Protected modules are always refused.
-
-FG wildcard (`@*`) record links resolve only to a unique converted local target.
-They do not trigger other-module loading; unavailable targets remain explicit losses.
-### Animated map tiles and ambient sounds (development branch)
+### Animated map tiles and ambient sounds: supported limits
 
 Normal Foundry `convert` writes supported tiles and AmbientSound documents into
 the same native scene package. Read `native_counts.animated_tiles` /

@@ -1,54 +1,59 @@
-# Scope check — 2026-11-05 (after v0.12.0)
+# Scope check — updated for v0.13.0, 2026-11-07
 
-Built from every loss line the code can emit (`src/forgebridge/*.py`), the
-validation record, BUILD-MAP, ACCEPTANCE-MATRIX and the open PRs (#30, #31).
-`docs/ROADMAP.md` and `docs/COMPLETION-ROADMAP.md` are from 2026-10-31 and are
-stale (they predate PR #8's merge and every release); this file supersedes them
-for planning.
+This keeps the A/B identifiers from the 2026-11-05 scope review. It supersedes
+stale roadmap planning; historical validation is not rewritten. **The Toolkit
+trial ended 2026-11-06. All new release evidence is file-level.** Native schema
+reference: Toolkit 0.5.1.18 on Windows. “Done” below distinguishes implementation
+from observed runtime behavior; hashes and CI are not runtime validation.
 
-Toolkit trial ends **Friday 2026-11-06 evening**. "Toolkit" below means the item
-can only be proven inside Arkenforge.
+## A. Toolkit-dependent scope — implementation and recorded observations
 
-## A. Before the trial ends (Toolkit)
-
-| # | Item | Source | State |
-|---|---|---|---|
-| A1 | Animated/video tiles + Foundry ambient sounds, cosmetic stat-block gaps | PR #31 | Installed as *FB Motion Check*; needs Toolkit look + listen |
-| A2 | **Fantasy Grounds on real modules** | PR #32; `fg_campaign.py` | Real unencrypted Well Met, SRD Bestiary and Magic Items builds completed at file level; refreshed full-record runs completed and documented in `validation/2026-11-06-FG-FULL-RECORDS.md`. Real Toolkit note checks pending; Well Met is 3.5E display-only |
-| A3 | FG map **pins** → room markers | PR #32; `fg_scene.py` | Bounded FGU shortcut adapter implemented and tested with owned fixtures; real source has no pins, coordinate/runtime check pending |
-| A4 | FG placed **tokens** | PR #32; `fg_scene.py` | Portrait/size/rotation/hidden placement tested at file level. NPC association reported; binding omitted because native linked text changes portrait rendering. Real source has no placements |
-| A5 | FG combined maps + notes + markers + tokens, GUI | PR #32 | Implemented through convert/GUI and standard review/add-only install; explicit notes-only mode; missing grids refused |
-| A6 | Missing Foundry art from a Data folder | PR #30 | File-level done; Toolkit look optional |
-| A7 | **Foundry fog, vision and light animation** (Jeffrey 2026-11-05: in scope) | Native schema has light `_flicker`, token `_vision`, manual/visible-through-fog flags | Capture native fog/vision/animation controls in the Toolkit first (before trial ends), then map Foundry token sight, scene fog/darkness and light animation types; FG vision/LOS the same way |
-
-## B. Should do next (file-level is enough, or low risk)
-
-| # | Item | Notes |
+| # | Item | State / evidence |
 |---|---|---|
-| B1 | FG **tables** → rollable-table notes | PR #32: range rows, column text and result links; native rolls differ from unsupported FG dice/settings, reported explicitly; real Magic Items contains 29 tables |
-| B2 | FG **parcels, quests, reference manuals, image handouts** | PR #32: implemented with record-level unknown-type losses. Real manual pages/chapters and handouts plus owned parcel/quest regressions; runtime pending |
-| B3 | Foundry **system-compendium monsters/items** (links into dnd5e packs other than spells) | Spells resolve via `--spell-pack`; other compendium links stay as text |
-| B4 | FG light/environment details | Lights saved off written on; bright/dim falloff collapsed; ambient/tint not mapped; only first bitmap layer; grid offset ignored |
-| B5 | Foundry playlist settings | Loop, fade, channel, volume, mode → manual review today |
-| B6 | Roll-table formula/weights | Native range table kept; weighted/formula tables need review |
-| B7 | Release v0.13.0 | After #30/#31 (+ FG work): notes, tag, ZIP |
-| B8 | User guide | No Fantasy Grounds or campaign-content walkthrough yet for non-developers |
-| B9 | Cleanup | FB test maps/notes in MyAssets; stale roadmap docs (this file replaces them); retire script missing |
+| A1 | Animated/video tiles, ambient sounds, cosmetic stat rows (#31) | Motion and placed audio **observed PASS** on the owned FB Motion Check, 2026-11-06. Empty-row collapse is implemented/file-level only, not visually passed. |
+| A2 | FG real modules (#32) | **Implemented.** Well Met, SRD Bestiary and Magic Items rebuilt; 50/351/1728 notes, matching prior counts. Sampled real Blood Priest/story notes observed; not every note in every module checked. Well Met is legacy 3.5E display-only. |
+| A3 | FG pins → native note markers | **Implemented; owned pin-to-story observed PASS.** Real Well Met has no source pins; do not attribute owned controls to it. |
+| A4 | FG placed tokens | **Implemented; owned portrait/size controls observed PASS.** Supported placement/rotation/hidden fields have file coverage. Automatic NPC binding omitted to preserve portraits; complete player/persistence behavior not newly proved. |
+| A5 | Combined FG maps + notes + markers + tokens, GUI | **Implemented.** Same convert/review/add-only path, plus explicit notes-only mode. Missing grids refused; no manual ZIP surgery. |
+| A6 | Optional Foundry Data art folder (#30) | **Done at file level only.** Safe read-only lookup; missing art stays loss. Not seen in Toolkit. |
+| A7 | Fog, vision and light animation (#33) | **Done bounded implementation at file level only.** Captured Dynamic fog/persistence, character revealing lights, approximate darkvision, Flicker/Blink and negative-light flags; stored FG LOS/sight/effects share the path. No historical masks, full vision/detection permissions or calibrated scene darkness. Simulate darkness is Toolkit-wide. |
 
-## C. Decisions for Jeffrey (not engineering)
+Historical native observations: [2026-11-06 Toolkit check](../validation/2026-11-06-TOOLKIT-CHECK.md)
+and [v0.12 display check](../validation/2026-11-05-V0120-TOOLKIT-CHECK.md).
+Post-trial FG text/gap corrections and duplicate-identity vision guards are
+[file-level only](../validation/2026-11-06-FG-DISPLAY-FIXES.md).
 
-| # | Decision | Why it matters |
+## B. File-level / low-risk engineering and release work
+
+| # | Item | State / what remains |
 |---|---|---|
-| C1 | Buy Arkenforge after the trial? | Without it, every later feature is file-level only — the level that missed the playlist bug |
-| C2 | Release/announce publicly | **Decided 2026-11-05: only after feature complete (A and B done)** |
-| C3 | More game systems | **Decided 2026-11-05: not now** (dnd5e only) |
-| C4 | Code-sign the `.exe` | SmartScreen warns on first run |
-| C5 | Older Foundry versions | **Decided 2026-11-05: v13 only for now** |
+| B1 | FG tables → rollable-table notes | **DONE implementation/file-level.** 29 real Magic Items tables; ranges, columns and converted links. Formula/weight/roll equivalence remains B6, not silently declared complete. |
+| B2 | FG parcels, quests, manuals, handouts | **DONE implementation/file-level.** Real manual navigation/pages/handouts and owned parcel/quest regressions; unknown record types have explicit losses. Broad runtime acceptance pending. |
+| B3 | Foundry system-compendium monsters/items | **OPEN.** Beyond spells, dnd5e system-pack actor/item references remain losses. Optional spells use `--dnd5e-system`; no automatic external-module guesses. |
+| B4 | FG light/environment fidelity | **PARTIAL.** Off lights, stored LOS/sight and recognized effects now mapped at file level. Bright/dim falloff, source color/intensity, ambient/tint, additional bitmap layers/transforms and grid-offset fidelity remain. |
+| B5 | Foundry playlist settings | **OPEN.** Preserve/map loop, fade, channel, volume, mode and playback state beyond ordered playable song references. |
+| B6 | Roll-table formulas/weights | **OPEN.** Range-table notes exist; nontrivial formulas, weights, replacement/drawn state and chained roll behavior need a supported mapping or explicit review. |
+| B7 | Release v0.13.0 | **PUBLISHING.** Version/docs and CI-gated Windows ZIP release prepared; close after tag, published asset and clean-unzip version checks. |
+| B8 | Non-developer user guide | **DONE.** FG one-build walkthrough, Foundry Data folder, optional spell pack, campaign-content summary, reviewed install and keep-changed uninstall. |
+| B9 | Cleanup | **OPEN.** Existing FB test maps/notes and receipts remain preserved. Toolkit cleanup needs licensed access and review; missing Retire-ForgeBridgeTestContent.ps1 was not replaced with broad deletion. Old roadmap files are superseded by this scope check; reconcile/archive them deliberately. |
 
-## D. Out of scope by design (keep as reported losses)
+Remaining engineering/cleanup after publication: **B3, unfinished B4, B5, B6,
+B9**. Outstanding native acceptance (fog/player output, external art and layout
+gap removal) remains visible and does not block independent file-level work.
 
-- Executing Foundry macros, region behaviors, active effects or automation.
-- Hex/isometric grids; FG terrain (movement-only) occluders.
-- Encrypted FG Forge/vault modules.
-- Roll20 (licensing), AboveVTT (browser extension).
-- Bidirectional (Arkenforge → other VTT) export.
+## C. Decisions for Jeffrey
+
+| # | Decision | State |
+|---|---|---|
+| C1 | Toolkit access after the trial | A licensed environment is needed for further native observations; file-level development can continue. |
+| C2 | Release/announcement | v0.13.0 release explicitly authorized 2026-11-07 with checked/file-level/known-limit separation. Remaining B work is disclosed, not hidden behind a feature-complete claim. |
+| C3 | More game systems | Not now: supported semantic target dnd5e only. Legacy source-stat display is not new system support. |
+| C4 | Code signing | Not done; unsigned Windows EXEs can trigger SmartScreen. |
+| C5 | Older Foundry versions | Not now: Foundry v13 only. |
+
+## D. Out of scope by design (reported losses)
+
+- Executing source macros, region behaviors, scripts or active effects/automation.
+- Hex/isometric grids; FG movement-only terrain occluders.
+- Bypassing encrypted/protected FG content.
+- Roll20, AboveVTT and bidirectional Arkenforge export.

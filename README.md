@@ -6,9 +6,11 @@ ForgeBridge is an experimental, local migration tool that translates external VT
 
 The current Foundry workflow can build native Arkenforge scene packages directly from supported source data—without requiring an existing Arkenforge map, a manual UVTT import, or per-scene calibration. It preserves available source information and generates explicit reports for anything it cannot convert faithfully.
 
-**Current release:** [v0.12.0](docs/RELEASE-NOTES-v0.12.0.md) · [Windows downloads on GitHub Releases](https://github.com/khantroll/ForgeBridge/releases) · [Operator guide](docs/USER-GUIDE.md) · [Handoff](docs/HANDOFF-2026-11-03.md)
+**Current release:** [v0.13.0](docs/RELEASE-NOTES-v0.13.0.md) · [Windows downloads on GitHub Releases](https://github.com/khantroll/ForgeBridge/releases) · [Operator guide](docs/USER-GUIDE.md) · [Handoff](docs/HANDOFF-2026-11-03.md)
 
-> **Compatibility is limited to tested versions and content.** A successful build is not proof of complete scene or campaign fidelity. Review the conversion report and validate generated maps in Arkenforge before using them in a game.
+> **Supported source scope: Foundry v13 / dnd5e and unencrypted Fantasy Grounds Unity modules.**
+
+**Compatibility is limited to tested versions and content.** A successful build is not proof of complete scene or campaign fidelity. Review the conversion report and validate generated maps in Arkenforge before using them in a game.
 
 ## Quick start
 
@@ -22,7 +24,7 @@ Alternatively, install Git and Python, then open PowerShell:
 ```powershell
 git clone https://github.com/khantroll/ForgeBridge.git
 cd ForgeBridge
-git checkout v0.11.0
+git checkout v0.13.0
 py -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install .
@@ -58,9 +60,18 @@ The current Foundry adapter supports bounded conversion of:
 
 Each build produces a combined `MyAssets` tree, per-scene packages, and readable conversion reports. UVTT output is also available; **UVTT is an interchange option, not the limit of the native converter**.
 
-The Fantasy Grounds Unity adapter converts backgrounds, grids, walls, doors/windows and lights to native maps. Stored grids win; missing grids require an explicit size. Encrypted modules are refused. The separate FG campaign command converts supported 5e NPC/item/spell/story notes with reviewed add-only installation; map pins and tokens remain manual.
+Fantasy Grounds Unity modules now use one build for supported maps and campaign
+notes, including NPC/item/spell/story notes, tables/manuals/handouts, note-opening
+pins and portrait tokens. Missing grids need an explicit size; encrypted modules
+are refused. NPC links on tokens remain omitted to preserve portraits.
 
-Actor notes contain display statistics, not automation or live token bindings. External art, ambient sounds, animated media/GIF setup, procedural light animation and Foundry fog/vision/exploration remain manual or unsupported. Local MP3/OGG playlist tracks are embedded unchanged; native controls are audibly confirmed, while rebuilt playlists need their own listening checks. Windows executables are unsigned; SmartScreen may warn. See [supported scope and limitations](docs/USER-GUIDE.md#supported--manual--unsupported).
+Supported Foundry animated/video tiles and map-attached ambience have earlier
+Toolkit observations. Optional Data-folder art and fog/vision/light-effect mapping
+are file-level only. Unsupported animations, source darkness, historical fog and
+full actor/combat behavior remain reported limits. MP3/OGG playlists preserve
+available bytes; source playback settings need review. Windows EXEs are unsigned.
+See [the release evidence split](docs/RELEASE-NOTES-v0.13.0.md) and
+[supported scope](docs/USER-GUIDE.md#supported--manual--unsupported).
 
 ## Some spells need the free dnd5e system download
 
@@ -118,16 +129,26 @@ The guiding principles are:
 
 ## Compatibility and project status
 
-The v0.11.0 release documents testing with **Foundry v13** and selected **Fantasy Grounds Unity** source content and **Arkenforge Toolkit 0.5.1.18**. Windows and Linux automated coverage exists, alongside scoped Toolkit validation for selected real scenes. Other source versions, systems, and native Toolkit releases need separate verification. An intermittent Windows/LevelDB temporary-file issue was seen on one development PC and never reproduced elsewhere; it is an accepted, documented quirk (see the release notes).
+The [v0.13.0 release notes](docs/RELEASE-NOTES-v0.13.0.md) distinguish earlier
+**Windows / Toolkit 0.5.1.18** observations from new file-level-only work. Supported
+source scope is **Foundry v13 / dnd5e** and unencrypted **Fantasy Grounds Unity**
+modules. The trial has ended; this release has no new Toolkit runtime acceptance.
+Windows/Linux tests and frozen-EXE checks do not replace it.
 
-ForgeBridge is **usable within its tested scene-conversion scope**, but it is not a lossless campaign migration tool. FG campaign text/actors/items, additional source systems and behavior/automation translation remain future work.
+FG campaign notes, tables, manuals, handouts, pins and portrait tokens now share
+the combined conversion path. Full actor/combat behavior, additional systems,
+source-compendium monsters/items, environment fidelity and some playback/roll
+settings remain gaps. ForgeBridge is not a lossless campaign migration tool.
 
-For implementation evidence, acceptance boundaries, known blockers, and the current milestone, use the [handoff](docs/HANDOFF-2026-11-03.md) and [latest runtime recheck](validation/toolkit-recheck-2026-11-03.md) rather than treating this README as a test log.
+Use the [current scope check](docs/SCOPE-CHECK-2026-11-05.md),
+[2026-11-06 native observations](validation/2026-11-06-TOOLKIT-CHECK.md) and
+[post-trial FG audit](validation/2026-11-06-FG-DISPLAY-FIXES.md) for boundaries.
+Earlier handoff and validation records remain historical evidence.
 
 ## Documentation
 
 - [Operator guide](docs/USER-GUIDE.md) — installation, GUI/CLI use, output review, safe install, and recovery.
-- [v0.12.0 release notes](docs/RELEASE-NOTES-v0.12.0.md) — tested release scope and known limitations ([v0.9.0](docs/RELEASE-NOTES-v0.9.0.md); [changelog](CHANGELOG.md)).
+- [v0.13.0 release notes](docs/RELEASE-NOTES-v0.13.0.md) — tested release scope and known limitations ([v0.9.0](docs/RELEASE-NOTES-v0.9.0.md); [changelog](CHANGELOG.md)).
 - [Handoff](docs/HANDOFF-2026-11-03.md) — release sequence and owners; STATUS and NEXT-STEPS are historical.
 - [Acceptance matrix](docs/ACCEPTANCE-MATRIX.md) — evidence and boundaries of validated behavior.
 - [Scene profiles](docs/SCENE-PROFILES.md), [batch builds](docs/SCENE-BATCH.md), and [native capture](docs/NATIVE-CAPTURE.md) — advanced workflows.
