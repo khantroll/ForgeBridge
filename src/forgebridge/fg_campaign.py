@@ -332,6 +332,7 @@ def _npc(record, identity, losses):
         for child, name, desc in _entries(record, tag):
             gaps.append('Lair action "' + (name or child.tag) + '" has no 5e Character field and was not placed in the note')
     display = actor_ir(actor)
+    display['challenge_has_cr'] = bool(cr_text)
     if actext:
         display['ac'] = actext
     elif ac is None:

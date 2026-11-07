@@ -90,6 +90,10 @@ def build_direct(package, document, row, package_id, destination, *, names, pdf_
         from forgebridge.native_dependencies import merge_native
         merge_native(files, tile_files)
         report['static_tiles'] = tile_report
+        from forgebridge.native_ambience import add_ambience
+        files[names['map_path']], audio_files, audio_report = add_ambience(files[names['map_path']], scene, package, scope)
+        merge_native(files, audio_files)
+        report['ambient_sounds'] = audio_report
         from forgebridge.visibility_ir import foundry_visibility
         from forgebridge.native_visibility import apply_visibility
         files[names['map_path']], report['visibility'] = apply_visibility(files[names['map_path']],
